@@ -6,17 +6,17 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [0.2.0] - 2026-09-05
 
 First release under the name **HydroGrad** (package `dgga`, repository
-`wdsgpu`), accompanying the manuscripts submitted to *Water Research* and to
-*Environmental Modelling & Software*. The repository is a fresh tree with a
+`wdsgpu`), accompanying the paper (arXiv preprint, identifier to be added). The
+repository is a fresh tree with a
 single initial commit; it carries the code, the verification scripts, every
-measurement report the manuscripts cite, the 23 synthetic networks with their
+measurement report the paper cites, the 23 synthetic networks with their
 generator, and the two anonymised operational models (CC BY 4.0).
 
 ### Release packaging
 
 - Public repository name `wdsgpu`; software name HydroGrad; package name
   `dgga` unchanged. `pyproject.toml` version 0.2.0, author list of the
-  manuscripts, optional extras `cudss` (sparse GPU route) and `baselines`
+  paper, optional extras `cudss` (sparse GPU route) and `baselines`
   (CMA-ES baselines). `CITATION.cff` added.
 - `networks/random_main` and `networks/random_small` (23 synthetic networks)
   are now redistributed, with the generator and a SHA-256 manifest under
@@ -24,7 +24,7 @@ generator, and the two anonymised operational models (CC BY 4.0).
   through WNTR's EPANET 2.2 library.
 - `datasets/` (City D, City H, leak work orders; CC BY 4.0) shipped byte for
   byte with its own `SHA256SUMS.txt`.
-- `data/`: the measurement reports cited by the manuscripts (benchmark and
+- `data/`: the measurement reports cited by the paper (benchmark and
   regression reports, gradient checks, exemption diagnostics, the L-TOWN
   mainline evidence and raw cluster job outputs under `data/gpu/`, the
   calibration, placement, augmentation, clustering and optimiser records) and
@@ -32,7 +32,7 @@ generator, and the two anonymised operational models (CC BY 4.0).
   unrolled-solver research line are not part of this release.
 - `scripts/`: the regression and guard suites, the reference builders and the
   fetch script, the gradient and adversarial checks, the GPU measurement
-  drivers, and the application drivers named in the manuscripts. The
+  drivers, and the application drivers named in the paper. The
   anonymisation guard and the dataset builder read their private mapping from
   the `HYDROGRAD_NAME_MAP` environment variable instead of a fixed path.
 - `tests/`: eight CPU smoke tests that run on a fresh clone in seconds.

@@ -27,7 +27,7 @@ adjoint that reuses the forward pass's terminal factorisation.
   <img src="assets/fig_method.png" alt="HydroGrad at a glance: the differentiable parameters, the batched forward GGA iteration, and the implicit adjoint that reuses the forward factorisation" width="100%">
 </p>
 
-The repository is the code and data release of two manuscripts (see
+The repository is the code and data release of the accompanying paper (see
 [Citation](#citation)). Every number on this page is copied from a
 measurement report in [`data/`](data/); the file is named next to it.
 Nothing is estimated, and the unflattering entries are kept.
@@ -36,7 +36,7 @@ Nothing is estimated, and the unflattering entries are kept.
 
 | what was measured | result | evidence |
 |--|--|--|
-| Forward verification against the double-precision EPANET 2.2 library, 52 networks, 8 140 extended-period frames | **52 / 52 agree to at most 1e-12 ft over every frame, 25 of them exactly; the largest deviation is 1.137e-13 ft** (Richmond), with reservoir heads and valve settings read from the input text, as in Table 1 of the Water Research manuscript. On the default parser path five networks fall short of 1e-12 ft (Anytown 6.082e-12, Net3 2.146e-6, BWSN Network 1 6.086e-6, Net6 2.300e-5, BWSN Network 2 6.836 ft): a model in US customary units loses one unit in the last place on those two field classes in the metre round trip, and a reservoir head is a boundary condition, so the error is amplified. Reading the two classes from the input text is a non-default parser entry point; every other number in this repository was produced on the default path, which it leaves unchanged to the last bit. Per-frame Newton iteration counts are identical to EPANET's on all 52 either way | `data/exempt/verify_exact_fix.json` (the five networks, before and after, every frame); `data/benchmark_report.txt`, `data/tables/tab_full_benchmark.csv` (default path, all 52) |
+| Forward verification against the double-precision EPANET 2.2 library, 52 networks, 8 140 extended-period frames | **52 / 52 agree to at most 1e-12 ft over every frame, 25 of them exactly; the largest deviation is 1.137e-13 ft** (Richmond), with reservoir heads and valve settings read from the input text, as in Table 1 of the paper. On the default parser path five networks fall short of 1e-12 ft (Anytown 6.082e-12, Net3 2.146e-6, BWSN Network 1 6.086e-6, Net6 2.300e-5, BWSN Network 2 6.836 ft): a model in US customary units loses one unit in the last place on those two field classes in the metre round trip, and a reservoir head is a boundary condition, so the error is amplified. Reading the two classes from the input text is a non-default parser entry point; every other number in this repository was produced on the default path, which it leaves unchanged to the last bit. Per-frame Newton iteration counts are identical to EPANET's on all 52 either way | `data/exempt/verify_exact_fix.json` (the five networks, before and after, every frame); `data/benchmark_report.txt`, `data/tables/tab_full_benchmark.csv` (default path, all 52) |
 | Regression suite, 54 items | **54 / 54 pass**; item 1: 25 steady-state alignments (City D, City D with emitters, the 23 synthetic networks) at max abs. head deviation 2.842e-14 ft, i.e. bit level; item 9: exact symmetry of the GGA matrix, 86 / 86 bit-exact and 4 / 4 one-sided-assembly mutants correctly caught | `data/regression_report.txt` (2026-08-25) |
 | Gradient checks | implicit adjoint against central finite differences, worst 5.85e-08 relative (City D, 80 coordinates, four parameter classes); unrolled route 1.21e-06; batched against per-scenario gradients 0.000e+00; `torch.gradcheck` pass; 22 / 22 adversarial audit; finite differences driven through EPANET's own library against the analytic gradient, worst 2.39e-05 over 8 coordinates | `data/regression_report.txt` appendices A and B, `data/tables/tab_gradient.csv`, `data/extfd_epanet_report.txt` |
 | One adjoint instead of 555 simulations | City D has 554 links (`benchmark_report.txt`: N = 542, L = 554). A one-sided finite-difference Jacobian over 554 link coordinates costs 555 hydraulic simulations; one adjoint solve, with the sparsity of the forward solve, returns all 554 sensitivities | arithmetic on the recorded link count; `data/placement_metric_wip.txt` |
@@ -61,8 +61,8 @@ sparse against dense linear algebra (factor F2, 3.1 to 3.8x), as
 | path | contents |
 |--|--|
 | `dgga/` | the package: parser, units, the three solver paths, EPS driver, rule engine, the two backward routes, reference bindings, and the application modules (calibration, sensor placement, cluster localisation, optimiser) |
-| `scripts/` | the regression and guard suites, reference builders, the fetch script with SHA-256 manifest, gradient and adversarial checks, the GPU measurement drivers behind every table, and the experiment drivers of the manuscripts (`docs/repository_map.md` lists which script produced which report) |
-| `data/` | every measurement report the manuscripts cite, the raw cluster job outputs under `data/gpu/`, and the manuscript tables as CSV under `data/tables/` |
+| `scripts/` | the regression and guard suites, reference builders, the fetch script with SHA-256 manifest, gradient and adversarial checks, the GPU measurement drivers behind every table, and the experiment drivers of the paper (`docs/repository_map.md` lists which script produced which report) |
+| `data/` | every measurement report the paper cites, the raw cluster job outputs under `data/gpu/`, and the paper's tables as CSV under `data/tables/` |
 | `datasets/` | City D and City H, two anonymised operational models, and 256 leak repair work orders for City D, under CC BY 4.0 |
 | `networks/` | 23 synthetic networks (`random_main/`, `random_small/`) with their generator and SHA-256 manifest under `synthetic/`; `public/` is created by the fetch script |
 | `tests/` | eight CPU smoke tests that run on a fresh clone in seconds |
@@ -207,7 +207,7 @@ What refuses, and how (`data/p3_autograd_wip.txt` section E, `data/adjoint_gpu_w
 Every table and figure has a script and a report. Wall times are the ones
 recorded in the report headers (workstation: 24 CPU threads, RTX 5060 Laptop
 GPU; cluster: RTX 5090 nodes under Slurm). The scripts write Chinese progress
-text; the numbers and file names are what the manuscripts cite.
+text; the numbers and file names are what the paper cites.
 
 **52-network verification table and the accuracy figure**
 (`data/benchmark_report.txt`, `data/tables/tab_full_benchmark.csv`):
@@ -307,7 +307,7 @@ the unpublished originals, so it runs only where both are present.
 
 ## Bit-exactness, and its limits
 
-These are the manuscripts' limitations, kept here in the same words because a
+These are the paper's limitations, kept here in the same words because a
 README that is more optimistic than the paper is a bug.
 
 - **Bit-level agreement is platform-dependent and is a claim about one
@@ -409,40 +409,21 @@ not redistributed; sources and licences are in [`THIRD_PARTY.md`](THIRD_PARTY.md
 
 ## Citation
 
-Two manuscripts describe this work and are under review; the placeholders
-below will be replaced by the published references. `CITATION.cff` carries
-the same records in machine-readable form.
+The accompanying paper is deposited on arXiv; the identifier placeholder
+below is filled on upload. `CITATION.cff` carries the same record in
+machine-readable form.
 
 ```bibtex
-@software{mu2026hydrograd,
-  author  = {Mu, Tianwei and Wang, Yue and Yuan, Mingzhe and Wang, Wenhong and
+@misc{mu2026hydrograd,
+  author        = {Mu, Tianwei and Wang, Yue and Yuan, Mingzhe and Wang, Wenhong and
              Luo, Qing and Xiao, Min and Li, Jun and Yang, Hui},
-  title   = {{HydroGrad}: a bit-faithful, differentiable re-implementation of the
-             {EPANET} 2.2 global gradient algorithm},
-  year    = {2026},
-  version = {0.2.0},
-  url     = {https://github.com/mutianwei521/wdsgpu},
-  note    = {Python package dgga. Archival DOI to be added.}
-}
-
-@article{mu2026gradient,
-  author  = {Mu, Tianwei and Wang, Yue and Yuan, Mingzhe and Wang, Wenhong and
-             Luo, Qing and Xiao, Min and Li, Jun and Yang, Hui},
-  title   = {Water-network decisions share one hydraulic gradient, and it can now
-             be computed exactly},
-  journal = {Water Research},
-  year    = {2026},
-  note    = {Submitted. Volume, pages and DOI to be added.}
-}
-
-@article{mu2026hydrograd_ems,
-  author  = {Mu, Tianwei and Wang, Yue and Yuan, Mingzhe and Wang, Wenhong and
-             Luo, Qing and Xiao, Min and Li, Jun and Yang, Hui},
-  title   = {{HydroGrad}: A Bit-Faithful, Differentiable Global Gradient Algorithm
-             for Water Distribution Networks},
-  journal = {Environmental Modelling \& Software},
-  year    = {2026},
-  note    = {Submitted. Volume, pages and DOI to be added.}
+  title         = {Water-network decisions share one hydraulic gradient, and it can now
+                   be computed exactly},
+  year          = {2026},
+  eprint        = {arXiv:XXXX.XXXXX},
+  archivePrefix = {arXiv},
+  note          = {arXiv identifier to be added on upload. Code and data:
+                   https://github.com/mutianwei521/wdsgpu}
 }
 ```
 

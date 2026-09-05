@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: >-
   If you use HydroGrad (the dgga package) in your work, please cite the
-  software record below and, once published, the article describing it.
+  software record below and the accompanying paper.
   Until an archival DOI is minted, cite the repository URL and the commit.
 type: software
 title: "HydroGrad: a bit-faithful, differentiable re-implementation of the EPANET 2.2 global gradient algorithm"
@@ -54,11 +54,10 @@ keywords:
   - model calibration
   - leak localisation
   - PyTorch
-# Archival DOI: to be added when the Zenodo snapshot of the submitted version is minted.
+# Archival DOI: to be added when the Zenodo snapshot is minted.
 # doi: 10.5281/zenodo.XXXXXXX
 preferred-citation:
-  # Manuscript submitted to Water Research (under review). Replace the
-  # placeholders (journal volume, pages, DOI) when the article is published.
+  # The accompanying arXiv preprint. Fill in the identifier on upload.
   type: article
   title: "Water-network decisions share one hydraulic gradient, and it can now be computed exactly"
   authors:
@@ -78,36 +77,10 @@ preferred-citation:
       given-names: Jun
     - family-names: Yang
       given-names: Hui
-  journal: "Water Research"
+  journal: "arXiv preprint"
   year: 2026
-  status: submitted
-  notes: "Under review. Volume, pages and DOI to be added on publication."
+  notes: "arXiv identifier to be added on upload."
 references:
-  # Companion software paper submitted to Environmental Modelling & Software
-  # (under review); placeholders as above.
-  - type: article
-    title: "HydroGrad: A Bit-Faithful, Differentiable Global Gradient Algorithm for Water Distribution Networks"
-    authors:
-      - family-names: Mu
-        given-names: Tianwei
-      - family-names: Wang
-        given-names: Yue
-      - family-names: Yuan
-        given-names: Mingzhe
-      - family-names: Wang
-        given-names: Wenhong
-      - family-names: Luo
-        given-names: Qing
-      - family-names: Xiao
-        given-names: Min
-      - family-names: Li
-        given-names: Jun
-      - family-names: Yang
-        given-names: Hui
-    journal: "Environmental Modelling & Software"
-    year: 2026
-    status: submitted
-    notes: "Under review. Volume, pages and DOI to be added on publication."
   - type: data
     title: "City D and City H water distribution network datasets"
     authors:

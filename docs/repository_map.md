@@ -7,7 +7,7 @@ deliberately not here.
 
 | path | what it is |
 |--|--|
-| `dgga/` | the package. `parse.py` (INP to `Net`), `units.py`, `solver.py` (`GGASolver`: the EPANET-replica path, the dense batched path with its status machine, the CSR assembly and the cuDSS route), `smatrix.py` (EPANET's sparse ordering and solve), `eps.py` (extended-period driver), `rules.py` (rule engine), `autodiff.py` (`implicit_solve` / `ImplicitGGASolve`, the GPU implicit adjoint, `solve_unrolled`, `unrolled_grad_health`), `epanet_ref.py` / `reference.py` (double-precision `EN_*` bindings and reference-solution builder), `sensitivity.py`, `calib.py`, `placement.py`, `cluster.py`, `optim2.py` (the application modules), `symbolic.py`, `precond.py`, `ggaformer.py`, `mlds.py` (a separate learned-solver research line; present because the package is shipped whole, not used by the manuscripts). `CONTRACT.md` is the original Chinese interface contract of the package. |
+| `dgga/` | the package. `parse.py` (INP to `Net`), `units.py`, `solver.py` (`GGASolver`: the EPANET-replica path, the dense batched path with its status machine, the CSR assembly and the cuDSS route), `smatrix.py` (EPANET's sparse ordering and solve), `eps.py` (extended-period driver), `rules.py` (rule engine), `autodiff.py` (`implicit_solve` / `ImplicitGGASolve`, the GPU implicit adjoint, `solve_unrolled`, `unrolled_grad_health`), `epanet_ref.py` / `reference.py` (double-precision `EN_*` bindings and reference-solution builder), `sensitivity.py`, `calib.py`, `placement.py`, `cluster.py`, `optim2.py` (the application modules), `symbolic.py`, `precond.py`, `ggaformer.py`, `mlds.py` (a separate learned-solver research line; present because the package is shipped whole, not used by the paper). `CONTRACT.md` is the original Chinese interface contract of the package. |
 | `tests/` | `python -m pytest -q tests`: eight CPU smoke tests on a synthetic network and on the released manifests. |
 | `networks/` | `random_main/`, `random_small/` (23 synthetic networks, redistributed); `synthetic/` (their generator, `SHA256SUMS.txt`, README); `public/` (created by `scripts/fetch_benchmarks.py`, git-ignored). |
 | `datasets/` | City D, City H and the City D leak work orders, CC BY 4.0, with `README.md` and `SHA256SUMS.txt`. |
@@ -74,7 +74,7 @@ Applications (all on the released City D model, L-TOWN and Hanoi):
 
 Most scripts print Chinese progress text and write Chinese-language working
 records (`data/*_wip.txt`); the numbers, the file names and the code are what
-the manuscripts cite.
+the paper cites.
 
 ## What is not here
 

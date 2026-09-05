@@ -30,7 +30,7 @@
 三、基线（都在同一 S_full 上评估）
     random_orders / degree_order / norm_order / aopt_greedy / spectral_order。
     A-最优贪心非子模，无 (1-1/e) 保证（如实标注）；spectral_order 是
-    Zhou et al. 2024 (Water Research) 思路的**简化代理**（图拉普拉斯低频
+    Zhou et al. 2024 思路的**简化代理**（图拉普拉斯低频
     特征子空间上的行选 D-最优贪心），非原文复刻。
 
 四、评估 eval_subset()：f、数值秩、零列数、可辨识子空间 CRLB 迹、
@@ -375,7 +375,7 @@ def aopt_greedy(S_full, kmax, sigma_prior=15.0, sigma_noise=0.1):
 
 
 def spectral_order(solver, net, kmax, n_eig=None, ridge=1e-9):
-    """谱近似代理（Zhou et al. 2024 Water Research 的简化版，非原文复刻）。
+    """谱近似代理（Zhou et al. 2024 的简化版，非原文复刻）。
 
     图拉普拉斯（开启链路、无权、无向）最低频 r 个非平凡特征向量组成
     V[Nj, r]，在其行空间上做 D-最优行选贪心：每步选

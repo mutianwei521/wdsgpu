@@ -518,7 +518,7 @@
   "aopt_t_sec": 24.220966699998826,
   "aopt_note": "A-最优贪心非子模，无 (1-1/e) 保证",
   "spectral_n_eig": 80,
-  "spectral_note": "Zhou et al. 2024 Water Research 简化代理（图拉普拉斯低频子空间行选贪心），非原文复刻"
+  "spectral_note": "Zhou et al. 2024 简化代理（图拉普拉斯低频子空间行选贪心），非原文复刻"
  },
  "curves": {
   "dopt": {

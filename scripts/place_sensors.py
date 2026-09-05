@@ -329,7 +329,7 @@ def stage_baselines(stem, kmax, n_random=30):
         n_random_seeds=n_random, random_seed0=SEED_RANDOM0,
         aopt_t_sec=ao["t_total"], aopt_note="A-最优贪心非子模，无 (1-1/e) 保证",
         spectral_n_eig=int(sp["n_eig"]),
-        spectral_note="Zhou et al. 2024 Water Research 简化代理（图拉普拉斯低频"
+        spectral_note="Zhou et al. 2024 简化代理（图拉普拉斯低频"
                       "子空间行选贪心），非原文复刻")
     save_json(stem, res)
     print("stage baselines 完成。")
