@@ -1,0 +1,151 @@
+NVIDIA GeForce RTX 5090, 32607 MiB
+node: <node-20> | cpus: 8
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:2016: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:2016: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:2296: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:213.)
+  return torch.as_tensor(np.asarray(x), dtype=dt, device=dev)
+==============================================================================
+node: <node-20> | torch 2.11.0+cu128 | NVIDIA GeForce RTX 5090
+nvmath 1.0.0 | CUBLAS_WORKSPACE_CONFIG = :4096:8
+torch.use_deterministic_algorithms(True) 已开（FD 与解析梯度都要位级可复现）
+
+==============================================================================
+§A cudss 解析梯度 vs **dense 前向**中心差分（Richardson）
+   同表给出 dense 解析梯度 vs 同一份 FD 作对照 - 它是 FD 自身的分辨率下限
+   每格 = 抽样坐标上的 max 相对误差，分母 max(|FD|, 1e-12)
+net       B  K  | param  n | cudss vs FD | dense vs FD | cudss vs dense
+Hanoi     1  20 | d       8 |   3.221e-10 |   3.220e-10 | 1.779e-13
+Hanoi     1  20 | rh      1 |   1.429e-12 |   1.435e-12 | 6.264e-15
+Hanoi     1  20 | r       8 |   3.772e-10 |   3.771e-10 | 1.609e-13
+Hanoi     1  20 | ke      8 |   5.439e-10 |   5.440e-10 | 7.842e-14
+Hanoi     8  20 | d       8 |   9.893e-10 |   9.895e-10 | 6.055e-13
+Hanoi     8  20 | rh      8 |   9.299e-10 |   9.296e-10 | 1.236e-12
+Hanoi     8  20 | r       8 |   1.088e-08 |   1.089e-08 | 6.872e-12
+Hanoi     8  20 | ke      8 |   2.023e-09 |   2.023e-09 | 7.078e-14
+Net3      1  20 | d       8 |   3.706e-05 |   3.706e-05 | 2.516e-13
+Net3      1  20 | rh      5 |   3.390e-07 |   3.390e-07 | 2.054e-12
+Net3      1  20 | r       8 |   6.579e-01 |   6.579e-01 | 1.866e-06
+Net3      1  20 | ke      8 |   8.840e-07 |   8.840e-07 | 4.456e-12
+Net3      8  20 | d       8 |   2.878e-05 |   2.878e-05 | 4.561e-13
+Net3      8  20 | rh      8 |   1.140e-07 |   1.140e-07 | 7.435e-13
+Net3      8  20 | r       8 |   4.484e-06 |   4.484e-06 | 1.853e-11
+Net3      8  20 | ke      8 |   7.934e-07 |   7.934e-07 | 2.754e-12
+Modena    1  20 | d       8 |   2.555e-07 |   2.555e-07 | 1.605e-12
+Modena    1  20 | rh      4 |   8.146e-09 |   8.146e-09 | 3.295e-14
+Modena    1  20 | r       8 |   1.859e-06 |   1.859e-06 | 1.009e-11
+Modena    1  20 | ke      8 |   3.078e-06 |   3.078e-06 | 2.138e-12
+Modena    8  20 | d       8 |   3.515e-08 |   3.515e-08 | 3.241e-13
+Modena    8  20 | rh      8 |   5.290e-10 |   5.290e-10 | 8.074e-13
+Modena    8  20 | r       8 |   1.260e-08 |   1.260e-08 | 8.515e-12
+Modena    8  20 | ke      8 |   7.740e-08 |   7.739e-08 | 1.603e-11
+City_D    1  24 | d       8 |   7.059e-03 |   7.059e-03 | 1.870e-07
+City_D    1  24 | rh      1 |   2.349e-05 |   2.349e-05 | 2.443e-09
+City_D    1  24 | r       8 |   2.533e-02 |   2.533e-02 | 2.348e-08
+City_D    1  24 | ke      8 |   3.365e-04 |   3.365e-04 | 3.247e-08
+City_D    8  24 | d       8 |   1.086e-02 |   1.086e-02 | 2.780e-07
+City_D    8  24 | rh      8 |   5.983e-04 |   5.993e-04 | 1.032e-06
+City_D    8  24 | r       8 |   7.631e-02 |   7.631e-02 | 4.559e-08
+City_D    8  24 | ke      8 |   5.171e-04 |   5.171e-04 | 1.437e-07
+ky4       1  24 | d       8 |   4.396e-03 |   4.396e-03 | 6.794e-09
+ky4       1  24 | rh      5 |   8.228e-06 |   8.224e-06 | 4.114e-09
+ky4       1  24 | r       8 |   5.593e-03 |   5.593e-03 | 1.068e-08
+ky4       1  24 | ke      8 |   1.601e-04 |   1.600e-04 | 1.736e-08
+ky4       8  24 | d       8 |   2.171e-03 |   2.171e-03 | 4.374e-07
+ky4       8  24 | rh      8 |   2.296e-06 |   2.296e-06 | 1.241e-10
+ky4       8  24 | r       8 |   2.161e-03 |   2.161e-03 | 1.278e-09
+ky4       8  24 | ke      8 |   1.756e-04 |   1.756e-04 | 9.451e-10
+
+==============================================================================
+§B cudss vs dense 解析梯度（max 相对差，分母 = 该张量的 max|dense|）
+net       B    K  | grad d     grad rh    grad r     grad ke  | max|g_d|   max|g_r|   ← |g| 爆掉时相对差没有意义
+Hanoi     1    20 | 7.764e-14 3.132e-16 8.260e-15 2.055e-14 | 2.6129e+00 1.6158e+04
+Hanoi     8    20 | 3.687e-13 8.163e-15 3.742e-15 1.460e-13 | 4.0332e+00 1.4002e+05
+Hanoi     64   20 | 7.577e-11 1.180e-12 2.468e-13 3.530e-11 | 5.1252e+00 2.6713e+05
+Hanoi     256  20 | 4.234e-09 2.417e-11 1.866e-11 2.034e-09 | 4.7983e+00 2.9078e+05
+Net3      1    20 | 9.039e-13 8.908e-13 2.515e-12 1.706e-12 | 1.8161e+01 5.9420e+03
+Net3      8    20 | 3.785e-12 2.007e-12 9.820e-08 2.161e-11 | 4.7261e+01 9.5415e+03
+Net3      64   20 | 7.825e-12 2.125e-12 6.999e-08 1.720e-11 | 4.7508e+01 1.1202e+04
+Net3      256  20 | 9.408e-11 3.493e-11 7.481e-08 6.968e-11 | 5.4073e+01 2.6559e+04
+Modena    1    20 | 3.023e-10 6.124e-12 1.077e-12 5.239e-11 | 3.2053e+02 4.3614e+02
+Modena    8    20 | 1.765e-11 3.275e-13 1.240e-13 1.265e-12 | 3.1199e+02 7.4810e+02
+Modena    64   20 | 1.994e-09 2.118e-11 1.929e-12 7.799e-11 | 4.1481e+02 4.5885e+03
+Modena    256  20 | 9.786e-07 2.993e-08 3.724e-09 8.859e-08 | 4.5757e+02 3.0219e+03
+City_D    1    24 | 6.286e-04 1.000e-10 1.880e-09 1.379e-09 | 1.1346e+08 2.6738e+04
+City_D    8    24 | 6.944e-04 4.417e-08 3.153e-08 6.617e-08 | 2.0214e+08 3.5024e+04
+City_D    64   24 | 1.000e+00 3.694e-03 6.005e-04 9.432e-03 | 9.5372e+11 5.1631e+05
+City_D    256  24 | dense 侧 torch.OutOfMemoryError（cudss 侧正常出梯度，|g_d|max=8.3179e+08）
+ky4       1    24 | 3.229e-05 1.146e-09 6.047e-09 3.705e-09 | 3.5904e+02 6.2796e+02
+ky4       8    24 | 3.233e-05 4.729e-10 8.152e-09 1.150e-09 | 1.9279e+03 2.4772e+03
+ky4       64   24 | 1.419e-03 1.226e-09 3.969e-07 1.769e-08 | 1.9235e+03 7.3120e+03
+ky4       256  24 | dense 侧 torch.OutOfMemoryError（cudss 侧正常出梯度，|g_d|max=1.9283e+03）
+
+==============================================================================
+§C cudss vs ImplicitGGASolve（隐函数定理伴随；K 取收敛迭代数 +5）
+   同表给出 dense 展开 vs 隐式 作对照（展开 vs 不动点的固有差）
+net       B  K  | param | cudss vs implicit | dense vs implicit | max|g_implicit|
+Hanoi     4  15 | d     |         2.258e-13 | 6.204e-13 | 3.7577e+00
+Hanoi     4  15 | rh    |         1.774e-14 | 1.505e-14 | 1.9656e+00
+Hanoi     4  15 | r     |         2.668e-15 | 3.108e-15 | 7.4326e+04
+Hanoi     4  15 | ke    |         1.100e-13 | 3.246e-13 | 2.1274e+01
+Net3      4  12 | d     |         1.372e-12 | 5.487e-12 | 4.1038e+01
+Net3      4  12 | rh    |         4.036e-13 | 6.400e-13 | 3.5212e+00
+Net3      4  12 | r     |         1.113e-08 | 1.275e-07 | 8.4893e+03
+Net3      4  12 | ke    |         8.187e-12 | 2.995e-11 | 1.3161e+02
+Modena    4  12 | d     |         2.790e-09 | 1.432e-09 | 3.0581e+02
+Modena    4  12 | rh    |         4.059e-11 | 2.083e-11 | 4.6733e+00
+Modena    4  12 | r     |         1.028e-11 | 4.735e-12 | 4.1143e+02
+Modena    4  12 | ke    |         2.115e-10 | 1.085e-10 | 1.6854e+02
+City_D    4  12 | d     |         6.958e-04 | 3.472e-04 | 2.0214e+08
+City_D    4  12 | rh    |         7.874e-10 | 7.624e-09 | 5.0936e+00
+City_D    4  12 | r     |         3.375e-10 | 4.274e-09 | 6.9637e+04
+City_D    4  12 | ke    |         1.630e-09 | 1.363e-08 | 2.0565e+02
+ky4       4  12 | d     |         6.467e-05 | 6.433e-05 | 4.7453e+02
+ky4       4  12 | rh    |         8.931e-10 | 4.907e-10 | 1.4713e+01
+ky4       4  12 | r     |         4.072e-09 | 2.444e-08 | 7.7834e+02
+ky4       4  12 | ke    |         2.214e-09 | 1.211e-09 | 2.8699e+02
+
+==============================================================================
+§D 计数器：反向有没有让 factorize 翻倍（B=8，K=12，前向 12 次线性解）
+net     slots | factorize solve bwd_solve bwd_reuse bwd_refact | 梯度 vs slots=K+2
+Modena  14    | 12        36    36        12        0          | 0.000e+00
+Modena  1     | 23        36    36        1         11         | 1.100e-11
+Modena  2     | 22        36    36        2         10         | 1.637e-11
+Modena  4     | 20        36    36        4         8          | 1.764e-11
+Modena  12    | 12        36    36        12        0          | 1.184e-11
+ky4     14    | 12        36    36        12        0          | 0.000e+00
+ky4     1     | 23        36    36        1         11         | 1.610e-05
+ky4     2     | 22        36    36        2         10         | 3.206e-05
+ky4     4     | 20        36    36        4         8          | 1.610e-05
+ky4     12    | 12        36    36        12        0          | 1.610e-05
+
+==============================================================================
+§F cudss_grad_refine（反向那次解的迭代精化步数）对**梯度精度**的影响
+   0 步能省两次 solve 地板（时间见 P3-B §5），这里看它值不值
+net       B  K  | refine | vs dense 解析梯度 (d / rh / r / ke)
+Hanoi     8  20 | 0      | 1.432e-11 2.451e-13 1.237e-13 4.751e-12
+Hanoi     8  20 | 1      | 1.430e-11 2.433e-13 1.316e-13 4.744e-12
+Hanoi     8  20 | 2      | 9.987e-13 2.678e-14 4.443e-15 3.729e-13
+Net3      8  20 | 0      | 5.881e-12 4.170e-12 1.025e-07 3.817e-11
+Net3      8  20 | 1      | 2.417e-12 1.752e-12 1.418e-08 1.669e-11
+Net3      8  20 | 2      | 4.940e-12 1.820e-12 1.866e-07 3.023e-11
+Modena    8  20 | 0      | 6.347e-11 2.686e-13 5.875e-13 1.492e-12
+Modena    8  20 | 1      | 3.095e-11 2.265e-13 5.928e-13 1.295e-12
+Modena    8  20 | 2      | 6.500e-11 3.139e-13 2.011e-13 1.288e-12
+City_D    8  24 | 0      | 1.909e-01 6.241e-08 6.877e-08 9.211e-08
+City_D    8  24 | 1      | 4.600e-04 4.244e-08 2.910e-08 6.371e-08
+City_D    8  24 | 2      | 5.697e-01 4.251e-08 3.335e-08 6.320e-08
+ky4       8  24 | 0      | 2.362e-05 2.460e-10 1.141e-08 6.345e-10
+ky4       8  24 | 1      | 3.230e-05 5.469e-10 1.490e-08 1.332e-09
+ky4       8  24 | 2      | 3.233e-05 8.540e-10 6.996e-09 2.101e-09
+
+==============================================================================
+§E 守卫（全部必须明确 raise，零静默降级）
+  二阶导 create_graph=True                      → NotImplementedError: linear_solver='cudss' 的反向只做一阶：cuDSS 的三角回代不是 autograd 算子，create_graph=Tru
+  cudss + assemble='dense'                   → ValueError: linear_solver='cudss' 必须配 assemble='csr'；收到 assemble='dense'
+  cudss + float32（可微通路）                      → NotImplementedError: linear_solver='cudss' 本轮只接 float64，收到 torch.float32
+  cudss + device='cpu'（可微通路）                 → NotImplementedError: linear_solver='cudss' 需要 CUDA 设备，当前 device=cpu。本机无 CUDA 时请显式用 linear_sol
+  cudss_grad_slots > cudss_cache_max         → ValueError: cudss_grad_slots=8 大于 cudss_cache_max=4：LRU 会把先建的槽逐出，反向就落回重分解，多占的显存白花。请把
+P3A DONE
+P3A JOB DONE

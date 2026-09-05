@@ -1,0 +1,567 @@
+################################################################################
+P5 敌意审阅 - 对 data/p5_bignet_wip.txt（commit 92ac2e7）的五项独立复核
+日期 2026-08-23
+################################################################################
+
+【测的是哪一棵树】
+  铁律零：开工第一件事 `git archive HEAD dgga | tar -x -C <scratch>/ro`，
+  全程 import 那一份。**pinned commit = 92ac2e7**
+  （"Survey the new benchmark drop, and find the wall the dense path really hits"）
+      md5 dgga/solver.py   36fdcf072ead617036fdc167fa709521
+      md5 dgga/autodiff.py e4b8cfe49536f85b435e04e5ed5621d2
+      md5 dgga/parse.py    781d9711be661cd29da11f50badc2bdb
+  （集群 aud5/dgga 的 md5 与本地只读副本逐位一致，作业 .out 抬头都打了。）
+
+  ★ 与被审那一轮**不是同一棵树**：上一轮 pin 的是 524c3e8（CVPIPE 之前），
+    我 pin 的是 92c…后的 HEAD，中间隔着 55b79a9"批量状态机 + CVPIPE"。
+    我核了一下：`git archive 524c3e8 dgga` 出来的 solver.py md5 = 45b0b0ee…，
+    与上一轮报告写的**完全一致** - 他们的溯源自述属实。
+    差异只在两处结论上有影响，都在 §4 里点名。
+  本轮**未改动 dgga/**；新增文件只在 scripts/p5_bignet/audit/ 与本文件。
+
+【回归（铁律三）】
+  scripts/regression_all.py 在工作树上自己重跑一次：
+  **总判定 PASS（51/51 项通过）**，用时 239 s，2026-08-23 01:24:17。
+  （开工时工作树的 dgga/solver.py md5 与 HEAD 归档逐位相同 ⇒ 并发那位
+    此刻没有未提交的 dgga 改动。）
+
+【集群（铁律四）】只用 gpu_5090 / gpu_4090，倍数全部标节点名。
+  作业号   脚本      队列      节点            State      ExitCode  Elapsed
+  1460594 aud2wall gpu_5090 <node-15>   COMPLETED  0:0      00:10:17
+  1460596 aud2wall gpu_4090 <node-07>   COMPLETED  0:0      00:16:17
+  1460595 aud3time gpu_5090 <node-22>   COMPLETED  0:0      00:02:18
+  1460597 aud3time gpu_4090 <node-16>   COMPLETED  0:0      00:04:12
+  1460605 aud4ceil gpu_5090 <node-06>   COMPLETED  0:0      00:14:59
+  1460606 aud4ceil gpu_4090 <node-03>   COMPLETED  0:0      00:12:49
+  六个作业落在**六个不同节点**上，全部 rc=0。
+  1460602/1460603 是同名 _bmmtree 目录在共享盘上互相踩掉的废作业，已作废重投
+  （.out 保留为 aud4_1460603_CANCELLED_stale_script.out，不引用其数字）。
+  rc 传递：scripts/p5_bignet/audit/check_rc_aud.sh（判据同 check_rc_local.sh）
+  **8/8 OK**（aud2/aud3/aud4 三个脚本，python 退 0/2/3/4/5/9 都如实传出）。
+
+================================================================================
+§0 五项总账（细节见各节）
+================================================================================
+  1 NW_Model 解得对吗      **通过**。epanet 通路与 DLL 逐位相同（0.0 ft，两条
+                           独立绑定互证），dense~DLL 8.12e-06 ft，迭代数三方全等 5。
+                           κ2=7.26e10（去死支 1.79e10），**比 KL 好一个量级、
+                           比 ky13 好三个量级** ⇒ 规模没把条件数拖坏，不用打折。
+                           但揪出两件上一轮没查的：A **不再逐位对称**（§1.2）、
+                           "三方一致"≠"解准了"（INP 自带精度下开管能量失衡
+                           3.3e-2 ft，§1.3）。
+  2 OOM 边界是真的吗      **数字真，身份认错了**。Nj 6016/6017 门槛逐点复现且
+                           确认单调；但那是 **torch.cholesky_solve 一个 API** 的墙
+                           （同格 solve_triangular / linalg.solve 都 OK），
+                           而且**本机 torch 2.13.0+cu132 上根本不出现**。
+                           拆掉后稠密真正的天花板是**显存**：B=10（32GiB）/
+                           B=8（24GiB）。140 GB 的算术核对无误（精确 139.9543 GiB）。
+                           全程没有一次主机换页/被信号杀。
+  3 倍数分解诚实吗        **诚实**。plan 在计时区外（冷热差 56/306 ms 已单测）、
+                           两把尺互证、warmup 够、**两路迭代数逐样本全等**（上一轮
+                           没查，我查了）、精化步数逐项相等。Badj/C 换 bmm 只差
+                           0.5~3.5%（不是显著自缚），补成等工作量后**一律上升**
+                           ⇒ 他们说的"下界"是真下界。新发现一处 ~10% 的实现级
+                           自缚（cholesky_solve + elem 残差，§C7），影响纯前向倍数。
+  4 盘点表可复现吗        **可复现**。sha256 唯一数 129 / 重复组 7 与上一轮同；
+                           16 个抽查点（含 3 个 parse 失败）Nj/L/判定一格不差；
+                           7 个同名文件里 **3 个字节不同** ⇒ 用文件名判重会错。
+                           但表 1 **对 HEAD 已过时**：CVPIPE 落地后又多 3 网可跑，
+                           ky4/ky8 不再需要关水池守卫（§4.5）。
+  5 出处与许可            **有硬伤**。被提名当主线的 NW_Model 出自
+                           OpenWaterAnalytics/epanet-example-networks，**该仓库没有
+                           LICENSE 文件**（GitHub license=null），且 NW_Model
+                           没有一次文献。对照：PacificCity CC-BY-3.0、L-TOWN
+                           CC-BY-4.0、asce-tf-wdst 未声明条款、exeter 链接已失效。
+  交付判断                **NW_Model 够格当"规模轴"主线，不够格当"能力轴"主线；
+                           不必等 BWSN_2**（差 5 条链路，但它的 epanet 通路现在
+                           与 DLL 差 33.58 ft，还要一轮状态机对齐）。见 §6。
+
+================================================================================
+§1 审阅项 1：NW_Model 解得对吗
+================================================================================
+脚本 scripts/p5_bignet/audit/{aud_lib.py, a1_nw_correct.py, a1b_symmetry_energy.py,
+     a1c_followups.py}。**不复用 nw_correct.py，也不用 dgga.epanet_ref** -
+DLL 走我自己写的 ctypes 绑定（aud_lib.MyEpanet），再用 **wntr 自己的 ENepanet**
+第二次独立对拍。两条绑定给出的 H 逐位相同（max|ΔH| = 0.000000e+00 ft）。
+
+1.1 三方对拍（本机 CPU、float64、B=1、t=0、INP 自带 ACCURACY=0.01/TRIALS=40）
+    NW_Model：N=8569 Nj=8566 L=9982（PIPE 9979 + PUMP 3，水库 3、**零水池零阀门**）
+              H-W、GPM、[TITLE] = "Northwest System"
+      通路        iters  relerr
+      mode=epanet   5    6.8775e-03
+      mode=dense    5    6.8775e-03
+      csr+dense     5    6.8775e-03
+      EPANET DLL    5    6.8775e-03
+      epanet ~ DLL     = **0.000000e+00 ft（逐位）**
+      dense  ~ DLL     = **8.124168e-06 ft**
+      csr 装配 ~ dense 装配 = **0.0（A 逐位相同，np.array_equal=True）**
+      max|ΔQ| dense~DLL = 1.335e-05 cfs（|Q|max=18.18）；H 范围 [173.880, 239.958] ft
+    ⇒ **正确性通过**，与上一轮同结论。
+    ★ 一处数值差异要记：上一轮报 dense~DLL = 7.276965e-06 ft，我报 8.124168e-06。
+      两者都是 3e-8 的相对量级，结论不变；差异来自**树不同**（524c3e8 vs HEAD，
+      中间夹着批量状态机那次改动）。所以这个数字**是 commit 敏感的**，
+      正文引用时必须连 commit 一起写。
+
+1.2 ★ 新发现（上一轮没查）：**NW_Model 上 A 不是逐位对称**
+    仓库把"A 逐位精确对称"当**断言**（regression ⑨ check_symmetry.py：
+    `max|A−A^T| == 0.0`，非容差），`_CudssSolveFn` 的伴随复用前向分解也正是
+    靠这条（其 docstring 写"非对角两处取自同一段 -Pm[:, lk_both]、同序散射
+    ⇒ 数值上逐位对称"）。实测：
+      net        Nj    逐 Newton 轮 max|A-A^T|                  >=3 条链路的节点对
+      NW_Model  8566   4.44e-16 8.88e-16 7.11e-15 7.11e-15 2.84e-14   **40 对**
+      NW_Model1 8566   （末轮 2.84e-14，16 个不对称槽）              40 对
+      KL         935   0 0 0 0 0 0                                    0 对
+      ky4        959   0 ×9                                           0 对
+      ky8/ky2/ky13     0（同上）                                      0 对
+    机理钉死了，并做了**最小复现**（a7_sym_minimal.py，两个 junction 的 4 行网）：
+      case                        Nj  L   max|A-A^T|    逐位对称?
+      2 条并联（同向）             2   3   0.0000e+00    是
+      **3 条（2 正 1 反）**        2   4   **1.7764e-15  否**
+      3 条（全同向）               2   4   0.0000e+00    是
+      **4 条（2 正 2 反）**        2   5   **7.1054e-15  否**
+    ⇒ 触发条件是 **同一对节点 >=3 条链路且方向不全相同**。装配把 (i,j) 与 (j,i)
+      两块用**同一段** vals 散射，反向那条在两个槽里的**出现次序相反**；
+      2 个加数的浮点和天然可交换（a+b == b+a 逐位），>=3 个才会差位。
+    ★ 而 check_symmetry.py 自带的合成拷问网，注释里明写的是
+      "parallel pipes (**two** links on the same node pair)" - **恰好 2 条**，
+      所以这条守卫**结构上就测不到**这个情形。NW_Model 有 40 对这样的节点对
+      （最多 4 条），是第一个把它照出来的网。
+    量级：绝对 2.84e-14，元素量级 ~1e1~1e2 ⇒ **1 ULP**，数值上无害；
+    但它意味着：
+      (a) 把 NW_Model 加进 check_symmetry.py 的网表，regression ⑨ **会变红**；
+      (b) _CudssSolveFn 那句"逐位对称"在主线网上要改成"对称到 1 ULP"。
+    ⇒ 这不是"算错了"，是**主线网会把仓库自己的不变量证伪**。要么在装配里
+      对反向并联链路定序（让两块同序），要么把断言改成 1-ULP 容差并改文案。
+
+1.3 ★ 第二件上一轮没查：**"三方一致"不等于"解准了"**
+    上一轮的对拍全在 INP 自带的 ACCURACY=0.01（5 次迭代）上做。我加了一条
+    **完全不信 dgga 的物理残差**（自己按 EPANET hydcoeffs.c 的 H-W 公式重算）：
+      K    relerr      连续性 max|Σq-d|   **开管**能量 max|h_l-ΔH|
+      5    6.878e-03   6.70e-07 cfs       **3.2578e-02 ft**
+      10   5.641e-06   6.88e-07           1.3348e-05 ft
+      20   3.691e-07   5.68e-07           1.0673e-08 ft
+      40   2.584e-07   5.68e-07           1.6987e-08 ft
+      80   2.978e-07   6.82e-07           1.4875e-08 ft
+      （2695 条 |h_l|>0.01ft 的开管上，K=40 时最差**相对**能量残差 3.2565e-10）
+    读法：**INP 自带精度下，最差开管的能量失衡是 3.3e-2 ft（H 全幅 66 ft 的 0.05%）；
+    三条通路一致到 8e-6 ft，一致的是"同一个没收敛完的第 5 步"，不是"准确解"。**
+    跑到 K>=20 才降到 1e-8 ft 量级。⇒ 主线要用 NW_Model，**参考解必须自己
+    收紧到 K>=20（或 ACCURACY<=1e-6），不能沿用 INP 自带的 0.01**。
+    （上一轮 §3.2 说"这个网收不到 1e-8、三方都停在 relerr≈3e-7"，属实；
+      但我补一句：**停滞的是 relerr（流量变化量），水头本身已经收敛** -
+      max|H_K − H_80| 在 K=10 起就只有 4e-6~7e-6 ft。relerr 停滞是死支上
+      微小流量来回抖出来的，不影响水头。）
+    另：上一版的"能量残差 0.73 ft"是我第一遍把 5 条 [STATUS] 关闭管算进去了，
+    关闭管没有能量方程，剔掉即为上表。自己更正在此。
+
+1.4 条件数 κ(A)（工单点名要的那条）
+    口径：dense 通路**最后一次 Cholesky 实际吃进去的 A**（monkeypatch 截获），
+    cond2 = λmax/λmin，λ 用 scipy.eigsh（λmin 走 sigma=0 反迭代）。
+      net       Nj     λmin         λmax         cond2 全阵   cond2 去死支   死 junction
+      NW_Model  8566   5.2364e-04   3.8020e+07   **7.26e+10**  **1.79e+10**   192
+      KL         935   1.2005e-04   2.0000e+07     1.67e+11      6.93e+10      1
+      ky4        959   1.0409e-03   2.4429e+05     2.35e+08 - 0
+      ky13       778   9.9972e-09   5.2730e+05   **5.27e+13** - 0
+    ⇒ **κ 不是拒绝 NW_Model 的理由。** 8566 阶的 NW_Model 比现有网表里的
+      KL（1.7e11）**好一个量级**、比 ky13（5.3e13）**好三个量级**；只比
+      现主线 ky4 差 ~300 倍。λmax 由零流量管的 RQtol 钳位（P=1/1e-7=1e7）撑起、
+      λmin 由关闭支（P=1/CBIG=1e-8）压低，**都是结构性的、与网规模无关**。
+      配合 §1.3 的实测后向误差（相对 3e-10）与 float64 eps，"解出来了"不用打折。
+
+================================================================================
+§2 审阅项 2：OOM 边界是真的吗
+================================================================================
+脚本 scripts/p5_bignet/audit/{a2_chol_thresh.py（本机）, aud_gpu_a2.py,
+     aud_gpu_a4.py（集群）}。每个候选**全新子进程** + CUDA_LAUNCH_BLOCKING=1，
+并逐条打印 **/proc/self/status VmHWM**（主机侧峰值）与子进程 returncode，
+用来分开"torch 报 OOM"/"AcceleratorError"/"被信号杀（换页/OOM-killer）"。
+
+2.0 先说结论：**门槛数值全部复现，但它的"身份"被认错了。**
+
+2.1 复现（给上一轮记功）
+    a) 逐点扫（**不二分**，因为二分预设单调）在 RTX 5090（<node-15>）上：
+       B=1  : Nj=4096…8566 **全 OK**
+       B=2/3/4/8 : Nj<=6016 OK，**Nj>=6017 起全部 AcceleratorError
+                   (CUDA error: invalid argument)**，一路到 8566
+       ⇒ 门槛 = **Nj 6016/6017，与 B 无关**，与上一轮二分结论**逐位一致**，
+         而且我确认了它**确实单调**（二分没被非单调坑到）。
+    b) 失败性质：**全程没有一次"被信号杀"**（rc 从来不是负数），主机 VmHWM
+       稳定在 0.79~1.42 GB - **不存在换页/OOM-killer**。撞的确实是
+       device 侧：要么 torch.OutOfMemoryError，要么 AcceleratorError。
+       上一轮"这不是显存不够"的判断成立（B=2 只要 1120 MiB，卡上空闲 31603 MiB）。
+    c) 理论算术核对（Nj=8566, nnz=27760）：
+       B=256 稠密 A = 150,274,777,088 B = **139.9543 GiB**（工单说的 140 GB，对）
+       B=256 CSR 值 =      56,852,480 B = **54.2188 MiB**
+       比值恒为 Nj²/nnz = **2643.2x**
+       （上一轮报 139.90 GiB / 54.25 MiB，与精确值差 0.04%/0.06%，不影响结论。）
+       另记：BWSN_2（Nj=12523）B=256 的稠密 A 要 **299.12 GiB**。
+
+2.2 ★ 订正一：**那不是"稠密的墙"，是 torch.cholesky_solve 一个 API 的墙。**
+    同一个 (Nj,B) 上把算子换掉，5090 / 4090 上都一样（aud2_1460594/1460596）：
+      Nj=8566 B=2/4/8  torch.linalg.cholesky            **OK**
+                       torch.cholesky_solve             **FAIL invalid argument**
+                       solve_triangular ×2（等价回代）   **OK**
+                       torch.linalg.solve（LU）          **OK**
+      Nj=8192 同样；Nj=6016 全部 OK。
+    也就是说：**两次 solve_triangular 就绕过去了，一行代码的事。**
+
+2.3 ★ 订正二：**换一版 torch，这堵墙根本不存在。**
+    本机 RTX 5060 Laptop（Blackwell, 8 GiB）+ **torch 2.13.0+cu132 / CUDA 13.2**，
+    同一段代码逐点扫 Nj=4096…8566 × B=1,2,4：**cholesky_solve 全部 OK，一次都没挂**。
+    集群那两张卡（5090/4090）用的是**同一个** torch 2.11.0+cu128 构建 -
+    所以上一轮"5090 与 4090 双卡复现"只证明了"与卡无关"，**没有**证明
+    "与 torch 版本无关"。
+    ⇒ **主线绝不能写"稠密通路在 Nj>6016 跑不了 B>=2"。** 那是
+      torch 2.11.0+cu128 的一个缺陷，2.13.0+cu132 上已经没有。
+
+2.4 ★ 拆掉这两处以后，稠密**真正**的天花板（aud4_1460605，5090 <node-06>）
+    NW_Model（Nj=8566）纯前向，每个 B 全新进程：
+      变体      最大可跑 B   首个失败 B   失败性质        该 B 的 ms/场景  peak_alloc
+      ship 原样      1          2       CUDA invalid arg   700.70 ms      2246 MiB
+      tri（换回代） **10**      12      **真-显存 OOM**    677.53 ms     22457 MiB
+      tribmm（再换 bmm 残差）**10**  12  真-显存 OOM       669.76 ms     22457 MiB
+      cudss 对照   >=1024（未触边界）                       0.5626 ms     4759 MiB
+      cudss B=256                                            0.5092 ms     1209 MiB
+    4090（24 GiB，aud4_1460606，<node-03>）同口径：
+      ship 最大 B=1（B=2..12 invalid arg、B=14 cusolver INTERNAL_ERROR、B=16 真 OOM）
+      tri / tribmm 最大 **B=8**（B=10 真-显存 OOM），956.30 / 943.52 ms/场景
+      cudss 到 B=1024 OK（0.7122 ms/场景），B=256 最优 0.6320 ms/场景
+    两节点的诚实倍数（各取各自最优批）：
+      5090 <node-06>  稠密 669.76 ms/场景(B=10) vs cudss 0.5092(B=256) = **1315x**
+      4090 <node-03>  稠密 943.52 ms/场景(B=8)  vs cudss 0.6320(B=256) = **1493x**
+      同批 B=8：5090 681.77 vs 1.8126 = 376x；4090 956.30 vs 3.0091 = 318x
+      B=1：    5090 700.70 vs 12.73 = 55.0x；4090 1092.37 vs 20.99 = 52.0x
+    ⇒ **主线那句话的诚实版本应该是：**
+      "在 NW_Model（Nj=8566）上，稠密通路受显存限制最多做到 **B=10**（32 GiB 卡）
+       / **B=8**（24 GiB 卡） - 每场景 0.68 s，而且**几乎不随 B 摊薄**
+       （B=1 的 0.70 s → B=10 的 0.68 s，只省 3%）；cuDSS 到 B=1024 仍稳定，
+       每场景 0.56 ms。批量能力差 **~100 倍**，单场景吞吐差 **~1200 倍**。"
+ - 不是"稠密只能 B=1、差三个数量级"。B=1 那个数是被一个 torch bug 造出来的。
+    附带反证一条（我自己的猜想被实测打脸，如实记）：我原以为仓库刻意避开 bmm 的
+    残差写法会多占一整块 [B,Nj,Nj]、压低最大 B。**实测 tri 与 tribmm 的
+    peak_alloc 逐字节相同**（2278/4521/9007/13488/17973/22457 MiB），最大 B 也
+    同为 10，时间只差 1.1%。⇒ 这处**不是显存自缚**。
+
+2.5 ky8 的显存墙：**上一轮的数字是对的**
+    5090 上 ship 最大 B=**464**、B=480 真-显存 OOM（peak 25114 MiB） -
+    与上一轮"464 可跑 / 465 起 OOM"一致。tri 变体同为 464 ⇒ Nj=1325 < 6016，
+    没有 API 那道坎，撞的确实是显存。**两种墙必须分开写**这条结论成立。
+
+================================================================================
+§3 审阅项 3：倍数分解诚实吗
+================================================================================
+脚本 scripts/p5_bignet/audit/aud_gpu_a3.py（5090 <node-22> / 4090 <node-16>）。
+按 P4 老规矩逐条查，**外加两条上一轮没查的**。
+
+C1 plan 在计时区外吗 - **是。**
+   cudss_cache_info() 直接读到 plan_ms，并单测冷/热：
+     NW_Model B=1  冷启 73.218 ms / 热 17.152 ms / 差 56.07（plan_ms=40.23）
+     ky8 B=64      冷启 351.96 ms / 热 45.94  ms / 差 306.0（plan_ms=299.2）
+   上一轮 tg() 的 warm>=1 把冷启整块吃掉，plan 确实不在计时区内。**通过。**
+   （提醒：plan 是 per-B 的；换 B 要重 plan。定批训练里摊薄没问题，
+     但表里每一格都是"plan 已摊销"的稳态值，正文得说清楚。）
+
+C2 sync 齐全吗 - **是。** 我用 perf_counter+synchronize 与 CUDA event 两把尺
+   量同一格：NW_Model B=1 fwd dense 718.51 vs event 718.69 ms；cudss 17.039 vs
+   17.071 ms。两把尺差 <0.2%。**通过。**
+
+C3 warmup 够吗 - **够。** 连打 10 次逐次打印，没有下行趋势：
+   NW_Model dense 718.73/718.51/719.24/718.82/718.91/718.81/718.52/718.53/719.08
+   NW_Model cudss 17.09/17.07/17.09/17.14/17.04/17.06/17.06/17.08/17.08/17.09
+   **通过。**
+
+C4 ★ 两路迭代数逐格相等吗 - **上一轮的时间表从没核对过这一条；我核了，全等。**
+   逐样本比 iters 并对 H：
+     NW_Model B=1  dense 5 / cudss 5   全等 True   max|dH| 7.361e-06 ft
+     ky8 B=1       8 / 8               True        9.426e-08
+     ky8 B=64      8 / 8               True        3.060e-07
+     ky4 B=1       9 / 9               True        2.902e-07
+     ky4 B=64      9 / 9               True        5.861e-06
+     KL  B=1       6 / 6               True        4.394e-06
+   4090 <node-16> 同样 6/6 格**逐样本全等**（max|dH| 1.96e-07~1.22e-05 ft）。
+   另在 aud4 里再验一次：同一个 B 上 ship / tri / tribmm / cudss 的 iters 也全等
+   （NW_Model 恒 5；ky8 B=64 恒 8、B=256 恒 9）。
+   ⇒ ms/场景 的对比是**同工作量**的对比。**通过。**
+
+C5 精化步数相等吗 - **相等。** cudss 计数器实测每次完整前向：
+   factorize = 迭代数，solve = 3×迭代数 = (1+cudss_refine=2)×迭代数
+   （NW_Model 5/15、ky8 8/24、ky4 9/27、KL 6/18），与稠密侧
+   "1 次 cholesky + 1+2 次 cholesky_solve/轮"逐项对上。**通过。**
+
+C6 ★ 稠密对照有没有自缚 - **有一点，但方向对结论有利，不是往上吹。**
+   把 Badj 的两处写法各换一遍（clone 提到计时区外重测），5090 <node-22>：
+     格               C cudss   B(elem,bwd0)  B'(bmm,bwd0)  B''(bmm,bwd2=等工作量)
+     NW_Model B=1     1.9768    144.13/72.91x 143.44/72.56x  151.58/**76.68x**
+     ky8 B=1          1.9607      5.16/ 2.63x   5.14/ 2.62x    5.97/ **3.04x**
+     ky8 B=64         7.1279     64.25/ 9.01x  61.99/ 8.70x   75.37/**10.57x**
+     ky4 B=1          1.8277      3.71/ 2.03x   3.70/ 2.02x    4.31/ **2.36x**
+     ky4 B=64         7.0708     31.26/ 4.42x  30.17/ 4.27x   37.94/ **5.37x**
+     KL  B=1          1.8872      3.70/ 1.96x   3.68/ 1.95x    4.28/ **2.27x**
+   读法三条：
+    (i) 残差写法（elem vs bmm）对 Badj 只值 **0.5%（NW_Model）~3.5%（B=64）**，
+        比 P4 抓到的 6% 还小。**这不是显著自缚**，上一轮的 Badj 没被写法拖后腿。
+    (ii) 上一轮自己声明"Badj 反向只做 1 次回代、C 那侧 1+2 次，所以 Badj/C 是
+        下界" - **我把 Badj 的反向也补到 1+2 次，Badj/C 一律上升**
+        （72.91→76.68 / 9.01→10.57 / 4.42→5.37 / 1.96→2.27）。
+        **他们说的下界，是真下界。诚实。**
+    (iii) 梯度一致性我重测：A' / B / B' / B'' / C 相对 A 的 gA 最差
+        1.4e-08~2.9e-08（NW_Model B=1），ky8/ky4/KL 在 1e-11~5e-09。
+        与上一轮同量级。**分解站得住。**
+   两节点的 Badj/C（他们口径 / 等工作量口径）：
+     格             5090 <node-22>     4090 <node-16>
+     NW_Model B=1   72.91x / **76.68x**   **92.06x** / **94.33x**
+     ky8 B=1         2.63x /  3.04x        2.38x /  2.65x
+     ky8 B=64        9.01x / 10.57x        9.05x / 10.02x
+     ky4 B=1         2.03x /  2.36x        1.77x /  1.97x
+     ky4 B=64        4.42x /  5.37x        4.19x /  4.78x
+     KL  B=1         1.96x /  2.27x        1.74x /  1.94x
+   ⇒ **§4.3 的"稀疏本身 67~73x"经得起查，而且偏保守**：我两节点实测
+     72.91x / 92.06x（他们口径），等工作量口径 76.68x / 94.33x，
+     区间下沿与他们重合、上沿比他们高（4090 的 FP64 更弱，稠密那侧更吃亏）。
+     "端到端 1820x/1986x 里只有 ~70 倍是稀疏本身、27 倍是通用 autograd 的欠账"
+     这个拆法**成立**（我同格测到 A/C=1987x、A/Badj=27.3x）。
+
+C7 ★ 另一处上一轮没标的自缚（小，但要写）：**shipped 选的 cholesky_solve 本身
+   就比两次 solve_triangular 慢。** 纯前向 ms/批（5090 <node-06>, aud4_1460605）：
+     网/批            ship      tri       tribmm    ship→tribmm
+     ky8  B=64       490.45    461.12    441.37    **-10.0%**
+     ky8  B=256     1691.31   1598.67   1512.86    **-10.6%**
+     ky8  B=384     2186.74   2059.39   1945.83    **-11.0%**
+     ky8  B=464     2935.50   2767.71   2613.09    **-11.0%**
+     NW_Model B=1    712.31    700.70    699.18     -1.8%
+   ⇒ 稠密对照白付 **1.8%（NW_Model B=1）~11%（ky8 大批）**：其中 ~6% 来自
+     cholesky_solve、~4~5% 来自 elem 残差写法。量级与 P4 抓到的那处同级。
+     ⇒ **§4.1/§5 的纯前向倍数（ky8 B=256 的 20.49x 等）里，有约 10% 是稠密
+       被自己的实现选择拖出来的**，正文要么改实现，要么把这一条声明出来。
+     （对 §4.3 的 Badj/C 分解影响只有 0.5~3.5%，见 C6(i)，不动结论。）
+
+C8 倍数的**节点敏感性**（必须写进正文，不能只报最好那一格）：
+   同一格 ky8 B=64 纯前向 dense/cudss：我这一节点 **10.92x**；
+   上一轮两节点在 B=256 上报 20.49x / 14.07x。B=1 的 cudss 由 CPU 侧主导，
+   NW_Model B=1 我测 42.17x，上一轮两节点 57.59x / 42.48x。
+   ⇒ **同一格跨节点能差 ~2 倍**。上一轮已按区间报，是对的；正文务必沿用区间，
+     不要引用单点最优值。
+
+================================================================================
+§4 审阅项 4：盘点表可复现吗
+================================================================================
+脚本 scripts/p5_bignet/audit/a4_survey_recheck.py（**不读 survey_inp.json**）。
+
+4.1 文件数 138 的来历，上一轮没说清：
+    `find networks/EXAMPLE -name '*.inp'` = **134**；`-name '*.INP'` = **4**
+    （FFCL-1.INP / NPCL-1.INP / OBCL-1.INP / BELL_CL1.INP）。
+    ⇒ 工单的"134"是**大小写敏感**那一半，138 是全量。两个数都没错。
+
+4.2 内容哈希去重（sha256 全量） - **与上一轮逐项吻合**
+    唯一 sha256 = **129**，完全相同的文件组 = **7**（上一轮同数）。
+    七组：Net3-Bio/Net3-NH2CL ×4 一组；Extended Hanoi≡Hanoi；
+    **foss_poly_1≡FOS**；**exnet≡exnet-exeter**（上一轮点名，属实）；
+    batch-nh2cl ×2；net2-cl2 ×2；HAN≡hanoi-exeter。
+    （上一轮把 foss_poly_1 与 FOS 当两条独立 parse 失败列，其实是同一份文件，
+      不影响任何结论，记一笔。）
+4.3 ★ 工单点名的"同名不同目录" - 我逐个核了，**7 个重名、其中 3 个字节不同**：
+      example.inp   As5Adsorb/ vs msx-examples/As5Adsorb/     **字节不同**
+      Net1.inp      epanet-desktop/Net1/ vs epanet-tests/network_one/NET1.inp  **不同**
+      NYT.inp       exeter DesignResiliance/ vs pangaea/       **字节不同**
+      （其余 batch-nh2cl / net2-cl2 / net3-bio / net3-nh2cl 4 个字节相同）
+    ⇒ **用文件名判重会错 3 次**。上一轮走内容哈希 + 拓扑指纹，**做法正确**；
+      表 1 里 NYT.inp 出现两行（Nj=19 L=42）也正是因为它们不是同一份文件。
+
+4.4 准入抽查（>=10 个网 + 2 个 parse 失败），Nj/L 与表 1 逐格核对：
+      net              Nj     L      表1 Nj  一致  本轮 dense 判定
+      NW_Model         8566   9982   8566    ✓    ok iters=5
+      NW_Model1        8566   9981   8566    ✓    ok iters=5
+      BWSN_Network_2  12523  14831  12523    ✓    -（PSV1+FCV4）
+      PacificCity      8715   9660   8715    ✓    -（PRV25）
+      ky12             2347   2463   2347    ✓    -（PRV22）
+      ky8              1325   1618   1325    ✓    ok iters=8
+      ky4               959   1158    959    ✓    ok iters=9
+      KL                935   1274    935    ✓    ok iters=6
+      ky1               856    985    856    ✓    ok iters=9
+      ky13              778    944    778    ✓    ok iters=10
+      L-TOWN            782    909    782    ✓    -（PRV3）
+      1_Wu              398    475    398    ✓    -（PRV3+TCV1 中的 PRV）
+      Balerma           443    454    443    ✓    -（D-W）
+      57460 -  -  - ✓    parse FAIL `UNITS SI`
+      exnet -  -  - ✓    parse FAIL Error 200
+      MICROPOLIS_v1 -  -  - ✓    parse FAIL `6 AM`
+    ⇒ **16 个抽查点全部复现，一格不差。表 1 可复现。**
+
+4.5 ★ 但表 1 **已经对 HEAD 过时了**（不是上一轮的错，是并发那位落地了 CVPIPE）：
+    在 HEAD 上重测，**只卡 CVPIPE、不卡 PRV/PSV/FCV 的网现在都进得去了**：
+      ky14              Nj=377  CVPIPE5+PIPE543+PUMP5   **ok iters=10**（状态机开）
+      Richmond_skeleton Nj=41   CVPIPE8+PIPE36+PUMP7    **ok iters=6**
+      sampletown        Nj=6    CVPIPE1+PIPE6           **ok iters=7**
+    另外 **ky4/ky8 不再需要关水池守卫**（表 1 标的 ok*/"守卫关"）：
+    HEAD 上 dense_tank_bound_check=True + status_machine=True 就能解。
+    ⇒ 表 1 的 "dense 真的解出来 39 网"在 HEAD 上至少是 **42 网**
+      （+ky14 +Richmond_skeleton +sampletown，还有 mod_anytown-3a 未测）；
+      **最大 Nj 仍是 8566，主线结论不变。**
+
+4.6 57460 的"需用户定夺"：我同意，但补两条事实
+    · `UNITS SI` 在第 86399 行，同段还有 `SEGMENTS 100` - 这是 **EPANET 1.x 时代
+      的写法**，不是 2.x 合法码，parse 拒收正确。
+    · 但文件**自己的表头注释**写着 `Elevation [m] / Demand [l/s]` - 即 LPS。
+      所以这不是"完全无据可猜"，只是**注释不是权威**。
+    · 它是 D-W + Nj=28899，dense 通路本来就进不去，**与主线选型无关**。
+    · 补一条上一轮没说的：epanet-tests/large/ 里 NW_Model / NW_Model1 各带一个
+      `.json` 测试清单（`"epanet allclose"`），**57460 没有** - 它不在上游的
+      回归测试集内。
+
+================================================================================
+§5 审阅项 5：出处与许可（networks/ 在 .gitignore 里，复现性只能靠出处）
+================================================================================
+逐个 collection 核到上游：
+  目录                    上游                                          许可
+  ------------------------------------------------------------------------------
+  epanet-example-networks github.com/OpenWaterAnalytics/epanet-example- **无 LICENSE
+                          networks（本地 README 只有这一行 URL）        文件**；GitHub
+                          NW_Model/NW_Model1/57460 在 epanet-tests/large  API 的 license
+                          上游 README 讲的是 "Adding Tests to           字段 = null
+                          nrtestsuite" ⇒ 这批是 **EPANET 引擎自己的
+                          回归测试集**（NW_Model.json: "epanet allclose"）
+  asce-tf-wdst            uky.edu/WDST/database.html - ASCE
+                          "Task Committee on Research Databases for      **未声明任何
+                          Water Distribution Systems"（2013 成立），      使用条款/许可**
+                          Kentucky Water Resources Research Institute    ；Sources.md
+                          托管，DHS/NIHS 的 KCIP 计划资助               逐网记贡献人
+  exeter-benchmarks       Exeter CWS benchmarks（Data_Files.md 里那个    **原始 URL 已失效**
+                          emps.exeter.ac.uk/... 链接）                   （307 → exeter.ac.uk
+                                                                        根），本地无许可文本
+  pangaea                 doi.pangaea.de/10.1594/PANGAEA.831723          **CC-BY-3.0**
+                          Broad, Dandy & Maier，"EPANET Input Files of   （唯一一个有明确
+                          New York tunnels and Pacific City"            机读许可的）
+  L-Town                  BattLeDIM 2020，Zenodo DOI 10.5281/            **CC-BY-4.0**
+                          zenodo.4017659，Vrachimis 等（KIOS/TU Delft/
+                          Technion/Tsinghua）
+  epanet-desktop          EPANET 桌面版随附的 Net1/Net3（US EPA）        EPA 作品
+
+  将来可能进论文的网，逐网出处 + sha256（前 16 位）+ 字节数：
+    NW_Model.inp        f44353f963f6149b  10,581,655  epanet-example-networks/
+                        epanet-tests/large/  [TITLE] "Northwest System"  **无许可**
+    NW_Model1.inp       0aa2d75f97214048  10,581,438  同上                **无许可**
+    BWSN_Network_2.inp  232e17c02386dae4   2,265,579  asce-tf-wdst/Battle of the
+                        Water Sensor Networks/        **无声明条款**（可引
+                        BWSN 2008 的竞赛论文作为一次文献）
+    PacificCity.inp     6ae8ae9b5816edb9   3,144,419  pangaea/            **CC-BY-3.0**
+    L-TOWN.inp          0bfeaa806cd67a86     406,569  L-Town/             **CC-BY-4.0**
+    ky1/ky2/ky4/ky8/ky13  5525433152c61a61 / 09d56c338a12321c /
+                        ca137e2cfa21faf3 / 8c73ea5a55b30c4e / bc11816d6fe82f27
+                        asce-tf-wdst/kyN/  贡献人 Lindell Ormsbee（UKY）  **无声明条款**
+    KL.inp              d564b31c30bf06c1     413,102  asce-tf-wdst/KL/
+                        贡献人 Graeme Dandy（Adelaide）                   **无声明条款**
+    57460.inp           816714c2ec93a1a5   4,862,650  epanet-example-networks/ **无许可**
+
+  ★ 三条必须写进论文的话：
+   (1) **被提名当主线的 NW_Model，恰恰出自许可最弱的那个 collection** -
+       上游仓库没有 LICENSE 文件（GitHub license=null ⇒ 默认保留全部权利）。
+       重分发这份 .inp 没有明确授权；**引用 URL + commit + sha256 是安全的做法，
+       把 .inp 打包进补充材料不是。**
+   (2) NW_Model **没有一次文献**：它是上游回归测试集里一个叫
+       "Northwest System" 的匿名模型，没有论文、没有城市、没有引用条目。
+       相比之下 PacificCity（CC-BY-3.0 + Broad/Dandy/Maier）与
+       BWSN_Network_2（BWSN 2008 竞赛）**都有可引用的一次来源**。
+   (3) networks/ 在 .gitignore 里 ⇒ 复现只能靠出处说明。论文/README 里
+       每个网必须给全 **collection URL + 上游 commit 或 DOI + 仓内路径 + sha256**，
+       上表就是现成的模板。另外 exeter 那条链接**已经死了**，
+       凡引用 exeter 系网（MOD/HAN/NYT/EXN/D-Town 全家）都要换成可解析的存档。
+
+================================================================================
+§6 交付：NW_Model 够不够格当论文主线的大网
+================================================================================
+6.0 先把"能不能用"这一条补上（上一轮 §4.5 留的口子）
+    上一轮如实写了"NW_Model 上 solve_unrolled 的截断梯度发散，要梯度得走
+    ImplicitGGASolve"，但**没有验过 ImplicitGGASolve 在这个网上到底行不行**。
+    我验了（a6_grad_usable.py，本机 CPU、float64、B=1、implicit_solve
+    accuracy=1e-14/max_iter=30，损失 = 随机权 w·H_junction）：
+      一次前向+反向 24.0 s，|g|_max=2.0967e+02，|g|_2=4.4556e+03，全有限
+      伴随 vs 中心差分（4 个坐标：|g| 最大 2 个 + 需水最大 2 个）
+        node 425   2.096730e+02 vs 2.096730e+02   rel 9.72e-09
+        node 424   2.096681e+02 vs 2.096681e+02   rel 5.39e-10
+        node 2035 -3.042810e+01 vs -3.042810e+01  rel 3.92e-09
+        node 1510 -2.704116e-01 vs -2.704116e-01  rel 3.90e-08
+      **最差相对误差 3.897e-08 ⇒ PASS（门槛 1e-6）**
+    同时复核了上一轮自报的 unrolled 体检，结论一致：
+      unrolled_grad_health(K=5) = {verdict:'不建议', rel_K:1.0000000001,
+                                   gmax:2.435e+11, param:'demand'}
+      （上一轮报 gmax=5.04e20，树不同、量级不同，但 verdict 与 rel_K=1.0 一致。）
+    ⇒ **NW_Model 拿得到可用梯度，但只能走 ImplicitGGASolve。**
+      这条不是"不能当主线"，是"正文写反向时必须点名走哪条路"。
+
+6.1 判定：**够格，但只能当"规模轴"的主线，不能当"能力轴"的主线；
+     而且交付前有三件事必须先做。**
+
+  支持它的（都是实测）：
+   · 它是整批 collection 里 **唯一一个 Nj>2500 且我们的 epanet 通路与官方 DLL
+     逐位相同（0.0 ft）、迭代数也相同（5/5）的网**。对照组：
+       BWSN_Network_2（Nj=12523）epanet vs DLL **max|ΔH| = 33.58 ft**，
+                                  迭代数 7 vs 10 - 状态机分歧，现在对不上
+       PacificCity  （Nj=8715） epanet vs DLL **max|ΔH| = 2.36e+07 ft** - 直接发散
+     ⇒ 大网里**只有 NW_Model 的参考解现在立得住**。
+   · κ(A)=7.26e10（去死支 1.79e10），**比现网表里的 KL 好一个量级、比 ky13
+     好三个量级**（§1.4）。规模没有把条件数拖坏。
+   · 物理残差（自己重算，不信 dgga）：K>=20 时开管能量残差 1e-8 ft、
+     相对 3.3e-10；连续性 5.7e-07 cfs（§1.3）。
+   · ImplicitGGASolve 的梯度与 FD 对到 3.9e-08（§6.0）。
+   · 结构上"零水池、零阀门、3 泵"正是它能进 dense 的原因 - 单帧稳态很干净。
+
+  反对它当"唯一主线"的（也都是实测）：
+   · **许可最弱**：上游 OpenWaterAnalytics/epanet-example-networks **没有
+     LICENSE 文件**（GitHub license=null）。而同尺寸的 PacificCity 是
+     CC-BY-3.0、L-TOWN 是 CC-BY-4.0。重分发这份 .inp 没有明确授权（§5）。
+   · **没有一次文献**：它是上游回归测试集里一个叫 "Northwest System" 的匿名
+     模型，没有论文、没有城市。BWSN_2 至少挂着 BWSN 2008 竞赛。
+   · **它一个难特性都不考**：零水池、零阀门（无 CV/PRV/PSV/FCV/TCV）。
+     用它当主线，等于主线**完全绕开**并发那位正在补的整个特性门。
+     论文若要说"能处理真实配水网"，只有一个"全是管+3 台泵"的大网撑着，
+     是审稿人一定会戳的地方。
+   · 它会把仓库自己的**逐位对称不变量**证伪（§1.2，40 对 >=3 链路的节点对）。
+
+  交付前必须做的三件（都很小）：
+   (a) 把 §1.2 的对称性处理掉：要么在装配里对反向并联链路定序，要么把
+       check_symmetry.py 的断言从 ==0.0 改成 1-ULP 容差并同步改
+       _CudssSolveFn 的文案。**别让主线网一进网表 regression ⑨ 就红。**
+   (b) 参考解不要用 INP 自带的 ACCURACY=0.01（5 步） - 那一步的开管能量
+       失衡是 3.3e-2 ft。收到 K>=20 / ACCURACY<=1e-6（§1.3）。
+   (c) §2 那两句主线话要改写（见 §2.4）。
+
+6.2 要不要等 BWSN_2（Nj=12523）
+  · 好消息：CVPIPE 落地后，**BWSN_2 离 dense 只差 5 条链路**（PSV×1 + FCV×4，
+    占 14831 条的 0.03%）。我实测确认了这个门是 {PSV, FCV}，别的都过。
+  · 坏消息（上一轮没测、我测了）：**光开门不够。** 现在 BWSN_2 的
+    `mode="epanet"` 与 DLL 差 **33.58 ft**、迭代数 7 vs 10 - 与 ky2/ky8/ky13
+    同病（状态机分歧）。也就是说 PSV/FCV 支持做完之后，还得先把这个网的
+    参考解对齐到 DLL，**才谈得上拿它当主线**。这不是"再等一个特性"，
+    是"再等一个特性 + 一轮状态机对齐"。
+  · 所以：**不要等。** 现在就用 NW_Model 撑规模轴（8566，比 ky4 的 959 大 8.9 倍），
+    同时把 BWSN_2 列为下一目标；等 PSV/FCV + 状态机对齐都过了，再把主线
+    换成 BWSN_2（Nj=12523，且有可引用的一次来源）。
+  · PacificCity（8715、CC-BY-3.0、有一次文献）短期没戏：25 条 PRV 之外，
+    epanet 通路本身就发散（2.36e7 ft），要修的不止一道门。
+
+6.3 一句话交付
+    **NW_Model 够格，但要带三条括号交付**：
+    (1) 它是"最大且参考解立得住"的网，不是"最难"的网 - 零水池零阀门；
+    (2) 它的批量优势必须按 §2.4 的诚实口径写（稠密 B<=10 受显存限制，
+        不是"B=1 撞 torch 的墙"）；
+    (3) 它的许可与可引用性最弱，正文只能给 URL+commit+sha256，不能随文分发。
+    **BWSN_2 不值得等**（差 5 条链路 + 一轮状态机对齐），但值得写进 roadmap。
+
+################################################################################
+附：本轮脚本与产物
+  scripts/p5_bignet/audit/aud_lib.py            自写 EPANET ctypes 绑定 + 公共件
+  scripts/p5_bignet/audit/a1_nw_correct.py      三方对拍 + 物理残差 + cond2
+  scripts/p5_bignet/audit/a1b_symmetry_energy.py 对称性 / 能量残差定位
+  scripts/p5_bignet/audit/a1c_followups.py      逐轮对称 + 排除关闭管 + cond2 参照
+  scripts/p5_bignet/audit/a2_chol_thresh.py     本机（torch 2.13）逐点扫门槛
+  scripts/p5_bignet/audit/a4_survey_recheck.py  哈希去重 + 准入抽查
+  scripts/p5_bignet/audit/a5_bwsn2_probe.py     BWSN_2 / PacificCity + 显存算术
+  scripts/p5_bignet/audit/a6_grad_usable.py     ImplicitGGASolve vs FD
+  scripts/p5_bignet/audit/a7_sym_minimal.py     4 行网最小复现对称性触发条件
+  scripts/p5_bignet/audit/aud_gpu_a2.py + aud2.sh   集群：墙的身份
+  scripts/p5_bignet/audit/aud_gpu_a3.py + aud3.sh   集群：分解诚实性 C1~C6
+  scripts/p5_bignet/audit/aud_gpu_a4.py + aud4.sh   集群：拆掉自缚后的天花板
+  scripts/p5_bignet/audit/check_rc_aud.sh       rc 传递自查（8/8 OK）
+  原始 .out：data/gpu/{5090,4090}_aud{2,3,4}_<jobid>.out
+  （注意 .gitignore 第 76 行有 `*.out`，所以这六份**不进版本库**，只在本地盘上）
+################################################################################

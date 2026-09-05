@@ -1,0 +1,106 @@
+任务 D 实测记录（dense 路径能力缺口）  2026-08-21
+解释器 <python>
+成果文件 data/dense_gap_plan.md（未改 dgga/ 与 paper/）
+
+================================================================
+[M1] 21 个公开网逐个构造 GGASolver(mode="dense") / mode="epanet"
+     脚本思路：parse_inp(f) → GGASolver(net, mode=..., inp_path=f)，捕获异常
+----------------------------------------------------------------
+原始 networks/public/*.inp：
+  dense OK = 2 : Hanoi, Modena
+  epanet OK = 18（BWSN_Network_1 / Fossolo_poly1 / Pescara 三个在 parse 阶段失败，
+                  非能力缺口：BWSN_1+Fossolo 报 EPANET Error 200，Pescara KeyError('79')）
+清洗版 networks/public/_cleaned/*.inp（dgga/mlds.py:68-76 项目自己在用的口径）：
+  Fossolo_poly1 Nj=36 {PIPE:58} H-W        → dense OK
+  Pescara       Nj=68 {PIPE:99} H-W        → dense OK
+  Modena        Nj=268 {PIPE:317} H-W      → dense OK
+  BWSN_1        Nj=126 {PIPE:168,PUMP:2,PRV:8}, tank=2 → 拒
+  L-TOWN(_Real) Nj=782 {PIPE:905,PUMP:1,PRV:3}, tank=1 → 拒
+  ⇒ **dense 实际可跑 4/21，不是任务书写的 2/21**。论文量化限制必须写 4。
+
+逐网阻塞特性（dense）：
+  PUMP 拒 16 网 / tank 拒 15 / CVPIPE 拒 7 / PRV 拒 7 / FCV 拒 2 / PSV 拒 1 / D-W 拒 1
+  触发处 dgga/solver.py:104-111（allowed 集合）、:116（D-W）、:118（tank）
+  错误信息里"（PBV/GPV 留接口）"措辞过时 - 真实缺口是 PUMP/PRV/PSV/FCV/CVPIPE。
+
+================================================================
+[M2] 累计解锁数（口径 _cleaned，21 网）
+----------------------------------------------------------------
+  现状                          4/21
+  +TANK                         5/21   (+1 Net2)
+  +TANK+PUMP                   10/21   (+6 Anytown, Anytown_wntr, Net1, Net2, Net3, ky4)  ← 断层第一
+  +TANK+PUMP+DW                11/21
+  +TANK+PUMP+CVPIPE            11/21
+  +TANK+PUMP+CVPIPE+PRV        18/21   (+7 BWSN_1,D-Town,L-TOWN,L-TOWN_Real,Net6,Richmond_std,ky10)
+  +FCV                         19/21   (C-Town)
+  +PSV                         20/21   (BWSN_2)
+  +DW                          21/21   (Balerma)
+单特性单独解锁：TANK +1 / PUMP +1 / DW +1 / CVPIPE +0 / PRV +0 / FCV +0 / PSV +0
+  ⇒ PRV 单独做解锁 0 个；7 个需要 PRV 的网同时需要泵+水池。PRV 永远排在泵/水池之后。
+
+================================================================
+[M3] 批内异态实测（B=128，需水×0.05~4.0 + 随机时刻 + 单点大漏损 2%~60%）
+     epanet 路径 status_machine=True，统计 CVPIPE/PUMP/PRV/PSV/FCV 的 status
+----------------------------------------------------------------
+  BWSN_Network_1 : 变态元件 2/10，批内状态组合(桶) 3，收敛 128/128
+      PRV#176 CLOSED:127 / ACTIVE:1
+      PRV#177 CLOSED:117 / ACTIVE:11
+  D-Town         : 变态元件 5/16，桶 16，收敛 128/128
+      CVPIPE#222 CLOSED:91 / OPEN:37
+      PRV#454 OPEN:41/ACTIVE:87   PRV#455 OPEN:60/ACTIVE:68   PRV#456 OPEN:52/ACTIVE:76
+      PRV#458 CLOSED:87 / OPEN:31 / ACTIVE:10   ← 一个阀吃满三种状态
+  Richmond_skeleton : 变态元件 3/15（全 CVPIPE），桶 4
+  ⇒ 同阀异态真实发生；但"按状态分桶"错误（D-Town B=128 已 16 桶，随 B 增长）。
+  ⇒ 温和场景（需水×0.3~1.8 + 小漏损，B=64）下 BWSN_1/D-Town 桶数均为 1 - 状态其实很钝。
+
+================================================================
+[M4] 条件数实测（收敛帧，从 sm.linsolve 截获 Aii/Aij 重建稠密 A，np.linalg.cond 2-范数）
+----------------------------------------------------------------
+  Hanoi   Nj= 31  diag[1.516e-01, 1.562e+01]  ACTIVE PRV/PSV=0  cond2=1.8518e+03
+  Modena  Nj=268  diag[1.966e-02, 1.894e+02]  ACTIVE=0          cond2=3.8640e+05
+  BWSN_1  Nj=126  diag[2.441e-02, 1.000e+08]  ACTIVE=5          cond2=5.5713e+09
+  D-Town  Nj=399  diag[6.773e-03, 1.000e+08]  ACTIVE=3          cond2=2.4592e+11
+  对角上限 1.000e+08 == CBIG（hydcoeffs.c:35）。一个 ACTIVE PRV 抬高 κ 4~6 个量级。
+  f64: eps·κ ≈ 2.2e-16×2.5e11 ≈ 5e-5 相对 → solver.py:1587-1594 两步迭代精化可压回（步数需可调）
+  f32: 1.2e-7×2.5e11 ≈ 3e4 → 完全没有有效数字，必须构造期拒绝
+  对照 data/conditioning_report.txt：city_d 全阵 3.1074e+15 / 去解耦行 1.8480e+10（TCV 网，无 big-M）
+
+================================================================
+[M5] 显存天花板 O(B·Nj²) f64，B=256 单份 A
+----------------------------------------------------------------
+  D-Town 399→0.30GB  L-TOWN 782→1.17GB  Richmond_std 865→1.43GB
+  ky10 920→1.61GB    ky4 959→1.75GB
+  Net6 3323→21.1GB   BWSN_Network_2 12523→299GB
+  展开可微路径还要 ×K 份计算图 ⇒ 即使特性全移植完，Net6/BWSN_2 在 B=256 下物理上进不去。
+  "解锁 21 网"的真实上限是 19。
+
+================================================================
+[M6] 附带缺陷：dgga/autodiff.py:696 solve_unrolled 静默算错
+----------------------------------------------------------------
+  扫描 autodiff.py:696-1000 全段：无 _PRV/_PSV/_FCV、无 headloss_form 检查、无 NotImplementedError。
+  非 TCV 阀 → 掉进管道支，用 s.r_hw；parse.py:224 明写"非管道 0" ⇒ hgrad=0 被 RQtol 钳到 1e-7
+  ⇒ PRV 变成近乎无阻力开管。D-W 网 → 用无 f 的 r 配 H-W 指数。
+  实测（同一 solver 的 epanet 路径为基准，junction 水头）：
+    Balerma (D-W)              K=30                     max|ΔH|=1.818e+04 ft  mean=7332 ft   无异常
+    BWSN_1 (PRV×8+泵)          K=40，已传冻结 status/setting  max|ΔH|=384.9 ft   mean=55.9 ft   无异常
+    （BWSN_1 该帧 PRV 状态 [4,2,4,4,4,4,2,2]，5 个 ACTIVE 的 big-M 行完全没装配）
+  建议：入口加与 solver.py:104-118 同口径的守卫。本轮未改代码。
+
+================================================================
+[V] EPANET 源码引用第一手复核（本轮亲自 sed 过，非转述）
+----------------------------------------------------------------
+  hydcoeffs.c:34-35   const double CSMALL = 1.e-6; / const double CBIG = 1.e8;
+  hydcoeffs.c:154-158 case FCV/PRV/PSV: if (LinkSetting==MISSING) valvecoeff(); else P[k]=0.0;
+  hydcoeffs.c:218     if (hyd->P[k] == 0.0) continue;
+  hydcoeffs.c:972-975 P[k]=0.0; Y[k]=LinkFlow[k]+Xflow[n2]; F[j]+=hset*CBIG; Aii[j]+=CBIG;
+                      （:976-979 Xflow[n2]<0 时 F[i]+=Xflow[n2]；:980 return - 从不写 Aij[Ndx[k]]）
+  hydcoeffs.c:646-650 Swamee-Jain：y1=A8/pow(w,0.9); y2=e/3.7+y1; y3=A9*log(y2); f=1/(y3*y3);
+                      *dfdq = 1.8*f*y1*A9/y2/y3/q;   ← 导数闭式就在源码里
+  hydraul.c:61        ERRCODE(createsparse(pr));   ← openhyd 内唯一调用点
+  smatrix.c:16        注释 "createsparse() -- called from openhyd() in HYDRAUL.C"
+  hydsolver.c:156/161 valveChange = valvestatus(pr);
+  hydsolver.c:165-179 收敛时才 linkstatus(:173)+pswitch(:174)，有状态变化则 nextcheck=iter+CheckFreq(:178)
+  hydsolver.c:183-187 未收敛且 iter<=MaxCheck && iter==nextcheck 时周期性 linkstatus
+  hydstatus.c:436-438 // Ignore reservoirs / tank=&net->Tank[i]; / if (tank->A == 0.0) return;
+  ⇒ 稀疏位型 openhyd 建一次、hydsolve 全程不重建；状态切换只改值不改位型。
+    批内异态 ⇒ 掩码，不 ⇒ 结构变化。批量稠密 Cholesky 这条路走得通。

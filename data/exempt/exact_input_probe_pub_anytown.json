@@ -1,0 +1,44 @@
+{
+ "stem": "pub_anytown",
+ "generated": "2026-09-04 09:46:15",
+ "rows": [
+  {
+   "F": 9,
+   "n_fixed": {
+    "res": 0,
+    "elev": 0,
+    "vset": 0
+   },
+   "max_dH": 6.0822458181064576e-12,
+   "argmax": 3,
+   "median_dH": 7.389644451905042e-13,
+   "max_dQ": 4.74997818855627e-12,
+   "n_ge_tol": 0,
+   "status_all": true,
+   "iters_all": true,
+   "t_all": true,
+   "pass": true,
+   "combo": "none",
+   "sec": 0.051072999951429665
+  },
+  {
+   "F": 9,
+   "n_fixed": {
+    "res": 2,
+    "elev": 0,
+    "vset": 0
+   },
+   "max_dH": 0.0,
+   "argmax": 0,
+   "median_dH": 0.0,
+   "max_dQ": 1.7763568394002505e-15,
+   "n_ge_tol": 0,
+   "status_all": true,
+   "iters_all": true,
+   "t_all": true,
+   "pass": true,
+   "combo": "res",
+   "sec": 0.03930290008429438
+  }
+ ]
+}

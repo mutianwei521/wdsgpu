@@ -1,0 +1,31 @@
+NVIDIA GeForce RTX 5090, 32607 MiB
+node: <node-01> | cpus: 8
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:2016: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:2016: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+==============================================================================
+node: <node-01> | torch 2.11.0+cu128 | NVIDIA GeForce RTX 5090
+nvmath 1.0.0
+
+==============================================================================
+一轮线性代数的 前向+反向（ms/轮，整批；A/F 取真前向最后一轮装出来的那一对）
+net      B    | A 稠密+autograd | B 稠密+手写伴随 | C cudss(gr=2) | C cudss(gr=0) | A/C2   B/C2   B/A
+Net3     64   |          2.8882 |          1.6812 |        5.5080 |        3.9478 |   0.52x   0.31x 0.582
+                一致性：B vs A  gA 3.932e-09 / gF 2.966e-09 ；C vs A（nnz 位）gA 7.061e-09
+Net3     256  |          4.7033 |          1.7497 |       16.0685 |       11.0662 |   0.29x   0.11x 0.372
+                一致性：B vs A  gA 3.089e-09 / gF 2.292e-09 ；C vs A（nnz 位）gA 5.205e-09
+Modena   64   |         15.2467 |          3.3529 |        5.4970 |        3.9456 |   2.77x   0.61x 0.220
+                一致性：B vs A  gA 3.189e-13 / gF 3.204e-13 ；C vs A（nnz 位）gA 1.509e-13
+Modena   256  |         52.2984 |          6.4891 |       16.0149 |       10.9469 |   3.27x   0.41x 0.124
+                一致性：B vs A  gA 1.782e-12 / gF 1.779e-12 ；C vs A（nnz 位）gA 6.246e-13
+City_D   64   |         85.6895 |         10.9208 |        5.5233 |        3.9663 |  15.51x   1.98x 0.127
+                一致性：B vs A  gA 2.435e-09 / gF 1.850e-13 ；C vs A（nnz 位）gA 3.176e-09
+City_D   256  |        311.4584 |         24.2600 |       16.0064 |       10.8208 |  19.46x   1.52x 0.078
+                一致性：B vs A  gA 5.489e-09 / gF 1.625e-13 ；C vs A（nnz 位）gA 2.334e-09
+ky4      64   |        393.2841 |         32.1575 |        5.5192 |        3.9272 |  71.26x   5.83x 0.082
+                一致性：B vs A  gA 9.239e-11 / gF 8.813e-11 ；C vs A（nnz 位）gA 3.731e-11
+ky4      256  |       1500.5092 |         86.1114 |       16.0076 |       10.9449 |  93.74x   5.38x 0.057
+                一致性：B vs A  gA 6.507e-10 / gF 6.230e-10 ；C vs A（nnz 位）gA 4.304e-10
+P3D DONE
+P3D JOB DONE

@@ -1,0 +1,52 @@
+NVIDIA GeForce RTX 5090, 32607 MiB
+node: <node-06> | cpus: 8
+====================================================================================================
+AUDIT R2 - regression_gpu.py 哨兵证伪 | node: <node-06>
+torch 2.11.0+cu128 | NVIDIA GeForce RTX 5090
+nvmath 1.0.0
+md5 dgga/solver.py 45b0b0eeb66ed4e15ef81c53809d229a
+md5 dgga/autodiff.py e4b8cfe49536f85b435e04e5ed5621d2
+md5 regression_gpu.py 10aeabe06e63fb4fa9c495bed7895fb3
+====================================================================================================
+
+【B0 基线：原封不动的 regression_gpu.py，全量】
+  rc=0  总判定: PASS （50/50 项通过）
+  各条打印的配置行数：T1=10 T2=10 T3=30（期望 10/10/20）
+  未通过项: (无)
+  基线判定: <-- 与上游声称不符
+
+【B1 空哨兵（子集 Net3,ky4，零改动）：必须仍然 PASS】
+  rc=0  总判定: PASS （20/20 项通过）  行数 T1=4 T2=4 T3=12
+  空哨兵判定: OK（不是把什么都弄红）
+
+【B2 哨兵证伪（每个哨兵一棵独立的 dgga 树，子集 Net3,ky4）】
+  S1a_refine0            rc=1 变红=是 红在=T2（期望 T1）  [红了但不止这一条/不是这一条]
+      cuDSS 前向的迭代精化被去掉（refine 2->0）：线性解变粗 | 总判定: FAIL （16/20 项通过） | 行数 T1=4 T2=4 T3=12
+      未通过项: T2 Net3 slots=6, T2 Net3 slots=1, T2 ky4 slots=5, T2 ky4 slots=1
+  S1b_perturb            rc=1 变红=是 红在=T1（期望 T1）  [恰好只红这一条]
+      cuDSS 解被乘上 (1+1e-9)：牛顿轨迹被扰动 | 总判定: FAIL （18/20 项通过） | 行数 T1=4 T2=4 T3=12
+      未通过项: T1 ky4 B=8, T1 ky4 B=64
+  S2a_counter_mute       rc=1 变红=是 红在=T2,T3（期望 T2）  [红了但不止这一条/不是这一条]
+      bwd_refactorize 计数器不再自增（就是审计怕的"不数的计数器"） | 总判定: FAIL （14/20 项通过） | 行数 T1=4 T2=4 T3=12
+      未通过项: T2 Net3 slots=1, T2 ky4 slots=1, T3 Net3 B=1 slots=1, T3 Net3 B=8 slots=1, T3 ky4 B=8 slots=1, T3 ky4 B=64 slots=1
+  S2b_reuse_widened      rc=1 变红=是 红在=T2,T3（期望 T2）  [红了但不止这一条/不是这一条]
+      反向复用判据丢掉 gen 检查：会拿别的步的分解当自己的（真实的陈旧 bug） | 总判定: FAIL （14/20 项通过） | 行数 T1=4 T2=4 T3=12
+      未通过项: T2 Net3 slots=1, T2 ky4 slots=1, T3 Net3 B=1 slots=1, T3 Net3 B=8 slots=1, T3 ky4 B=8 slots=1, T3 ky4 B=64 slots=1
+  S3a_buffer_scribble    rc=1 变红=是 红在=T3（期望 T3）  [恰好只红这一条]
+      前向返回前把 cuDSS 的值缓冲改掉（前向结果逐位不变，只有反向会错） | 总判定: FAIL （12/20 项通过） | 行数 T1=4 T2=4 T3=12
+      未通过项: T3 Net3 B=1 slots=6, T3 Net3 B=1 slots=1, T3 Net3 B=8 slots=6, T3 Net3 B=8 slots=1, T3 ky4 B=8 slots=5, T3 ky4 B=8 slots=1, T3 ky4 B=64 slots=5, T3 ky4 B=64 slots=1
+  S3b_skip_reload        rc=1 变红=是 红在=T1,T3,T4（期望 T3）  [红了但不止这一条/不是这一条]
+      "优化"掉重复的值搬运：第二次起 cuDSS 拿的还是上一轮的值 | 总判定: FAIL （10/20 项通过） | 行数 T1=4 T2=4 T3=12
+      未通过项: T1 Net3 B=1, T1 Net3 B=8, T1 ky4 B=8, T1 ky4 B=64, T3 Net3 B=1 slots=1, T3 Net3 B=8 slots=1, T3 ky4 B=8 slots=1, T3 ky4 B=64 slots=1, T4 ky4 B=8, T4 ky4 B=64
+
+====================================================================================================
+AUDIT-R2-SUMMARY 基线rc=0 基线行数=10/10/30 空哨兵rc=0
+AUDIT-R2-SENT S1a_refine0            want=T1 got=RED    hit=T2
+AUDIT-R2-SENT S1b_perturb            want=T1 got=RED    hit=T1
+AUDIT-R2-SENT S2a_counter_mute       want=T2 got=RED    hit=T2,T3
+AUDIT-R2-SENT S2b_reuse_widened      want=T2 got=RED    hit=T2,T3
+AUDIT-R2-SENT S3a_buffer_scribble    want=T3 got=RED    hit=T3
+AUDIT-R2-SENT S3b_skip_reload        want=T3 got=RED    hit=T1,T3,T4
+AUDIT-R2-VERDICT 哨兵 6/6 变红；基线 BAD；空哨兵 OK
+====================================================================================================
+AUDR2 JOB DONE rc=0

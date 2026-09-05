@@ -1,0 +1,23 @@
+NVIDIA GeForce RTX 5090, 32607 MiB
+node: <node-22> | cpus: 8
+node: <node-22> | torch 2.11.0+cu128
+solver.py md5: 45b0b0eeb66ed4e15ef81c53809d229a
+==============================================================================
+G1  ragged-batch loop, 80 batches, ky4, FRESH PROCESS per cell (node <node-22>)
+    kind=fwd: pure forward, B~U[177,257)  (the F4 caliber)
+    kind=fb : fwd+bwd,      B~U[8,600)    (the audit caliber)
+    RESULT kind=fwd cap=none rep=1 elapsed=48.84 base=686.2 states=50 final=6006.2 growth=5320.0 trace=16:2314,32:3778,48:4722,64:5550,80:6006
+    RESULT kind=fwd cap=none rep=2 elapsed=48.53 base=686.2 states=50 final=6006.2 growth=5320.0 trace=16:2314,32:3778,48:4722,64:5550,80:6006
+    RESULT kind=fwd cap=8 rep=1 elapsed=68.11 base=686.2 states=8 final=1910.2 growth=1224.0 trace=16:1762,32:1878,48:1878,64:1878,80:1910
+    RESULT kind=fwd cap=8 rep=2 elapsed=68.01 base=686.2 states=8 final=1910.2 growth=1224.0 trace=16:1762,32:1878,48:1878,64:1878,80:1910
+    RESULT kind=fb cap=none rep=1 elapsed=97.73 base=686.2 states=75 final=11120.2 growth=10434.0 trace=16:3492,32:5924,48:7446,64:9142,80:11120
+    RESULT kind=fb cap=none rep=2 elapsed=97.91 base=686.2 states=75 final=11120.2 growth=10434.0 trace=16:3492,32:5924,48:7446,64:9142,80:11120
+    RESULT kind=fb cap=8 rep=1 elapsed=108.85 base=686.2 states=8 final=3366.2 growth=2680.0 trace=16:2940,32:3310,48:3312,64:3366,80:3366
+    RESULT kind=fb cap=8 rep=2 elapsed=109.52 base=686.2 states=8 final=3366.2 growth=2680.0 trace=16:2940,32:3310,48:3312,64:3366,80:3366
+
+    summary: cost of the default cache_max=8 vs unbounded
+      kind=fwd  none: 48.84 / 48.53 s   cap8: 68.11 / 68.01 s  -> cap8 costs +39.5% (rep1) / +40.1% (rep2);  own rerun noise none -0.6%, cap8 -0.1%
+      kind=fb   none: 97.73 / 97.91 s   cap8: 108.85 / 109.52 s  -> cap8 costs +11.4% (rep1) / +11.9% (rep2);  own rerun noise none +0.2%, cap8 +0.6%
+
+P4D DONE
+P4 JOB DONE

@@ -1,0 +1,242 @@
+NVIDIA GeForce RTX 5090, 32607 MiB
+node: <node-01> | cpus: 8
+/data/run01/<user>/wdsgpu/hgaudit/dgga/solver.py:2016: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hgaudit/dgga/solver.py:2016: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hgaudit/aud1_gpu.py:93: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)
+  return {p: g.detach() for p, g in zip(params, gs)}, float(L)
+node: <node-01> | torch 2.11.0+cu128 | dev NVIDIA GeForce RTX 5090 | nvmath 1.0.0
+solver.py md5: 45b0b0eeb66ed4e15ef81c53809d229a
+
+==============================================================================
+A  directional FD on the DENSE forward, random unit direction v.
+   fd = [L(t+h v) - L(t-h v)] / 2h, Richardson from h and h/2.
+   NO coordinate filtering: one scalar per (net,param).
+   net       B  param | g.v (cudss)      fd(Richardson)    relerr    | g.v(dense)       relerr
+   Hanoi     1  d     | -1.1013991251e-01  -1.1013991479e-01  2.070e-08 | -1.1013991251e-01  2.070e-08
+   Hanoi     1  rh    | +6.3347959010e-02  +6.3347958043e-02  1.526e-08 | +6.3347959010e-02  1.526e-08
+   Hanoi     1  ke    | -1.0282497209e+03  +1.2079842015e+10  1.000e+00 | -1.0282497209e+03  1.000e+00
+   Hanoi     1  r     | -7.9404064689e+03  -7.9404064689e+03  6.723e-12 | -7.9404064689e+03  6.724e-12
+   Hanoi     8  d     | +1.7749061098e+00  +1.7749060917e+00  1.019e-08 | +1.7749061098e+00  1.019e-08
+   Hanoi     8  rh    | +1.3134361983e-01  +1.3134361942e-01  3.140e-09 | +1.3134361983e-01  3.140e-09
+   Hanoi     8  ke    | +5.3027701295e+04  +5.4958048423e+08  9.999e-01 | +5.3027701295e+04  9.999e-01
+   Hanoi     8  r     | -3.6717627476e+04  -3.6717627476e+04  6.372e-12 | -3.6717627476e+04  6.377e-12
+   Net3      1  d     | -1.4491419834e+00  -1.4402073659e+00  6.204e-03 | -1.4491419871e+00  6.204e-03
+   Net3      1  rh    | -3.6617083927e-01  -3.6657629418e-01  1.106e-03 | -3.6617083932e-01  1.106e-03
+   Net3      1  ke    | -3.1645233102e+02  -3.9090200104e+11  1.000e+00 | -3.1645233128e+02  1.000e+00
+   Net3      1  r     | +2.7448203635e+02  +3.2987274912e+02  1.679e-01 | +2.7448235803e+02  1.679e-01
+   Net3      8  d     | +7.0570104787e-01  +5.8601692698e-01  2.042e-01 | +7.0572719687e-01  2.043e-01
+   Net3      8  rh    | +4.8106553102e-01  +4.7755024489e-01  7.361e-03 | +4.8106553073e-01  7.361e-03
+   Net3      8  ke    | +6.0840782831e+03  +6.0958196394e+11  1.000e+00 | +6.0840782809e+03  1.000e+00
+   Net3      8  r     | +2.1247497055e+04  +1.2174782641e+04  7.452e-01 | +2.1247497242e+04  7.452e-01
+   Modena    1  d     | +5.3241377061e+01  +5.3241377600e+01  1.013e-08 | +5.3241377061e+01  1.013e-08
+   Modena    1  rh    | +2.4471644947e-01  +2.4471644916e-01  1.300e-09 | +2.4471644947e-01  1.300e-09
+   Modena    1  ke    | +6.4270940202e+02  +2.2866979183e+10  1.000e+00 | +6.4270940202e+02  1.000e+00
+   Modena    1  r     | +3.1418875726e+01  +3.1418875550e+01  5.605e-09 | +3.1418875726e+01  5.605e-09
+   Modena    8  d     | +2.1782116769e+01  +2.1782253727e+01  6.288e-06 | +2.1782117030e+01  6.276e-06
+   Modena    8  rh    | +8.2910892422e-02  +8.2910948264e-02  6.735e-07 | +8.2910892422e-02  6.735e-07
+   Modena    8  ke    | +3.9249261390e+03  -2.9632973693e+10  1.000e+00 | +3.9249261390e+03  1.000e+00
+   Modena    8  r     | +6.6726659948e+03  +6.6720003631e+03  9.976e-05 | +6.6726659948e+03  9.976e-05
+   City_D    1  d     | -4.7592497572e+05  -4.7592498943e+05  2.880e-08 | -4.7536211273e+05  1.183e-03
+   City_D    1  rh    | +1.0543709171e-01  +1.0545285306e-01  1.495e-04 | +1.0543709173e-01  1.495e-04
+   City_D    1  ke    | -4.4245301220e+03  +1.4523148668e+11  1.000e+00 | -4.4245301222e+03  1.000e+00
+   City_D    1  r     | -1.9569609422e+03  -1.8901193889e+03  3.536e-02 | -1.9569609424e+03  3.536e-02
+   City_D    8  d     | -2.2736147420e+06  -2.2736147925e+06  2.222e-08 | -2.2736154093e+06  2.713e-07
+   City_D    8  rh    | -1.2819451513e-01  -1.2837897043e-01  1.437e-03 | -1.2819451513e-01  1.437e-03
+   City_D    8  ke    | -1.3121352352e+02  -1.1689763435e+11  1.000e+00 | -1.3121352360e+02  1.000e+00
+   City_D    8  r     | -1.5871384446e+03  -1.5988186814e+03  7.306e-03 | -1.5871384439e+03  7.306e-03
+   ky4       1  d     | -1.7302962993e+00  +7.9868954976e+00  1.217e+00 | -1.7296139616e+00  1.217e+00
+   ky4       1  rh    | +1.3350719992e-02  +1.3363071896e-02  9.243e-04 | +1.3350719992e-02  9.243e-04
+   ky4       1  ke    | +1.3866509759e+01  +7.9750722198e+10  1.000e+00 | +1.3866509758e+01  1.000e+00
+   ky4       1  r     | +1.4035151614e+01  +1.4035303711e+01  1.084e-05 | +1.4035165247e+01  9.865e-06
+   ky4       8  d     | -6.5918106576e+00  -5.5025329967e+00  1.980e-01 | -6.5915429167e+00  1.979e-01
+   ky4       8  rh    | +4.9968137183e-02  +4.9977266793e-02  1.827e-04 | +4.9968137184e-02  1.827e-04
+   ky4       8  ke    | +1.6943189346e+02  +1.8442496526e+11  1.000e+00 | +1.6943189347e+02  1.000e+00
+   ky4       8  r     | -1.2970985372e+01  -1.2970969109e+01  1.254e-06 | -1.2970985414e+01  1.257e-06
+   Pescara   1  d     | +1.3775929481e+01  +1.3775973193e+01  3.173e-06 | +1.3775930373e+01  3.108e-06
+   Pescara   1  rh    | -1.3239650889e-01  -1.3291283323e-01  3.885e-03 | -1.3239650927e-01  3.885e-03
+   Pescara   1  ke    | -3.1696364282e+01  +1.4155325145e+10  1.000e+00 | -3.1696364488e+01  1.000e+00
+   Pescara   1  r     | -2.3075445547e+00  -2.3074807336e+00  2.766e-05 | -2.3075445542e+00  2.766e-05
+   Pescara   8  d     | +4.2122881068e+01  +4.2122670831e+01  4.991e-06 | +4.2122880254e+01  4.972e-06
+   Pescara   8  rh    | +1.7339639892e-01  +1.7449219365e-01  6.280e-03 | +1.7339639934e-01  6.280e-03
+   Pescara   8  ke    | -3.2447850470e+01  -4.1999342138e+10  1.000e+00 | -3.2447850450e+01  1.000e+00
+   Pescara   8  r     | +4.3825732596e+01  +4.3825712883e+01  4.498e-07 | +4.3825732602e+01  4.499e-07
+
+==============================================================================
+B  EXHAUSTIVE per-coordinate FD on Hanoi, B=1, every coordinate,
+   no percentile filter. max_i |g_i - fd_i| / max_i|fd_i|.
+   d    n=32   | cudss 2.533e-08 (worst i=12 g=+1.40769047e+00 fd=+1.40769030e+00) | dense 2.533e-08 | cudss-vs-dense 1.794e-14
+   rh   n=32   | cudss 1.014e-09 (worst i=31 g=+1.22334376e+00 fd=+1.22334376e+00) | dense 1.014e-09 | cudss-vs-dense 5.445e-16
+   ke   n=32   | cudss 1.000e+00 (worst i=2 g=+0.00000000e+00 fd=-5.77487924e+10) | dense 1.000e+00 | cudss-vs-dense 1.277e-13
+   r    n=34   | cudss 2.847e-06 (worst i=0 g=-1.96119274e+05 fd=-1.96119832e+05) | dense 2.847e-06 | cudss-vs-dense 4.007e-15
+
+==============================================================================
+C  cudss analytic vs dense analytic, per tensor, B in {1,8,64,256}.
+   net      B    | param | relerr     argmax  gc             gd
+   Hanoi    1    | d     | 1.8995e-14  8       +2.440733e+00 +2.440733e+00
+   Hanoi    1    | rh    | 9.0753e-16  31      +1.223344e+00 +1.223344e+00
+   Hanoi    1    | ke    | 8.3623e-14  3       +3.703303e+03 +3.703303e+03
+   Hanoi    1    | r     | 2.9077e-15  5       -2.848162e+03 -2.848162e+03
+   Hanoi    8    | d     | 4.2330e-14  153     +2.886372e+00 +2.886372e+00
+   Hanoi    8    | rh    | 9.7222e-16  159     -8.214145e-01 -8.214145e-01
+   Hanoi    8    | ke    | 1.1807e-15  128     +2.876573e+04 +2.876573e+04
+   Hanoi    8    | r     | 7.3646e-16  7       +2.274034e+03 +2.274034e+03
+   Hanoi    64   | d     | 5.5307e-12  1721    +3.730738e+00 +3.730738e+00
+   Hanoi    64   | rh    | 3.0782e-14  1599    +4.604846e-02 +4.604846e-02
+   Hanoi    64   | ke    | 2.0759e-12  1713    -1.685841e+03 -1.685841e+03
+   Hanoi    64   | r     | 2.9285e-14  1       -1.669588e+05 -1.669588e+05
+   Hanoi    256  | d     | 3.6252e-11  3641    -2.587312e-01 -2.587312e-01
+   Hanoi    256  | rh    | 2.4839e-14  3647    +6.748996e-01 +6.748996e-01
+   Hanoi    256  | ke    | 3.2561e-12  571     -3.405376e+02 -3.405376e+02
+   Hanoi    256  | r     | 1.9443e-14  24      +2.098970e+02 +2.098970e+02
+   Net3     1    | d     | 6.0834e-10  7       -1.893886e+00 -1.893886e+00
+   Net3     1    | rh    | 1.5977e-09  92      -1.116847e-01 -1.116847e-01
+   Net3     1    | ke    | 1.5923e-09  46      -3.334427e+03 -3.334427e+03
+   Net3     1    | r     | 6.5358e-07  1       +5.159346e+01 +5.159687e+01
+   Net3     8    | d     | 1.5919e-05  679     -1.881932e+00 -1.882631e+00
+   Net3     8    | rh    | 3.8842e-10  771     +2.553560e+00 +2.553560e+00
+   Net3     8    | ke    | 6.7853e-11  22      -3.563005e+03 -3.563005e+03
+   Net3     8    | r     | 2.6782e-08  2       +1.228865e+02 +1.228805e+02
+   Net3     64   | d     | 2.0108e-06  4656    -3.712811e+00 -3.712570e+00
+   Net3     64   | rh    | 2.7313e-11  92      +1.831469e+00 +1.831469e+00
+   Net3     64   | ke    | 2.6049e-10  6022    -1.079421e+04 -1.079421e+04
+   Net3     64   | r     | 1.1360e-08  1       -4.384145e+01 -4.384436e+01
+   Net3     256  | d     | 3.5283e-06  20564   +1.885088e+01 +1.885043e+01
+   Net3     256  | rh    | 4.6289e-09  14448   +3.590013e+00 +3.590013e+00
+   Net3     256  | ke    | 2.6079e-09  20196   -2.846140e+04 -2.846140e+04
+   Net3     256  | r     | 7.8848e-07  2       +3.456607e+02 +3.456904e+02
+   Modena   1    | d     | 6.8615e-13  80      -2.667578e+01 -2.667578e+01
+   Modena   1    | rh    | 1.5497e-15  268     -3.082519e-01 -3.082519e-01
+   Modena   1    | ke    | 2.0709e-14  172     -8.659416e-02 -8.659416e-02
+   Modena   1    | r     | 4.5547e-15  315     +2.296366e+03 +2.296366e+03
+   Modena   8    | d     | 1.2523e-08  2144    +4.949160e+01 +4.949159e+01
+   Modena   8    | rh    | 1.4847e-14  2172    -1.354156e+00 -1.354156e+00
+   Modena   8    | ke    | 1.2519e-14  1003    -3.018718e+03 -3.018718e+03
+   Modena   8    | r     | 6.6003e-14  315     +1.574182e+05 +1.574182e+05
+   Modena   64   | d     | 2.4358e-09  1968    +4.579875e+00 +4.579874e+00
+   Modena   64   | rh    | 1.9923e-11  6798    +1.146948e-01 +1.146948e-01
+   Modena   64   | ke    | 2.9850e-13  10387   +6.571952e+04 +6.571952e+04
+   Modena   64   | r     | 5.2450e-12  315     -1.059216e+05 -1.059216e+05
+   Modena   256  | d     | 8.2998e-08  25991   +3.116547e+01 +3.116549e+01
+   Modena   256  | rh    | 1.8177e-10  26110   -2.781912e-01 -2.781912e-01
+   Modena   256  | ke    | 2.4278e-11  31330   -3.491327e+03 -3.491327e+03
+   Modena   256  | r     | 2.1393e-12  315     -1.326864e+05 -1.326864e+05
+   City_D   1    | d     | 6.7759e-04  413     +1.462978e+01 +6.997468e+03
+   City_D   1    | rh    | 1.8118e-10  541     +1.312393e+00 +1.312393e+00
+   City_D   1    | ke    | 3.5493e-10  277     +1.274350e+04 +1.274350e+04
+   City_D   1    | r     | 9.6289e-11  160     +7.353502e+03 +7.353502e+03
+   City_D   8    | d     | 1.8401e-07  2581    +3.077416e+01 +2.411647e+00
+   City_D   8    | rh    | 3.6910e-12  3793    +2.708203e+00 +2.708203e+00
+   City_D   8    | ke    | 3.9474e-10  1376    -2.194837e+04 -2.194837e+04
+   City_D   8    | r     | 2.0065e-10  260     +2.972066e+03 +2.972066e+03
+   City_D   64   | d     | 1.0000e+00  13892   -2.124794e+00 +5.561539e+06
+   City_D   64   | rh    | 1.7091e-11  20595   +3.275300e+00 +3.275300e+00
+   City_D   64   | ke    | 4.5746e-09  17577   +7.214332e+02 +7.214338e+02
+   City_D   64   | r     | 6.2185e-11  348     -4.116094e+02 -4.116093e+02
+   City_D   256  | dense side OOM (cudss side fine)
+   ky4      1    | d     | 1.7779e-04  957     -5.977889e+00 -6.029173e+00
+   ky4      1    | rh    | 4.0557e-12  959     -1.908515e+00 -1.908515e+00
+   ky4      1    | ke    | 7.7747e-11  172     +7.819533e+01 +7.819533e+01
+   ky4      1    | r     | 1.6506e-06  819     +4.874711e-04 -1.138727e-06
+   ky4      8    | d     | 1.9955e-05  4813    -5.541228e+00 -5.527509e+00
+   ky4      8    | rh    | 4.3375e-11  962     -1.556136e+00 -1.556136e+00
+   ky4      8    | ke    | 9.8640e-11  1654    -3.125336e+01 -3.125336e+01
+   ky4      8    | r     | 4.2404e-09  819     +1.148546e-03 +1.139232e-03
+   ky4      64   | d     | 1.3732e-04  43373   +7.830714e+00 +7.725931e+00
+   ky4      64   | rh    | 1.1669e-10  57835   +1.130548e+00 +1.130548e+00
+   ky4      64   | ke    | 1.0336e-09  36441   -4.407261e+00 -4.407273e+00
+   ky4      64   | r     | 2.1143e-06  819     -3.204935e-03 -1.118987e-03
+   ky4      256  | dense side OOM (cudss side fine)
+   Pescara  1    | d     | 4.5782e-08  6       +3.004436e+01 +3.004437e+01
+   Pescara  1    | rh    | 4.5270e-09  70      -1.846197e+00 -1.846197e+00
+   Pescara  1    | ke    | 1.1135e-09  7       -1.092451e+01 -1.092452e+01
+   Pescara  1    | r     | 5.7656e-11  5       -4.631013e-02 -4.631014e-02
+   Pescara  8    | d     | 2.8243e-08  360     -8.668834e+01 -8.668833e+01
+   Pescara  8    | rh    | 2.6319e-09  70      -5.330639e-01 -5.330639e-01
+   Pescara  8    | ke    | 1.2686e-09  362     -3.637026e+01 -3.637026e+01
+   Pescara  8    | r     | 6.0181e-11  47      +8.341077e-01 +8.341077e-01
+   Pescara  64   | d     | 5.2426e-12  3830    -1.172381e+01 -1.172381e+01
+   Pescara  64   | rh    | 1.6000e-14  1843    -3.149888e+00 -3.149888e+00
+   Pescara  64   | ke    | 3.9276e-12  3816    -4.863690e+01 -4.863690e+01
+   Pescara  64   | r     | 2.1135e-13  18      +9.186225e+01 +9.186225e+01
+   Pescara  256  | d     | 7.0218e-09  9757    -7.124734e+01 -7.124734e+01
+   Pescara  256  | rh    | 3.0733e-12  9795    +1.145371e+00 +1.145371e+00
+   Pescara  256  | ke    | 8.0248e-10  9748    +7.908212e+02 +7.908212e+02
+   Pescara  256  | r     | 4.0380e-12  8       +3.328536e+03 +3.328536e+03
+/data/run01/<user>/wdsgpu/hgaudit/dgga/solver.py:2296: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:213.)
+  return torch.as_tensor(np.asarray(x), dtype=dt, device=dev)
+
+==============================================================================
+D  vs ImplicitGGASolve. K = converged iters + 5, B=4.
+   net      | param | cudss-vs-imp  dense-vs-imp  max|g_imp|
+   Hanoi    | d     | 5.6585e-15    9.3100e-15    1.5932e+01
+   Hanoi    | rh    | 1.4061e-15    1.2979e-15    4.1058e+00
+   Hanoi    | ke    | 7.4487e-13    6.8582e-13    1.4463e+02
+   Hanoi    | r     | 7.9199e-15    1.4758e-15    9.9219e+04
+   Net3     | d     | 2.3005e-05    2.3013e-05    1.6114e+01
+   Net3     | rh    | 4.7091e-11    1.6546e-11    2.3284e+00
+   Net3     | ke    | 3.0538e-09    9.2996e-10    1.0784e+04
+   Net3     | r     | 2.3490e-07    4.8592e-07    3.3911e+03
+   Modena   | d     | 9.5248e-10    9.5207e-10    1.0813e+02
+   Modena   | rh    | 1.1573e-12    2.7766e-12    2.7498e+00
+   Modena   | ke    | 1.0621e-12    2.5659e-12    6.3951e+04
+   Modena   | r     | 4.4698e-12    2.8397e-12    7.9808e+04
+   City_D   | d     | 4.0644e-07    3.3426e-07    1.6808e+08
+   City_D   | rh    | 1.4762e-11    1.3121e-11    5.2369e+00
+   City_D   | ke    | 1.6086e-10    1.6087e-10    8.3643e+04
+   City_D   | r     | 9.7759e-12    1.5588e-11    3.9559e+05
+   ky4      | d     | 1.0146e-03    1.0146e-03    4.8053e+02
+   ky4      | rh    | 9.8892e-09    9.9129e-09    2.4590e+00
+   ky4      | ke    | 1.5315e-10    1.9245e-10    6.0125e+03
+   ky4      | r     | 2.8081e-07    2.8081e-07    2.8971e+03
+   Pescara  | d     | 1.5286e-06    1.0994e+01    2.4981e+02
+   Pescara  | rh    | 2.1250e-08    3.1637e-08    2.7342e+00
+   Pescara  | ke    | 2.5590e-05    2.5590e-05    4.0501e+02
+   Pescara  | r     | 3.6110e-08    3.6110e-08    5.2576e+02
+
+==============================================================================
+E  INDEPENDENT factorization accounting + staleness probe.
+   rawFac/rawSolve come from monkeypatching nvmath DirectSolver,
+   NOT from solver.cudss_counters().
+   stale = backward reuses whose cuDSS-held buffer was NOT bitwise
+   equal to the csr_data forward factorized. Must be 0.
+   net    K  slots | rawFac rawSolve | reuse refac stale worstDelta | lib(fac,sol,bsol,breuse,brefac) | grad vs slots=K+2
+   Modena 12 14    | 12     72       | 12    0     0     0.000e+00 | (12,36,36,12,0) | 0.000e+00
+   Modena 12 1     | 23     72       | 1     11    0     0.000e+00 | (23,36,36,1,11) | 3.427e-11
+   Modena 12 2     | 22     72       | 2     10    0     0.000e+00 | (22,36,36,2,10) | 5.176e-11
+   Modena 12 4     | 20     72       | 4     8     0     0.000e+00 | (20,36,36,4,8) | 2.504e-08
+   Modena 12 12    | 12     72       | 12    0     0     0.000e+00 | (12,36,36,12,0) | 4.309e-11
+   ky4    12 14    | 12     72       | 12    0     0     0.000e+00 | (12,36,36,12,0) | 0.000e+00
+   ky4    12 1     | 23     72       | 1     11    0     0.000e+00 | (23,36,36,1,11) | 1.993e-05
+   ky4    12 2     | 22     72       | 2     10    0     0.000e+00 | (22,36,36,2,10) | 2.009e-05
+   ky4    12 4     | 20     72       | 4     8     0     0.000e+00 | (20,36,36,4,8) | 2.004e-05
+   ky4    12 12    | 12     72       | 12    0     0     0.000e+00 | (12,36,36,12,0) | 3.988e-05
+   Net3   12 14    | 12     72       | 12    0     0     0.000e+00 | (12,36,36,12,0) | 0.000e+00
+   Net3   12 1     | 23     72       | 1     11    0     0.000e+00 | (23,36,36,1,11) | 3.137e-05
+   Net3   12 2     | 22     72       | 2     10    0     0.000e+00 | (22,36,36,2,10) | 3.137e-05
+   Net3   12 4     | 20     72       | 4     8     0     0.000e+00 | (20,36,36,4,8) | 4.705e-05
+   Net3   12 12    | 12     72       | 12    0     0     0.000e+00 | (12,36,36,12,0) | 1.583e-05
+
+   E2  eviction hazard: cache_max smaller than the live slots is
+       refused up front, but a *foreign* solve between forward and
+       backward can still evict. Probe: run a second solve at a
+       different B in between and check the gradient still matches.
+       after foreign traffic: reuse=0 refac=10 stale=0 worst=0.000e+00
+       grad(with eviction) vs dense: 2.507e-08 ; grad(clean) vs dense: 1.254e-08
+
+==============================================================================
+F  failure surface.
+   2nd derivative (create_graph=True)             -> NotImplementedError: linear_solver='cudss' 的反向只做一阶：cuDSS 的三角回代不是 autograd 算子，create_graph=True / 二阶导数
+   cudss + assemble='dense'                       -> ValueError: linear_solver='cudss' 必须配 assemble='csr'；收到 assemble='dense'
+   cudss + float32 (differentiable path)          -> NotImplementedError: linear_solver='cudss' 本轮只接 float64，收到 torch.float32
+   cudss + device='cpu' (differentiable path)     -> NotImplementedError: linear_solver='cudss' 需要 CUDA 设备，当前 device=cpu。本机无 CUDA 时请显式用 linear_solver='den
+   cudss_grad_slots > cudss_cache_max             -> ValueError: cudss_grad_slots=8 大于 cudss_cache_max=2：LRU 会把先建的槽逐出，反向就落回重分解，多占的显存白花。请把 cudss_c
+   cudss + mode='epanet'                          -> NotImplementedError: assemble='csr' 只对 mode='dense' 有效；mode='epanet' 是逐位复刻基准（自己的 smatrix 稀疏通路），不接受装配替
+   cudss on a net with unsupported link types     -> NO RAISE  <-- inspect
+   cudss forward under no_grad (must NOT raise)   -> NO RAISE  <-- inspect
+   cudss backward with only demand requiring grad -> NO RAISE  <-- inspect
+
+AUD1 DONE
+AUD1 JOB DONE

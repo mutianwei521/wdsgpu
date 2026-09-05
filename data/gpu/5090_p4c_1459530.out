@@ -1,0 +1,178 @@
+NVIDIA GeForce RTX 5090, 32607 MiB
+node: <node-20> | cpus: 8
+/data/run01/<user>/wdsgpu/hgp4/dgga/solver.py:2016: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hgp4/dgga/solver.py:2016: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+node: <node-20> | torch 2.11.0+cu128 | nvmath 1.0.0
+solver.py md5: 45b0b0eeb66ed4e15ef81c53809d229a
+==============================================================================
+E1  D2: the price of an evicted grad slot (node <node-20>)
+    WARM = every slot still cached; EVICTED = 16 foreign batches
+    pushed through between the forward and the backward.
+    Modena  B=128  K=8 slots=8  WARM full fwd+bwd : plan=0 factorize=8 bwd_refactorize=0  wall=129.8 ms
+    Modena  B=128                 WARM backward only: plan=0 factorize=0 bwd_refactorize=0  wall=66.7 ms
+    Modena  B=128             EVICTED backward only: plan=8 factorize=8 bwd_refactorize=8  wall=1025.4 ms  -> 15.4x the clean backward, 7.9x the clean fwd+bwd
+            grad after eviction vs clean: 3.800e-08 (rel)
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    City_D  B=128  K=8 slots=8  WARM full fwd+bwd : plan=0 factorize=8 bwd_refactorize=0  wall=130.0 ms
+    City_D  B=128                 WARM backward only: plan=0 factorize=0 bwd_refactorize=0  wall=66.5 ms
+    City_D  B=128             EVICTED backward only: plan=8 factorize=8 bwd_refactorize=8  wall=1571.2 ms  -> 23.6x the clean backward, 12.1x the clean fwd+bwd
+            grad after eviction vs clean: 1.162e+01 (rel)
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    ky4     B=128  K=8 slots=8  WARM full fwd+bwd : plan=0 factorize=8 bwd_refactorize=0  wall=143.3 ms
+    ky4     B=128                 WARM backward only: plan=0 factorize=0 bwd_refactorize=0  wall=73.6 ms
+    ky4     B=128             EVICTED backward only: plan=8 factorize=8 bwd_refactorize=8  wall=3858.6 ms  -> 52.5x the clean backward, 26.9x the clean fwd+bwd
+            grad after eviction vs clean: 5.218e-05 (rel)
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    ky4     B=256  K=8 slots=8  WARM full fwd+bwd : plan=0 factorize=8 bwd_refactorize=0  wall=227.2 ms
+    ky4     B=256                 WARM backward only: plan=0 factorize=0 bwd_refactorize=0  wall=116.7 ms
+    ky4     B=256             EVICTED backward only: plan=8 factorize=8 bwd_refactorize=8  wall=8014.8 ms  -> 68.7x the clean backward, 35.3x the clean fwd+bwd
+            grad after eviction vs clean: 2.389e-02 (rel)
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+
+==============================================================================
+E2  D3: does cudss_plan(B) warm the slots the differentiable path will use?  (node <node-20>)
+    Modena  B=128  slots=6 | cudss_plan(128): plan calls=1, reported 103.7 ms, cache=[(128, 0)]
+            1st differentiable fwd+bwd: plan calls=5, wall=643.8 ms | 2nd: plan calls=0, wall=97.4 ms  -> first-step surcharge 546.3 ms
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    ky4     B=128  slots=6 | cudss_plan(128): plan calls=1, reported 446.8 ms, cache=[(128, 0)]
+            1st differentiable fwd+bwd: plan calls=5, wall=2391.9 ms | 2nd: plan calls=0, wall=107.0 ms  -> first-step surcharge 2285.0 ms
+
+P4C DONE
+P4 JOB DONE

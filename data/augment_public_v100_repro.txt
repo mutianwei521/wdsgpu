@@ -1,0 +1,44 @@
+V100 复现对拍（data/augment_public_v100_repro.json）
+  作业 cpu_chain    host=<v100-host> GPU='' rc=0 耗时 163s  commit=c61937d torch 2.14.0+cu126
+  作业 hanoi_calib  host=<v100-host> GPU='' rc=0 耗时 3572s  commit=c61937d torch 2.14.0+cu126
+  作业 ltleak_g0    host=<v100-host> GPU='0' rc=0 耗时 1516s  commit=c61937d torch 2.14.0+cu126
+  作业 ltleak_g1    host=<v100-host> GPU='1' rc=0 耗时 1554s  commit=c61937d torch 2.14.0+cu126
+  作业 ltleak_g2    host=<v100-host> GPU='2' rc=0 耗时 1112s  commit=c61937d torch 2.14.0+cu126
+  L-TOWN 选点序列 npz 逐元素相等：True（{'augment_cover': True, 'augment_dopt': True, 'augment_fixed': True, 'pool': True, 'reselect_dopt': True}）
+  Hanoi 选点序列 npz 逐元素相等：True（{'augment_cover': True, 'augment_dopt': True, 'augment_fixed': True, 'reselect_dopt': True}）
+  augment_ltown：整数项 156 个不一致 0；实数项最大相对差 2.66e-06（augment.cover.per_k.5.crlb_ident）；sfull ‖F‖∞max V100 5.68e-14 / 参考 5.68e-14，耗时 91s / 39s
+  augment_hanoi：整数项 97 个不一致 0；实数项最大相对差 1.51e-10（s0.crlb_ident）
+  σ 梯 ltown：11 行，整数格不一致 0，实数格最大绝对差 1.95e-14
+  σ 梯 pub_hanoi_synth25：7 行，整数格不一致 0，实数格最大绝对差 2.32e-11
+  漏损反演 V100 vs data/ltown_augment_leak.json（NVIDIA GeForce RTX 5090）：22 组；loss末 最大相对差 2.66e-07，第 1 步 2.80e-07；top-5 同 22/22，真值名次同 22/22，top-1/top-3 判定同 22/22；真值 C 最大绝对差 1.89e-08；相干最大绝对差 0.00e+00
+  漏损反演 V100 vs data/ltown_augment_leak_local_dense.json（）：6 组；loss末 最大相对差 9.81e-08，第 1 步 5.42e-07；top-5 同 6/6，真值名次同 6/6，top-1/top-3 判定同 6/6；真值 C 最大绝对差 3.85e-08；相干最大绝对差 2.76e-06
+  Hanoi σ 梯标定 AUG_* 36 键：unobservable 同 36/36，sub_rank 同 36/36；最大相对差 info_rmse=3.36e-12 sub_rmse=2.85e-11 val_frame_rmse=2.29e-12 val_sensor_rmse=1.71e-10 train_rmse=1.66e-12 mse_train_final=3.23e-12；info-RMSE 相对差中位 1.01e-13；总耗时 V100 59.3 min / 参考 23.9 min
+          布点 | σ=0.03 info-RMSE V100/参考   sub-RMSE V100/参考 | σ=0.1  info-RMSE V100/参考   sub-RMSE V100/参考 | σ=0.3  info-RMSE V100/参考   sub-RMSE V100/参考
+       augS0 |  18.273/ 18.273     4.263/  4.263 |  18.695/ 18.695     3.878/  3.878 |  19.446/ 19.446     5.028/  5.028
+   augdopt10 |   7.766/  7.766    10.365/ 10.365 |  10.192/ 10.192    10.532/ 10.532 |  17.030/ 17.030    11.566/ 11.566
+   augdopt20 |   6.183/  6.183     7.752/  7.752 |   6.969/  6.969     7.849/  7.849 |   9.764/  9.764     8.302/  8.302
+    augdopt5 |   9.890/  9.890    15.018/ 15.018 |  11.017/ 11.017    15.113/ 15.113 |  14.396/ 14.396    15.296/ 15.296
+  漏损反演逐组（V100 vs 主结果 5090）：
+         配置         组 |   loss末 V100   loss末 5090      相对差 | top5同 名次同 |  步时 V100   5090
+         S0 noiseless | 2.549019e-03 2.549019e-03  3.4e-09 |   True  True |     2.29   0.79
+         S0     noisy | 1.235507e-02 1.235506e-02  2.7e-07 |   True  True |     2.26   0.79
+     dopt+5 noiseless | 2.353873e-03 2.353873e-03  1.9e-09 |   True  True |     2.32   0.79
+     dopt+5     noisy | 1.208651e-02 1.208651e-02  2.2e-07 |   True  True |     2.61   0.79
+    dopt+10 noiseless | 2.212384e-03 2.212384e-03  1.7e-09 |   True  True |     2.64   0.79
+    dopt+10     noisy | 1.198251e-02 1.198251e-02  1.9e-07 |   True  True |     2.66   0.79
+    dopt+20 noiseless | 2.095713e-03 2.095713e-03  1.1e-09 |   True  True |     2.62   0.79
+    dopt+20     noisy | 1.186050e-02 1.186050e-02  1.5e-07 |   True  True |     2.58   0.79
+    dopt+40 noiseless | 3.264439e-03 3.264438e-03  2.3e-08 |   True  True |     2.34   0.79
+    dopt+40     noisy | 1.308704e-02 1.308704e-02  1.5e-07 |   True  True |     2.33   0.79
+    dopt+80 noiseless | 3.344155e-03 3.344155e-03  6.2e-08 |   True  True |     2.37   0.79
+    dopt+80     noisy | 1.326947e-02 1.326947e-02  7.4e-08 |   True  True |     2.75   0.79
+    cover+5 noiseless | 2.337532e-03 2.337532e-03  3.6e-08 |   True  True |     2.77   0.79
+    cover+5     noisy | 1.221420e-02 1.221419e-02  2.6e-07 |   True  True |     2.77   0.79
+   cover+10 noiseless | 2.212137e-03 2.212137e-03  3.3e-08 |   True  True |     2.65   0.79
+   cover+10     noisy | 1.218560e-02 1.218560e-02  1.7e-07 |   True  True |     2.62   0.79
+   cover+20 noiseless | 3.030691e-03 3.030691e-03  4.1e-09 |   True  True |     2.27   0.79
+   cover+20     noisy | 1.306278e-02 1.306277e-02  1.6e-07 |   True  True |     2.21   0.79
+   cover+40 noiseless | 2.673902e-03 2.673902e-03  3.3e-08 |   True  True |     2.28   0.79
+   cover+40     noisy | 1.269382e-02 1.269382e-02  1.2e-07 |   True  True |     2.57   0.79
+   cover+80 noiseless | 3.102753e-03 3.102753e-03  3.9e-08 |   True  True |     2.64   0.79
+   cover+80     noisy | 1.309173e-02 1.309173e-02  1.0e-07 |   True  True |     2.62   0.79

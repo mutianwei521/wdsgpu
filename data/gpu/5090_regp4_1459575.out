@@ -1,0 +1,62 @@
+NVIDIA GeForce RTX 5090, 32607 MiB
+node: <node-01> | cpus: 8
+/data/run01/<user>/wdsgpu/hgp4r2/dgga/solver.py:2016: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hgp4r2/dgga/solver.py:2016: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+================================================================================================
+regression_gpu.py - cuDSS 通路不变量回归（审计 R2）
+设备: NVIDIA GeForce RTX 5090 | torch 2.11.0+cu128 | nvmath 1.0.0 | 节点 <node-01>
+网络目录: /data/run01/<user>/wdsgpu/hgp4r2/p2nets
+================================================================================================
+
+【T1 迭代数逐项相等（cudss vs dense）】
+  Hanoi    B=1    迭代 dense=8 cudss=8 逐项相等=是 | max|dH|=1.137e-13 ft（仅报告，非门槛） PASS
+  Hanoi    B=8    迭代 dense=8 cudss=8 逐项相等=是 | max|dH|=1.847e-13 ft（仅报告，非门槛） PASS
+  Net3     B=1    迭代 dense=7 cudss=7 逐项相等=是 | max|dH|=1.288e-06 ft（仅报告，非门槛） PASS
+  Net3     B=8    迭代 dense=10 cudss=10 逐项相等=是 | max|dH|=6.501e-12 ft（仅报告，非门槛） PASS
+  Modena   B=8    迭代 dense={13,14} cudss={13,14} 逐项相等=是 | max|dH|=7.674e-12 ft（仅报告，非门槛） PASS
+  Modena   B=64   迭代 dense=7 cudss=7 逐项相等=是 | max|dH|=1.815e-11 ft（仅报告，非门槛） PASS
+  City_D   B=8    迭代 dense=8 cudss=8 逐项相等=是 | max|dH|=2.473e-08 ft（仅报告，非门槛） PASS
+  City_D   B=64   迭代 dense=7 cudss=7 逐项相等=是 | max|dH|=3.465e-07 ft（仅报告，非门槛） PASS
+  ky4      B=8    迭代 dense=7 cudss=7 逐项相等=是 | max|dH|=3.649e-08 ft（仅报告，非门槛） PASS
+  ky4      B=64   迭代 dense={8,9} cudss={8,9} 逐项相等=是 | max|dH|=4.340e-08 ft（仅报告，非门槛） PASS
+
+【T2 bwd_refactorize（slots 足够时必须为 0；slots=1 时必须为 K−1）】
+  Hanoi    B=1    K=6 slots=6  | fac=6  (期望6  ) bwd_refac=0 (期望0) bwd_reuse=6 (期望6) solve=18  bwd_solve=18   PASS
+  Hanoi    B=1    K=6 slots=1  | fac=11 (期望11 ) bwd_refac=5 (期望5) bwd_reuse=1 (期望1) solve=18  bwd_solve=18   PASS
+  Net3     B=1    K=6 slots=6  | fac=6  (期望6  ) bwd_refac=0 (期望0) bwd_reuse=6 (期望6) solve=18  bwd_solve=18   PASS
+  Net3     B=1    K=6 slots=1  | fac=11 (期望11 ) bwd_refac=5 (期望5) bwd_reuse=1 (期望1) solve=18  bwd_solve=18   PASS
+  Modena   B=8    K=6 slots=6  | fac=6  (期望6  ) bwd_refac=0 (期望0) bwd_reuse=6 (期望6) solve=18  bwd_solve=18   PASS
+  Modena   B=8    K=6 slots=1  | fac=11 (期望11 ) bwd_refac=5 (期望5) bwd_reuse=1 (期望1) solve=18  bwd_solve=18   PASS
+  City_D   B=8    K=5 slots=5  | fac=5  (期望5  ) bwd_refac=0 (期望0) bwd_reuse=5 (期望5) solve=15  bwd_solve=15   PASS
+  City_D   B=8    K=5 slots=1  | fac=9  (期望9  ) bwd_refac=4 (期望4) bwd_reuse=1 (期望1) solve=15  bwd_solve=15   PASS
+  ky4      B=8    K=5 slots=5  | fac=5  (期望5  ) bwd_refac=0 (期望0) bwd_reuse=5 (期望5) solve=15  bwd_solve=15   PASS
+  ky4      B=8    K=5 slots=1  | fac=9  (期望9  ) bwd_refac=4 (期望4) bwd_reuse=1 (期望1) solve=15  bwd_solve=15   PASS
+
+【T3 复用即逐位核对（stale 必须 0，且事件数必须 >0）】
+  Hanoi    B=1    slots=6  | 伴随事件=6  其中复用=6  stale=0 worstDelta=0.000e+00  PASS
+  Hanoi    B=1    slots=1  | 伴随事件=6  其中复用=1  stale=0 worstDelta=0.000e+00  PASS
+  Hanoi    B=8    slots=6  | 伴随事件=6  其中复用=6  stale=0 worstDelta=0.000e+00  PASS
+  Hanoi    B=8    slots=1  | 伴随事件=6  其中复用=1  stale=0 worstDelta=0.000e+00  PASS
+  Net3     B=1    slots=6  | 伴随事件=6  其中复用=6  stale=0 worstDelta=0.000e+00  PASS
+  Net3     B=1    slots=1  | 伴随事件=6  其中复用=1  stale=0 worstDelta=0.000e+00  PASS
+  Net3     B=8    slots=6  | 伴随事件=6  其中复用=6  stale=0 worstDelta=0.000e+00  PASS
+  Net3     B=8    slots=1  | 伴随事件=6  其中复用=1  stale=0 worstDelta=0.000e+00  PASS
+  Modena   B=8    slots=6  | 伴随事件=6  其中复用=6  stale=0 worstDelta=0.000e+00  PASS
+  Modena   B=8    slots=1  | 伴随事件=6  其中复用=1  stale=0 worstDelta=0.000e+00  PASS
+  Modena   B=64   slots=6  | 伴随事件=6  其中复用=6  stale=0 worstDelta=0.000e+00  PASS
+  Modena   B=64   slots=1  | 伴随事件=6  其中复用=1  stale=0 worstDelta=0.000e+00  PASS
+  City_D   B=8    slots=5  | 伴随事件=5  其中复用=5  stale=0 worstDelta=0.000e+00  PASS
+  City_D   B=8    slots=1  | 伴随事件=5  其中复用=1  stale=0 worstDelta=0.000e+00  PASS
+  City_D   B=64   slots=5  | 伴随事件=5  其中复用=5  stale=0 worstDelta=0.000e+00  PASS
+  City_D   B=64   slots=1  | 伴随事件=5  其中复用=1  stale=0 worstDelta=0.000e+00  PASS
+  ky4      B=8    slots=5  | 伴随事件=5  其中复用=5  stale=0 worstDelta=0.000e+00  PASS
+  ky4      B=8    slots=1  | 伴随事件=5  其中复用=1  stale=0 worstDelta=0.000e+00  PASS
+  ky4      B=64   slots=5  | 伴随事件=5  其中复用=5  stale=0 worstDelta=0.000e+00  PASS
+  ky4      B=64   slots=1  | 伴随事件=5  其中复用=1  stale=0 worstDelta=0.000e+00  PASS
+
+================================================================================================
+总判定: PASS （40/40 项通过）
+================================================================================================
+REGRESSION_GPU JOB DONE rc=0

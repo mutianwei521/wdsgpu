@@ -1,0 +1,207 @@
+NVIDIA GeForce RTX 5090, 32607 MiB
+node: <node-21> | cpus: 8
+====================================================================================================
+P4 全面重测 · 显存全表（R5 统一口径，MiB，每配置全新进程） | node: <node-21>
+md5 dgga/solver.py 45b0b0eeb66ed4e15ef81c53809d229a
+md5 dgga/autodiff.py e4b8cfe49536f85b435e04e5ed5621d2
+B 列: [1, 8, 64, 256, 512, 1024]
+
+RESULT Net1.inp 1 dense ok K=4 ctx=588.19 torch_peak=32.13 torch_resv=34.00 nontorch=360.00 total=394.00 gnorm=2.13946294e+01
+RESULT Net1.inp 1 cudss ok K=4 ctx=588.19 torch_peak=0.13 torch_resv=2.00 nontorch=68.00 total=70.00 gnorm=2.13946294e+01
+RESULT Net1.inp 8 dense ok K=4 ctx=588.19 torch_peak=64.25 torch_resv=66.00 nontorch=230.00 total=296.00 gnorm=1.58959701e+02
+RESULT Net1.inp 8 cudss ok K=4 ctx=588.19 torch_peak=0.21 torch_resv=2.00 nontorch=68.00 total=70.00 gnorm=1.58959701e+02
+RESULT Net1.inp 64 dense ok K=4 ctx=588.19 torch_peak=65.30 torch_resv=66.00 nontorch=230.00 total=296.00 gnorm=4.20525369e+02
+RESULT Net1.inp 64 cudss ok K=4 ctx=588.19 torch_peak=0.94 torch_resv=2.00 nontorch=68.00 total=70.00 gnorm=4.20525369e+02
+RESULT Net1.inp 256 dense ok K=4 ctx=588.19 torch_peak=69.06 torch_resv=70.00 nontorch=230.00 total=300.00 gnorm=8.91644083e+02
+RESULT Net1.inp 256 cudss ok K=4 ctx=588.19 torch_peak=3.61 torch_resv=4.00 nontorch=68.00 total=72.00 gnorm=8.91644083e+02
+RESULT Net1.inp 512 dense ok K=4 ctx=588.19 torch_peak=74.07 torch_resv=76.00 nontorch=230.00 total=306.00 gnorm=1.21115980e+03
+RESULT Net1.inp 512 cudss ok K=4 ctx=588.19 torch_peak=7.17 torch_resv=8.00 nontorch=68.00 total=76.00 gnorm=1.21115980e+03
+RESULT Net1.inp 1024 dense ok K=4 ctx=588.19 torch_peak=84.09 torch_resv=88.00 nontorch=230.00 total=318.00 gnorm=1.70416690e+03
+RESULT Net1.inp 1024 cudss ok K=4 ctx=588.19 torch_peak=14.29 torch_resv=16.00 nontorch=68.00 total=84.00 gnorm=1.70416690e+03
+RESULT Anytown.inp 1 dense ok K=7 ctx=588.19 torch_peak=32.27 torch_resv=34.00 nontorch=360.00 total=394.00 gnorm=4.82779455e+00
+RESULT Anytown.inp 1 cudss ok K=7 ctx=588.19 torch_peak=0.22 torch_resv=2.00 nontorch=68.00 total=70.00 gnorm=4.82779455e+00
+RESULT Anytown.inp 8 dense ok K=7 ctx=588.19 torch_peak=65.10 torch_resv=66.00 nontorch=230.00 total=296.00 gnorm=1.83945587e+01
+RESULT Anytown.inp 8 cudss ok K=7 ctx=588.19 torch_peak=0.74 torch_resv=2.00 nontorch=68.00 total=70.00 gnorm=1.83945587e+01
+RESULT Anytown.inp 64 dense ok K=7 ctx=588.19 torch_peak=71.47 torch_resv=74.00 nontorch=230.00 total=304.00 gnorm=5.89378717e+01
+RESULT Anytown.inp 64 cudss ok K=7 ctx=588.19 torch_peak=4.65 torch_resv=6.00 nontorch=68.00 total=74.00 gnorm=5.89378717e+01
+RESULT Anytown.inp 256 dense ok K=7 ctx=588.19 torch_peak=93.60 torch_resv=98.00 nontorch=230.00 total=328.00 gnorm=1.18314844e+02
+RESULT Anytown.inp 256 cudss ok K=7 ctx=588.19 torch_peak=18.33 torch_resv=20.00 nontorch=68.00 total=88.00 gnorm=1.18314844e+02
+RESULT Anytown.inp 512 dense ok K=7 ctx=588.19 torch_peak=123.38 torch_resv=142.00 nontorch=230.00 total=372.00 gnorm=1.68123657e+02
+RESULT Anytown.inp 512 cudss ok K=7 ctx=588.19 torch_peak=36.58 torch_resv=38.00 nontorch=68.00 total=106.00 gnorm=1.68123657e+02
+RESULT Anytown.inp 1024 dense ok K=7 ctx=588.19 torch_peak=182.45 torch_resv=198.00 nontorch=230.00 total=428.00 gnorm=2.35816668e+02
+RESULT Anytown.inp 1024 cudss ok K=7 ctx=588.19 torch_peak=73.09 torch_resv=96.00 nontorch=68.00 total=164.00 gnorm=2.35816668e+02
+RESULT Hanoi.inp 1 dense ok K=4 ctx=588.19 torch_peak=32.18 torch_resv=34.00 nontorch=360.00 total=394.00 gnorm=1.58772000e+02
+RESULT Hanoi.inp 1 cudss ok K=4 ctx=588.19 torch_peak=0.09 torch_resv=2.00 nontorch=68.00 total=70.00 gnorm=1.58772000e+02
+RESULT Hanoi.inp 8 dense ok K=4 ctx=588.19 torch_peak=65.02 torch_resv=66.00 nontorch=230.00 total=296.00 gnorm=2.52876555e+02
+RESULT Hanoi.inp 8 cudss ok K=4 ctx=588.19 torch_peak=0.29 torch_resv=2.00 nontorch=68.00 total=70.00 gnorm=2.52876555e+02
+RESULT Hanoi.inp 64 dense ok K=4 ctx=588.19 torch_peak=71.72 torch_resv=74.00 nontorch=230.00 total=304.00 gnorm=5.52817225e+02
+RESULT Hanoi.inp 64 cudss ok K=4 ctx=588.19 torch_peak=1.89 torch_resv=4.00 nontorch=68.00 total=72.00 gnorm=5.52817225e+02
+RESULT Hanoi.inp 256 dense ok K=4 ctx=588.19 torch_peak=94.79 torch_resv=112.00 nontorch=230.00 total=342.00 gnorm=1.09448546e+03
+RESULT Hanoi.inp 256 cudss ok K=4 ctx=588.19 torch_peak=7.47 torch_resv=10.00 nontorch=68.00 total=78.00 gnorm=1.09448546e+03
+RESULT Hanoi.inp 512 dense ok K=4 ctx=588.19 torch_peak=125.56 torch_resv=140.00 nontorch=230.00 total=370.00 gnorm=1.52267867e+03
+RESULT Hanoi.inp 512 cudss ok K=4 ctx=588.19 torch_peak=14.91 torch_resv=18.00 nontorch=68.00 total=86.00 gnorm=1.52267867e+03
+RESULT Hanoi.inp 1024 dense ok K=4 ctx=588.19 torch_peak=187.09 torch_resv=236.00 nontorch=230.00 total=466.00 gnorm=2.17413083e+03
+RESULT Hanoi.inp 1024 cudss ok K=4 ctx=588.19 torch_peak=29.79 torch_resv=54.00 nontorch=68.00 total=122.00 gnorm=2.17413083e+03
+RESULT Net2.inp 1 dense ok K=6 ctx=588.19 torch_peak=32.29 torch_resv=34.00 nontorch=360.00 total=394.00 gnorm=1.56039710e+02
+RESULT Net2.inp 1 cudss ok K=6 ctx=588.19 torch_peak=0.13 torch_resv=2.00 nontorch=68.00 total=70.00 gnorm=1.56039710e+02
+RESULT Net2.inp 8 dense ok K=6 ctx=588.19 torch_peak=65.70 torch_resv=66.00 nontorch=230.00 total=296.00 gnorm=3.64631975e+02
+RESULT Net2.inp 8 cudss ok K=6 ctx=588.19 torch_peak=0.46 torch_resv=2.00 nontorch=68.00 total=70.00 gnorm=3.64631975e+02
+RESULT Net2.inp 64 dense ok K=6 ctx=588.19 torch_peak=77.06 torch_resv=78.00 nontorch=230.00 total=308.00 gnorm=1.14082836e+03
+RESULT Net2.inp 64 cudss ok K=6 ctx=588.19 torch_peak=3.15 torch_resv=4.00 nontorch=68.00 total=72.00 gnorm=1.14082836e+03
+RESULT Net2.inp 256 dense ok K=6 ctx=588.19 torch_peak=117.83 torch_resv=138.00 nontorch=230.00 total=368.00 gnorm=2.42693037e+03
+RESULT Net2.inp 256 cudss ok K=6 ctx=588.19 torch_peak=12.48 torch_resv=14.00 nontorch=68.00 total=82.00 gnorm=2.42693033e+03
+RESULT Net2.inp 512 dense ok K=6 ctx=588.19 torch_peak=171.63 torch_resv=192.00 nontorch=230.00 total=422.00 gnorm=3.40677919e+03
+RESULT Net2.inp 512 cudss ok K=6 ctx=588.19 torch_peak=24.92 torch_resv=28.00 nontorch=68.00 total=96.00 gnorm=3.40677922e+03
+RESULT Net2.inp 1024 dense ok K=6 ctx=588.19 torch_peak=279.22 torch_resv=298.00 nontorch=230.00 total=528.00 gnorm=4.81801131e+03
+RESULT Net2.inp 1024 cudss ok K=6 ctx=588.19 torch_peak=49.80 torch_resv=76.00 nontorch=68.00 total=144.00 gnorm=4.81801183e+03
+RESULT Fossolo_poly1.inp 1 dense ok K=6 ctx=588.19 torch_peak=32.30 torch_resv=34.00 nontorch=360.00 total=394.00 gnorm=3.72081725e+03
+RESULT Fossolo_poly1.inp 1 cudss ok K=6 ctx=588.19 torch_peak=0.13 torch_resv=2.00 nontorch=68.00 total=70.00 gnorm=3.72081725e+03
+RESULT Fossolo_poly1.inp 8 dense ok K=6 ctx=588.19 torch_peak=65.87 torch_resv=68.00 nontorch=230.00 total=298.00 gnorm=1.17310097e+04
+RESULT Fossolo_poly1.inp 8 cudss ok K=6 ctx=588.19 torch_peak=0.58 torch_resv=2.00 nontorch=68.00 total=70.00 gnorm=1.17310097e+04
+RESULT Fossolo_poly1.inp 64 dense ok K=6 ctx=588.19 torch_peak=78.31 torch_resv=80.00 nontorch=230.00 total=310.00 gnorm=3.55046473e+04
+RESULT Fossolo_poly1.inp 64 cudss ok K=6 ctx=588.19 torch_peak=4.02 torch_resv=6.00 nontorch=68.00 total=74.00 gnorm=3.55046473e+04
+RESULT Fossolo_poly1.inp 256 dense ok K=6 ctx=588.19 torch_peak=121.12 torch_resv=142.00 nontorch=230.00 total=372.00 gnorm=7.11813154e+04
+RESULT Fossolo_poly1.inp 256 cudss ok K=6 ctx=588.19 torch_peak=15.96 torch_resv=18.00 nontorch=68.00 total=86.00 gnorm=7.11813154e+04
+RESULT Fossolo_poly1.inp 512 dense ok K=6 ctx=588.19 torch_peak=178.21 torch_resv=220.00 nontorch=230.00 total=450.00 gnorm=9.98397507e+04
+RESULT Fossolo_poly1.inp 512 cudss ok K=6 ctx=588.19 torch_peak=31.88 torch_resv=36.00 nontorch=68.00 total=104.00 gnorm=9.98397507e+04
+RESULT Fossolo_poly1.inp 1024 dense ok K=6 ctx=588.19 torch_peak=292.39 torch_resv=344.00 nontorch=230.00 total=574.00 gnorm=1.40445508e+05
+RESULT Fossolo_poly1.inp 1024 cudss ok K=6 ctx=588.19 torch_peak=64.33 torch_resv=80.00 nontorch=68.00 total=148.00 gnorm=1.40445508e+05
+RESULT Pescara.inp 1 dense ok K=5 ctx=588.19 torch_peak=32.72 torch_resv=34.00 nontorch=360.00 total=394.00 gnorm=1.48468121e+03
+RESULT Pescara.inp 1 cudss ok K=5 ctx=588.19 torch_peak=0.19 torch_resv=2.00 nontorch=68.00 total=70.00 gnorm=1.48468122e+03
+RESULT Pescara.inp 8 dense ok K=5 ctx=588.19 torch_peak=68.97 torch_resv=70.00 nontorch=230.00 total=300.00 gnorm=3.74090357e+03
+RESULT Pescara.inp 8 cudss ok K=5 ctx=588.19 torch_peak=0.83 torch_resv=2.00 nontorch=68.00 total=70.00 gnorm=3.74090297e+03
+RESULT Pescara.inp 64 dense ok K=5 ctx=588.19 torch_peak=103.07 torch_resv=112.00 nontorch=230.00 total=342.00 gnorm=2.15611419e+05
+RESULT Pescara.inp 64 cudss ok K=5 ctx=588.19 torch_peak=5.97 torch_resv=8.00 nontorch=68.00 total=76.00 gnorm=9.04945078e+03
+RESULT Pescara.inp 256 dense ok K=5 ctx=588.19 torch_peak=220.11 torch_resv=250.00 nontorch=230.00 total=480.00 gnorm=3.32038334e+08
+RESULT Pescara.inp 256 cudss ok K=5 ctx=588.19 torch_peak=23.70 torch_resv=26.00 nontorch=68.00 total=94.00 gnorm=4.93342877e+05
+RESULT Pescara.inp 512 dense ok K=5 ctx=588.19 torch_peak=376.62 torch_resv=414.00 nontorch=230.00 total=644.00 gnorm=2.25759240e+05
+RESULT Pescara.inp 512 cudss ok K=5 ctx=588.19 torch_peak=47.34 torch_resv=72.00 nontorch=68.00 total=140.00 gnorm=7.92998486e+08
+RESULT Pescara.inp 1024 dense ok K=5 ctx=588.19 torch_peak=688.30 torch_resv=766.00 nontorch=230.00 total=996.00 gnorm=1.78108478e+08
+RESULT Pescara.inp 1024 cudss ok K=5 ctx=588.19 torch_peak=95.51 torch_resv=114.00 nontorch=100.00 total=214.00 gnorm=1.12084608e+08
+RESULT Net3.inp 1 dense ok K=5 ctx=588.19 torch_peak=33.24 torch_resv=34.00 nontorch=360.00 total=394.00 gnorm=1.22975747e+02
+RESULT Net3.inp 1 cudss ok K=5 ctx=588.19 torch_peak=0.29 torch_resv=2.00 nontorch=68.00 total=70.00 gnorm=1.22962858e+02
+RESULT Net3.inp 8 dense ok K=5 ctx=588.19 torch_peak=72.99 torch_resv=76.00 nontorch=230.00 total=306.00 gnorm=4.08343793e+02
+RESULT Net3.inp 8 cudss ok K=5 ctx=588.19 torch_peak=1.42 torch_resv=2.00 nontorch=68.00 total=70.00 gnorm=4.08369478e+02
+RESULT Net3.inp 64 dense ok K=5 ctx=588.19 torch_peak=135.11 torch_resv=156.00 nontorch=230.00 total=386.00 gnorm=9.69250361e+02
+RESULT Net3.inp 64 cudss ok K=5 ctx=588.19 torch_peak=10.48 torch_resv=12.00 nontorch=68.00 total=80.00 gnorm=9.69213333e+02
+RESULT Net3.inp 256 dense ok K=5 ctx=588.19 torch_peak=348.17 torch_resv=380.00 nontorch=230.00 total=610.00 gnorm=1.76726172e+03
+RESULT Net3.inp 256 cudss ok K=5 ctx=588.19 torch_peak=41.64 torch_resv=44.00 nontorch=68.00 total=112.00 gnorm=1.76721976e+03
+RESULT Net3.inp 512 dense ok K=5 ctx=588.19 torch_peak=646.29 torch_resv=684.00 nontorch=230.00 total=914.00 gnorm=2.55101125e+03
+RESULT Net3.inp 512 cudss ok K=5 ctx=588.19 torch_peak=83.39 torch_resv=100.00 nontorch=100.00 total=200.00 gnorm=2.55104460e+03
+RESULT Net3.inp 1024 dense ok K=5 ctx=588.19 torch_peak=1200.37 torch_resv=1294.00 nontorch=230.00 total=1524.00 gnorm=3.60935055e+03
+RESULT Net3.inp 1024 cudss ok K=5 ctx=588.19 torch_peak=166.24 torch_resv=206.00 nontorch=132.00 total=338.00 gnorm=3.60932678e+03
+RESULT Modena.inp 1 dense ok K=5 ctx=588.19 torch_peak=40.67 torch_resv=42.00 nontorch=360.00 total=402.00 gnorm=5.70889470e+03
+RESULT Modena.inp 1 cudss ok K=5 ctx=588.19 torch_peak=0.47 torch_resv=2.00 nontorch=68.00 total=70.00 gnorm=5.70889470e+03
+RESULT Modena.inp 8 dense ok K=5 ctx=588.19 torch_peak=132.18 torch_resv=148.00 nontorch=230.00 total=378.00 gnorm=9.16277086e+03
+RESULT Modena.inp 8 cudss ok K=5 ctx=588.19 torch_peak=2.72 torch_resv=4.00 nontorch=68.00 total=72.00 gnorm=9.16277086e+03
+RESULT Modena.inp 64 dense ok K=5 ctx=588.19 torch_peak=622.33 torch_resv=628.00 nontorch=230.00 total=858.00 gnorm=2.28293589e+04
+RESULT Modena.inp 64 cudss ok K=5 ctx=588.19 torch_peak=20.67 torch_resv=24.00 nontorch=68.00 total=92.00 gnorm=2.28293589e+04
+RESULT Modena.inp 256 dense ok K=5 ctx=588.19 torch_peak=2241.14 torch_resv=2310.00 nontorch=230.00 total=2540.00 gnorm=4.61239556e+04
+RESULT Modena.inp 256 cudss ok K=5 ctx=588.19 torch_peak=82.65 torch_resv=98.00 nontorch=100.00 total=198.00 gnorm=4.61239556e+04
+RESULT Modena.inp 512 dense ok K=5 ctx=588.19 torch_peak=4429.72 torch_resv=4590.00 nontorch=230.00 total=4820.00 gnorm=6.38863349e+04
+RESULT Modena.inp 512 cudss ok K=5 ctx=588.19 torch_peak=175.10 torch_resv=186.00 nontorch=164.00 total=350.00 gnorm=6.38863349e+04
+RESULT Modena.inp 1024 dense ok K=5 ctx=588.19 torch_peak=8794.21 torch_resv=9110.00 nontorch=230.00 total=9340.00 gnorm=8.82988730e+04
+RESULT Modena.inp 1024 cudss ok K=5 ctx=588.19 torch_peak=340.38 torch_resv=388.00 nontorch=260.00 total=648.00 gnorm=8.82988730e+04
+RESULT City_D.inp 1 dense ok K=5 ctx=588.19 torch_peak=66.29 torch_resv=74.00 nontorch=360.00 total=434.00 gnorm=6.41323615e+09
+RESULT City_D.inp 1 cudss ok K=5 ctx=588.19 torch_peak=0.85 torch_resv=2.00 nontorch=68.00 total=70.00 gnorm=3.23607812e+06
+RESULT City_D.inp 8 dense ok K=5 ctx=588.19 torch_peak=338.55 torch_resv=340.00 nontorch=230.00 total=570.00 gnorm=2.16613156e+08
+RESULT City_D.inp 8 cudss ok K=5 ctx=588.19 torch_peak=5.03 torch_resv=6.00 nontorch=68.00 total=74.00 gnorm=7.58601042e+08
+RESULT City_D.inp 64 dense ok K=5 ctx=588.19 torch_peak=2242.20 torch_resv=2286.00 nontorch=230.00 total=2516.00 gnorm=9.43057349e+08
+RESULT City_D.inp 64 cudss ok K=5 ctx=588.19 torch_peak=38.39 torch_resv=62.00 nontorch=68.00 total=130.00 gnorm=1.76207641e+10
+RESULT City_D.inp 256 dense ok K=5 ctx=588.19 torch_peak=8783.79 torch_resv=9230.00 nontorch=230.00 total=9460.00 gnorm=2.72283765e+10
+RESULT City_D.inp 256 cudss ok K=5 ctx=588.19 torch_peak=158.12 torch_resv=186.00 nontorch=164.00 total=350.00 gnorm=2.20793835e+10
+RESULT City_D.inp 512 dense ok K=5 ctx=588.19 torch_peak=17503.24 torch_resv=18420.00 nontorch=230.00 total=18650.00 gnorm=2.03839433e+10
+RESULT City_D.inp 512 cudss ok K=5 ctx=588.19 torch_peak=316.56 torch_resv=348.00 nontorch=260.00 total=608.00 gnorm=2.85219779e+13
+RESULT City_D.inp 1024 dense OOM K=5 ctx=588.19
+RESULT City_D.inp 1024 cudss ok K=5 ctx=588.19 torch_peak=616.51 torch_resv=712.00 nontorch=452.00 total=1164.00 gnorm=3.85098923e+10
+RESULT ky4.inp 1 dense ok K=9 ctx=588.19 torch_peak=197.18 torch_resv=278.00 nontorch=360.00 total=638.00 gnorm=1.77605752e+03
+RESULT ky4.inp 1 cudss ok K=9 ctx=588.19 torch_peak=4.01 torch_resv=6.00 nontorch=68.00 total=74.00 gnorm=1.77605571e+03
+RESULT ky4.inp 8 dense ok K=9 ctx=588.19 torch_peak=1377.55 torch_resv=1424.00 nontorch=230.00 total=1654.00 gnorm=5.19352175e+03
+RESULT ky4.inp 8 cudss ok K=9 ctx=588.19 torch_peak=23.80 torch_resv=26.00 nontorch=68.00 total=94.00 gnorm=5.19360797e+03
+RESULT ky4.inp 64 dense ok K=9 ctx=588.19 torch_peak=10586.44 torch_resv=10642.00 nontorch=230.00 total=10872.00 gnorm=1.47025542e+04
+RESULT ky4.inp 64 cudss ok K=9 ctx=588.19 torch_peak=182.80 torch_resv=224.00 nontorch=100.00 total=324.00 gnorm=1.47023267e+04
+RESULT ky4.inp 256 dense OOM K=9 ctx=588.19
+RESULT ky4.inp 256 cudss ok K=9 ctx=588.19 torch_peak=753.41 torch_resv=782.00 nontorch=228.00 total=1010.00 gnorm=3.05860581e+04
+RESULT ky4.inp 512 dense OOM K=9 ctx=588.19
+RESULT ky4.inp 512 cudss ok K=9 ctx=588.19 torch_peak=1471.48 torch_resv=1640.00 nontorch=388.00 total=2028.00 gnorm=4.26953817e+04
+RESULT ky4.inp 1024 dense OOM K=9 ctx=588.19
+RESULT ky4.inp 1024 cudss ok K=9 ctx=588.19 torch_peak=2961.93 torch_resv=3226.00 nontorch=740.00 total=3966.00 gnorm=5.97386291e+04
+
+====================================================================================================
+§M1 显存全表（R5 口径；dense/cudss 各四列；total = torch_resv + nontorch）  node=<node-21>
+net      B     | dense peak     resv     非torch   total    | cudss peak    resv     非torch   total    | total 倍数
+Net1     1     |      32.1      34.0    360.0     394.0 |       0.1       2.0     68.0      70.0 |   5.63x
+Net1     8     |      64.2      66.0    230.0     296.0 |       0.2       2.0     68.0      70.0 |   4.23x
+Net1     64    |      65.3      66.0    230.0     296.0 |       0.9       2.0     68.0      70.0 |   4.23x
+Net1     256   |      69.1      70.0    230.0     300.0 |       3.6       4.0     68.0      72.0 |   4.17x
+Net1     512   |      74.1      76.0    230.0     306.0 |       7.2       8.0     68.0      76.0 |   4.03x
+Net1     1024  |      84.1      88.0    230.0     318.0 |      14.3      16.0     68.0      84.0 |   3.79x
+Anytown  1     |      32.3      34.0    360.0     394.0 |       0.2       2.0     68.0      70.0 |   5.63x
+Anytown  8     |      65.1      66.0    230.0     296.0 |       0.7       2.0     68.0      70.0 |   4.23x
+Anytown  64    |      71.5      74.0    230.0     304.0 |       4.7       6.0     68.0      74.0 |   4.11x
+Anytown  256   |      93.6      98.0    230.0     328.0 |      18.3      20.0     68.0      88.0 |   3.73x
+Anytown  512   |     123.4     142.0    230.0     372.0 |      36.6      38.0     68.0     106.0 |   3.51x
+Anytown  1024  |     182.4     198.0    230.0     428.0 |      73.1      96.0     68.0     164.0 |   2.61x
+Hanoi    1     |      32.2      34.0    360.0     394.0 |       0.1       2.0     68.0      70.0 |   5.63x
+Hanoi    8     |      65.0      66.0    230.0     296.0 |       0.3       2.0     68.0      70.0 |   4.23x
+Hanoi    64    |      71.7      74.0    230.0     304.0 |       1.9       4.0     68.0      72.0 |   4.22x
+Hanoi    256   |      94.8     112.0    230.0     342.0 |       7.5      10.0     68.0      78.0 |   4.38x
+Hanoi    512   |     125.6     140.0    230.0     370.0 |      14.9      18.0     68.0      86.0 |   4.30x
+Hanoi    1024  |     187.1     236.0    230.0     466.0 |      29.8      54.0     68.0     122.0 |   3.82x
+Net2     1     |      32.3      34.0    360.0     394.0 |       0.1       2.0     68.0      70.0 |   5.63x
+Net2     8     |      65.7      66.0    230.0     296.0 |       0.5       2.0     68.0      70.0 |   4.23x
+Net2     64    |      77.1      78.0    230.0     308.0 |       3.1       4.0     68.0      72.0 |   4.28x
+Net2     256   |     117.8     138.0    230.0     368.0 |      12.5      14.0     68.0      82.0 |   4.49x
+Net2     512   |     171.6     192.0    230.0     422.0 |      24.9      28.0     68.0      96.0 |   4.40x
+Net2     1024  |     279.2     298.0    230.0     528.0 |      49.8      76.0     68.0     144.0 |   3.67x
+Fossolo  1     |      32.3      34.0    360.0     394.0 |       0.1       2.0     68.0      70.0 |   5.63x
+Fossolo  8     |      65.9      68.0    230.0     298.0 |       0.6       2.0     68.0      70.0 |   4.26x
+Fossolo  64    |      78.3      80.0    230.0     310.0 |       4.0       6.0     68.0      74.0 |   4.19x
+Fossolo  256   |     121.1     142.0    230.0     372.0 |      16.0      18.0     68.0      86.0 |   4.33x
+Fossolo  512   |     178.2     220.0    230.0     450.0 |      31.9      36.0     68.0     104.0 |   4.33x
+Fossolo  1024  |     292.4     344.0    230.0     574.0 |      64.3      80.0     68.0     148.0 |   3.88x
+Pescara  1     |      32.7      34.0    360.0     394.0 |       0.2       2.0     68.0      70.0 |   5.63x
+Pescara  8     |      69.0      70.0    230.0     300.0 |       0.8       2.0     68.0      70.0 |   4.29x
+Pescara  64    |     103.1     112.0    230.0     342.0 |       6.0       8.0     68.0      76.0 |   4.50x
+Pescara  256   |     220.1     250.0    230.0     480.0 |      23.7      26.0     68.0      94.0 |   5.11x
+Pescara  512   |     376.6     414.0    230.0     644.0 |      47.3      72.0     68.0     140.0 |   4.60x
+Pescara  1024  |     688.3     766.0    230.0     996.0 |      95.5     114.0    100.0     214.0 |   4.65x
+Net3     1     |      33.2      34.0    360.0     394.0 |       0.3       2.0     68.0      70.0 |   5.63x
+Net3     8     |      73.0      76.0    230.0     306.0 |       1.4       2.0     68.0      70.0 |   4.37x
+Net3     64    |     135.1     156.0    230.0     386.0 |      10.5      12.0     68.0      80.0 |   4.83x
+Net3     256   |     348.2     380.0    230.0     610.0 |      41.6      44.0     68.0     112.0 |   5.45x
+Net3     512   |     646.3     684.0    230.0     914.0 |      83.4     100.0    100.0     200.0 |   4.57x
+Net3     1024  |    1200.4    1294.0    230.0    1524.0 |     166.2     206.0    132.0     338.0 |   4.51x
+Modena   1     |      40.7      42.0    360.0     402.0 |       0.5       2.0     68.0      70.0 |   5.74x
+Modena   8     |     132.2     148.0    230.0     378.0 |       2.7       4.0     68.0      72.0 |   5.25x
+Modena   64    |     622.3     628.0    230.0     858.0 |      20.7      24.0     68.0      92.0 |   9.33x
+Modena   256   |    2241.1    2310.0    230.0    2540.0 |      82.7      98.0    100.0     198.0 |  12.83x
+Modena   512   |    4429.7    4590.0    230.0    4820.0 |     175.1     186.0    164.0     350.0 |  13.77x
+Modena   1024  |    8794.2    9110.0    230.0    9340.0 |     340.4     388.0    260.0     648.0 |  14.41x
+City_D   1     |      66.3      74.0    360.0     434.0 |       0.8       2.0     68.0      70.0 |   6.20x
+City_D   8     |     338.6     340.0    230.0     570.0 |       5.0       6.0     68.0      74.0 |   7.70x
+City_D   64    |    2242.2    2286.0    230.0    2516.0 |      38.4      62.0     68.0     130.0 |  19.35x
+City_D   256   |    8783.8    9230.0    230.0    9460.0 |     158.1     186.0    164.0     350.0 |  27.03x
+City_D   512   |   17503.2   18420.0    230.0   18650.0 |     316.6     348.0    260.0     608.0 |  30.67x
+City_D   1024  |    OOM                                    |     616.5     712.0    452.0    1164.0 | OOM/ok 
+ky4      1     |     197.2     278.0    360.0     638.0 |       4.0       6.0     68.0      74.0 |   8.62x
+ky4      8     |    1377.5    1424.0    230.0    1654.0 |      23.8      26.0     68.0      94.0 |  17.60x
+ky4      64    |   10586.4   10642.0    230.0   10872.0 |     182.8     224.0    100.0     324.0 |  33.56x
+ky4      256   |    OOM                                    |     753.4     782.0    228.0    1010.0 | OOM/ok 
+ky4      512   |    OOM                                    |    1471.5    1640.0    388.0    2028.0 | OOM/ok 
+ky4      1024  |    OOM                                    |    2961.9    3226.0    740.0    3966.0 | OOM/ok 
+
+§M2 OOM 边界（fwd+bwd，R5 口径）  node=<node-21>
+net      | dense: 最大跑通 B / 最小 OOM B | cudss: 最大跑通 B / 最小 OOM B
+Net1     | 1024   / -                     | 1024   / -     
+Anytown  | 1024   / -                     | 1024   / -     
+Hanoi    | 1024   / -                     | 1024   / -     
+Net2     | 1024   / -                     | 1024   / -     
+Fossolo  | 1024   / -                     | 1024   / -     
+Pescara  | 1024   / -                     | 1024   / -     
+Net3     | 1024   / -                     | 1024   / -     
+Modena   | 1024   / -                     | 1024   / -     
+City_D   | 512    / 1024                  | 1024   / -     
+ky4      | 64     / 256                   | 1024   / -     
+P4R MEM DONE
+P4R JOB DONE

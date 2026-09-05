@@ -1,0 +1,1034 @@
+[
+ {
+  "path": "networks/EXAMPLE/L-Town/L-TOWN.inp",
+  "sha256": "0bfeaa806cd67a86",
+  "parse": "ok",
+  "Nj": 782,
+  "topo": "263c1194919e6b8f",
+  "hyd": "915be598e7bba93d"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/Anytown/Anytown.inp",
+  "sha256": "8a6ae1ed89f81326",
+  "parse": "ok",
+  "Nj": 19,
+  "topo": "60c8e8a60a9f60ad",
+  "hyd": "c1673e61c19b33c5"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/Balerma/Balerma.inp",
+  "sha256": "f18248aa7b1deff7",
+  "parse": "ok",
+  "Nj": 443,
+  "topo": "9c86dd80ed74a06f",
+  "hyd": "087db4af344e5eda"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/Battle of the Calibration Networks System/Battle of the Calibration Networks System.inp",
+  "sha256": "9fcd8862585314e0",
+  "parse": "ok",
+  "Nj": 388,
+  "topo": "b077f0d63b16de7a",
+  "hyd": "ee8a55de001c87f2"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/Battle of the Water Sensor Networks/BWSN_Network_1.inp",
+  "sha256": "510af942ec643eb8",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/Battle of the Water Sensor Networks/BWSN_Network_2.inp",
+  "sha256": "232e17c02386dae4",
+  "parse": "ok",
+  "Nj": 12523,
+  "topo": "8a0b466bcc57822e",
+  "hyd": "8da4e9a525e8fae0"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/Battle of the Water Sensor Networks/BWSN_Network_2_temp.inp",
+  "sha256": "902c0e1ae64862e5",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/Bellingham/BELL_CL1.INP",
+  "sha256": "77d81afc454884f8",
+  "parse": "ok",
+  "Nj": 121,
+  "topo": "aeef27ec65e1ade0",
+  "hyd": "4af45bba4e3a93db"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/Extended Hanoi/Extended Hanoi.inp",
+  "sha256": "941a08e1d9d2a698",
+  "parse": "ok",
+  "Nj": 31,
+  "topo": "4f0e445f4bf055d9",
+  "hyd": "2ce44d82a375f07d"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/Fairfield/FFCL-1.INP",
+  "sha256": "0d06521c60a1a0d8",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/Fosspoly1/foss_poly_1.inp",
+  "sha256": "de69a9741eda582f",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/Hanoi/Hanoi.inp",
+  "sha256": "941a08e1d9d2a698",
+  "parse": "ok",
+  "Nj": 31,
+  "topo": "4f0e445f4bf055d9",
+  "hyd": "2ce44d82a375f07d"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/Jilin including water quality/Jilin including water quality.inp",
+  "sha256": "b7e1a50803bc1df4",
+  "parse": "ok",
+  "Nj": 27,
+  "topo": "298e0fe56b5546d4",
+  "hyd": "4743c47d160ea322"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/KL/KL.inp",
+  "sha256": "d564b31c30bf06c1",
+  "parse": "ok",
+  "Nj": 935,
+  "topo": "3c624230c20e1e45",
+  "hyd": "51956b8ea7b9e460"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/Micropolis_v1/MICROPOLIS_v1.inp",
+  "sha256": "c1ab0c8a838424aa",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/Modified New York Tunnel including water quality/Modified New York Tunnels including water quality.inp",
+  "sha256": "5304177893635927",
+  "parse": "ok",
+  "Nj": 19,
+  "topo": "67dee78730591b47",
+  "hyd": "318ed9d73c2f046d"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/Net2-FL/Net2.inp",
+  "sha256": "8f82ee1a2eba0fd1",
+  "parse": "ok",
+  "Nj": 35,
+  "topo": "0da659537e1d19b5",
+  "hyd": "410804edba555c9f"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/Net3/Net3.inp",
+  "sha256": "3c83c2eeace53e77",
+  "parse": "ok",
+  "Nj": 92,
+  "topo": "eb8d08c2374eb1cc",
+  "hyd": "dc7e83ed4b3c0370"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/New York Tunnel/New York Tunnels including water quality.inp",
+  "sha256": "9b52b744230ee4ea",
+  "parse": "ok",
+  "Nj": 19,
+  "topo": "67dee78730591b47",
+  "hyd": "318ed9d73c2f046d"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/North Penn Water Authority System/NPCL-1.INP",
+  "sha256": "e39149b19077c0bb",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/Oberlin/OBCL-1.INP",
+  "sha256": "0cf5b52aa16c2f36",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/Rural/RuralNetwork.inp",
+  "sha256": "78ebef64b4d02e9b",
+  "parse": "ok",
+  "Nj": 379,
+  "topo": "de46271b04b0d6df",
+  "hyd": "e99e0e730be3c960"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/ZJ/ZJ.inp",
+  "sha256": "e69bb5b11b97f973",
+  "parse": "ok",
+  "Nj": 113,
+  "topo": "5657fd7ffe51a2f5",
+  "hyd": "5f1b18fc37d02ea7"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/exnet/exnet.inp",
+  "sha256": "861c93347d5384ce",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/ky10/ky10.inp",
+  "sha256": "2474592fd1904213",
+  "parse": "ok",
+  "Nj": 920,
+  "topo": "4db88fb2fd90ce77",
+  "hyd": "ddd57f122de841c7"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/ky11/ky11.inp",
+  "sha256": "ba6d9e027b63c899",
+  "parse": "ok",
+  "Nj": 802,
+  "topo": "a1612cf73a727bf7",
+  "hyd": "69daaccf2e5c54c7"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/ky12/ky12.inp",
+  "sha256": "844c859a2e648220",
+  "parse": "ok",
+  "Nj": 2347,
+  "topo": "e3c5a24b5fe4eda1",
+  "hyd": "5081a82416330855"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/ky13/ky13.inp",
+  "sha256": "bc11816d6fe82f27",
+  "parse": "ok",
+  "Nj": 778,
+  "topo": "6bb8714a26201655",
+  "hyd": "c163d23c98ca5313"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/ky14/ky14.inp",
+  "sha256": "d75f0298254accc4",
+  "parse": "ok",
+  "Nj": 377,
+  "topo": "0b90afcd87b2ed10",
+  "hyd": "f4ac7fa7c5899fc8"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/ky15/ky15.inp",
+  "sha256": "90101cd32560497f",
+  "parse": "ok",
+  "Nj": 659,
+  "topo": "429fca375e18007d",
+  "hyd": "36a459f16bfbb401"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/ky1/ky1.inp",
+  "sha256": "5525433152c61a61",
+  "parse": "ok",
+  "Nj": 856,
+  "topo": "9decb789194ea058",
+  "hyd": "461ef7a520876cb9"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/ky2/ky2.inp",
+  "sha256": "09d56c338a12321c",
+  "parse": "ok",
+  "Nj": 811,
+  "topo": "bb8db184af3de18a",
+  "hyd": "3b45683cccdde899"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/ky3/ky3.inp",
+  "sha256": "f4b63f8258c1bc5b",
+  "parse": "ok",
+  "Nj": 269,
+  "topo": "f47c0a1c732a9d54",
+  "hyd": "78f36be36bea4a4d"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/ky4/ky4.inp",
+  "sha256": "ca137e2cfa21faf3",
+  "parse": "ok",
+  "Nj": 959,
+  "topo": "90b58af09cef4081",
+  "hyd": "2b52447ada199728"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/ky5/ky5.inp",
+  "sha256": "6ab18cfbc867d6cf",
+  "parse": "ok",
+  "Nj": 420,
+  "topo": "d5fb624b428dca08",
+  "hyd": "4760828c61bcfaaf"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/ky6/ky6.inp",
+  "sha256": "e6101bdedd39ae13",
+  "parse": "ok",
+  "Nj": 543,
+  "topo": "e18b68d3a2973113",
+  "hyd": "d7527baa395b3102"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/ky7/ky7.inp",
+  "sha256": "1c97db8a2d8b7996",
+  "parse": "ok",
+  "Nj": 481,
+  "topo": "b95732cf1dcfebc4",
+  "hyd": "4c1a8204eb0f5a6e"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/ky8/ky8.inp",
+  "sha256": "8c73ea5a55b30c4e",
+  "parse": "ok",
+  "Nj": 1325,
+  "topo": "c89496991982841e",
+  "hyd": "d220720cde5c6497"
+ },
+ {
+  "path": "networks/EXAMPLE/asce-tf-wdst/ky9/ky9.inp",
+  "sha256": "62bd066258acb8ea",
+  "parse": "ok",
+  "Nj": 1242,
+  "topo": "927946f651ea6033",
+  "hyd": "6bcd8c126cea4d63"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-desktop/Net1/Net1.inp",
+  "sha256": "7dc5446f381d1c78",
+  "parse": "ok",
+  "Nj": 9,
+  "topo": "14c05b3a184a3ff3",
+  "hyd": "d847de9ce2187ef8"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-desktop/Net1/Net1_broken.inp",
+  "sha256": "57d7359f7d34c974",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-desktop/Net3/Net3_trace.inp",
+  "sha256": "894345331285ca4c",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/As5Adsorb/example.inp",
+  "sha256": "d51e908f1b3dd701",
+  "parse": "ok",
+  "Nj": 4,
+  "topo": "03fb48fe69625d43",
+  "hyd": "8af902c6c38365b5"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/Batch-NH2Cl/batch-nh2cl.inp",
+  "sha256": "6124460e6efea407",
+  "parse": "ok",
+  "Nj": 1,
+  "topo": "5493b8d35addbed0",
+  "hyd": "b5fc97b9df34e89b"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/Net2-CL2/net2-cl2.inp",
+  "sha256": "219ee99f4becf60f",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/Net3-Bio/net3-bio.inp",
+  "sha256": "e59b2195138a4c6f",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/Net3-NH2Cl/Net3-NH2CL.inp",
+  "sha256": "e59b2195138a4c6f",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/examples/example1.inp",
+  "sha256": "67251af1d0e5b9f1",
+  "parse": "ok",
+  "Nj": 9,
+  "topo": "14c05b3a184a3ff3",
+  "hyd": "d847de9ce2187ef8"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/examples/example2.inp",
+  "sha256": "603fe828868dac36",
+  "parse": "ok",
+  "Nj": 35,
+  "topo": "0da659537e1d19b5",
+  "hyd": "410804edba555c9f"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/examples/example3.inp",
+  "sha256": "89007ea1cea18e17",
+  "parse": "ok",
+  "Nj": 92,
+  "topo": "eb8d08c2374eb1cc",
+  "hyd": "dc7e83ed4b3c0370"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/exeter/anytown-3.inp",
+  "sha256": "6e0c5126b14306b4",
+  "parse": "ok",
+  "Nj": 22,
+  "topo": "c0509ab9b0b91ffe",
+  "hyd": "2ad1da503391e2f7"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/exeter/exnet-3.inp",
+  "sha256": "1d7b0ddd5ed6d6d8",
+  "parse": "ok",
+  "Nj": 1891,
+  "topo": "b56d49d0d3d45362",
+  "hyd": "09d32afc4530bc7d"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/exeter/hanoi-3.inp",
+  "sha256": "0d46a70d4253cd1d",
+  "parse": "ok",
+  "Nj": 31,
+  "topo": "2776158c63efe165",
+  "hyd": "fac303c11f9f0c7f"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/exeter/mod_anytown-3.inp",
+  "sha256": "4f5a7581b303f9e9",
+  "parse": "ok",
+  "Nj": 22,
+  "topo": "c0509ab9b0b91ffe",
+  "hyd": "1ccbf386f3eff701"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/exeter/mod_anytown-3a.inp",
+  "sha256": "248aef53bcce7e0a",
+  "parse": "ok",
+  "Nj": 22,
+  "topo": "d0f2afb0948d88cf",
+  "hyd": "1ccbf386f3eff701"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/exeter/wolf-3.inp",
+  "sha256": "e5be17714a80324e",
+  "parse": "ok",
+  "Nj": 1782,
+  "topo": "18d1641258841d0b",
+  "hyd": "e5ca48f804bd873a"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/large/57460.inp",
+  "sha256": "816714c2ec93a1a5",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/large/NW_Model.inp",
+  "sha256": "f44353f963f6149b",
+  "parse": "ok",
+  "Nj": 8566,
+  "topo": "f44da283410b41cf",
+  "hyd": "e188cee64f5a93a1"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/large/NW_Model1.inp",
+  "sha256": "0aa2d75f97214048",
+  "parse": "ok",
+  "Nj": 8566,
+  "topo": "273c19ad03e9921b",
+  "hyd": "ae0d138df751c6f2"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/network_one/NET1-3.inp",
+  "sha256": "e084cf35e3d6464d",
+  "parse": "ok",
+  "Nj": 9,
+  "topo": "39491dc0203ce61e",
+  "hyd": "4be17e9a691c2be4"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/network_one/NET1-PBV.inp",
+  "sha256": "d9f2ef22a43920fb",
+  "parse": "ok",
+  "Nj": 9,
+  "topo": "a64d49be5bd951f3",
+  "hyd": "393addca8107a440"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/network_one/NET1.inp",
+  "sha256": "36c98bcb7c25844b",
+  "parse": "ok",
+  "Nj": 9,
+  "topo": "39491dc0203ce61e",
+  "hyd": "4be17e9a691c2be4"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/network_one/NET1cv.inp",
+  "sha256": "87dbb177dbbfc295",
+  "parse": "ok",
+  "Nj": 9,
+  "topo": "39491dc0203ce61e",
+  "hyd": "4be17e9a691c2be4"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/network_one/NET1emit.inp",
+  "sha256": "362c7ed5ef2678da",
+  "parse": "ok",
+  "Nj": 9,
+  "topo": "39491dc0203ce61e",
+  "hyd": "4be17e9a691c2be4"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/network_one/NET1negemit.inp",
+  "sha256": "2d509e90c5d7d6f3",
+  "parse": "ok",
+  "Nj": 9,
+  "topo": "39491dc0203ce61e",
+  "hyd": "f222595d9ab715ac"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/network_one/NET1np.inp",
+  "sha256": "72b90e6f4191ccb5",
+  "parse": "ok",
+  "Nj": 8,
+  "topo": "7bc351897105f566",
+  "hyd": "24837fda70cbf6ca"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/network_one/NET1para.inp",
+  "sha256": "6ad34cff99c7c871",
+  "parse": "ok",
+  "Nj": 9,
+  "topo": "ad5779d49222d34e",
+  "hyd": "51321420f3b38677"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/small/6848-68nodes.inp",
+  "sha256": "24fe087a484adc84",
+  "parse": "ok",
+  "Nj": 69,
+  "topo": "ec30ed25d46639a2",
+  "hyd": "96b74a987cb88a51"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/small/Elhay-ZeroFlow.inp",
+  "sha256": "a605f06d36fd6656",
+  "parse": "ok",
+  "Nj": 7,
+  "topo": "f088cc9b180e7b83",
+  "hyd": "a47879b50ebdcae3"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/small/GES4-9.inp",
+  "sha256": "585e2ac7ad391418",
+  "parse": "ok",
+  "Nj": 11,
+  "topo": "f03ac4badaa03564",
+  "hyd": "877ec0c6249a8a8b"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/small/JEP5-13.inp",
+  "sha256": "87160de047b7dc13",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/small/noflow.inp",
+  "sha256": "097d40bb3b185885",
+  "parse": "ok",
+  "Nj": 2,
+  "topo": "1ab652ea3c2f2d41",
+  "hyd": "84b761956847d1b2"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/small/sampletown.inp",
+  "sha256": "cd96cd3aa93d507f",
+  "parse": "ok",
+  "Nj": 6,
+  "topo": "a4d03acc284efb00",
+  "hyd": "dca096cf2816c5c6"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/small/simplenet.inp",
+  "sha256": "adcf2d6cf5334e00",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/small/simpson_test.inp",
+  "sha256": "6e010dbaed6c07ec",
+  "parse": "ok",
+  "Nj": 4,
+  "topo": "77cb8426d4683c4d",
+  "hyd": "56ec1bc40b446b83"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/small/simpson_test_2-12.inp",
+  "sha256": "20c84607d214e8b3",
+  "parse": "ok",
+  "Nj": 4,
+  "topo": "77cb8426d4683c4d",
+  "hyd": "93af9370cee66b02"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/small/st-net3-3.inp",
+  "sha256": "ba9f34957ac186d9",
+  "parse": "ok",
+  "Nj": 9,
+  "topo": "61a0fab243d6abff",
+  "hyd": "3f1103c43206c737"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/small/st-net3.inp",
+  "sha256": "d1e8196a16ad5371",
+  "parse": "ok",
+  "Nj": 9,
+  "topo": "61a0fab243d6abff",
+  "hyd": "7359beb043fb3ea4"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/small/test101-3.inp",
+  "sha256": "c4317bfbcd6451ba",
+  "parse": "ok",
+  "Nj": 15,
+  "topo": "aaaea7cf005b7dfa",
+  "hyd": "d3b0bcc423ebfdf0"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/small/test101.inp",
+  "sha256": "15b36f1b4ba1b4b1",
+  "parse": "ok",
+  "Nj": 15,
+  "topo": "aaaea7cf005b7dfa",
+  "hyd": "d3b0bcc423ebfdf0"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/small/todinitest.inp",
+  "sha256": "78450b0cf55cd09c",
+  "parse": "ok",
+  "Nj": 4,
+  "topo": "1395b685300720f4",
+  "hyd": "9c23b03efd2592b8"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/tanks/2Tanks.inp",
+  "sha256": "78f78737d7936c08",
+  "parse": "ok",
+  "Nj": 1,
+  "topo": "bc80471a98963589",
+  "hyd": "a0ea3db8978cb8b4"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/tanks/gestar1.inp",
+  "sha256": "2271a402d3381771",
+  "parse": "ok",
+  "Nj": 2,
+  "topo": "3e8213337bbf49a6",
+  "hyd": "56c4cfcb886ac2f2"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/tanks/gestar1mod.inp",
+  "sha256": "c58477457c41ec8f",
+  "parse": "ok",
+  "Nj": 1,
+  "topo": "284525bc88aad330",
+  "hyd": "d1ab923608b3ba77"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/tanks/gestar1modHW.inp",
+  "sha256": "79e0b75ef0f88eff",
+  "parse": "ok",
+  "Nj": 1,
+  "topo": "284525bc88aad330",
+  "hyd": "7e30f69e579f92d9"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/valves/2PRVs-a.inp",
+  "sha256": "a9d34b53838eee1f",
+  "parse": "ok",
+  "Nj": 5,
+  "topo": "a3fe48c5025ade4e",
+  "hyd": "5ab42dbe3c09196c"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/valves/2PRVs-aquis.inp",
+  "sha256": "0f5d3ad3e61dae19",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/valves/2PRVs.inp",
+  "sha256": "52616e07a760cebe",
+  "parse": "ok",
+  "Nj": 4,
+  "topo": "0e400fbe3e2dee36",
+  "hyd": "45e654f47000a19d"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/valves/2fcvs.inp",
+  "sha256": "83adf2b42d0b5ca8",
+  "parse": "ok",
+  "Nj": 19,
+  "topo": "d687eb84f5d60c48",
+  "hyd": "3f3a6bb101242f33"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/valves/5fcvs.inp",
+  "sha256": "694c6ffbd1f133ea",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/valves/fcv-noflow.inp",
+  "sha256": "bfa9d9939d595238",
+  "parse": "ok",
+  "Nj": 2,
+  "topo": "359ef7dd9fb78e2f",
+  "hyd": "4feeb83dc701ded2"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/valves/fcv.inp",
+  "sha256": "1c96f38135624cb6",
+  "parse": "ok",
+  "Nj": 2,
+  "topo": "359ef7dd9fb78e2f",
+  "hyd": "6b4b12acddb79bc5"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/epanet-tests/valves/fcv2.inp",
+  "sha256": "acac066328bae9ea",
+  "parse": "ok",
+  "Nj": 2,
+  "topo": "359ef7dd9fb78e2f",
+  "hyd": "14fa05890112f2ba"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/msx-examples/As5Adsorb/example.inp",
+  "sha256": "a9864c9efd229292",
+  "parse": "ok",
+  "Nj": 4,
+  "topo": "03fb48fe69625d43",
+  "hyd": "8af902c6c38365b5"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/msx-examples/Batch-NH2Cl/batch-nh2cl.inp",
+  "sha256": "6124460e6efea407",
+  "parse": "ok",
+  "Nj": 1,
+  "topo": "5493b8d35addbed0",
+  "hyd": "b5fc97b9df34e89b"
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/msx-examples/Net2-CL2/net2-cl2.inp",
+  "sha256": "219ee99f4becf60f",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/msx-examples/Net3-Bio/net3-bio.inp",
+  "sha256": "e59b2195138a4c6f",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/epanet-example-networks/msx-examples/Net3-NH2Cl/Net3-NH2CL.inp",
+  "sha256": "e59b2195138a4c6f",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/Anytown Water Distribution Network/anytown-exeter.inp",
+  "sha256": "54833882c477f143",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/D-Town Water Distribution Network BWN-II/Original_BWNII/10_Guidolin.inp",
+  "sha256": "41135b3c3cc1fb56",
+  "parse": "ok",
+  "Nj": 399,
+  "topo": "d23d3bebcf5f14d7",
+  "hyd": "8498fd95b7bdc097"
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/D-Town Water Distribution Network BWN-II/Original_BWNII/11_Wang.inp",
+  "sha256": "766806cb491df79d",
+  "parse": "ok",
+  "Nj": 399,
+  "topo": "2db714416f60507b",
+  "hyd": "fc4d88c9873c72b5"
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/D-Town Water Distribution Network BWN-II/Original_BWNII/12_Kandiah.inp",
+  "sha256": "7a983819429f4d0d",
+  "parse": "ok",
+  "Nj": 399,
+  "topo": "172d03a626cd1f27",
+  "hyd": "87a1f4311bf5c92e"
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/D-Town Water Distribution Network BWN-II/Original_BWNII/13_Morley.inp",
+  "sha256": "25d62d6eb7496013",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/D-Town Water Distribution Network BWN-II/Original_BWNII/14_Tolson.inp",
+  "sha256": "d7dc64ab02acd2ac",
+  "parse": "ok",
+  "Nj": 398,
+  "topo": "dc115aa37749e0af",
+  "hyd": "45929571bffb8a94"
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/D-Town Water Distribution Network BWN-II/Original_BWNII/1_Wu.inp",
+  "sha256": "f972da0bc1a7695a",
+  "parse": "ok",
+  "Nj": 398,
+  "topo": "377ee66cd90a3088",
+  "hyd": "c995bab51fd6d4a9"
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/D-Town Water Distribution Network BWN-II/Original_BWNII/2_Walski.inp",
+  "sha256": "794e70880aedc41e",
+  "parse": "ok",
+  "Nj": 401,
+  "topo": "e82156a1f8315365",
+  "hyd": "f4023d9bc65e3e24"
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/D-Town Water Distribution Network BWN-II/Original_BWNII/3_Stokes.inp",
+  "sha256": "c1fc2fe7546243bb",
+  "parse": "ok",
+  "Nj": 399,
+  "topo": "845d624a361030db",
+  "hyd": "34416cd0be9b19e0"
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/D-Town Water Distribution Network BWN-II/Original_BWNII/4_Alvisi.inp",
+  "sha256": "208288f03d346fd2",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/D-Town Water Distribution Network BWN-II/Original_BWNII/5_Saldarriaga.inp",
+  "sha256": "67c7eb0478ee7a6b",
+  "parse": "ok",
+  "Nj": 398,
+  "topo": "9b8dcd3143cf0e7e",
+  "hyd": "5fc2ebf53485aab4"
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/D-Town Water Distribution Network BWN-II/Original_BWNII/6_Bent.inp",
+  "sha256": "af31b4ddad5dc8bb",
+  "parse": "ok",
+  "Nj": 399,
+  "topo": "b0303157c1660945",
+  "hyd": "3ba617eb762be936"
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/D-Town Water Distribution Network BWN-II/Original_BWNII/7_Matos.inp",
+  "sha256": "2f963dae06a4699d",
+  "parse": "ok",
+  "Nj": 399,
+  "topo": "9f27ecd25abf06cb",
+  "hyd": "eabe83ed9477a325"
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/D-Town Water Distribution Network BWN-II/Original_BWNII/8_Yoo.inp",
+  "sha256": "02c16d7dc8059aa1",
+  "parse": "ok",
+  "Nj": 399,
+  "topo": "4b262cf868332737",
+  "hyd": "c74dd140cca3ac0a"
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/D-Town Water Distribution Network BWN-II/Original_BWNII/9_Iglesias-Rey.inp",
+  "sha256": "b4129cf6f4c25125",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/D-Town Water Distribution Network BWN-II/d-town.inp",
+  "sha256": "a4fc184845d7d7a9",
+  "parse": "ok",
+  "Nj": 399,
+  "topo": "1e8cee21d59c844e",
+  "hyd": "3d15d79b8b74a760"
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/DesignResiliance/BAK.inp",
+  "sha256": "ece71579f441f9d8",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/DesignResiliance/BIN.inp",
+  "sha256": "538dc2caa83e8582",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/DesignResiliance/BLA.inp",
+  "sha256": "a07ee302124178fb",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/DesignResiliance/EXN.inp",
+  "sha256": "1d09ea1ae981de1d",
+  "parse": "ok",
+  "Nj": 1891,
+  "topo": "59a30e47fe3efaa4",
+  "hyd": "e3dac71e439b54ba"
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/DesignResiliance/FOS.inp",
+  "sha256": "de69a9741eda582f",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/DesignResiliance/GOY.inp",
+  "sha256": "0d1fc982cdab6ef5",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/DesignResiliance/HAN.inp",
+  "sha256": "9c755db0ce512a31",
+  "parse": "ok",
+  "Nj": 31,
+  "topo": "2776158c63efe165",
+  "hyd": "f0b7a0c6c48f10dc"
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/DesignResiliance/MOD.inp",
+  "sha256": "d7ba5baa6daebd01",
+  "parse": "ok",
+  "Nj": 268,
+  "topo": "771c6c3ae07b2139",
+  "hyd": "4ac5b297eabb191b"
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/DesignResiliance/NYT.inp",
+  "sha256": "9b6bd3de54212280",
+  "parse": "ok",
+  "Nj": 19,
+  "topo": "75476e786f2510e4",
+  "hyd": "5b62f61f4b00729e"
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/DesignResiliance/PES.inp",
+  "sha256": "3908c7b6304b1399",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/DesignResiliance/TLN.inp",
+  "sha256": "cdbaa07ca49fc30e",
+  "parse": "ok",
+  "Nj": 6,
+  "topo": "38237c5a00f3232c",
+  "hyd": "892461536311afe8"
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/DesignResiliance/TRN.inp",
+  "sha256": "b513aec0c0a90339",
+  "parse": "ok",
+  "Nj": 10,
+  "topo": "d2d6d414effbbf0b",
+  "hyd": "7d4fbfdbf299b0dc"
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/EXNET/exnet-exeter.inp",
+  "sha256": "861c93347d5384ce",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/Expansion/Wolf-Cordera Ranch/bocika-output.inp",
+  "sha256": "2ebc59cc25978e6d",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/Expansion/Wolf-Cordera Ranch/wolf-initial-fig.inp",
+  "sha256": "a794ca3ab7dea346",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/Expansion/Wolf-Cordera Ranch/wolf-modified-fig.inp",
+  "sha256": "c27faa598a1bd608",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/Expansion/Wolf-Cordera Ranch/wolf-output-fig.inp",
+  "sha256": "e53be84d339c7828",
+  "parse": "FAIL",
+  "Nj": null
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/Gessler 1985/gessler1985.inp",
+  "sha256": "528f6f169c74a6fb",
+  "parse": "ok",
+  "Nj": 10,
+  "topo": "a99447fd34856c92",
+  "hyd": "e674b7a94b081ecb"
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/Layout/Hanoi water distribution network/hanoi-exeter.inp",
+  "sha256": "9c755db0ce512a31",
+  "parse": "ok",
+  "Nj": 31,
+  "topo": "2776158c63efe165",
+  "hyd": "f0b7a0c6c48f10dc"
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/New York water supply system/nytun.inp",
+  "sha256": "6b302e22613f7ad4",
+  "parse": "ok",
+  "Nj": 19,
+  "topo": "a6968ee0d5fb73a1",
+  "hyd": "e26180009a9e970e"
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/Operation/Richmond/Richmond_skeleton.inp",
+  "sha256": "32737b69a99ad73a",
+  "parse": "ok",
+  "Nj": 41,
+  "topo": "378b9a1543fe8a7b",
+  "hyd": "daa2ce47415c4862"
+ },
+ {
+  "path": "networks/EXAMPLE/exeter-benchmarks/Operation/Richmond/Richmond_standard.inp",
+  "sha256": "d3c270d8ff5d5ebd",
+  "parse": "ok",
+  "Nj": 865,
+  "topo": "c6cdb565912340b2",
+  "hyd": "7df39c9dd12354a2"
+ },
+ {
+  "path": "networks/EXAMPLE/pangaea/NYT.inp",
+  "sha256": "f34427dc37b6ffb0",
+  "parse": "ok",
+  "Nj": 19,
+  "topo": "a45d36228498bee8",
+  "hyd": "0d257d27e8785661"
+ },
+ {
+  "path": "networks/EXAMPLE/pangaea/PacificCity.inp",
+  "sha256": "6ae8ae9b5816edb9",
+  "parse": "ok",
+  "Nj": 8715,
+  "topo": "372d7462942901fc",
+  "hyd": "c8692171d5de98d4"
+ }
+]

@@ -1,0 +1,190 @@
+/data/run01/<user>/wdsgpu/hydrograd/relaud/mutrg/dgga/solver.py:2460: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/relaud/mutrg/dgga/solver.py:2460: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+================================================================================================
+regression_gpu.py - cuDSS 通路不变量回归（审计 R2 + P4 终审 T4）
+设备: NVIDIA GeForce RTX 5090 | torch 2.11.0+cu128 | nvmath 1.0.0 | 节点 <node-09>
+网络目录: /data/home/<user>/run/wdsgpu/hydrograd/p2nets
+================================================================================================
+
+【T1 迭代数逐项相等（cudss vs dense）】
+  Hanoi    B=1    迭代 dense=8 cudss=8 逐项相等=是 | max|dH|=1.137e-13 ft（仅报告，非门槛） PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  Hanoi    B=8    迭代 dense=8 cudss=8 逐项相等=是 | max|dH|=1.990e-13 ft（仅报告，非门槛） PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  Net3     B=1    迭代 dense=7 cudss=7 逐项相等=是 | max|dH|=1.471e-08 ft（仅报告，非门槛） PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  Net3     B=8    迭代 dense=10 cudss=10 逐项相等=是 | max|dH|=7.326e-12 ft（仅报告，非门槛） PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  Modena   B=8    迭代 dense={13,14} cudss={13,14} 逐项相等=是 | max|dH|=5.286e-12 ft（仅报告，非门槛） PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  Modena   B=64   迭代 dense=7 cudss=7 逐项相等=是 | max|dH|=1.271e-10 ft（仅报告，非门槛） PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  City_D   B=8    迭代 dense=8 cudss=8 逐项相等=是 | max|dH|=4.683e-08 ft（仅报告，非门槛） PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  City_D   B=64   迭代 dense=7 cudss=7 逐项相等=是 | max|dH|=2.923e-07 ft（仅报告，非门槛） PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  ky4      B=8    迭代 dense=7 cudss=7 逐项相等=是 | max|dH|=4.210e-08 ft（仅报告，非门槛） PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  ky4      B=64   迭代 dense={8,9} cudss={8,9} 逐项相等=是 | max|dH|=4.116e-08 ft（仅报告，非门槛） PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+
+【T2 bwd_refactorize（slots 足够时必须为 0；slots=1 时必须为 K−1）】
+  Hanoi    B=1    K=6 slots=6  | fac=6  (期望6  ) bwd_refac=0 (期望0) bwd_reuse=6 (期望6) solve=18  bwd_solve=18   PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  Hanoi    B=1    K=6 slots=1  | fac=11 (期望11 ) bwd_refac=5 (期望5) bwd_reuse=1 (期望1) solve=18  bwd_solve=18   PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  Net3     B=1    K=6 slots=6  | fac=6  (期望6  ) bwd_refac=0 (期望0) bwd_reuse=6 (期望6) solve=18  bwd_solve=18   PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  Net3     B=1    K=6 slots=1  | fac=11 (期望11 ) bwd_refac=5 (期望5) bwd_reuse=1 (期望1) solve=18  bwd_solve=18   PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  Modena   B=8    K=6 slots=6  | fac=6  (期望6  ) bwd_refac=0 (期望0) bwd_reuse=6 (期望6) solve=18  bwd_solve=18   PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  Modena   B=8    K=6 slots=1  | fac=11 (期望11 ) bwd_refac=5 (期望5) bwd_reuse=1 (期望1) solve=18  bwd_solve=18   PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  City_D   B=8    K=5 slots=5  | fac=5  (期望5  ) bwd_refac=0 (期望0) bwd_reuse=5 (期望5) solve=15  bwd_solve=15   PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  City_D   B=8    K=5 slots=1  | fac=9  (期望9  ) bwd_refac=4 (期望4) bwd_reuse=1 (期望1) solve=15  bwd_solve=15   PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  ky4      B=8    K=5 slots=5  | fac=5  (期望5  ) bwd_refac=0 (期望0) bwd_reuse=5 (期望5) solve=15  bwd_solve=15   PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  ky4      B=8    K=5 slots=1  | fac=9  (期望9  ) bwd_refac=4 (期望4) bwd_reuse=1 (期望1) solve=15  bwd_solve=15   PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+
+【T3 复用即逐位核对（stale 必须 0，且事件数必须 >0）】
+  Hanoi    B=1    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  Hanoi    B=1    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  Hanoi    B=8    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  Hanoi    B=8    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  Net3     B=1    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  Net3     B=1    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  Net3     B=8    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  Net3     B=8    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  Modena   B=8    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  Modena   B=8    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  Modena   B=64   slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  Modena   B=64   slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  City_D   B=8    slots=5  | 伴随事件=5  其中复用=5  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  City_D   B=8    slots=1  | 伴随事件=5  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  City_D   B=64   slots=5  | 伴随事件=5  其中复用=5  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  City_D   B=64   slots=1  | 伴随事件=5  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  ky4      B=8    slots=5  | 伴随事件=5  其中复用=5  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  ky4      B=8    slots=1  | 伴随事件=5  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  ky4      B=64   slots=5  | 伴随事件=5  其中复用=5  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  ky4      B=64   slots=1  | 伴随事件=5  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+
+【T4 cuDSS 收到的 csr_data 逐位对称（max|A−A^T| 必须 ==0.0，无容差）】
+  Hanoi    B=1    | 装配次数=19 (前向 8 ) nnz=97     max|A−A^T|=0.000e+00 非对称次数=0  PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  Hanoi    B=8    | 装配次数=8  (前向 8 ) nnz=97     max|A−A^T|=0.000e+00 非对称次数=0  PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  Net3     B=1    | 装配次数=18 (前向 7 ) nnz=320    max|A−A^T|=0.000e+00 非对称次数=0  PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  Net3     B=8    | 装配次数=10 (前向 10) nnz=320    max|A−A^T|=0.000e+00 非对称次数=0  PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  Modena   B=8    | 装配次数=25 (前向 14) nnz=894    max|A−A^T|=0.000e+00 非对称次数=0  PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  Modena   B=64   | 装配次数=7  (前向 7 ) nnz=894    max|A−A^T|=0.000e+00 非对称次数=0  PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  City_D   B=8    | 装配次数=17 (前向 8 ) nnz=1645   max|A−A^T|=0.000e+00 非对称次数=0  PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  City_D   B=64   | 装配次数=7  (前向 7 ) nnz=1645   max|A−A^T|=0.000e+00 非对称次数=0  PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  ky4      B=8    | 装配次数=16 (前向 7 ) nnz=3219   max|A−A^T|=0.000e+00 非对称次数=0  PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  ky4      B=64   | 装配次数=9  (前向 9 ) nnz=3219   max|A−A^T|=0.000e+00 非对称次数=0  PASS
+
+================================================================================================
+总判定: PASS （50/50 项通过）
+================================================================================================

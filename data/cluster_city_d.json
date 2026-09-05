@@ -1,0 +1,4767 @@
+{
+ "config": {
+  "net": "city_d",
+  "n_candidates": 49,
+  "n_frames": 25,
+  "n_sensors_s0": 40,
+  "sigma_ft": 0.1,
+  "n_topo_edges": 55,
+  "coord_over_pipelen": 1.0000000000010953,
+  "taus": [
+   0.0,
+   0.5,
+   0.8,
+   0.9,
+   0.95,
+   0.98,
+   0.99,
+   0.995,
+   0.999,
+   0.9995,
+   0.9999,
+   1.01
+  ],
+  "lam_grid": 14,
+  "n_random_controls": 20,
+  "objective": "min_{x>=0} 0.5||Ax-y||^2 + lam * sum_g sqrt(|g|) ||x_g||_2 (FISTA)",
+  "cluster_rule": "受拓扑约束凝聚层次聚类（complete linkage，只合并 Voronoi 相邻簇，阈值 tau：簇内任意两候选互相干 >= tau）",
+  "lam_rule": "偏差原则：λ 由大到小，第一个使 RSS <= n·σ² 的 λ；达不到则取最小 λ",
+  "host": "<workstation>"
+ },
+ "runs": {
+  "S0/noisy": {
+   "n_sensors": 40,
+   "n_obs": 1000,
+   "coh_max": 0.9999999938923985,
+   "coh_median": 0.927606900005323,
+   "n_pairs_gt_099": 167,
+   "signal_norm_true": {
+    "T1": 0.07100168205863763,
+    "T2": 1.286799994324509,
+    "T3": 1.2292098630601784
+   },
+   "col_norm_true": {
+    "T1": 0.14939458584397936,
+    "T2": 5.075479686842343,
+    "T3": 3.358769990064322
+   },
+   "noise_norm": 3.2331018102799156,
+   "signal_norm": 2.6418336310275907,
+   "model_err_rel": 0.3553197221125164,
+   "point": {
+    "rank": {
+     "T1": 49,
+     "T2": 15,
+     "T3": 16
+    },
+    "lam_sel": 2.4883282590615052,
+    "lam_max": 10.263424386644065,
+    "rss": 11.693111908447168,
+    "floor": 11.828117581251746,
+    "active": 5
+   },
+   "taus": [
+    {
+     "n_clusters": 1,
+     "size_max": 49,
+     "size_mean": 49.0,
+     "diameter_mean_m": 13061.726466253574,
+     "diameter_median_m": 13061.726466253574,
+     "diameter_max_m": 13061.726466253574,
+     "radius_mean_m": 9042.602489313533,
+     "radius_median_m": 9042.602489313533,
+     "radius_max_m": 9042.602489313533,
+     "district_km_mean": 83.91575586718095,
+     "lam_sel": 1.5441741775100148,
+     "lam_max": 6.369141552352796,
+     "rss_sel": 11.693175961264359,
+     "rss_floor": 11.828528284572867,
+     "reached_floor": true,
+     "active_groups": 1,
+     "per_leak": [
+      {
+       "label": "T1",
+       "cluster_size": 49,
+       "cluster_diameter_m": 13061.726466253574,
+       "cluster_radius_m": 9042.602489313533,
+       "district_pipe_len_km": 83.91575586718095,
+       "rank": 1,
+       "score": 0.10743039929918534,
+       "hit_top1": true,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.6182999455423771,
+       "max_rival_coh_outside": 0.0,
+       "max_rival_coh_inside": 0.9592001213919441,
+       "point_rank": 49,
+       "point_hit_at_budget": true,
+       "point_diameter_at_budget_m": 13061.726466253574,
+       "point_radius_at_budget_m": 9042.602489320529
+      },
+      {
+       "label": "T2",
+       "cluster_size": 49,
+       "cluster_diameter_m": 13061.726466253574,
+       "cluster_radius_m": 9042.602489313533,
+       "district_pipe_len_km": 83.91575586718095,
+       "rank": 1,
+       "score": 0.10743039929918534,
+       "hit_top1": true,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.6182999455423771,
+       "max_rival_coh_outside": 0.0,
+       "max_rival_coh_inside": 0.9999996989118861,
+       "point_rank": 15,
+       "point_hit_at_budget": true,
+       "point_diameter_at_budget_m": 13061.726466253574,
+       "point_radius_at_budget_m": 9042.602489320529
+      },
+      {
+       "label": "T3",
+       "cluster_size": 49,
+       "cluster_diameter_m": 13061.726466253574,
+       "cluster_radius_m": 9042.602489313533,
+       "district_pipe_len_km": 83.91575586718095,
+       "rank": 1,
+       "score": 0.10743039929918534,
+       "hit_top1": true,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.6182999455423771,
+       "max_rival_coh_outside": 0.0,
+       "max_rival_coh_inside": 0.9993939606897483,
+       "point_rank": 16,
+       "point_hit_at_budget": true,
+       "point_diameter_at_budget_m": 13061.726466253574,
+       "point_radius_at_budget_m": 9042.602489320529
+      }
+     ],
+     "hit_top1": 3,
+     "hit_top3": 3,
+     "hit_rate_top1": 1.0,
+     "hit_rate_top3": 1.0,
+     "hits_top3_along_lambda": [
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3
+     ],
+     "point_hit_at_budget": 3,
+     "point_diameter_at_budget_mean_m": 13061.726466253574,
+     "point_radius_at_budget_mean_m": 9042.602489320529,
+     "ncp_true_clusters": [
+      {
+       "label": "T1",
+       "rank": 49,
+       "ncp": 697.5204610662305,
+       "z": 70.46020686232839
+      },
+      {
+       "label": "T2",
+       "rank": 49,
+       "ncp": 697.5204610662305,
+       "z": 70.46020686232839
+      },
+      {
+       "label": "T3",
+       "rank": 49,
+       "ncp": 697.5204610662305,
+       "z": 70.46020686232839
+      }
+     ],
+     "tau": 0.0,
+     "no_topology": {
+      "n_clusters": 1,
+      "diameter_mean_m": 13061.726466253574,
+      "radius_mean_m": 9042.602489313533,
+      "hit_top1": 3,
+      "hit_top3": 3
+     },
+     "geometry_only": {
+      "n_clusters": 1,
+      "diameter_mean_m": 13061.726466253574,
+      "radius_mean_m": 9042.602489313533,
+      "hit_top1": 3,
+      "hit_top3": 3
+     }
+    },
+    {
+     "n_clusters": 4,
+     "size_max": 38,
+     "size_mean": 12.25,
+     "diameter_mean_m": 3022.918493934987,
+     "diameter_median_m": 2573.7799321459242,
+     "diameter_max_m": 6944.1141114481,
+     "radius_mean_m": 1902.1192464133237,
+     "radius_median_m": 1435.565060764995,
+     "radius_max_m": 4737.346864123305,
+     "district_km_mean": 20.978938966795237,
+     "lam_sel": 1.1675945273541601,
+     "lam_max": 9.780678282306852,
+     "rss_sel": 11.332253934166626,
+     "rss_floor": 11.829084096097741,
+     "reached_floor": true,
+     "active_groups": 3,
+     "per_leak": [
+      {
+       "label": "T1",
+       "cluster_size": 1,
+       "cluster_diameter_m": 0.0,
+       "cluster_radius_m": 0.0,
+       "district_pipe_len_km": 3.75012195638,
+       "rank": 4,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.9592001213919441,
+       "max_rival_coh_inside": 0.0,
+       "point_rank": 49,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 0.0,
+       "point_radius_at_budget_m": 0.0
+      },
+      {
+       "label": "T2",
+       "cluster_size": 8,
+       "cluster_diameter_m": 4092.3934013529356,
+       "cluster_radius_m": 2343.546890060141,
+       "district_pipe_len_km": 10.723104731070004,
+       "rank": 1,
+       "score": 0.12246940610667482,
+       "hit_top1": true,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.34218938917195113,
+       "max_rival_coh_outside": 0.2537581733245183,
+       "max_rival_coh_inside": 0.9999996989118861,
+       "point_rank": 15,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 11729.566039922249,
+       "point_radius_at_budget_m": 7758.123858213025
+      },
+      {
+       "label": "T3",
+       "cluster_size": 38,
+       "cluster_diameter_m": 6944.1141114481,
+       "cluster_radius_m": 4737.346864123305,
+       "district_pipe_len_km": 60.652284850781946,
+       "rank": 2,
+       "score": 0.055693843938167106,
+       "hit_top1": false,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.33214765927216156,
+       "max_rival_coh_outside": 0.875658367902714,
+       "max_rival_coh_inside": 0.9993939606897483,
+       "point_rank": 16,
+       "point_hit_at_budget": true,
+       "point_diameter_at_budget_m": 13061.726466253574,
+       "point_radius_at_budget_m": 9495.28396141982
+      }
+     ],
+     "hit_top1": 1,
+     "hit_top3": 2,
+     "hit_rate_top1": 0.3333333333333333,
+     "hit_rate_top3": 0.6666666666666666,
+     "hits_top3_along_lambda": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+     ],
+     "point_hit_at_budget": 1,
+     "point_diameter_at_budget_mean_m": 8263.764168725274,
+     "point_radius_at_budget_mean_m": 5751.135939877615,
+     "ncp_true_clusters": [
+      {
+       "label": "T1",
+       "rank": 1,
+       "ncp": 396.5529050139903,
+       "z": 280.4052482346174
+      },
+      {
+       "label": "T2",
+       "rank": 8,
+       "ncp": 574.5111227313888,
+       "z": 143.6277806828472
+      },
+      {
+       "label": "T3",
+       "rank": 38,
+       "ncp": 329.05524583441195,
+       "z": 37.74522535352986
+      }
+     ],
+     "tau": 0.5,
+     "no_topology": {
+      "n_clusters": 3,
+      "diameter_mean_m": 5046.179446941381,
+      "radius_mean_m": 3503.0693602843744,
+      "hit_top1": 1,
+      "hit_top3": 3
+     },
+     "geometry_only": {
+      "n_clusters": 4,
+      "diameter_mean_m": 3607.537205011516,
+      "radius_mean_m": 2383.7781922098757,
+      "hit_top1": 1,
+      "hit_top3": 2
+     }
+    },
+    {
+     "n_clusters": 5,
+     "size_max": 35,
+     "size_mean": 9.8,
+     "diameter_mean_m": 2611.2679433364115,
+     "diameter_median_m": 1998.783978898534,
+     "diameter_max_m": 5909.9958734916745,
+     "radius_mean_m": 1506.2949216948098,
+     "radius_median_m": 1040.604861725665,
+     "radius_max_m": 3619.7396252183944,
+     "district_km_mean": 16.783151173436192,
+     "lam_sel": 1.1675945273541601,
+     "lam_max": 9.780678282306852,
+     "rss_sel": 11.369472172356645,
+     "rss_floor": 11.829050716693065,
+     "reached_floor": true,
+     "active_groups": 4,
+     "per_leak": [
+      {
+       "label": "T1",
+       "cluster_size": 1,
+       "cluster_diameter_m": 0.0,
+       "cluster_radius_m": 0.0,
+       "district_pipe_len_km": 3.75012195638,
+       "rank": 5,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.9592001213919441,
+       "max_rival_coh_inside": 0.0,
+       "point_rank": 49,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 0.0,
+       "point_radius_at_budget_m": 0.0
+      },
+      {
+       "label": "T2",
+       "cluster_size": 8,
+       "cluster_diameter_m": 4092.3934013529356,
+       "cluster_radius_m": 2343.546890060141,
+       "district_pipe_len_km": 10.723104731070004,
+       "rank": 1,
+       "score": 0.1225540259539639,
+       "hit_top1": true,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.3424381223008521,
+       "max_rival_coh_outside": 0.2537581733245183,
+       "max_rival_coh_inside": 0.9999996989118861,
+       "point_rank": 15,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 11729.566039922249,
+       "point_radius_at_budget_m": 7758.123858213025
+      },
+      {
+       "label": "T3",
+       "cluster_size": 35,
+       "cluster_diameter_m": 5909.9958734916745,
+       "cluster_radius_m": 3619.7396252183944,
+       "district_pipe_len_km": 54.882408359432965,
+       "rank": 3,
+       "score": 0.035760425942705204,
+       "hit_top1": false,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.20440956878223715,
+       "max_rival_coh_outside": 0.875658367902714,
+       "max_rival_coh_inside": 0.9993939606897483,
+       "point_rank": 16,
+       "point_hit_at_budget": true,
+       "point_diameter_at_budget_m": 13061.726466253574,
+       "point_radius_at_budget_m": 9965.860470484098
+      }
+     ],
+     "hit_top1": 1,
+     "hit_top3": 2,
+     "hit_rate_top1": 0.3333333333333333,
+     "hit_rate_top3": 0.6666666666666666,
+     "hits_top3_along_lambda": [
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+     ],
+     "point_hit_at_budget": 1,
+     "point_diameter_at_budget_mean_m": 8263.764168725274,
+     "point_radius_at_budget_mean_m": 5907.9947762323745,
+     "ncp_true_clusters": [
+      {
+       "label": "T1",
+       "rank": 1,
+       "ncp": 396.5529050139903,
+       "z": 280.4052482346174
+      },
+      {
+       "label": "T2",
+       "rank": 8,
+       "ncp": 574.5111227313888,
+       "z": 143.6277806828472
+      },
+      {
+       "label": "T3",
+       "rank": 35,
+       "ncp": 329.05498951326666,
+       "z": 39.32959375104852
+      }
+     ],
+     "tau": 0.8,
+     "no_topology": {
+      "n_clusters": 4,
+      "diameter_mean_m": 4284.330579930669,
+      "radius_mean_m": 2885.5379291458635,
+      "hit_top1": 1,
+      "hit_top3": 3
+     },
+     "geometry_only": {
+      "n_clusters": 5,
+      "diameter_mean_m": 3234.820874019028,
+      "radius_mean_m": 1969.806067885603,
+      "hit_top1": 1,
+      "hit_top3": 1
+     }
+    },
+    {
+     "n_clusters": 6,
+     "size_max": 23,
+     "size_mean": 8.166666666666666,
+     "diameter_mean_m": 2446.433350829836,
+     "diameter_median_m": 2483.551412105618,
+     "diameter_max_m": 4563.937416475931,
+     "radius_mean_m": 1426.8781594719103,
+     "radius_median_m": 1405.8571408481896,
+     "radius_max_m": 2878.4245536050926,
+     "district_km_mean": 13.985959311196835,
+     "lam_sel": 1.1675945273541601,
+     "lam_max": 9.780678282306852,
+     "rss_sel": 11.43383955956747,
+     "rss_floor": 11.828827996513393,
+     "reached_floor": true,
+     "active_groups": 4,
+     "per_leak": [
+      {
+       "label": "T1",
+       "cluster_size": 1,
+       "cluster_diameter_m": 0.0,
+       "cluster_radius_m": 0.0,
+       "district_pipe_len_km": 3.75012195638,
+       "rank": 6,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.9592001213919441,
+       "max_rival_coh_inside": 0.0,
+       "point_rank": 49,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 0.0,
+       "point_radius_at_budget_m": 0.0
+      },
+      {
+       "label": "T2",
+       "cluster_size": 8,
+       "cluster_diameter_m": 4092.3934013529356,
+       "cluster_radius_m": 2343.546890060141,
+       "district_pipe_len_km": 10.723104731070004,
+       "rank": 1,
+       "score": 0.12263255858788277,
+       "hit_top1": true,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.34266296374403626,
+       "max_rival_coh_outside": 0.2537581733245183,
+       "max_rival_coh_inside": 0.9999996989118861,
+       "point_rank": 15,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 11729.566039922249,
+       "point_radius_at_budget_m": 7758.123858213025
+      },
+      {
+       "label": "T3",
+       "cluster_size": 23,
+       "cluster_diameter_m": 4563.937416475931,
+       "cluster_radius_m": 2878.4245536050926,
+       "district_pipe_len_km": 36.67705206432859,
+       "rank": 5,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.9182430555239879,
+       "max_rival_coh_inside": 0.9993939606897483,
+       "point_rank": 16,
+       "point_hit_at_budget": true,
+       "point_diameter_at_budget_m": 13061.726466253574,
+       "point_radius_at_budget_m": 9708.973596569542
+      }
+     ],
+     "hit_top1": 1,
+     "hit_top3": 1,
+     "hit_rate_top1": 0.3333333333333333,
+     "hit_rate_top3": 0.3333333333333333,
+     "hits_top3_along_lambda": [
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+     ],
+     "point_hit_at_budget": 1,
+     "point_diameter_at_budget_mean_m": 8263.764168725274,
+     "point_radius_at_budget_mean_m": 5822.365818260856,
+     "ncp_true_clusters": [
+      {
+       "label": "T1",
+       "rank": 1,
+       "ncp": 396.5529050139903,
+       "z": 280.4052482346174
+      },
+      {
+       "label": "T2",
+       "rank": 8,
+       "ncp": 574.5111227313888,
+       "z": 143.6277806828472
+      },
+      {
+       "label": "T3",
+       "rank": 23,
+       "ncp": 329.0097253170952,
+       "z": 48.5098374947379
+      }
+     ],
+     "tau": 0.9,
+     "no_topology": {
+      "n_clusters": 6,
+      "diameter_mean_m": 2446.433350829836,
+      "radius_mean_m": 1426.8781594719103,
+      "hit_top1": 1,
+      "hit_top3": 1
+     },
+     "geometry_only": {
+      "n_clusters": 6,
+      "diameter_mean_m": 2774.1869258316474,
+      "radius_mean_m": 1691.9087312911136,
+      "hit_top1": 1,
+      "hit_top3": 2
+     },
+     "random_group_control": {
+      "n": 20,
+      "hit_top1_mean": 0.6,
+      "hit_top3_mean": 2.1,
+      "hit_top3_ge_design": 20,
+      "p_one_sided": 1.0,
+      "diameter_mean_m": 6926.646937529748,
+      "radius_mean_m": 4415.4794122666
+     }
+    },
+    {
+     "n_clusters": 8,
+     "size_max": 20,
+     "size_mean": 6.125,
+     "diameter_mean_m": 1853.605802577153,
+     "diameter_median_m": 1526.9752209187234,
+     "diameter_max_m": 4563.937416475931,
+     "radius_mean_m": 1085.5279654307283,
+     "radius_median_m": 784.0940465977571,
+     "radius_max_m": 2823.6413236967896,
+     "district_km_mean": 10.489469483397624,
+     "lam_sel": 2.3712882996755016,
+     "lam_max": 9.780678282306852,
+     "rss_sel": 11.739125000883853,
+     "rss_floor": 11.828367419439198,
+     "reached_floor": true,
+     "active_groups": 5,
+     "per_leak": [
+      {
+       "label": "T1",
+       "cluster_size": 1,
+       "cluster_diameter_m": 0.0,
+       "cluster_radius_m": 0.0,
+       "district_pipe_len_km": 3.75012195638,
+       "rank": 8,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.9592001213919441,
+       "max_rival_coh_inside": 0.0,
+       "point_rank": 49,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 0.0,
+       "point_radius_at_budget_m": 0.0
+      },
+      {
+       "label": "T2",
+       "cluster_size": 8,
+       "cluster_diameter_m": 4092.3934013529356,
+       "cluster_radius_m": 2343.546890060141,
+       "district_pipe_len_km": 10.723104731070004,
+       "rank": 1,
+       "score": 0.10315660902695313,
+       "hit_top1": true,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.28892385469283555,
+       "max_rival_coh_outside": 0.2537581733245183,
+       "max_rival_coh_inside": 0.9999996989118861,
+       "point_rank": 15,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 11729.566039922249,
+       "point_radius_at_budget_m": 7758.123858213025
+      },
+      {
+       "label": "T3",
+       "cluster_size": 3,
+       "cluster_diameter_m": 126.80889562975183,
+       "cluster_radius_m": 66.76887985499629,
+       "district_pipe_len_km": 2.0353994960649997,
+       "rank": 2,
+       "score": 0.05866900827147223,
+       "hit_top1": false,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.10154090799408905,
+       "max_rival_coh_outside": 0.9757756612211096,
+       "max_rival_coh_inside": 0.9993939606897483,
+       "point_rank": 16,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 9730.751315509608,
+       "point_radius_at_budget_m": 5990.614781162046
+      }
+     ],
+     "hit_top1": 1,
+     "hit_top3": 2,
+     "hit_rate_top1": 0.3333333333333333,
+     "hit_rate_top3": 0.6666666666666666,
+     "hits_top3_along_lambda": [
+      1,
+      1,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+     ],
+     "point_hit_at_budget": 0,
+     "point_diameter_at_budget_mean_m": 7153.439118477286,
+     "point_radius_at_budget_mean_m": 4582.91287979169,
+     "ncp_true_clusters": [
+      {
+       "label": "T1",
+       "rank": 1,
+       "ncp": 396.5529050139903,
+       "z": 280.4052482346174
+      },
+      {
+       "label": "T2",
+       "rank": 8,
+       "ncp": 574.5111227313888,
+       "z": 143.6277806828472
+      },
+      {
+       "label": "T3",
+       "rank": 3,
+       "ncp": 310.7853496720781,
+       "z": 126.87758770483978
+      }
+     ],
+     "tau": 0.95,
+     "no_topology": {
+      "n_clusters": 8,
+      "diameter_mean_m": 1853.605802577153,
+      "radius_mean_m": 1085.5279654307283,
+      "hit_top1": 1,
+      "hit_top3": 2
+     },
+     "geometry_only": {
+      "n_clusters": 8,
+      "diameter_mean_m": 2070.0906281288426,
+      "radius_mean_m": 1211.2084861285525,
+      "hit_top1": 1,
+      "hit_top3": 2
+     }
+    },
+    {
+     "n_clusters": 12,
+     "size_max": 9,
+     "size_mean": 4.083333333333333,
+     "diameter_mean_m": 1314.9644611290034,
+     "diameter_median_m": 1499.2412525233171,
+     "diameter_max_m": 3167.297074906349,
+     "radius_mean_m": 788.4334320287821,
+     "radius_median_m": 895.084688026695,
+     "radius_max_m": 1774.806763643054,
+     "district_km_mean": 6.9929796555984165,
+     "lam_sel": 2.3712882996755016,
+     "lam_max": 9.780678282306852,
+     "rss_sel": 11.684473664725603,
+     "rss_floor": 11.828336289759712,
+     "reached_floor": true,
+     "active_groups": 5,
+     "per_leak": [
+      {
+       "label": "T1",
+       "cluster_size": 1,
+       "cluster_diameter_m": 0.0,
+       "cluster_radius_m": 0.0,
+       "district_pipe_len_km": 3.75012195638,
+       "rank": 12,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.9592001213919441,
+       "max_rival_coh_inside": 0.0,
+       "point_rank": 49,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 0.0,
+       "point_radius_at_budget_m": 0.0
+      },
+      {
+       "label": "T2",
+       "cluster_size": 4,
+       "cluster_diameter_m": 1480.9526186975675,
+       "cluster_radius_m": 749.5645143277249,
+       "district_pipe_len_km": 2.6267365712550004,
+       "rank": 1,
+       "score": 0.13539703436810363,
+       "hit_top1": true,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.27076279667058156,
+       "max_rival_coh_outside": 0.9781861508066021,
+       "max_rival_coh_inside": 0.9999996989118861,
+       "point_rank": 15,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 11580.963371214193,
+       "point_radius_at_budget_m": 7311.147386048567
+      },
+      {
+       "label": "T3",
+       "cluster_size": 3,
+       "cluster_diameter_m": 126.80889562975183,
+       "cluster_radius_m": 66.76887985499629,
+       "district_pipe_len_km": 2.0353994960649997,
+       "rank": 2,
+       "score": 0.058833154660554325,
+       "hit_top1": false,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.10182501910935049,
+       "max_rival_coh_outside": 0.9757756612211096,
+       "max_rival_coh_inside": 0.9993939606897483,
+       "point_rank": 16,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 9730.751315509608,
+       "point_radius_at_budget_m": 5990.614781162046
+      }
+     ],
+     "hit_top1": 1,
+     "hit_top3": 2,
+     "hit_rate_top1": 0.3333333333333333,
+     "hit_rate_top3": 0.6666666666666666,
+     "hits_top3_along_lambda": [
+      1,
+      1,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+     ],
+     "point_hit_at_budget": 0,
+     "point_diameter_at_budget_mean_m": 7103.9048955746,
+     "point_radius_at_budget_mean_m": 4433.920722403537,
+     "ncp_true_clusters": [
+      {
+       "label": "T1",
+       "rank": 1,
+       "ncp": 396.5529050139903,
+       "z": 280.4052482346174
+      },
+      {
+       "label": "T2",
+       "rank": 4,
+       "ncp": 399.59103455990527,
+       "z": 141.27676511932853
+      },
+      {
+       "label": "T3",
+       "rank": 3,
+       "ncp": 310.7853496720781,
+       "z": 126.87758770483978
+      }
+     ],
+     "tau": 0.98,
+     "no_topology": {
+      "n_clusters": 12,
+      "diameter_mean_m": 1314.9644611290034,
+      "radius_mean_m": 788.4334320287821,
+      "hit_top1": 1,
+      "hit_top3": 2
+     },
+     "geometry_only": {
+      "n_clusters": 12,
+      "diameter_mean_m": 1332.5062167670565,
+      "radius_mean_m": 789.7674377834707,
+      "hit_top1": 1,
+      "hit_top3": 1
+     }
+    },
+    {
+     "n_clusters": 13,
+     "size_max": 9,
+     "size_mean": 3.769230769230769,
+     "diameter_mean_m": 1212.6572255371598,
+     "diameter_median_m": 1480.9526186975675,
+     "diameter_max_m": 2454.807445563407,
+     "radius_mean_m": 729.0338361040829,
+     "radius_median_m": 749.5645143277249,
+     "radius_max_m": 1774.806763643054,
+     "district_km_mean": 6.455058143629306,
+     "lam_sel": 2.3712882996755016,
+     "lam_max": 9.780678282306852,
+     "rss_sel": 11.684473664608213,
+     "rss_floor": 11.828336289759713,
+     "reached_floor": true,
+     "active_groups": 5,
+     "per_leak": [
+      {
+       "label": "T1",
+       "cluster_size": 1,
+       "cluster_diameter_m": 0.0,
+       "cluster_radius_m": 0.0,
+       "district_pipe_len_km": 3.75012195638,
+       "rank": 13,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.9592001213919441,
+       "max_rival_coh_inside": 0.0,
+       "point_rank": 49,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 0.0,
+       "point_radius_at_budget_m": 0.0
+      },
+      {
+       "label": "T2",
+       "cluster_size": 4,
+       "cluster_diameter_m": 1480.9526186975675,
+       "cluster_radius_m": 749.5645143277249,
+       "district_pipe_len_km": 2.6267365712550004,
+       "rank": 1,
+       "score": 0.1353970343679929,
+       "hit_top1": true,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.2707627966703602,
+       "max_rival_coh_outside": 0.9781861508066021,
+       "max_rival_coh_inside": 0.9999996989118861,
+       "point_rank": 15,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 11580.963371214193,
+       "point_radius_at_budget_m": 7311.147386048567
+      },
+      {
+       "label": "T3",
+       "cluster_size": 3,
+       "cluster_diameter_m": 126.80889562975183,
+       "cluster_radius_m": 66.76887985499629,
+       "district_pipe_len_km": 2.0353994960649997,
+       "rank": 2,
+       "score": 0.05883315472595697,
+       "hit_top1": false,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.10182501922256429,
+       "max_rival_coh_outside": 0.9757756612211096,
+       "max_rival_coh_inside": 0.9993939606897483,
+       "point_rank": 16,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 9730.751315509608,
+       "point_radius_at_budget_m": 5990.614781162046
+      }
+     ],
+     "hit_top1": 1,
+     "hit_top3": 2,
+     "hit_rate_top1": 0.3333333333333333,
+     "hit_rate_top3": 0.6666666666666666,
+     "hits_top3_along_lambda": [
+      1,
+      1,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+     ],
+     "point_hit_at_budget": 0,
+     "point_diameter_at_budget_mean_m": 7103.9048955746,
+     "point_radius_at_budget_mean_m": 4433.920722403537,
+     "ncp_true_clusters": [
+      {
+       "label": "T1",
+       "rank": 1,
+       "ncp": 396.5529050139903,
+       "z": 280.4052482346174
+      },
+      {
+       "label": "T2",
+       "rank": 4,
+       "ncp": 399.59103455990527,
+       "z": 141.27676511932853
+      },
+      {
+       "label": "T3",
+       "rank": 3,
+       "ncp": 310.7853496720781,
+       "z": 126.87758770483978
+      }
+     ],
+     "tau": 0.99,
+     "no_topology": {
+      "n_clusters": 13,
+      "diameter_mean_m": 1212.6572255371598,
+      "radius_mean_m": 729.0338361040829,
+      "hit_top1": 1,
+      "hit_top3": 2
+     },
+     "geometry_only": {
+      "n_clusters": 13,
+      "diameter_mean_m": 1240.433649338719,
+      "radius_mean_m": 734.5506636810119,
+      "hit_top1": 1,
+      "hit_top3": 1
+     },
+     "random_group_control": {
+      "n": 20,
+      "hit_top1_mean": 0.15,
+      "hit_top3_mean": 0.65,
+      "hit_top3_ge_design": 1,
+      "p_one_sided": 0.09523809523809523,
+      "diameter_mean_m": 5835.110820261326,
+      "radius_mean_m": 3543.7137471775945
+     }
+    },
+    {
+     "n_clusters": 17,
+     "size_max": 9,
+     "size_mean": 2.8823529411764706,
+     "diameter_mean_m": 669.032708781926,
+     "diameter_median_m": 567.788177409545,
+     "diameter_max_m": 2231.9328221568007,
+     "radius_mean_m": 378.99828444310947,
+     "radius_median_m": 283.8940887047725,
+     "radius_max_m": 1334.5647439020133,
+     "district_km_mean": 4.936220933363589,
+     "lam_sel": 2.3712882996755016,
+     "lam_max": 9.780678282306852,
+     "rss_sel": 11.683681893619397,
+     "rss_floor": 11.82833640723119,
+     "reached_floor": true,
+     "active_groups": 5,
+     "per_leak": [
+      {
+       "label": "T1",
+       "cluster_size": 1,
+       "cluster_diameter_m": 0.0,
+       "cluster_radius_m": 0.0,
+       "district_pipe_len_km": 3.75012195638,
+       "rank": 17,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.9592001213919441,
+       "max_rival_coh_inside": 0.0,
+       "point_rank": 49,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 0.0,
+       "point_radius_at_budget_m": 0.0
+      },
+      {
+       "label": "T2",
+       "cluster_size": 4,
+       "cluster_diameter_m": 1480.9526186975675,
+       "cluster_radius_m": 749.5645143277249,
+       "district_pipe_len_km": 2.6267365712550004,
+       "rank": 1,
+       "score": 0.1354032556932411,
+       "hit_top1": true,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.2707752380683146,
+       "max_rival_coh_outside": 0.9781861508066021,
+       "max_rival_coh_inside": 0.9999996989118861,
+       "point_rank": 15,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 11580.963371214193,
+       "point_radius_at_budget_m": 7311.147386048567
+      },
+      {
+       "label": "T3",
+       "cluster_size": 3,
+       "cluster_diameter_m": 126.80889562975183,
+       "cluster_radius_m": 66.76887985499629,
+       "district_pipe_len_km": 2.0353994960649997,
+       "rank": 3,
+       "score": 0.0615020048118323,
+       "hit_top1": false,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.10644485726956356,
+       "max_rival_coh_outside": 0.9757756612211096,
+       "max_rival_coh_inside": 0.9993939606897483,
+       "point_rank": 16,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 9730.751315509608,
+       "point_radius_at_budget_m": 5990.614781162046
+      }
+     ],
+     "hit_top1": 1,
+     "hit_top3": 2,
+     "hit_rate_top1": 0.3333333333333333,
+     "hit_rate_top3": 0.6666666666666666,
+     "hits_top3_along_lambda": [
+      1,
+      1,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+     ],
+     "point_hit_at_budget": 0,
+     "point_diameter_at_budget_mean_m": 7103.9048955746,
+     "point_radius_at_budget_mean_m": 4433.920722403537,
+     "ncp_true_clusters": [
+      {
+       "label": "T1",
+       "rank": 1,
+       "ncp": 396.5529050139903,
+       "z": 280.4052482346174
+      },
+      {
+       "label": "T2",
+       "rank": 4,
+       "ncp": 399.59103455990527,
+       "z": 141.27676511932853
+      },
+      {
+       "label": "T3",
+       "rank": 3,
+       "ncp": 310.7853496720781,
+       "z": 126.87758770483978
+      }
+     ],
+     "tau": 0.995,
+     "no_topology": {
+      "n_clusters": 17,
+      "diameter_mean_m": 669.032708781926,
+      "radius_mean_m": 378.99828444310947,
+      "hit_top1": 1,
+      "hit_top3": 2
+     },
+     "geometry_only": {
+      "n_clusters": 17,
+      "diameter_mean_m": 671.6253344197689,
+      "radius_mean_m": 384.12737262444915,
+      "hit_top1": 1,
+      "hit_top3": 1
+     }
+    },
+    {
+     "n_clusters": 25,
+     "size_max": 5,
+     "size_mean": 1.96,
+     "diameter_mean_m": 323.9107758730674,
+     "diameter_median_m": 78.91772294079786,
+     "diameter_max_m": 1517.5298863490668,
+     "radius_mean_m": 179.16428101062718,
+     "radius_median_m": 39.4588614707709,
+     "radius_max_m": 1099.3048953195691,
+     "district_km_mean": 3.35663023468724,
+     "lam_sel": 2.4883282590615052,
+     "lam_max": 10.263424386644065,
+     "rss_sel": 11.726837017653862,
+     "rss_floor": 11.828345267093807,
+     "reached_floor": true,
+     "active_groups": 5,
+     "per_leak": [
+      {
+       "label": "T1",
+       "cluster_size": 1,
+       "cluster_diameter_m": 0.0,
+       "cluster_radius_m": 0.0,
+       "district_pipe_len_km": 3.75012195638,
+       "rank": 25,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.9592001213919441,
+       "max_rival_coh_inside": 0.0,
+       "point_rank": 49,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 0.0,
+       "point_radius_at_budget_m": 0.0
+      },
+      {
+       "label": "T2",
+       "cluster_size": 4,
+       "cluster_diameter_m": 1480.9526186975675,
+       "cluster_radius_m": 749.5645143277249,
+       "district_pipe_len_km": 2.6267365712550004,
+       "rank": 1,
+       "score": 0.1332773161033592,
+       "hit_top1": true,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.2665243499235869,
+       "max_rival_coh_outside": 0.9781861508066021,
+       "max_rival_coh_inside": 0.9999996989118861,
+       "point_rank": 15,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 11580.963371214193,
+       "point_radius_at_budget_m": 7311.147386048567
+      },
+      {
+       "label": "T3",
+       "cluster_size": 2,
+       "cluster_diameter_m": 78.91772294079786,
+       "cluster_radius_m": 39.4588614707709,
+       "district_pipe_len_km": 0.7991305983665,
+       "rank": 3,
+       "score": 0.07669801526938419,
+       "hit_top1": false,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.1084468129676897,
+       "max_rival_coh_outside": 0.999255254308347,
+       "max_rival_coh_inside": 0.9993939606897483,
+       "point_rank": 16,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 8466.692601055453,
+       "point_radius_at_budget_m": 4233.346300527726
+      }
+     ],
+     "hit_top1": 1,
+     "hit_top3": 2,
+     "hit_rate_top1": 0.3333333333333333,
+     "hit_rate_top3": 0.6666666666666666,
+     "hits_top3_along_lambda": [
+      1,
+      1,
+      2,
+      2,
+      2,
+      2,
+      2,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+     ],
+     "point_hit_at_budget": 0,
+     "point_diameter_at_budget_mean_m": 6682.5519907565495,
+     "point_radius_at_budget_mean_m": 3848.164562192098,
+     "ncp_true_clusters": [
+      {
+       "label": "T1",
+       "rank": 1,
+       "ncp": 396.5529050139903,
+       "z": 280.4052482346174
+      },
+      {
+       "label": "T2",
+       "rank": 4,
+       "ncp": 399.59103455990527,
+       "z": 141.27676511932853
+      },
+      {
+       "label": "T3",
+       "rank": 2,
+       "ncp": 310.50081290489663,
+       "z": 155.25040645244832
+      }
+     ],
+     "tau": 0.999,
+     "no_topology": {
+      "n_clusters": 25,
+      "diameter_mean_m": 323.9107758730674,
+      "radius_mean_m": 179.16428101062718,
+      "hit_top1": 1,
+      "hit_top3": 2
+     },
+     "geometry_only": {
+      "n_clusters": 25,
+      "diameter_mean_m": 235.9583677504517,
+      "radius_mean_m": 125.54237166097172,
+      "hit_top1": 0,
+      "hit_top3": 1
+     },
+     "random_group_control": {
+      "n": 20,
+      "hit_top1_mean": 0.2,
+      "hit_top3_mean": 0.75,
+      "hit_top3_ge_design": 2,
+      "p_one_sided": 0.14285714285714285,
+      "diameter_mean_m": 3082.1393472723503,
+      "radius_mean_m": 1699.63183725054
+     }
+    },
+    {
+     "n_clusters": 28,
+     "size_max": 4,
+     "size_mean": 1.75,
+     "diameter_mean_m": 249.5519748777974,
+     "diameter_median_m": 11.718710004229486,
+     "diameter_max_m": 1517.5298863490668,
+     "radius_mean_m": 139.60268773452904,
+     "radius_median_m": 5.859355002114743,
+     "radius_max_m": 1099.3048953195691,
+     "district_km_mean": 2.9969912809707497,
+     "lam_sel": 2.4883282590615052,
+     "lam_max": 10.263424386644065,
+     "rss_sel": 11.703223499856774,
+     "rss_floor": 11.828345267093807,
+     "reached_floor": true,
+     "active_groups": 5,
+     "per_leak": [
+      {
+       "label": "T1",
+       "cluster_size": 1,
+       "cluster_diameter_m": 0.0,
+       "cluster_radius_m": 0.0,
+       "district_pipe_len_km": 3.75012195638,
+       "rank": 28,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.9592001213919441,
+       "max_rival_coh_inside": 0.0,
+       "point_rank": 49,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 0.0,
+       "point_radius_at_budget_m": 0.0
+      },
+      {
+       "label": "T2",
+       "cluster_size": 4,
+       "cluster_diameter_m": 1480.9526186975675,
+       "cluster_radius_m": 749.5645143277249,
+       "district_pipe_len_km": 2.6267365712550004,
+       "rank": 1,
+       "score": 0.13324884157707698,
+       "hit_top1": true,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.26646740724621765,
+       "max_rival_coh_outside": 0.9781861508066021,
+       "max_rival_coh_inside": 0.9999996989118861,
+       "point_rank": 15,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 11580.963371214193,
+       "point_radius_at_budget_m": 7311.147386048567
+      },
+      {
+       "label": "T3",
+       "cluster_size": 1,
+       "cluster_diameter_m": 0.0,
+       "cluster_radius_m": 0.0,
+       "district_pipe_len_km": 0.7474120728665001,
+       "rank": 10,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.9993939606897483,
+       "max_rival_coh_inside": 0.0,
+       "point_rank": 16,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 0.0,
+       "point_radius_at_budget_m": 0.0
+      }
+     ],
+     "hit_top1": 1,
+     "hit_top3": 1,
+     "hit_rate_top1": 0.3333333333333333,
+     "hit_rate_top3": 0.3333333333333333,
+     "hits_top3_along_lambda": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      2,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+     ],
+     "point_hit_at_budget": 0,
+     "point_diameter_at_budget_mean_m": 3860.321123738064,
+     "point_radius_at_budget_mean_m": 2437.0491286828556,
+     "ncp_true_clusters": [
+      {
+       "label": "T1",
+       "rank": 1,
+       "ncp": 396.5529050139903,
+       "z": 280.4052482346174
+      },
+      {
+       "label": "T2",
+       "rank": 4,
+       "ncp": 399.59103455990527,
+       "z": 141.27676511932853
+      },
+      {
+       "label": "T3",
+       "rank": 1,
+       "ncp": 310.0989182477269,
+       "z": 219.2730479315805
+      }
+     ],
+     "tau": 0.9995,
+     "no_topology": {
+      "n_clusters": 28,
+      "diameter_mean_m": 249.5519748777974,
+      "radius_mean_m": 139.60268773452904,
+      "hit_top1": 1,
+      "hit_top3": 1
+     },
+     "geometry_only": {
+      "n_clusters": 28,
+      "diameter_mean_m": 128.5599704673793,
+      "radius_mean_m": 66.82950515297752,
+      "hit_top1": 0,
+      "hit_top3": 1
+     }
+    },
+    {
+     "n_clusters": 30,
+     "size_max": 4,
+     "size_mean": 1.6333333333333333,
+     "diameter_mean_m": 200.6380812332504,
+     "diameter_median_m": 0.0,
+     "diameter_max_m": 1517.5298863490668,
+     "radius_mean_m": 114.15729422586732,
+     "radius_median_m": 0.0,
+     "radius_max_m": 1099.3048953195691,
+     "district_km_mean": 2.797191862239366,
+     "lam_sel": 2.4883282590615052,
+     "lam_max": 10.263424386644065,
+     "rss_sel": 11.703223499700105,
+     "rss_floor": 11.828345267093807,
+     "reached_floor": true,
+     "active_groups": 5,
+     "per_leak": [
+      {
+       "label": "T1",
+       "cluster_size": 1,
+       "cluster_diameter_m": 0.0,
+       "cluster_radius_m": 0.0,
+       "district_pipe_len_km": 3.75012195638,
+       "rank": 30,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.9592001213919441,
+       "max_rival_coh_inside": 0.0,
+       "point_rank": 49,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 0.0,
+       "point_radius_at_budget_m": 0.0
+      },
+      {
+       "label": "T2",
+       "cluster_size": 4,
+       "cluster_diameter_m": 1480.9526186975675,
+       "cluster_radius_m": 749.5645143277249,
+       "district_pipe_len_km": 2.6267365712550004,
+       "rank": 1,
+       "score": 0.13324884157687292,
+       "hit_top1": true,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.26646740724580953,
+       "max_rival_coh_outside": 0.9781861508066021,
+       "max_rival_coh_inside": 0.9999996989118861,
+       "point_rank": 15,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 11580.963371214193,
+       "point_radius_at_budget_m": 7311.147386048567
+      },
+      {
+       "label": "T3",
+       "cluster_size": 1,
+       "cluster_diameter_m": 0.0,
+       "cluster_radius_m": 0.0,
+       "district_pipe_len_km": 0.7474120728665001,
+       "rank": 11,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.9993939606897483,
+       "max_rival_coh_inside": 0.0,
+       "point_rank": 16,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 0.0,
+       "point_radius_at_budget_m": 0.0
+      }
+     ],
+     "hit_top1": 1,
+     "hit_top3": 1,
+     "hit_rate_top1": 0.3333333333333333,
+     "hit_rate_top3": 0.3333333333333333,
+     "hits_top3_along_lambda": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      2,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+     ],
+     "point_hit_at_budget": 0,
+     "point_diameter_at_budget_mean_m": 3860.321123738064,
+     "point_radius_at_budget_mean_m": 2437.0491286828556,
+     "ncp_true_clusters": [
+      {
+       "label": "T1",
+       "rank": 1,
+       "ncp": 396.5529050139903,
+       "z": 280.4052482346174
+      },
+      {
+       "label": "T2",
+       "rank": 4,
+       "ncp": 399.59103455990527,
+       "z": 141.27676511932853
+      },
+      {
+       "label": "T3",
+       "rank": 1,
+       "ncp": 310.0989182477269,
+       "z": 219.2730479315805
+      }
+     ],
+     "tau": 0.9999,
+     "no_topology": {
+      "n_clusters": 30,
+      "diameter_mean_m": 200.6380812332504,
+      "radius_mean_m": 114.15729422586732,
+      "hit_top1": 1,
+      "hit_top3": 1
+     },
+     "geometry_only": {
+      "n_clusters": 30,
+      "diameter_mean_m": 87.71221045019351,
+      "radius_mean_m": 46.23565714975256,
+      "hit_top1": 0,
+      "hit_top3": 1
+     }
+    },
+    {
+     "n_clusters": 49,
+     "size_max": 1,
+     "size_mean": 1.0,
+     "diameter_mean_m": 0.0,
+     "diameter_median_m": 0.0,
+     "diameter_max_m": 0.0,
+     "radius_mean_m": 0.0,
+     "radius_median_m": 0.0,
+     "radius_max_m": 0.0,
+     "district_km_mean": 1.712566446269,
+     "lam_sel": 2.4883282590615052,
+     "lam_max": 10.263424386644065,
+     "rss_sel": 11.693111908447168,
+     "rss_floor": 11.828117581251746,
+     "reached_floor": true,
+     "active_groups": 5,
+     "per_leak": [
+      {
+       "label": "T1",
+       "cluster_size": 1,
+       "cluster_diameter_m": 0.0,
+       "cluster_radius_m": 0.0,
+       "district_pipe_len_km": 3.75012195638,
+       "rank": 49,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.9592001213919441,
+       "max_rival_coh_inside": 0.0,
+       "point_rank": 49,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 0.0,
+       "point_radius_at_budget_m": 0.0
+      },
+      {
+       "label": "T2",
+       "cluster_size": 1,
+       "cluster_diameter_m": 0.0,
+       "cluster_radius_m": 0.0,
+       "district_pipe_len_km": 0.070290746112,
+       "rank": 15,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.9999996989118861,
+       "max_rival_coh_inside": 0.0,
+       "point_rank": 15,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 0.0,
+       "point_radius_at_budget_m": 0.0
+      },
+      {
+       "label": "T3",
+       "cluster_size": 1,
+       "cluster_diameter_m": 0.0,
+       "cluster_radius_m": 0.0,
+       "district_pipe_len_km": 0.7474120728665001,
+       "rank": 16,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.9993939606897483,
+       "max_rival_coh_inside": 0.0,
+       "point_rank": 16,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 0.0,
+       "point_radius_at_budget_m": 0.0
+      }
+     ],
+     "hit_top1": 0,
+     "hit_top3": 0,
+     "hit_rate_top1": 0.0,
+     "hit_rate_top3": 0.0,
+     "hits_top3_along_lambda": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "point_hit_at_budget": 0,
+     "point_diameter_at_budget_mean_m": 0.0,
+     "point_radius_at_budget_mean_m": 0.0,
+     "ncp_true_clusters": [
+      {
+       "label": "T1",
+       "rank": 1,
+       "ncp": 396.5529050139903,
+       "z": 280.4052482346174
+      },
+      {
+       "label": "T2",
+       "rank": 1,
+       "ncp": 371.84615918371725,
+       "z": 262.9349407169789
+      },
+      {
+       "label": "T3",
+       "rank": 1,
+       "ncp": 310.0989182477269,
+       "z": 219.2730479315805
+      }
+     ],
+     "tau": 1.01,
+     "no_topology": {
+      "n_clusters": 49,
+      "diameter_mean_m": 0.0,
+      "radius_mean_m": 0.0,
+      "hit_top1": 0,
+      "hit_top3": 0
+     },
+     "geometry_only": {
+      "n_clusters": 49,
+      "diameter_mean_m": 0.0,
+      "radius_mean_m": 0.0,
+      "hit_top1": 0,
+      "hit_top3": 0
+     }
+    }
+   ],
+   "aggregation_probe": {
+    "T1": {
+     "geo": [
+      {
+       "k": 0,
+       "size": 1,
+       "rank": 49,
+       "diameter_m": 0.0,
+       "ncp": 396.5529050139903,
+       "rank_Ag": 1,
+       "z": 280.4052482346174
+      },
+      {
+       "k": 1,
+       "size": 2,
+       "rank": 44,
+       "diameter_m": 1810.9173543381007,
+       "ncp": 599.7237932292569,
+       "rank_Ag": 2,
+       "z": 299.86189661462845
+      },
+      {
+       "k": 2,
+       "size": 3,
+       "rank": 41,
+       "diameter_m": 1810.9173543381007,
+       "ncp": 600.5852337829263,
+       "rank_Ag": 3,
+       "z": 245.18789496971917
+      },
+      {
+       "k": 3,
+       "size": 4,
+       "rank": 37,
+       "diameter_m": 1810.9173543381007,
+       "ncp": 623.6169915021974,
+       "rank_Ag": 4,
+       "z": 220.48190177717865
+      },
+      {
+       "k": 4,
+       "size": 5,
+       "rank": 42,
+       "diameter_m": 4637.787284902462,
+       "ncp": 639.0781857586251,
+       "rank_Ag": 5,
+       "z": 202.09426699254377
+      },
+      {
+       "k": 5,
+       "size": 6,
+       "rank": 42,
+       "diameter_m": 5288.464778604686,
+       "ncp": 639.8553480905384,
+       "rank_Ag": 6,
+       "z": 184.71032873124705
+      },
+      {
+       "k": 6,
+       "size": 7,
+       "rank": 41,
+       "diameter_m": 5288.464778604686,
+       "ncp": 642.5177430108976,
+       "rank_Ag": 7,
+       "z": 171.72008994786043
+      },
+      {
+       "k": 7,
+       "size": 8,
+       "rank": 41,
+       "diameter_m": 5288.464778604686,
+       "ncp": 650.041430917727,
+       "rank_Ag": 8,
+       "z": 162.51035772943175
+      },
+      {
+       "k": 8,
+       "size": 9,
+       "rank": 41,
+       "diameter_m": 5369.96973116868,
+       "ncp": 658.7444854022423,
+       "rank_Ag": 9,
+       "z": 155.26756423238942
+      },
+      {
+       "k": 9,
+       "size": 10,
+       "rank": 40,
+       "diameter_m": 6587.948959546555,
+       "ncp": 673.6841988874601,
+       "rank_Ag": 10,
+       "z": 150.64036640798489
+      },
+      {
+       "k": 10,
+       "size": 11,
+       "rank": 34,
+       "diameter_m": 6737.681394511849,
+       "ncp": 674.6993730468221,
+       "rank_Ag": 11,
+       "z": 143.8463896582637
+      },
+      {
+       "k": 11,
+       "size": 12,
+       "rank": 34,
+       "diameter_m": 7677.150095786996,
+       "ncp": 683.9985996434718,
+       "rank_Ag": 12,
+       "z": 139.62062949206182
+      },
+      {
+       "k": 12,
+       "size": 13,
+       "rank": 34,
+       "diameter_m": 7677.150095786996,
+       "ncp": 688.1861243747529,
+       "rank_Ag": 13,
+       "z": 134.96440296810218
+      }
+     ],
+     "coh": [
+      {
+       "k": 0,
+       "size": 1,
+       "rank": 49,
+       "diameter_m": 0.0,
+       "ncp": 396.5529050139903,
+       "rank_Ag": 1,
+       "z": 280.4052482346174
+      },
+      {
+       "k": 1,
+       "size": 2,
+       "rank": 49,
+       "diameter_m": 0.0,
+       "ncp": 396.5529050139903,
+       "rank_Ag": 1,
+       "z": 280.4052482346174
+      },
+      {
+       "k": 2,
+       "size": 3,
+       "rank": 48,
+       "diameter_m": 4637.787284902462,
+       "ncp": 442.9833691020833,
+       "rank_Ag": 2,
+       "z": 221.49168455104166
+      },
+      {
+       "k": 3,
+       "size": 4,
+       "rank": 47,
+       "diameter_m": 5288.464778604686,
+       "ncp": 446.24864740413364,
+       "rank_Ag": 3,
+       "z": 182.18024742454875
+      },
+      {
+       "k": 4,
+       "size": 5,
+       "rank": 46,
+       "diameter_m": 5288.464778604686,
+       "ncp": 454.5996424664881,
+       "rank_Ag": 4,
+       "z": 160.72524495651686
+      },
+      {
+       "k": 5,
+       "size": 6,
+       "rank": 45,
+       "diameter_m": 5369.96973116868,
+       "ncp": 474.9033958089486,
+       "rank_Ag": 5,
+       "z": 150.17763993047396
+      },
+      {
+       "k": 6,
+       "size": 7,
+       "rank": 44,
+       "diameter_m": 6891.514198490598,
+       "ncp": 485.7111988241103,
+       "rank_Ag": 6,
+       "z": 140.21274569475796
+      },
+      {
+       "k": 7,
+       "size": 8,
+       "rank": 43,
+       "diameter_m": 6891.514198490598,
+       "ncp": 487.3021618329666,
+       "rank_Ag": 7,
+       "z": 130.23698095808786
+      },
+      {
+       "k": 8,
+       "size": 9,
+       "rank": 42,
+       "diameter_m": 6891.514198490598,
+       "ncp": 490.7258301113785,
+       "rank_Ag": 8,
+       "z": 122.68145752784463
+      },
+      {
+       "k": 9,
+       "size": 10,
+       "rank": 41,
+       "diameter_m": 6891.514198490598,
+       "ncp": 490.72852093842465,
+       "rank_Ag": 9,
+       "z": 115.66582162573492
+      },
+      {
+       "k": 10,
+       "size": 11,
+       "rank": 40,
+       "diameter_m": 6891.514198490598,
+       "ncp": 490.7631356199311,
+       "rank_Ag": 10,
+       "z": 109.73797320971143
+      },
+      {
+       "k": 11,
+       "size": 12,
+       "rank": 39,
+       "diameter_m": 7319.238828238825,
+       "ncp": 494.2130234449814,
+       "rank_Ag": 11,
+       "z": 105.36657063074212
+      },
+      {
+       "k": 12,
+       "size": 13,
+       "rank": 38,
+       "diameter_m": 7859.006294470211,
+       "ncp": 496.54542082534584,
+       "rank_Ag": 12,
+       "z": 101.35690959480345
+      }
+     ]
+    },
+    "T2": {
+     "geo": [
+      {
+       "k": 0,
+       "size": 1,
+       "rank": 15,
+       "diameter_m": 0.0,
+       "ncp": 371.84615918371725,
+       "rank_Ag": 1,
+       "z": 262.9349407169789
+      },
+      {
+       "k": 1,
+       "size": 2,
+       "rank": 14,
+       "diameter_m": 112.7919592537411,
+       "ncp": 394.1974097141143,
+       "rank_Ag": 2,
+       "z": 197.09870485705716
+      },
+      {
+       "k": 2,
+       "size": 3,
+       "rank": 13,
+       "diameter_m": 1332.1705166214442,
+       "ncp": 399.1198584430568,
+       "rank_Ag": 3,
+       "z": 162.93999989955694
+      },
+      {
+       "k": 3,
+       "size": 4,
+       "rank": 1,
+       "diameter_m": 1480.9526186975675,
+       "ncp": 399.59103455990527,
+       "rank_Ag": 4,
+       "z": 141.27676511932853
+      },
+      {
+       "k": 4,
+       "size": 5,
+       "rank": 1,
+       "diameter_m": 3998.111895350419,
+       "ncp": 399.97192783221215,
+       "rank_Ag": 5,
+       "z": 126.48222920782837
+      },
+      {
+       "k": 5,
+       "size": 6,
+       "rank": 2,
+       "diameter_m": 3998.111895350419,
+       "ncp": 400.03228229179933,
+       "rank_Ag": 6,
+       "z": 115.47937293285536
+      },
+      {
+       "k": 6,
+       "size": 7,
+       "rank": 2,
+       "diameter_m": 4092.3934013529356,
+       "ncp": 574.2968160409771,
+       "rank_Ag": 7,
+       "z": 153.48728028146266
+      },
+      {
+       "k": 7,
+       "size": 8,
+       "rank": 2,
+       "diameter_m": 4092.3934013529356,
+       "ncp": 574.5111227313888,
+       "rank_Ag": 8,
+       "z": 143.6277806828472
+      },
+      {
+       "k": 8,
+       "size": 9,
+       "rank": 2,
+       "diameter_m": 6986.315348577593,
+       "ncp": 656.6165352508268,
+       "rank_Ag": 9,
+       "z": 154.7660015716918
+      },
+      {
+       "k": 9,
+       "size": 10,
+       "rank": 2,
+       "diameter_m": 7927.357700026574,
+       "ncp": 657.746758045762,
+       "rank_Ag": 10,
+       "z": 147.07664629704306
+      },
+      {
+       "k": 10,
+       "size": 11,
+       "rank": 2,
+       "diameter_m": 7927.357700026574,
+       "ncp": 665.2916292885403,
+       "rank_Ag": 11,
+       "z": 141.84065194970802
+      },
+      {
+       "k": 11,
+       "size": 12,
+       "rank": 2,
+       "diameter_m": 8013.976284891175,
+       "ncp": 674.6759973324209,
+       "rank_Ag": 12,
+       "z": 137.71766126398134
+      },
+      {
+       "k": 12,
+       "size": 13,
+       "rank": 2,
+       "diameter_m": 8013.976284891175,
+       "ncp": 674.7003260503233,
+       "rank_Ag": 13,
+       "z": 132.31962032146203
+      }
+     ],
+     "coh": [
+      {
+       "k": 0,
+       "size": 1,
+       "rank": 15,
+       "diameter_m": 0.0,
+       "ncp": 371.84615918371725,
+       "rank_Ag": 1,
+       "z": 262.9349407169789
+      },
+      {
+       "k": 1,
+       "size": 2,
+       "rank": 15,
+       "diameter_m": 0.0,
+       "ncp": 371.84615918371725,
+       "rank_Ag": 1,
+       "z": 262.9349407169789
+      },
+      {
+       "k": 2,
+       "size": 3,
+       "rank": 14,
+       "diameter_m": 112.7919592537411,
+       "ncp": 394.1974097141143,
+       "rank_Ag": 2,
+       "z": 197.09870485705716
+      },
+      {
+       "k": 3,
+       "size": 4,
+       "rank": 13,
+       "diameter_m": 1332.1705166214442,
+       "ncp": 399.1198584430568,
+       "rank_Ag": 3,
+       "z": 162.93999989955694
+      },
+      {
+       "k": 4,
+       "size": 5,
+       "rank": 1,
+       "diameter_m": 1480.9526186975675,
+       "ncp": 399.59103455990527,
+       "rank_Ag": 4,
+       "z": 141.27676511932853
+      },
+      {
+       "k": 5,
+       "size": 6,
+       "rank": 1,
+       "diameter_m": 3965.7246726142776,
+       "ncp": 399.9698399038234,
+       "rank_Ag": 5,
+       "z": 126.48156894689839
+      },
+      {
+       "k": 6,
+       "size": 7,
+       "rank": 2,
+       "diameter_m": 3983.716576800293,
+       "ncp": 399.9809972194399,
+       "rank_Ag": 6,
+       "z": 115.46456820768931
+      },
+      {
+       "k": 7,
+       "size": 8,
+       "rank": 2,
+       "diameter_m": 3998.111895350419,
+       "ncp": 400.0333022553612,
+       "rank_Ag": 7,
+       "z": 106.91339716709608
+      },
+      {
+       "k": 8,
+       "size": 9,
+       "rank": 2,
+       "diameter_m": 4092.3934013529356,
+       "ncp": 574.5111227313888,
+       "rank_Ag": 8,
+       "z": 143.6277806828472
+      },
+      {
+       "k": 9,
+       "size": 10,
+       "rank": 2,
+       "diameter_m": 4092.3934013529356,
+       "ncp": 645.6929951912997,
+       "rank_Ag": 9,
+       "z": 152.1912984881403
+      },
+      {
+       "k": 10,
+       "size": 11,
+       "rank": 2,
+       "diameter_m": 6986.315348577593,
+       "ncp": 657.5015650500978,
+       "rank_Ag": 10,
+       "z": 147.02181947645187
+      },
+      {
+       "k": 11,
+       "size": 12,
+       "rank": 2,
+       "diameter_m": 7824.106145106238,
+       "ncp": 658.2863007256869,
+       "rank_Ag": 11,
+       "z": 140.34711088180126
+      },
+      {
+       "k": 12,
+       "size": 13,
+       "rank": 2,
+       "diameter_m": 7927.357700026574,
+       "ncp": 666.0211637282745,
+       "rank_Ag": 12,
+       "z": 135.95100075241035
+      }
+     ]
+    },
+    "T3": {
+     "geo": [
+      {
+       "k": 0,
+       "size": 1,
+       "rank": 16,
+       "diameter_m": 0.0,
+       "ncp": 310.0989182477269,
+       "rank_Ag": 1,
+       "z": 219.2730479315805
+      },
+      {
+       "k": 1,
+       "size": 2,
+       "rank": 3,
+       "diameter_m": 78.91772294079786,
+       "ncp": 310.50081290489663,
+       "rank_Ag": 2,
+       "z": 155.25040645244832
+      },
+      {
+       "k": 2,
+       "size": 3,
+       "rank": 3,
+       "diameter_m": 126.80889562975183,
+       "ncp": 310.7853496720781,
+       "rank_Ag": 3,
+       "z": 126.87758770483978
+      },
+      {
+       "k": 3,
+       "size": 4,
+       "rank": 4,
+       "diameter_m": 970.0951462342258,
+       "ncp": 313.6984892562628,
+       "rank_Ag": 4,
+       "z": 110.90916450053936
+      },
+      {
+       "k": 4,
+       "size": 5,
+       "rank": 2,
+       "diameter_m": 1020.5935152994266,
+       "ncp": 313.70241125226465,
+       "rank_Ag": 5,
+       "z": 99.201412704399
+      },
+      {
+       "k": 5,
+       "size": 6,
+       "rank": 2,
+       "diameter_m": 1471.0123150459992,
+       "ncp": 313.9253584438715,
+       "rank_Ag": 6,
+       "z": 90.6224451015095
+      },
+      {
+       "k": 6,
+       "size": 7,
+       "rank": 2,
+       "diameter_m": 1583.073499336639,
+       "ncp": 313.9301632342827,
+       "rank_Ag": 7,
+       "z": 83.9013652997645
+      },
+      {
+       "k": 7,
+       "size": 8,
+       "rank": 2,
+       "diameter_m": 1583.073499336639,
+       "ncp": 313.9355158279483,
+       "rank_Ag": 8,
+       "z": 78.48387895698707
+      },
+      {
+       "k": 8,
+       "size": 9,
+       "rank": 2,
+       "diameter_m": 2183.312494919539,
+       "ncp": 313.94946663153416,
+       "rank_Ag": 9,
+       "z": 73.99859893501919
+      },
+      {
+       "k": 9,
+       "size": 10,
+       "rank": 2,
+       "diameter_m": 2916.1232223968677,
+       "ncp": 315.82655959229436,
+       "rank_Ag": 10,
+       "z": 70.62096563482584
+      },
+      {
+       "k": 10,
+       "size": 11,
+       "rank": 3,
+       "diameter_m": 3014.9908467960613,
+       "ncp": 320.797265945529,
+       "rank_Ag": 11,
+       "z": 68.39420690450805
+      },
+      {
+       "k": 11,
+       "size": 12,
+       "rank": 3,
+       "diameter_m": 3014.9908467960613,
+       "ncp": 320.79738865964896,
+       "rank_Ag": 12,
+       "z": 65.48249275278657
+      },
+      {
+       "k": 12,
+       "size": 13,
+       "rank": 3,
+       "diameter_m": 3046.249874912998,
+       "ncp": 327.85715453263333,
+       "rank_Ag": 13,
+       "z": 64.2980780243424
+      }
+     ],
+     "coh": [
+      {
+       "k": 0,
+       "size": 1,
+       "rank": 16,
+       "diameter_m": 0.0,
+       "ncp": 310.0989182477269,
+       "rank_Ag": 1,
+       "z": 219.2730479315805
+      },
+      {
+       "k": 1,
+       "size": 2,
+       "rank": 16,
+       "diameter_m": 0.0,
+       "ncp": 310.0989182477269,
+       "rank_Ag": 1,
+       "z": 219.2730479315805
+      },
+      {
+       "k": 2,
+       "size": 3,
+       "rank": 3,
+       "diameter_m": 78.91772294079786,
+       "ncp": 310.50081290489663,
+       "rank_Ag": 2,
+       "z": 155.25040645244832
+      },
+      {
+       "k": 3,
+       "size": 4,
+       "rank": 3,
+       "diameter_m": 126.80889562975183,
+       "ncp": 310.7853496720781,
+       "rank_Ag": 3,
+       "z": 126.87758770483978
+      },
+      {
+       "k": 4,
+       "size": 5,
+       "rank": 4,
+       "diameter_m": 970.0951462342258,
+       "ncp": 313.6984892562628,
+       "rank_Ag": 4,
+       "z": 110.90916450053936
+      },
+      {
+       "k": 5,
+       "size": 6,
+       "rank": 2,
+       "diameter_m": 1020.5935152994266,
+       "ncp": 313.70241125226465,
+       "rank_Ag": 5,
+       "z": 99.201412704399
+      },
+      {
+       "k": 6,
+       "size": 7,
+       "rank": 2,
+       "diameter_m": 1722.8569283991926,
+       "ncp": 315.20797790163124,
+       "rank_Ag": 6,
+       "z": 90.99270544611221
+      },
+      {
+       "k": 7,
+       "size": 8,
+       "rank": 2,
+       "diameter_m": 1722.8569283991926,
+       "ncp": 322.8756069535667,
+       "rank_Ag": 7,
+       "z": 86.29213569763805
+      },
+      {
+       "k": 8,
+       "size": 9,
+       "rank": 4,
+       "diameter_m": 1722.8569283991926,
+       "ncp": 325.5098307916939,
+       "rank_Ag": 8,
+       "z": 81.37745769792348
+      },
+      {
+       "k": 9,
+       "size": 10,
+       "rank": 4,
+       "diameter_m": 1722.8569283991926,
+       "ncp": 325.5114011970401,
+       "rank_Ag": 9,
+       "z": 76.72377304665397
+      },
+      {
+       "k": 10,
+       "size": 11,
+       "rank": 5,
+       "diameter_m": 1722.8569283991926,
+       "ncp": 325.55925206381903,
+       "rank_Ag": 10,
+       "z": 72.7972618318688
+      },
+      {
+       "k": 11,
+       "size": 12,
+       "rank": 7,
+       "diameter_m": 2162.870014660486,
+       "ncp": 327.8083769501853,
+       "rank_Ag": 11,
+       "z": 69.88898079314947
+      },
+      {
+       "k": 12,
+       "size": 13,
+       "rank": 4,
+       "diameter_m": 2281.057630001401,
+       "ncp": 327.85979586264654,
+       "rank_Ag": 12,
+       "z": 66.92410058637829
+      }
+     ]
+    }
+   }
+  },
+  "coh+40/noisy": {
+   "n_sensors": 80,
+   "n_obs": 2000,
+   "coh_max": 0.9999810799394151,
+   "coh_median": 0.7846639447354755,
+   "n_pairs_gt_099": 66,
+   "signal_norm_true": {
+    "T1": 0.24344738212495026,
+    "T2": 2.4166290061749094,
+    "T3": 1.9336495908965767
+   },
+   "col_norm_true": {
+    "T1": 0.5122374537172456,
+    "T2": 9.531824281607502,
+    "T3": 5.283625207037256
+   },
+   "noise_norm": 4.483075392654664,
+   "signal_norm": 4.5711151892674025,
+   "model_err_rel": 0.35827033181552687,
+   "point": {
+    "rank": {
+     "T1": 49,
+     "T2": 7,
+     "T3": 9
+    },
+    "lam_sel": 4.482870294229595,
+    "lam_max": 37.55200208802495,
+    "rss": 22.322093929204463,
+    "floor": 22.662936203922737,
+    "active": 6
+   },
+   "taus": [
+    {
+     "n_clusters": 1,
+     "size_max": 49,
+     "size_mean": 49.0,
+     "diameter_mean_m": 13061.726466253574,
+     "diameter_median_m": 13061.726466253574,
+     "diameter_max_m": 13061.726466253574,
+     "radius_mean_m": 9042.602489313533,
+     "radius_median_m": 9042.602489313533,
+     "radius_max_m": 9042.602489313533,
+     "district_km_mean": 83.91575586718095,
+     "lam_sel": 0.9621103634036922,
+     "lam_max": 16.36794373431061,
+     "rss_sel": 22.047994763623183,
+     "rss_floor": 22.664931574603532,
+     "reached_floor": true,
+     "active_groups": 1,
+     "per_leak": [
+      {
+       "label": "T1",
+       "cluster_size": 49,
+       "cluster_diameter_m": 13061.726466253574,
+       "cluster_radius_m": 9042.602489313533,
+       "district_pipe_len_km": 83.91575586718095,
+       "rank": 1,
+       "score": 0.19787581666867735,
+       "hit_top1": true,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.8814659245590315,
+       "max_rival_coh_outside": 0.0,
+       "max_rival_coh_inside": 0.39518516038427237,
+       "point_rank": 49,
+       "point_hit_at_budget": true,
+       "point_diameter_at_budget_m": 13061.726466253574,
+       "point_radius_at_budget_m": 9042.602489317253
+      },
+      {
+       "label": "T2",
+       "cluster_size": 49,
+       "cluster_diameter_m": 13061.726466253574,
+       "cluster_radius_m": 9042.602489313533,
+       "district_pipe_len_km": 83.91575586718095,
+       "rank": 1,
+       "score": 0.19787581666867735,
+       "hit_top1": true,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.8814659245590315,
+       "max_rival_coh_outside": 0.0,
+       "max_rival_coh_inside": 0.9999679378299807,
+       "point_rank": 7,
+       "point_hit_at_budget": true,
+       "point_diameter_at_budget_m": 13061.726466253574,
+       "point_radius_at_budget_m": 9042.602489317253
+      },
+      {
+       "label": "T3",
+       "cluster_size": 49,
+       "cluster_diameter_m": 13061.726466253574,
+       "cluster_radius_m": 9042.602489313533,
+       "district_pipe_len_km": 83.91575586718095,
+       "rank": 1,
+       "score": 0.19787581666867735,
+       "hit_top1": true,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.8814659245590315,
+       "max_rival_coh_outside": 0.0,
+       "max_rival_coh_inside": 0.9995499416194352,
+       "point_rank": 9,
+       "point_hit_at_budget": true,
+       "point_diameter_at_budget_m": 13061.726466253574,
+       "point_radius_at_budget_m": 9042.602489317253
+      }
+     ],
+     "hit_top1": 3,
+     "hit_top3": 3,
+     "hit_rate_top1": 1.0,
+     "hit_rate_top3": 1.0,
+     "hits_top3_along_lambda": [
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3
+     ],
+     "point_hit_at_budget": 3,
+     "point_diameter_at_budget_mean_m": 13061.726466253574,
+     "point_radius_at_budget_mean_m": 9042.602489317253,
+     "ncp_true_clusters": [
+      {
+       "label": "T1",
+       "rank": 49,
+       "ncp": 2060.2594280079747,
+       "z": 208.11763036399378
+      },
+      {
+       "label": "T2",
+       "rank": 49,
+       "ncp": 2060.2594280079747,
+       "z": 208.11763036399378
+      },
+      {
+       "label": "T3",
+       "rank": 49,
+       "ncp": 2060.2594280079747,
+       "z": 208.11763036399378
+      }
+     ],
+     "tau": 0.0,
+     "no_topology": {
+      "n_clusters": 1,
+      "diameter_mean_m": 13061.726466253574,
+      "radius_mean_m": 9042.602489313533,
+      "hit_top1": 3,
+      "hit_top3": 3
+     },
+     "geometry_only": {
+      "n_clusters": 1,
+      "diameter_mean_m": 13061.726466253574,
+      "radius_mean_m": 9042.602489313533,
+      "hit_top1": 3,
+      "hit_top3": 3
+     }
+    },
+    {
+     "n_clusters": 5,
+     "size_max": 37,
+     "size_mean": 9.8,
+     "diameter_mean_m": 2355.717173412852,
+     "diameter_median_m": 1055.1664629389127,
+     "diameter_max_m": 6631.026002772411,
+     "radius_mean_m": 1515.114134282081,
+     "radius_median_m": 527.5832314698494,
+     "radius_max_m": 4704.440549880415,
+     "district_km_mean": 16.783151173436192,
+     "lam_sel": 1.7325890126446686,
+     "lam_max": 29.47574472987314,
+     "rss_sel": 22.574919921959868,
+     "rss_floor": 22.666057479603364,
+     "reached_floor": true,
+     "active_groups": 2,
+     "per_leak": [
+      {
+       "label": "T1",
+       "cluster_size": 1,
+       "cluster_diameter_m": 0.0,
+       "cluster_radius_m": 0.0,
+       "district_pipe_len_km": 3.75012195638,
+       "rank": 5,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.39518516038427237,
+       "max_rival_coh_inside": 0.0,
+       "point_rank": 49,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 0.0,
+       "point_radius_at_budget_m": 0.0
+      },
+      {
+       "label": "T2",
+       "cluster_size": 8,
+       "cluster_diameter_m": 4092.3934013529356,
+       "cluster_radius_m": 2343.546890060141,
+       "district_pipe_len_km": 10.723104731070004,
+       "rank": 1,
+       "score": 0.16064141762924772,
+       "hit_top1": true,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.38740834457054485,
+       "max_rival_coh_outside": 0.10868879598424881,
+       "max_rival_coh_inside": 0.9999679378299807,
+       "point_rank": 7,
+       "point_hit_at_budget": true,
+       "point_diameter_at_budget_m": 13061.726466253574,
+       "point_radius_at_budget_m": 7678.105105827865
+      },
+      {
+       "label": "T3",
+       "cluster_size": 37,
+       "cluster_diameter_m": 6631.026002772411,
+       "cluster_radius_m": 4704.440549880415,
+       "district_pipe_len_km": 49.88777552892097,
+       "rank": 2,
+       "score": 0.07560655420777856,
+       "hit_top1": false,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.417459411063219,
+       "max_rival_coh_outside": 0.49949489897965144,
+       "max_rival_coh_inside": 0.9995499416194352,
+       "point_rank": 9,
+       "point_hit_at_budget": true,
+       "point_diameter_at_budget_m": 13061.726466253574,
+       "point_radius_at_budget_m": 9637.803220375634
+      }
+     ],
+     "hit_top1": 1,
+     "hit_top3": 2,
+     "hit_rate_top1": 0.3333333333333333,
+     "hit_rate_top3": 0.6666666666666666,
+     "hits_top3_along_lambda": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      3,
+      3,
+      3,
+      3
+     ],
+     "point_hit_at_budget": 2,
+     "point_diameter_at_budget_mean_m": 8707.81764416905,
+     "point_radius_at_budget_mean_m": 5771.9694420678325,
+     "ncp_true_clusters": [
+      {
+       "label": "T1",
+       "rank": 1,
+       "ncp": 251.5805716929603,
+       "z": 177.8943282588806
+      },
+      {
+       "label": "T2",
+       "rank": 8,
+       "ncp": 1352.1564059124162,
+       "z": 338.03910147810404
+      },
+      {
+       "label": "T3",
+       "rank": 37,
+       "ncp": 757.4625592926761,
+       "z": 88.0532339546238
+      }
+     ],
+     "tau": 0.5,
+     "no_topology": {
+      "n_clusters": 5,
+      "diameter_mean_m": 2355.717173412852,
+      "radius_mean_m": 1515.114134282081,
+      "hit_top1": 1,
+      "hit_top3": 2
+     },
+     "geometry_only": {
+      "n_clusters": 5,
+      "diameter_mean_m": 3234.820874019028,
+      "radius_mean_m": 1969.806067885603,
+      "hit_top1": 1,
+      "hit_top3": 2
+     }
+    },
+    {
+     "n_clusters": 11,
+     "size_max": 27,
+     "size_mean": 4.454545454545454,
+     "diameter_mean_m": 937.0293795562324,
+     "diameter_median_m": 0.0,
+     "diameter_max_m": 4092.3934013529356,
+     "radius_mean_m": 493.75461010912244,
+     "radius_median_m": 0.0,
+     "radius_max_m": 2142.68623333864,
+     "district_km_mean": 7.628705078834633,
+     "lam_sel": 4.482870294229595,
+     "lam_max": 37.55200208802495,
+     "rss_sel": 22.65447937904093,
+     "rss_floor": 22.664827402425587,
+     "reached_floor": true,
+     "active_groups": 5,
+     "per_leak": [
+      {
+       "label": "T1",
+       "cluster_size": 1,
+       "cluster_diameter_m": 0.0,
+       "cluster_radius_m": 0.0,
+       "district_pipe_len_km": 3.75012195638,
+       "rank": 11,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.39518516038427237,
+       "max_rival_coh_inside": 0.0,
+       "point_rank": 49,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 0.0,
+       "point_radius_at_budget_m": 0.0
+      },
+      {
+       "label": "T2",
+       "cluster_size": 7,
+       "cluster_diameter_m": 4092.3934013529356,
+       "cluster_radius_m": 2142.68623333864,
+       "district_pipe_len_km": 10.058888505771,
+       "rank": 2,
+       "score": 0.14117090861929196,
+       "hit_top1": false,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.3571247089700088,
+       "max_rival_coh_outside": 0.5257954119444301,
+       "max_rival_coh_inside": 0.9999679378299807,
+       "point_rank": 7,
+       "point_hit_at_budget": true,
+       "point_diameter_at_budget_m": 13061.726466253574,
+       "point_radius_at_budget_m": 7204.274922275132
+      },
+      {
+       "label": "T3",
+       "cluster_size": 3,
+       "cluster_diameter_m": 126.80889562975183,
+       "cluster_radius_m": 66.76887985499629,
+       "district_pipe_len_km": 2.0353994960649997,
+       "rank": 1,
+       "score": 0.17137597497015902,
+       "hit_top1": true,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.29646286724063725,
+       "max_rival_coh_outside": 0.9480227360895384,
+       "max_rival_coh_inside": 0.9995499416194352,
+       "point_rank": 9,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 11415.896123087214,
+       "point_radius_at_budget_m": 6900.299570931233
+      }
+     ],
+     "hit_top1": 1,
+     "hit_top3": 2,
+     "hit_rate_top1": 0.3333333333333333,
+     "hit_rate_top3": 0.6666666666666666,
+     "hits_top3_along_lambda": [
+      1,
+      1,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      3,
+      3,
+      3,
+      3
+     ],
+     "point_hit_at_budget": 1,
+     "point_diameter_at_budget_mean_m": 8159.207529780263,
+     "point_radius_at_budget_mean_m": 4701.524831068788,
+     "ncp_true_clusters": [
+      {
+       "label": "T1",
+       "rank": 1,
+       "ncp": 251.5805716929603,
+       "z": 177.8943282588806
+      },
+      {
+       "label": "T2",
+       "rank": 7,
+       "ncp": 1352.1536749961074,
+       "z": 361.37827043590835
+      },
+      {
+       "label": "T3",
+       "rank": 3,
+       "ncp": 737.0402787633273,
+       "z": 300.8954338081374
+      }
+     ],
+     "tau": 0.8,
+     "no_topology": {
+      "n_clusters": 11,
+      "diameter_mean_m": 937.0293795562324,
+      "radius_mean_m": 493.75461010912244,
+      "hit_top1": 1,
+      "hit_top3": 2
+     },
+     "geometry_only": {
+      "n_clusters": 11,
+      "diameter_mean_m": 1444.8258645599049,
+      "radius_mean_m": 858.6641655610819,
+      "hit_top1": 1,
+      "hit_top3": 2
+     }
+    },
+    {
+     "n_clusters": 14,
+     "size_max": 24,
+     "size_mean": 3.5,
+     "diameter_mean_m": 539.7510554301863,
+     "diameter_median_m": 11.718710004229486,
+     "diameter_max_m": 3584.2346993101337,
+     "radius_mean_m": 285.3026818401569,
+     "radius_median_m": 5.859355002114743,
+     "radius_max_m": 1945.3392651706977,
+     "district_km_mean": 5.9939825619414995,
+     "lam_sel": 4.482870294229595,
+     "lam_max": 37.55200208802495,
+     "rss_sel": 22.434601258741296,
+     "rss_floor": 22.664755034532757,
+     "reached_floor": true,
+     "active_groups": 5,
+     "per_leak": [
+      {
+       "label": "T1",
+       "cluster_size": 1,
+       "cluster_diameter_m": 0.0,
+       "cluster_radius_m": 0.0,
+       "district_pipe_len_km": 3.75012195638,
+       "rank": 14,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.39518516038427237,
+       "max_rival_coh_inside": 0.0,
+       "point_rank": 49,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 0.0,
+       "point_radius_at_budget_m": 0.0
+      },
+      {
+       "label": "T2",
+       "cluster_size": 4,
+       "cluster_diameter_m": 1480.9526186975675,
+       "cluster_radius_m": 749.5645143277249,
+       "district_pipe_len_km": 2.6267365712550004,
+       "rank": 2,
+       "score": 0.16843115969425035,
+       "hit_top1": false,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.33563374038626115,
+       "max_rival_coh_outside": 0.9189645953590755,
+       "max_rival_coh_inside": 0.9999679378299807,
+       "point_rank": 7,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 12930.143559157661,
+       "point_radius_at_budget_m": 8333.77075576446
+      },
+      {
+       "label": "T3",
+       "cluster_size": 3,
+       "cluster_diameter_m": 126.80889562975183,
+       "cluster_radius_m": 66.76887985499629,
+       "district_pipe_len_km": 2.0353994960649997,
+       "rank": 1,
+       "score": 0.17168844295526917,
+       "hit_top1": true,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.2970039525185479,
+       "max_rival_coh_outside": 0.9480227360895384,
+       "max_rival_coh_inside": 0.9995499416194352,
+       "point_rank": 9,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 11415.896123087214,
+       "point_radius_at_budget_m": 6900.299570931233
+      }
+     ],
+     "hit_top1": 1,
+     "hit_top3": 2,
+     "hit_rate_top1": 0.3333333333333333,
+     "hit_rate_top3": 0.6666666666666666,
+     "hits_top3_along_lambda": [
+      1,
+      1,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      3,
+      3,
+      3,
+      3
+     ],
+     "point_hit_at_budget": 0,
+     "point_diameter_at_budget_mean_m": 8115.346560748291,
+     "point_radius_at_budget_mean_m": 5078.023442231898,
+     "ncp_true_clusters": [
+      {
+       "label": "T1",
+       "rank": 1,
+       "ncp": 251.5805716929603,
+       "z": 177.8943282588806
+      },
+      {
+       "label": "T2",
+       "rank": 4,
+       "ncp": 1349.457851173858,
+       "z": 477.1053987452309
+      },
+      {
+       "label": "T3",
+       "rank": 3,
+       "ncp": 737.0402787633273,
+       "z": 300.8954338081374
+      }
+     ],
+     "tau": 0.9,
+     "no_topology": {
+      "n_clusters": 14,
+      "diameter_mean_m": 720.3184697802191,
+      "radius_mean_m": 411.5074739534043,
+      "hit_top1": 1,
+      "hit_top3": 2
+     },
+     "geometry_only": {
+      "n_clusters": 14,
+      "diameter_mean_m": 990.2968027187105,
+      "radius_mean_m": 562.6860388369897,
+      "hit_top1": 1,
+      "hit_top3": 2
+     },
+     "random_group_control": {
+      "n": 20,
+      "hit_top1_mean": 0.6,
+      "hit_top3_mean": 1.6,
+      "hit_top3_ge_design": 10,
+      "p_one_sided": 0.5238095238095238,
+      "diameter_mean_m": 3411.128894341126,
+      "radius_mean_m": 2080.8263955730627
+     }
+    },
+    {
+     "n_clusters": 18,
+     "size_max": 13,
+     "size_mean": 2.7222222222222223,
+     "diameter_mean_m": 524.1824343390523,
+     "diameter_median_m": 11.718710004229486,
+     "diameter_max_m": 3281.660559479937,
+     "radius_mean_m": 279.9263420480405,
+     "radius_median_m": 5.859355002114743,
+     "radius_max_m": 1822.7595801251427,
+     "district_km_mean": 4.661986437065611,
+     "lam_sel": 4.482870294229595,
+     "lam_max": 37.55200208802495,
+     "rss_sel": 22.437267166533097,
+     "rss_floor": 22.66463978468249,
+     "reached_floor": true,
+     "active_groups": 5,
+     "per_leak": [
+      {
+       "label": "T1",
+       "cluster_size": 1,
+       "cluster_diameter_m": 0.0,
+       "cluster_radius_m": 0.0,
+       "district_pipe_len_km": 3.75012195638,
+       "rank": 18,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.39518516038427237,
+       "max_rival_coh_inside": 0.0,
+       "point_rank": 49,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 0.0,
+       "point_radius_at_budget_m": 0.0
+      },
+      {
+       "label": "T2",
+       "cluster_size": 4,
+       "cluster_diameter_m": 1480.9526186975675,
+       "cluster_radius_m": 749.5645143277249,
+       "district_pipe_len_km": 2.6267365712550004,
+       "rank": 2,
+       "score": 0.1684327817542635,
+       "hit_top1": false,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.33563704087411,
+       "max_rival_coh_outside": 0.9189645953590755,
+       "max_rival_coh_inside": 0.9999679378299807,
+       "point_rank": 7,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 12930.143559157661,
+       "point_radius_at_budget_m": 8333.77075576446
+      },
+      {
+       "label": "T3",
+       "cluster_size": 3,
+       "cluster_diameter_m": 126.80889562975183,
+       "cluster_radius_m": 66.76887985499629,
+       "district_pipe_len_km": 2.0353994960649997,
+       "rank": 1,
+       "score": 0.17202890265796464,
+       "hit_top1": true,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.29759350168992177,
+       "max_rival_coh_outside": 0.9480227360895384,
+       "max_rival_coh_inside": 0.9995499416194352,
+       "point_rank": 9,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 11415.896123087214,
+       "point_radius_at_budget_m": 6900.299570931233
+      }
+     ],
+     "hit_top1": 1,
+     "hit_top3": 2,
+     "hit_rate_top1": 0.3333333333333333,
+     "hit_rate_top3": 0.6666666666666666,
+     "hits_top3_along_lambda": [
+      1,
+      1,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      3,
+      3,
+      3,
+      3
+     ],
+     "point_hit_at_budget": 0,
+     "point_diameter_at_budget_mean_m": 8115.346560748291,
+     "point_radius_at_budget_mean_m": 5078.023442231898,
+     "ncp_true_clusters": [
+      {
+       "label": "T1",
+       "rank": 1,
+       "ncp": 251.5805716929603,
+       "z": 177.8943282588806
+      },
+      {
+       "label": "T2",
+       "rank": 4,
+       "ncp": 1349.457851173858,
+       "z": 477.1053987452309
+      },
+      {
+       "label": "T3",
+       "rank": 3,
+       "ncp": 737.0402787633273,
+       "z": 300.8954338081374
+      }
+     ],
+     "tau": 0.95,
+     "no_topology": {
+      "n_clusters": 18,
+      "diameter_mean_m": 513.4994057738367,
+      "radius_mean_m": 292.8571177530633,
+      "hit_top1": 1,
+      "hit_top3": 2
+     },
+     "geometry_only": {
+      "n_clusters": 18,
+      "diameter_mean_m": 616.2019023819968,
+      "radius_mean_m": 347.02952044761065,
+      "hit_top1": 1,
+      "hit_top3": 2
+     }
+    },
+    {
+     "n_clusters": 21,
+     "size_max": 8,
+     "size_mean": 2.3333333333333335,
+     "diameter_mean_m": 475.92511111993525,
+     "diameter_median_m": 61.30522319127769,
+     "diameter_max_m": 2905.430053183859,
+     "radius_mean_m": 270.11833737253903,
+     "radius_median_m": 30.65261159651391,
+     "radius_max_m": 1602.739699038611,
+     "district_km_mean": 3.9959883746276663,
+     "lam_sel": 4.482870294229595,
+     "lam_max": 37.55200208802495,
+     "rss_sel": 22.43726710014121,
+     "rss_floor": 22.664639784682482,
+     "reached_floor": true,
+     "active_groups": 5,
+     "per_leak": [
+      {
+       "label": "T1",
+       "cluster_size": 1,
+       "cluster_diameter_m": 0.0,
+       "cluster_radius_m": 0.0,
+       "district_pipe_len_km": 3.75012195638,
+       "rank": 21,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.39518516038427237,
+       "max_rival_coh_inside": 0.0,
+       "point_rank": 49,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 0.0,
+       "point_radius_at_budget_m": 0.0
+      },
+      {
+       "label": "T2",
+       "cluster_size": 4,
+       "cluster_diameter_m": 1480.9526186975675,
+       "cluster_radius_m": 749.5645143277249,
+       "district_pipe_len_km": 2.6267365712550004,
+       "rank": 2,
+       "score": 0.16843278170307888,
+       "hit_top1": false,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.33563704076633305,
+       "max_rival_coh_outside": 0.9189645953590755,
+       "max_rival_coh_inside": 0.9999679378299807,
+       "point_rank": 7,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 12930.143559157661,
+       "point_radius_at_budget_m": 8333.77075576446
+      },
+      {
+       "label": "T3",
+       "cluster_size": 3,
+       "cluster_diameter_m": 126.80889562975183,
+       "cluster_radius_m": 66.76887985499629,
+       "district_pipe_len_km": 2.0353994960649997,
+       "rank": 1,
+       "score": 0.17202891275502388,
+       "hit_top1": true,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.2975935192192923,
+       "max_rival_coh_outside": 0.9480227360895384,
+       "max_rival_coh_inside": 0.9995499416194352,
+       "point_rank": 9,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 11415.896123087214,
+       "point_radius_at_budget_m": 6900.299570931233
+      }
+     ],
+     "hit_top1": 1,
+     "hit_top3": 2,
+     "hit_rate_top1": 0.3333333333333333,
+     "hit_rate_top3": 0.6666666666666666,
+     "hits_top3_along_lambda": [
+      1,
+      1,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      3,
+      3,
+      3,
+      3
+     ],
+     "point_hit_at_budget": 0,
+     "point_diameter_at_budget_mean_m": 8115.346560748291,
+     "point_radius_at_budget_mean_m": 5078.023442231898,
+     "ncp_true_clusters": [
+      {
+       "label": "T1",
+       "rank": 1,
+       "ncp": 251.5805716929603,
+       "z": 177.8943282588806
+      },
+      {
+       "label": "T2",
+       "rank": 4,
+       "ncp": 1349.457851173858,
+       "z": 477.1053987452309
+      },
+      {
+       "label": "T3",
+       "rank": 3,
+       "ncp": 737.0402787633273,
+       "z": 300.8954338081374
+      }
+     ],
+     "tau": 0.98,
+     "no_topology": {
+      "n_clusters": 20,
+      "diameter_mean_m": 548.2131331695343,
+      "radius_mean_m": 300.3048022389674,
+      "hit_top1": 1,
+      "hit_top3": 2
+     },
+     "geometry_only": {
+      "n_clusters": 21,
+      "diameter_mean_m": 407.75202597282987,
+      "radius_mean_m": 219.15485713660587,
+      "hit_top1": 1,
+      "hit_top3": 2
+     }
+    },
+    {
+     "n_clusters": 26,
+     "size_max": 7,
+     "size_mean": 1.8846153846153846,
+     "diameter_mean_m": 230.91071380985153,
+     "diameter_median_m": 11.718710004229486,
+     "diameter_max_m": 2153.3367690711016,
+     "radius_mean_m": 127.61853323811962,
+     "radius_median_m": 5.859355002114743,
+     "radius_max_m": 1085.4918561470042,
+     "district_km_mean": 3.227529071814654,
+     "lam_sel": 4.482870294229595,
+     "lam_max": 37.55200208802495,
+     "rss_sel": 22.382513537515187,
+     "rss_floor": 22.664551567890182,
+     "reached_floor": true,
+     "active_groups": 6,
+     "per_leak": [
+      {
+       "label": "T1",
+       "cluster_size": 1,
+       "cluster_diameter_m": 0.0,
+       "cluster_radius_m": 0.0,
+       "district_pipe_len_km": 3.75012195638,
+       "rank": 26,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.39518516038427237,
+       "max_rival_coh_inside": 0.0,
+       "point_rank": 49,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 0.0,
+       "point_radius_at_budget_m": 0.0
+      },
+      {
+       "label": "T2",
+       "cluster_size": 2,
+       "cluster_diameter_m": 112.7919592537411,
+       "cluster_radius_m": 56.39597962865445,
+       "district_pipe_len_km": 0.7582096691290001,
+       "rank": 1,
+       "score": 0.22587585613361058,
+       "hit_top1": true,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.3194364084408967,
+       "max_rival_coh_outside": 0.9895857376168076,
+       "max_rival_coh_inside": 0.9999679378299807,
+       "point_rank": 7,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 9827.87959583782,
+       "point_radius_at_budget_m": 4913.939797920761
+      },
+      {
+       "label": "T3",
+       "cluster_size": 3,
+       "cluster_diameter_m": 126.80889562975183,
+       "cluster_radius_m": 66.76887985499629,
+       "district_pipe_len_km": 2.0353994960649997,
+       "rank": 2,
+       "score": 0.17256707642757596,
+       "hit_top1": false,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.29852538716780147,
+       "max_rival_coh_outside": 0.9480227360895384,
+       "max_rival_coh_inside": 0.9995499416194352,
+       "point_rank": 9,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 11415.896123087214,
+       "point_radius_at_budget_m": 6900.299570931233
+      }
+     ],
+     "hit_top1": 1,
+     "hit_top3": 2,
+     "hit_rate_top1": 0.3333333333333333,
+     "hit_rate_top3": 0.6666666666666666,
+     "hits_top3_along_lambda": [
+      1,
+      1,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      3,
+      3,
+      3,
+      3
+     ],
+     "point_hit_at_budget": 0,
+     "point_diameter_at_budget_mean_m": 7081.258572975011,
+     "point_radius_at_budget_mean_m": 3938.0797896173312,
+     "ncp_true_clusters": [
+      {
+       "label": "T1",
+       "rank": 1,
+       "ncp": 251.5805716929603,
+       "z": 177.8943282588806
+      },
+      {
+       "label": "T2",
+       "rank": 2,
+       "ncp": 1281.3152973273616,
+       "z": 640.6576486636808
+      },
+      {
+       "label": "T3",
+       "rank": 3,
+       "ncp": 737.0402787633273,
+       "z": 300.8954338081374
+      }
+     ],
+     "tau": 0.99,
+     "no_topology": {
+      "n_clusters": 26,
+      "diameter_mean_m": 267.6340110524315,
+      "radius_mean_m": 149.47203003046235,
+      "hit_top1": 1,
+      "hit_top3": 2
+     },
+     "geometry_only": {
+      "n_clusters": 26,
+      "diameter_mean_m": 192.97736633272282,
+      "radius_mean_m": 103.76097911417793,
+      "hit_top1": 1,
+      "hit_top3": 2
+     },
+     "random_group_control": {
+      "n": 20,
+      "hit_top1_mean": 0.25,
+      "hit_top3_mean": 1.05,
+      "hit_top3_ge_design": 5,
+      "p_one_sided": 0.2857142857142857,
+      "diameter_mean_m": 2579.013349818021,
+      "radius_mean_m": 1447.8034820322512
+     }
+    },
+    {
+     "n_clusters": 29,
+     "size_max": 4,
+     "size_mean": 1.6896551724137931,
+     "diameter_mean_m": 178.29907261022862,
+     "diameter_median_m": 0.0,
+     "diameter_max_m": 1284.775717363474,
+     "radius_mean_m": 101.93673465901487,
+     "radius_median_m": 0.0,
+     "radius_max_m": 692.1742134687718,
+     "district_km_mean": 2.893646754040724,
+     "lam_sel": 4.482870294229595,
+     "lam_max": 37.55200208802495,
+     "rss_sel": 22.38251354435849,
+     "rss_floor": 22.664551567890232,
+     "reached_floor": true,
+     "active_groups": 6,
+     "per_leak": [
+      {
+       "label": "T1",
+       "cluster_size": 1,
+       "cluster_diameter_m": 0.0,
+       "cluster_radius_m": 0.0,
+       "district_pipe_len_km": 3.75012195638,
+       "rank": 29,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.39518516038427237,
+       "max_rival_coh_inside": 0.0,
+       "point_rank": 49,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 0.0,
+       "point_radius_at_budget_m": 0.0
+      },
+      {
+       "label": "T2",
+       "cluster_size": 2,
+       "cluster_diameter_m": 112.7919592537411,
+       "cluster_radius_m": 56.39597962865445,
+       "district_pipe_len_km": 0.7582096691290001,
+       "rank": 1,
+       "score": 0.22587585614136607,
+       "hit_top1": true,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.3194364084518686,
+       "max_rival_coh_outside": 0.9895857376168076,
+       "max_rival_coh_inside": 0.9999679378299807,
+       "point_rank": 7,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 9827.87959583782,
+       "point_radius_at_budget_m": 4913.939797920761
+      },
+      {
+       "label": "T3",
+       "cluster_size": 3,
+       "cluster_diameter_m": 126.80889562975183,
+       "cluster_radius_m": 66.76887985499629,
+       "district_pipe_len_km": 2.0353994960649997,
+       "rank": 2,
+       "score": 0.17256707539319655,
+       "hit_top1": false,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.298525385365021,
+       "max_rival_coh_outside": 0.9480227360895384,
+       "max_rival_coh_inside": 0.9995499416194352,
+       "point_rank": 9,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 11415.896123087214,
+       "point_radius_at_budget_m": 6900.299570931233
+      }
+     ],
+     "hit_top1": 1,
+     "hit_top3": 2,
+     "hit_rate_top1": 0.3333333333333333,
+     "hit_rate_top3": 0.6666666666666666,
+     "hits_top3_along_lambda": [
+      1,
+      1,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      3,
+      3,
+      3,
+      3
+     ],
+     "point_hit_at_budget": 0,
+     "point_diameter_at_budget_mean_m": 7081.258572975011,
+     "point_radius_at_budget_mean_m": 3938.0797896173312,
+     "ncp_true_clusters": [
+      {
+       "label": "T1",
+       "rank": 1,
+       "ncp": 251.5805716929603,
+       "z": 177.8943282588806
+      },
+      {
+       "label": "T2",
+       "rank": 2,
+       "ncp": 1281.3152973273616,
+       "z": 640.6576486636808
+      },
+      {
+       "label": "T3",
+       "rank": 3,
+       "ncp": 737.0402787633273,
+       "z": 300.8954338081374
+      }
+     ],
+     "tau": 0.995,
+     "no_topology": {
+      "n_clusters": 29,
+      "diameter_mean_m": 200.52104910866095,
+      "radius_mean_m": 110.61789337016626,
+      "hit_top1": 1,
+      "hit_top3": 2
+     },
+     "geometry_only": {
+      "n_clusters": 29,
+      "diameter_mean_m": 105.2438594605108,
+      "radius_mean_m": 55.08353516956783,
+      "hit_top1": 1,
+      "hit_top3": 2
+     }
+    },
+    {
+     "n_clusters": 36,
+     "size_max": 2,
+     "size_mean": 1.3611111111111112,
+     "diameter_mean_m": 64.32577428731878,
+     "diameter_median_m": 0.0,
+     "diameter_max_m": 567.788177409545,
+     "radius_mean_m": 32.16288714395436,
+     "radius_median_m": 0.0,
+     "radius_max_m": 283.8940887047725,
+     "district_km_mean": 2.330993218532805,
+     "lam_sel": 4.482870294229595,
+     "lam_max": 37.55200208802495,
+     "rss_sel": 22.342450982327687,
+     "rss_floor": 22.66363725567912,
+     "reached_floor": true,
+     "active_groups": 6,
+     "per_leak": [
+      {
+       "label": "T1",
+       "cluster_size": 1,
+       "cluster_diameter_m": 0.0,
+       "cluster_radius_m": 0.0,
+       "district_pipe_len_km": 3.75012195638,
+       "rank": 36,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.39518516038427237,
+       "max_rival_coh_inside": 0.0,
+       "point_rank": 49,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 0.0,
+       "point_radius_at_budget_m": 0.0
+      },
+      {
+       "label": "T2",
+       "cluster_size": 2,
+       "cluster_diameter_m": 112.7919592537411,
+       "cluster_radius_m": 56.39597962865445,
+       "district_pipe_len_km": 0.7582096691290001,
+       "rank": 1,
+       "score": 0.22586214111346717,
+       "hit_top1": true,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.31941701324565963,
+       "max_rival_coh_outside": 0.9895857376168076,
+       "max_rival_coh_inside": 0.9999679378299807,
+       "point_rank": 7,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 9827.87959583782,
+       "point_radius_at_budget_m": 4913.939797920761
+      },
+      {
+       "label": "T3",
+       "cluster_size": 2,
+       "cluster_diameter_m": 78.91772294079786,
+       "cluster_radius_m": 39.4588614707709,
+       "district_pipe_len_km": 0.7991305983665,
+       "rank": 2,
+       "score": 0.20868742144519908,
+       "hit_top1": false,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.2950785507486299,
+       "max_rival_coh_outside": 0.9985946911467728,
+       "max_rival_coh_inside": 0.9995499416194352,
+       "point_rank": 9,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 9827.87959583782,
+       "point_radius_at_budget_m": 4913.939797920761
+      }
+     ],
+     "hit_top1": 1,
+     "hit_top3": 2,
+     "hit_rate_top1": 0.3333333333333333,
+     "hit_rate_top3": 0.6666666666666666,
+     "hits_top3_along_lambda": [
+      1,
+      1,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      3,
+      3,
+      3,
+      3
+     ],
+     "point_hit_at_budget": 0,
+     "point_diameter_at_budget_mean_m": 6551.919730558547,
+     "point_radius_at_budget_mean_m": 3275.959865280507,
+     "ncp_true_clusters": [
+      {
+       "label": "T1",
+       "rank": 1,
+       "ncp": 251.5805716929603,
+       "z": 177.8943282588806
+      },
+      {
+       "label": "T2",
+       "rank": 2,
+       "ncp": 1281.3152973273616,
+       "z": 640.6576486636808
+      },
+      {
+       "label": "T3",
+       "rank": 2,
+       "ncp": 735.4994094922047,
+       "z": 367.74970474610234
+      }
+     ],
+     "tau": 0.999,
+     "no_topology": {
+      "n_clusters": 35,
+      "diameter_mean_m": 98.93528424993062,
+      "radius_mean_m": 49.46764212530242,
+      "hit_top1": 1,
+      "hit_top3": 2
+     },
+     "geometry_only": {
+      "n_clusters": 36,
+      "diameter_mean_m": 36.03431628615545,
+      "radius_mean_m": 18.110614588876132,
+      "hit_top1": 1,
+      "hit_top3": 2
+     },
+     "random_group_control": {
+      "n": 20,
+      "hit_top1_mean": 0.25,
+      "hit_top3_mean": 0.75,
+      "hit_top3_ge_design": 3,
+      "p_one_sided": 0.19047619047619047,
+      "diameter_mean_m": 1510.9124882903827,
+      "radius_mean_m": 755.4562441454448
+     }
+    },
+    {
+     "n_clusters": 36,
+     "size_max": 2,
+     "size_mean": 1.3611111111111112,
+     "diameter_mean_m": 64.32577428731878,
+     "diameter_median_m": 0.0,
+     "diameter_max_m": 567.788177409545,
+     "radius_mean_m": 32.16288714395436,
+     "radius_median_m": 0.0,
+     "radius_max_m": 283.8940887047725,
+     "district_km_mean": 2.330993218532805,
+     "lam_sel": 4.482870294229595,
+     "lam_max": 37.55200208802495,
+     "rss_sel": 22.342450982327687,
+     "rss_floor": 22.66363725567912,
+     "reached_floor": true,
+     "active_groups": 6,
+     "per_leak": [
+      {
+       "label": "T1",
+       "cluster_size": 1,
+       "cluster_diameter_m": 0.0,
+       "cluster_radius_m": 0.0,
+       "district_pipe_len_km": 3.75012195638,
+       "rank": 36,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.39518516038427237,
+       "max_rival_coh_inside": 0.0,
+       "point_rank": 49,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 0.0,
+       "point_radius_at_budget_m": 0.0
+      },
+      {
+       "label": "T2",
+       "cluster_size": 2,
+       "cluster_diameter_m": 112.7919592537411,
+       "cluster_radius_m": 56.39597962865445,
+       "district_pipe_len_km": 0.7582096691290001,
+       "rank": 1,
+       "score": 0.22586214111346717,
+       "hit_top1": true,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.31941701324565963,
+       "max_rival_coh_outside": 0.9895857376168076,
+       "max_rival_coh_inside": 0.9999679378299807,
+       "point_rank": 7,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 9827.87959583782,
+       "point_radius_at_budget_m": 4913.939797920761
+      },
+      {
+       "label": "T3",
+       "cluster_size": 2,
+       "cluster_diameter_m": 78.91772294079786,
+       "cluster_radius_m": 39.4588614707709,
+       "district_pipe_len_km": 0.7991305983665,
+       "rank": 2,
+       "score": 0.20868742144519908,
+       "hit_top1": false,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.2950785507486299,
+       "max_rival_coh_outside": 0.9985946911467728,
+       "max_rival_coh_inside": 0.9995499416194352,
+       "point_rank": 9,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 9827.87959583782,
+       "point_radius_at_budget_m": 4913.939797920761
+      }
+     ],
+     "hit_top1": 1,
+     "hit_top3": 2,
+     "hit_rate_top1": 0.3333333333333333,
+     "hit_rate_top3": 0.6666666666666666,
+     "hits_top3_along_lambda": [
+      1,
+      1,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      3,
+      3,
+      3,
+      3
+     ],
+     "point_hit_at_budget": 0,
+     "point_diameter_at_budget_mean_m": 6551.919730558547,
+     "point_radius_at_budget_mean_m": 3275.959865280507,
+     "ncp_true_clusters": [
+      {
+       "label": "T1",
+       "rank": 1,
+       "ncp": 251.5805716929603,
+       "z": 177.8943282588806
+      },
+      {
+       "label": "T2",
+       "rank": 2,
+       "ncp": 1281.3152973273616,
+       "z": 640.6576486636808
+      },
+      {
+       "label": "T3",
+       "rank": 2,
+       "ncp": 735.4994094922047,
+       "z": 367.74970474610234
+      }
+     ],
+     "tau": 0.9995,
+     "no_topology": {
+      "n_clusters": 36,
+      "diameter_mean_m": 64.32577428731878,
+      "radius_mean_m": 32.16288714395436,
+      "hit_top1": 1,
+      "hit_top3": 2
+     },
+     "geometry_only": {
+      "n_clusters": 36,
+      "diameter_mean_m": 36.03431628615545,
+      "radius_mean_m": 18.110614588876132,
+      "hit_top1": 1,
+      "hit_top3": 2
+     }
+    },
+    {
+     "n_clusters": 44,
+     "size_max": 2,
+     "size_mean": 1.1136363636363635,
+     "diameter_mean_m": 22.84075028166394,
+     "diameter_median_m": 0.0,
+     "diameter_max_m": 567.788177409545,
+     "radius_mean_m": 11.420375140902067,
+     "radius_median_m": 0.0,
+     "radius_max_m": 283.8940887047725,
+     "district_km_mean": 1.9071762697086594,
+     "lam_sel": 4.482870294229595,
+     "lam_max": 37.55200208802495,
+     "rss_sel": 22.32513754678598,
+     "rss_floor": 22.66349013587939,
+     "reached_floor": true,
+     "active_groups": 6,
+     "per_leak": [
+      {
+       "label": "T1",
+       "cluster_size": 1,
+       "cluster_diameter_m": 0.0,
+       "cluster_radius_m": 0.0,
+       "district_pipe_len_km": 3.75012195638,
+       "rank": 44,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.39518516038427237,
+       "max_rival_coh_inside": 0.0,
+       "point_rank": 49,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 0.0,
+       "point_radius_at_budget_m": 0.0
+      },
+      {
+       "label": "T2",
+       "cluster_size": 2,
+       "cluster_diameter_m": 112.7919592537411,
+       "cluster_radius_m": 56.39597962865445,
+       "district_pipe_len_km": 0.7582096691290001,
+       "rank": 2,
+       "score": 0.22585452788323299,
+       "hit_top1": false,
+       "hit_top3": true,
+       "cluster_leak_sum": 0.3194062469450424,
+       "max_rival_coh_outside": 0.9895857376168076,
+       "max_rival_coh_inside": 0.9999679378299807,
+       "point_rank": 7,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 9827.87959583782,
+       "point_radius_at_budget_m": 4913.939797920761
+      },
+      {
+       "label": "T3",
+       "cluster_size": 1,
+       "cluster_diameter_m": 0.0,
+       "cluster_radius_m": 0.0,
+       "district_pipe_len_km": 0.7474120728665001,
+       "rank": 8,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.9995499416194352,
+       "max_rival_coh_inside": 0.0,
+       "point_rank": 9,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 0.0,
+       "point_radius_at_budget_m": 0.0
+      }
+     ],
+     "hit_top1": 0,
+     "hit_top3": 1,
+     "hit_rate_top1": 0.0,
+     "hit_rate_top3": 0.3333333333333333,
+     "hits_top3_along_lambda": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      3,
+      3,
+      3,
+      3
+     ],
+     "point_hit_at_budget": 0,
+     "point_diameter_at_budget_mean_m": 3275.9598652792733,
+     "point_radius_at_budget_mean_m": 1637.9799326402535,
+     "ncp_true_clusters": [
+      {
+       "label": "T1",
+       "rank": 1,
+       "ncp": 251.5805716929603,
+       "z": 177.8943282588806
+      },
+      {
+       "label": "T2",
+       "rank": 2,
+       "ncp": 1281.3152973273616,
+       "z": 640.6576486636808
+      },
+      {
+       "label": "T3",
+       "rank": 1,
+       "ncp": 734.5598627750019,
+       "z": 519.4122601556636
+      }
+     ],
+     "tau": 0.9999,
+     "no_topology": {
+      "n_clusters": 44,
+      "diameter_mean_m": 22.84075028166394,
+      "radius_mean_m": 11.420375140902067,
+      "hit_top1": 0,
+      "hit_top3": 1
+     },
+     "geometry_only": {
+      "n_clusters": 44,
+      "diameter_mean_m": 7.400954604693776,
+      "radius_mean_m": 3.7004773023986726,
+      "hit_top1": 0,
+      "hit_top3": 1
+     }
+    },
+    {
+     "n_clusters": 49,
+     "size_max": 1,
+     "size_mean": 1.0,
+     "diameter_mean_m": 0.0,
+     "diameter_median_m": 0.0,
+     "diameter_max_m": 0.0,
+     "radius_mean_m": 0.0,
+     "radius_median_m": 0.0,
+     "radius_max_m": 0.0,
+     "district_km_mean": 1.712566446269,
+     "lam_sel": 4.482870294229595,
+     "lam_max": 37.55200208802495,
+     "rss_sel": 22.322093929204463,
+     "rss_floor": 22.662936203922737,
+     "reached_floor": true,
+     "active_groups": 6,
+     "per_leak": [
+      {
+       "label": "T1",
+       "cluster_size": 1,
+       "cluster_diameter_m": 0.0,
+       "cluster_radius_m": 0.0,
+       "district_pipe_len_km": 3.75012195638,
+       "rank": 49,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.39518516038427237,
+       "max_rival_coh_inside": 0.0,
+       "point_rank": 49,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 0.0,
+       "point_radius_at_budget_m": 0.0
+      },
+      {
+       "label": "T2",
+       "cluster_size": 1,
+       "cluster_diameter_m": 0.0,
+       "cluster_radius_m": 0.0,
+       "district_pipe_len_km": 0.070290746112,
+       "rank": 7,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.9999679378299807,
+       "max_rival_coh_inside": 0.0,
+       "point_rank": 7,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 0.0,
+       "point_radius_at_budget_m": 0.0
+      },
+      {
+       "label": "T3",
+       "cluster_size": 1,
+       "cluster_diameter_m": 0.0,
+       "cluster_radius_m": 0.0,
+       "district_pipe_len_km": 0.7474120728665001,
+       "rank": 9,
+       "score": 0.0,
+       "hit_top1": false,
+       "hit_top3": false,
+       "cluster_leak_sum": 0.0,
+       "max_rival_coh_outside": 0.9995499416194352,
+       "max_rival_coh_inside": 0.0,
+       "point_rank": 9,
+       "point_hit_at_budget": false,
+       "point_diameter_at_budget_m": 0.0,
+       "point_radius_at_budget_m": 0.0
+      }
+     ],
+     "hit_top1": 0,
+     "hit_top3": 0,
+     "hit_rate_top1": 0.0,
+     "hit_rate_top3": 0.0,
+     "hits_top3_along_lambda": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      2
+     ],
+     "point_hit_at_budget": 0,
+     "point_diameter_at_budget_mean_m": 0.0,
+     "point_radius_at_budget_mean_m": 0.0,
+     "ncp_true_clusters": [
+      {
+       "label": "T1",
+       "rank": 1,
+       "ncp": 251.5805716929603,
+       "z": 177.8943282588806
+      },
+      {
+       "label": "T2",
+       "rank": 1,
+       "ncp": 1278.938585837725,
+       "z": 904.3461467669887
+      },
+      {
+       "label": "T3",
+       "rank": 1,
+       "ncp": 734.5598627750019,
+       "z": 519.4122601556636
+      }
+     ],
+     "tau": 1.01,
+     "no_topology": {
+      "n_clusters": 49,
+      "diameter_mean_m": 0.0,
+      "radius_mean_m": 0.0,
+      "hit_top1": 0,
+      "hit_top3": 0
+     },
+     "geometry_only": {
+      "n_clusters": 49,
+      "diameter_mean_m": 0.0,
+      "radius_mean_m": 0.0,
+      "hit_top1": 0,
+      "hit_top3": 0
+     }
+    }
+   ],
+   "aggregation_probe": {
+    "T1": {
+     "geo": [
+      {
+       "k": 0,
+       "size": 1,
+       "rank": 49,
+       "diameter_m": 0.0,
+       "ncp": 251.5805716929603,
+       "rank_Ag": 1,
+       "z": 177.8943282588806
+      },
+      {
+       "k": 1,
+       "size": 2,
+       "rank": 44,
+       "diameter_m": 1810.9173543381007,
+       "ncp": 1246.4060072958657,
+       "rank_Ag": 2,
+       "z": 623.2030036479329
+      },
+      {
+       "k": 2,
+       "size": 3,
+       "rank": 43,
+       "diameter_m": 1810.9173543381007,
+       "ncp": 1260.935999762877,
+       "rank_Ag": 3,
+       "z": 514.7749662875366
+      },
+      {
+       "k": 3,
+       "size": 4,
+       "rank": 42,
+       "diameter_m": 1810.9173543381007,
+       "ncp": 1298.9916782739006,
+       "rank_Ag": 4,
+       "z": 459.2629122061845
+      },
+      {
+       "k": 4,
+       "size": 5,
+       "rank": 42,
+       "diameter_m": 4637.787284902462,
+       "ncp": 1344.0579809268918,
+       "rank_Ag": 5,
+       "z": 425.0284527056127
+      },
+      {
+       "k": 5,
+       "size": 6,
+       "rank": 42,
+       "diameter_m": 5288.464778604686,
+       "ncp": 1650.8380663265084,
+       "rank_Ag": 6,
+       "z": 476.55590099104546
+      },
+      {
+       "k": 6,
+       "size": 7,
+       "rank": 36,
+       "diameter_m": 5288.464778604686,
+       "ncp": 1650.9549726485748,
+       "rank_Ag": 7,
+       "z": 441.23627633155076
+      },
+      {
+       "k": 7,
+       "size": 8,
+       "rank": 41,
+       "diameter_m": 5288.464778604686,
+       "ncp": 1662.9531407266566,
+       "rank_Ag": 8,
+       "z": 415.73828518166414
+      },
+      {
+       "k": 8,
+       "size": 9,
+       "rank": 41,
+       "diameter_m": 5369.96973116868,
+       "ncp": 1675.8226715777287,
+       "rank_Ag": 9,
+       "z": 394.99519171292286
+      },
+      {
+       "k": 9,
+       "size": 10,
+       "rank": 36,
+       "diameter_m": 6587.948959546555,
+       "ncp": 1790.6136616182328,
+       "rank_Ag": 10,
+       "z": 400.39338688181743
+      },
+      {
+       "k": 10,
+       "size": 11,
+       "rank": 34,
+       "diameter_m": 6737.681394511849,
+       "ncp": 1803.54416269873,
+       "rank_Ag": 11,
+       "z": 384.5169074663488
+      },
+      {
+       "k": 11,
+       "size": 12,
+       "rank": 34,
+       "diameter_m": 7677.150095786996,
+       "ncp": 1879.1049755604301,
+       "rank_Ag": 12,
+       "z": 383.5706969373424
+      },
+      {
+       "k": 12,
+       "size": 13,
+       "rank": 34,
+       "diameter_m": 7677.150095786996,
+       "ncp": 1892.4226323648118,
+       "rank_Ag": 13,
+       "z": 371.1346127074154
+      }
+     ],
+     "coh": [
+      {
+       "k": 0,
+       "size": 1,
+       "rank": 49,
+       "diameter_m": 0.0,
+       "ncp": 251.5805716929603,
+       "rank_Ag": 1,
+       "z": 177.8943282588806
+      },
+      {
+       "k": 1,
+       "size": 2,
+       "rank": 49,
+       "diameter_m": 0.0,
+       "ncp": 251.5805716929603,
+       "rank_Ag": 1,
+       "z": 177.8943282588806
+      },
+      {
+       "k": 2,
+       "size": 3,
+       "rank": 48,
+       "diameter_m": 5288.464778604686,
+       "ncp": 603.5763268537173,
+       "rank_Ag": 2,
+       "z": 301.78816342685866
+      },
+      {
+       "k": 3,
+       "size": 4,
+       "rank": 47,
+       "diameter_m": 5369.96973116868,
+       "ncp": 616.6376356284949,
+       "rank_Ag": 3,
+       "z": 251.74126058101152
+      },
+      {
+       "k": 4,
+       "size": 5,
+       "rank": 44,
+       "diameter_m": 6440.2199998384895,
+       "ncp": 691.5408444594907,
+       "rank_Ag": 4,
+       "z": 244.49661029238868
+      },
+      {
+       "k": 5,
+       "size": 6,
+       "rank": 43,
+       "diameter_m": 6440.2199998384895,
+       "ncp": 705.1375948058985,
+       "rank_Ag": 5,
+       "z": 222.98408633995552
+      },
+      {
+       "k": 6,
+       "size": 7,
+       "rank": 42,
+       "diameter_m": 6440.2199998384895,
+       "ncp": 715.6658815619392,
+       "rank_Ag": 6,
+       "z": 206.5949446848082
+      },
+      {
+       "k": 7,
+       "size": 8,
+       "rank": 41,
+       "diameter_m": 6891.514198490598,
+       "ncp": 720.758699132918,
+       "rank_Ag": 7,
+       "z": 192.6308650494471
+      },
+      {
+       "k": 8,
+       "size": 9,
+       "rank": 40,
+       "diameter_m": 6891.514198490598,
+       "ncp": 722.9829732266487,
+       "rank_Ag": 8,
+       "z": 180.74574330666218
+      },
+      {
+       "k": 9,
+       "size": 10,
+       "rank": 39,
+       "diameter_m": 7527.996606122021,
+       "ncp": 747.3978597841149,
+       "rank_Ag": 9,
+       "z": 176.1633649658867
+      },
+      {
+       "k": 10,
+       "size": 11,
+       "rank": 38,
+       "diameter_m": 7527.996606122021,
+       "ncp": 767.1827497741338,
+       "rank_Ag": 10,
+       "z": 171.54727796601745
+      },
+      {
+       "k": 11,
+       "size": 12,
+       "rank": 37,
+       "diameter_m": 7859.006294470211,
+       "ncp": 778.4255779264045,
+       "rank_Ag": 11,
+       "z": 165.96089084343947
+      },
+      {
+       "k": 12,
+       "size": 13,
+       "rank": 36,
+       "diameter_m": 8190.2113978295265,
+       "ncp": 778.9470898376989,
+       "rank_Ag": 12,
+       "z": 159.00190889402086
+      }
+     ]
+    },
+    "T2": {
+     "geo": [
+      {
+       "k": 0,
+       "size": 1,
+       "rank": 7,
+       "diameter_m": 0.0,
+       "ncp": 1278.938585837725,
+       "rank_Ag": 1,
+       "z": 904.3461467669887
+      },
+      {
+       "k": 1,
+       "size": 2,
+       "rank": 2,
+       "diameter_m": 112.7919592537411,
+       "ncp": 1281.3152973273616,
+       "rank_Ag": 2,
+       "z": 640.6576486636808
+      },
+      {
+       "k": 2,
+       "size": 3,
+       "rank": 2,
+       "diameter_m": 1332.1705166214442,
+       "ncp": 1349.2665997283098,
+       "rank_Ag": 3,
+       "z": 550.8357827190719
+      },
+      {
+       "k": 3,
+       "size": 4,
+       "rank": 2,
+       "diameter_m": 1480.9526186975675,
+       "ncp": 1349.457851173858,
+       "rank_Ag": 4,
+       "z": 477.1053987452309
+      },
+      {
+       "k": 4,
+       "size": 5,
+       "rank": 2,
+       "diameter_m": 3998.111895350419,
+       "ncp": 1350.221953119485,
+       "rank_Ag": 5,
+       "z": 426.97767186186644
+      },
+      {
+       "k": 5,
+       "size": 6,
+       "rank": 2,
+       "diameter_m": 3998.111895350419,
+       "ncp": 1350.7379785923767,
+       "rank_Ag": 6,
+       "z": 389.9244677724799
+      },
+      {
+       "k": 6,
+       "size": 7,
+       "rank": 2,
+       "diameter_m": 4092.3934013529356,
+       "ncp": 1352.1536749961074,
+       "rank_Ag": 7,
+       "z": 361.37827043590835
+      },
+      {
+       "k": 7,
+       "size": 8,
+       "rank": 2,
+       "diameter_m": 4092.3934013529356,
+       "ncp": 1352.1564059124162,
+       "rank_Ag": 8,
+       "z": 338.03910147810404
+      },
+      {
+       "k": 8,
+       "size": 9,
+       "rank": 2,
+       "diameter_m": 6986.315348577593,
+       "ncp": 1431.6343574252007,
+       "rank_Ag": 9,
+       "z": 337.4394541050017
+      },
+      {
+       "k": 9,
+       "size": 10,
+       "rank": 2,
+       "diameter_m": 7927.357700026574,
+       "ncp": 1835.8246824225728,
+       "rank_Ag": 10,
+       "z": 410.5028784668836
+      },
+      {
+       "k": 10,
+       "size": 11,
+       "rank": 2,
+       "diameter_m": 7927.357700026574,
+       "ncp": 1848.7171245185461,
+       "rank_Ag": 11,
+       "z": 394.14781528623826
+      },
+      {
+       "k": 11,
+       "size": 12,
+       "rank": 2,
+       "diameter_m": 8013.976284891175,
+       "ncp": 1861.1750388016208,
+       "rank_Ag": 12,
+       "z": 379.91076392238784
+      },
+      {
+       "k": 12,
+       "size": 13,
+       "rank": 2,
+       "diameter_m": 8013.976284891175,
+       "ncp": 1874.2347087917556,
+       "rank_Ag": 13,
+       "z": 367.5676674300789
+      }
+     ],
+     "coh": [
+      {
+       "k": 0,
+       "size": 1,
+       "rank": 7,
+       "diameter_m": 0.0,
+       "ncp": 1278.938585837725,
+       "rank_Ag": 1,
+       "z": 904.3461467669887
+      },
+      {
+       "k": 1,
+       "size": 2,
+       "rank": 7,
+       "diameter_m": 0.0,
+       "ncp": 1278.938585837725,
+       "rank_Ag": 1,
+       "z": 904.3461467669887
+      },
+      {
+       "k": 2,
+       "size": 3,
+       "rank": 2,
+       "diameter_m": 112.7919592537411,
+       "ncp": 1281.3152973273616,
+       "rank_Ag": 2,
+       "z": 640.6576486636808
+      },
+      {
+       "k": 3,
+       "size": 4,
+       "rank": 2,
+       "diameter_m": 1332.1705166214442,
+       "ncp": 1349.2665997283098,
+       "rank_Ag": 3,
+       "z": 550.8357827190719
+      },
+      {
+       "k": 4,
+       "size": 5,
+       "rank": 2,
+       "diameter_m": 1480.9526186975675,
+       "ncp": 1349.457851173858,
+       "rank_Ag": 4,
+       "z": 477.1053987452309
+      },
+      {
+       "k": 5,
+       "size": 6,
+       "rank": 2,
+       "diameter_m": 3998.111895350419,
+       "ncp": 1350.221953119485,
+       "rank_Ag": 5,
+       "z": 426.97767186186644
+      },
+      {
+       "k": 6,
+       "size": 7,
+       "rank": 2,
+       "diameter_m": 4092.3934013529356,
+       "ncp": 1352.151911344659,
+       "rank_Ag": 6,
+       "z": 390.33263500005296
+      },
+      {
+       "k": 7,
+       "size": 8,
+       "rank": 2,
+       "diameter_m": 4092.3934013529356,
+       "ncp": 1352.1536749961074,
+       "rank_Ag": 7,
+       "z": 361.37827043590835
+      },
+      {
+       "k": 8,
+       "size": 9,
+       "rank": 2,
+       "diameter_m": 4092.3934013529356,
+       "ncp": 1352.1564059124162,
+       "rank_Ag": 8,
+       "z": 338.03910147810404
+      },
+      {
+       "k": 9,
+       "size": 10,
+       "rank": 2,
+       "diameter_m": 4092.3934013529356,
+       "ncp": 1495.5688906832368,
+       "rank_Ag": 9,
+       "z": 352.50896811125307
+      },
+      {
+       "k": 10,
+       "size": 11,
+       "rank": 2,
+       "diameter_m": 7927.357700026574,
+       "ncp": 1849.3286368936374,
+       "rank_Ag": 10,
+       "z": 413.5224544831199
+      },
+      {
+       "k": 11,
+       "size": 12,
+       "rank": 2,
+       "diameter_m": 8013.976284891175,
+       "ncp": 1872.9098600209784,
+       "rank_Ag": 11,
+       "z": 399.30572382595864
+      },
+      {
+       "k": 12,
+       "size": 13,
+       "rank": 2,
+       "diameter_m": 8013.976284891175,
+       "ncp": 1874.1960913479784,
+       "rank_Ag": 12,
+       "z": 382.56867514343315
+      }
+     ]
+    },
+    "T3": {
+     "geo": [
+      {
+       "k": 0,
+       "size": 1,
+       "rank": 9,
+       "diameter_m": 0.0,
+       "ncp": 734.5598627750019,
+       "rank_Ag": 1,
+       "z": 519.4122601556636
+      },
+      {
+       "k": 1,
+       "size": 2,
+       "rank": 2,
+       "diameter_m": 78.91772294079786,
+       "ncp": 735.4994094922047,
+       "rank_Ag": 2,
+       "z": 367.74970474610234
+      },
+      {
+       "k": 2,
+       "size": 3,
+       "rank": 2,
+       "diameter_m": 126.80889562975183,
+       "ncp": 737.0402787633273,
+       "rank_Ag": 3,
+       "z": 300.8954338081374
+      },
+      {
+       "k": 3,
+       "size": 4,
+       "rank": 2,
+       "diameter_m": 970.0951462342258,
+       "ncp": 737.74469387852,
+       "rank_Ag": 4,
+       "z": 260.83213791294753
+      },
+      {
+       "k": 4,
+       "size": 5,
+       "rank": 2,
+       "diameter_m": 1020.5935152994266,
+       "ncp": 737.7453917420895,
+       "rank_Ag": 5,
+       "z": 233.29557711981792
+      },
+      {
+       "k": 5,
+       "size": 6,
+       "rank": 2,
+       "diameter_m": 1471.0123150459992,
+       "ncp": 739.2969496597643,
+       "rank_Ag": 6,
+       "z": 213.4166464485671
+      },
+      {
+       "k": 6,
+       "size": 7,
+       "rank": 2,
+       "diameter_m": 1583.073499336639,
+       "ncp": 739.3357161605124,
+       "rank_Ag": 7,
+       "z": 197.59578169127025
+      },
+      {
+       "k": 7,
+       "size": 8,
+       "rank": 2,
+       "diameter_m": 1583.073499336639,
+       "ncp": 739.3385992519246,
+       "rank_Ag": 8,
+       "z": 184.83464981298116
+      },
+      {
+       "k": 8,
+       "size": 9,
+       "rank": 2,
+       "diameter_m": 2183.312494919539,
+       "ncp": 739.9759520234132,
+       "rank_Ag": 9,
+       "z": 174.4140045302423
+      },
+      {
+       "k": 9,
+       "size": 10,
+       "rank": 2,
+       "diameter_m": 2916.1232223968677,
+       "ncp": 739.9766768390823,
+       "rank_Ag": 10,
+       "z": 165.4638151176582
+      },
+      {
+       "k": 10,
+       "size": 11,
+       "rank": 2,
+       "diameter_m": 3014.9908467960613,
+       "ncp": 740.1115818369634,
+       "rank_Ag": 11,
+       "z": 157.7923194307246
+      },
+      {
+       "k": 11,
+       "size": 12,
+       "rank": 2,
+       "diameter_m": 3014.9908467960613,
+       "ncp": 740.1119850424241,
+       "rank_Ag": 12,
+       "z": 151.0747263226929
+      },
+      {
+       "k": 12,
+       "size": 13,
+       "rank": 2,
+       "diameter_m": 3046.249874912998,
+       "ncp": 740.8724666477865,
+       "rank_Ag": 13,
+       "z": 145.29704478925706
+      }
+     ],
+     "coh": [
+      {
+       "k": 0,
+       "size": 1,
+       "rank": 9,
+       "diameter_m": 0.0,
+       "ncp": 734.5598627750019,
+       "rank_Ag": 1,
+       "z": 519.4122601556636
+      },
+      {
+       "k": 1,
+       "size": 2,
+       "rank": 9,
+       "diameter_m": 0.0,
+       "ncp": 734.5598627750019,
+       "rank_Ag": 1,
+       "z": 519.4122601556636
+      },
+      {
+       "k": 2,
+       "size": 3,
+       "rank": 2,
+       "diameter_m": 78.91772294079786,
+       "ncp": 735.4994094922047,
+       "rank_Ag": 2,
+       "z": 367.74970474610234
+      },
+      {
+       "k": 3,
+       "size": 4,
+       "rank": 2,
+       "diameter_m": 126.80889562975183,
+       "ncp": 737.0402787633273,
+       "rank_Ag": 3,
+       "z": 300.8954338081374
+      },
+      {
+       "k": 4,
+       "size": 5,
+       "rank": 2,
+       "diameter_m": 970.0951462342258,
+       "ncp": 737.74469387852,
+       "rank_Ag": 4,
+       "z": 260.83213791294753
+      },
+      {
+       "k": 5,
+       "size": 6,
+       "rank": 2,
+       "diameter_m": 1020.5935152994266,
+       "ncp": 737.7453917420895,
+       "rank_Ag": 5,
+       "z": 233.29557711981792
+      },
+      {
+       "k": 6,
+       "size": 7,
+       "rank": 2,
+       "diameter_m": 1696.1715778177836,
+       "ncp": 738.4642005422137,
+       "rank_Ag": 6,
+       "z": 213.17625248497444
+      },
+      {
+       "k": 7,
+       "size": 8,
+       "rank": 2,
+       "diameter_m": 1722.8569283991926,
+       "ncp": 738.6780231685614,
+       "rank_Ag": 7,
+       "z": 197.4200058454443
+      },
+      {
+       "k": 8,
+       "size": 9,
+       "rank": 2,
+       "diameter_m": 1722.8569283991926,
+       "ncp": 739.1914929747126,
+       "rank_Ag": 8,
+       "z": 184.79787324367814
+      },
+      {
+       "k": 9,
+       "size": 10,
+       "rank": 2,
+       "diameter_m": 2162.870014660486,
+       "ncp": 740.2071936084673,
+       "rank_Ag": 9,
+       "z": 174.46850869453698
+      },
+      {
+       "k": 10,
+       "size": 11,
+       "rank": 2,
+       "diameter_m": 2281.057630001401,
+       "ncp": 740.2386344701678,
+       "rank_Ag": 10,
+       "z": 165.5223906246914
+      },
+      {
+       "k": 11,
+       "size": 12,
+       "rank": 2,
+       "diameter_m": 2281.057630001401,
+       "ncp": 740.2440524498875,
+       "rank_Ag": 11,
+       "z": 157.82056226029607
+      },
+      {
+       "k": 12,
+       "size": 13,
+       "rank": 2,
+       "diameter_m": 2281.057630001401,
+       "ncp": 741.9096919910623,
+       "rank_Ag": 12,
+       "z": 151.4416817169612
+      }
+     ]
+    }
+   }
+  }
+ }
+}

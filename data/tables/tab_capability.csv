@@ -1,0 +1,28 @@
+Group,Feature,Supported,Evidence in this work,Source artefact
+Hydraulics,GGA / global gradient algorithm,Yes,bit-level replica of hydsolver.c; 52/52 networks,benchmark\_report.txt
+Head loss,Hazen--Williams,Yes,51 of 52 benchmark networks,benchmark\_report.txt
+Head loss,Darcy--Weisbach,Yes,1 of 52 networks (Balerma); all 3 flow regimes in grad.\ check,check\_taskd.log; gradcheck\_dw.log
+Head loss,Chezy--Manning,"Implemented, not validated",code path present; no network in the 52-net suite uses C--M,dgga/solver.py:362; dgga/parse.py:607
+Units,10 EPANET flow units,Yes (3 exercised bit-exact),LPS/GPM/CMH appear in the suite; the other 7 are unit-tested only,dgga/units.py:35--48; benchmark\_report.txt
+Link,Pipe / CV pipe,Yes,all networks,benchmark\_report.txt
+Link,Pump: 3-point and 1-point head curve,Yes,"EXA4/EXA5, C-Town, D-Town, Net3, net6",benchmark\_report.txt
+Link,Pump: constant power,Yes,"KY3/KY5/ky4/ky10, net6",benchmark\_report.txt
+Link,Pump: multi-point custom curve,Yes,"Anytown, Richmond, BWSN-2",benchmark\_report.txt
+Link,TCV,Yes,"EXA4, D-Town, City D (79 TCVs)",benchmark\_report.txt
+Link,PRV / PSV,Yes,"BWSN-1 (8 PRV), L-Town, BWSN-2 (PSV)",benchmark\_report.txt
+Link,FCV,Yes,"C-Town, BWSN-2, FCV smoke test",check\_taskd.log; benchmark\_report.txt
+Link,PBV / GPV,\textbf{No},rejected at construction time (no silent wrong answer),dgga/solver.py:108--110
+Node,Junction / reservoir / cylindrical tank,Yes,up to 32 tanks (net6),benchmark\_report.txt
+Node,Tank with volume curve,\textbf{No},rejected at parse time,dgga/parse.py:674
+Node,Emitter,Yes,"City D (emitter), bit-level; gradient w.r.t.\ emitter coefficient",benchmark\_report.txt; extfd\_epanet\_report.txt
+Demand,DDA (demand driven),Yes,all networks,benchmark\_report.txt
+Demand,PDA (pressure driven),\textbf{No},rejected at construction time,dgga/solver.py:122
+Time,"Full EPS driver (tank levels, time stepping)",Yes,"up to 2031 frames (L-Town), frame times integer-identical",benchmark\_logs/pub\_l\_town.log
+Control,Simple controls,Yes,up to 1067 controls (BWSN-2),benchmark\_report.txt
+Control,Rule-based controls,Yes,"EXA5, BWSN-1",benchmark\_report.txt
+Solver opt.,DAMPLIMIT $>0$; HEADERROR/FLOWCHANGE $>0$,\textbf{No},rejected at construction time,"dgga/solver.py:227,233"
+Quality,Water quality module,\textbf{No},out of scope,--
+Gradients,Unrolled reverse-mode autodiff,Yes,"vs central FD, worst rel.\ err.\ $7.5\times10^{-7}$",regression\_report.txt appendix A
+Gradients,Implicit-function adjoint,Yes,"vs central FD, worst rel.\ err.\ $5.9\times10^{-8}$",regression\_report.txt appendix A
+Gradients,External check vs EPANET-DLL finite differences,Yes,"8 coordinates, worst rel.\ err.\ $2.4\times10^{-5}$",extfd\_epanet\_report.txt
+Compute,Batched scenarios / CUDA,Yes,B=256 on GPU: 2.18 ms per scenario,bench\_batch\_report.txt

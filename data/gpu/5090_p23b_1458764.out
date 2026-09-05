@@ -1,0 +1,24 @@
+NVIDIA GeForce RTX 5090
+cpus: 8
+/data/run01/<user>/wdsgpu/hydrograd/probe23b.py:86: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  Ag = torch.sparse_csr_tensor(torch.as_tensor(A.indptr, dtype=torch.int32, device="cuda"),
+/data/run01/<user>/wdsgpu/hydrograd/probe23b.py:86: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  Ag = torch.sparse_csr_tensor(torch.as_tensor(A.indptr, dtype=torch.int32, device="cuda"),
+================================================================================
+PROBE 2 -- hand-captured CUDA graph on the unrolled fixed-K path (B=1)
+net         Nj    K |  solve() ms   unroll ms  graph ms | graph vs solve()
+Modena    FAILED: can't convert cuda:0 device type tensor to numpy. Us
+City_D    FAILED: can't convert cuda:0 device type tensor to numpy. Us
+ky4       FAILED: can't convert cuda:0 device type tensor to numpy. Us
+
+================================================================================
+PROBE 3 -- full spsolve diagnosis, then batched sparse triangular solve
+  ky4 Schur: Nj=959  nnz=3219  density=0.3500%
+  torch.sparse.spsolve on CUDA:
+      File "/data/run01/<user>/wdsgpu/hydrograd/probe23b.py", line 93, in <module>
+        x = torch.sparse.spsolve(Ag, bg)
+    RuntimeError: Calling linear solver with sparse tensors requires compiling PyTorch with CUDA cuDSS a
+  torch.sparse.mm (SpMM) throughput, the piece any sparse route needs:
+    B=1      0.0207 ms  = 0.02074 ms/scenario  (0.31 GFLOPS)
+    B=64     0.0254 ms  = 0.00040 ms/scenario  (16.24 GFLOPS)
+    B=256    0.0251 ms  = 0.00010 ms/scenario  (65.60 GFLOPS)

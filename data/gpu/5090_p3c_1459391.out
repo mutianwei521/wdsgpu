@@ -1,0 +1,48 @@
+NVIDIA GeForce RTX 5090, 32607 MiB
+node: <node-20> | cpus: 8
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:2016: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:2016: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+==============================================================================
+node: <node-20> | torch 2.11.0+cu128 | NVIDIA GeForce RTX 5090 | cpus 128
+nvmath 1.0.0
+
+==============================================================================
+批量扫描：solve_unrolled 前向+反向 ms/场景（best of 5，warm 2，slots=K+1）
+   OOM = dense 侧 torch.OutOfMemoryError（cudss 侧同配置照常出梯度）
+net      Nj   K  B     | dense f+b   cudss f+b  倍数  | dense fwd  cudss fwd 倍数
+Net3     92   7  1     |   38.74835    43.67939  0.89x |   13.80879  17.36150 0.80x
+Net3     92   7  8     |    6.27587     6.14972  1.02x |    2.14309   2.53369 0.85x
+Net3     92   7  32    |    1.44674     1.98960  0.73x |    0.53519   0.85983 0.62x
+Net3     92   7  64    |    0.72409     1.28736  0.56x |    0.26794   0.57570 0.47x
+Net3     92   7  128   |    0.37078     0.93647  0.40x |    0.13485   0.43250 0.31x
+Net3     92   7  256   |    0.19958     0.76864  0.26x |    0.06940   0.36701 0.19x
+Net3     92   7  512   |    0.12731     0.67678  0.19x |    0.03758   0.32992 0.11x
+Net3     92   7  1024  |    0.10255     0.62560  0.16x |    0.02394   0.30846 0.08x
+Modena   268  7  1     |   34.37154    35.01121  0.98x |   14.06653  13.91616 1.01x
+Modena   268  7  8     |   10.18375     5.10362  2.00x |    2.68629   2.07726 1.29x
+Modena   268  7  32    |    2.34297     1.71468  1.37x |    0.70172   0.74957 0.94x
+Modena   268  7  64    |    1.68772     1.14684  1.47x |    0.37308   0.52101 0.72x
+Modena   268  7  128   |    1.44967     0.86783  1.67x |    0.24340   0.40386 0.60x
+Modena   268  7  256   |    1.32886     0.72942  1.82x |    0.18019   0.35103 0.51x
+Modena   268  7  512   |    1.25691     0.65075  1.93x |    0.14640   0.31904 0.46x
+Modena   268  7  1024  |    1.22639     0.60986  2.01x |    0.13249   0.29909 0.44x
+City_D   541  7  1     |   44.52113    35.00897  1.27x |   19.13850  13.99139 1.37x
+City_D   541  7  8     |   23.53613     5.09897  4.62x |    4.86957   2.09786 2.32x
+City_D   541  7  32    |    9.66595     1.73005  5.59x |    1.67368   0.75584 2.21x
+City_D   541  7  64    |    8.54298     1.15891  7.37x |    1.12060   0.52231 2.15x
+City_D   541  7  128   |    7.92228     0.86904  9.12x |    0.82152   0.40765 2.02x
+City_D   541  7  256   |    7.58091     0.72799 10.41x |    0.66515   0.35223 1.89x
+City_D   541  7  512   |    7.43100     0.65111 11.41x |    0.59772   0.31891 1.87x
+City_D   541  7  1024  |        OOM     0.60948      - |    0.56342   0.30184 1.87x
+ky4      959  8  1     |  113.62040    52.06239  2.18x |   34.67580  20.55570 1.69x
+ky4      959  8  8     |   78.64163     7.35205 10.70x |   11.94030   2.98877 4.00x
+ky4      959  8  32    |   47.54446     2.35119 20.22x |    5.43374   1.00005 5.43x
+ky4      959  8  64    |   44.49585     1.51436 29.38x |    3.87530   0.67262 5.76x
+ky4      959  8  128   |   42.79155     1.08407 39.47x |    3.08576   0.50007 6.17x
+ky4      959  8  256   |        OOM     0.88365      - |    2.71159   0.42061 6.45x
+ky4      959  8  512   |        OOM     0.77458      - |    2.55178   0.37508 6.80x
+ky4      959  8  1024  |        OOM     0.71396      - |        OOM   0.35058 -
+P3C DONE
+P3C JOB DONE

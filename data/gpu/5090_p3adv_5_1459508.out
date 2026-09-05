@@ -1,0 +1,54 @@
+NVIDIA GeForce RTX 5090, 32607 MiB
+node: <node-21> | cpus: 8
+/data/run01/<user>/wdsgpu/hgaudit/dgga/solver.py:2016: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hgaudit/dgga/solver.py:2016: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+node: <node-21> | torch 2.11.0+cu128 | nvmath 1.0.0
+solver.py md5: 45b0b0eeb66ed4e15ef81c53809d229a
+==============================================================================
+S1  is A exactly symmetric?  (node <node-21>)
+   For each Newton round: t[k] = index of the CSR slot transposing
+   slot k; report max_k |data[k] - data[t[k]]| over all rounds,
+   both in absolute terms and relative to max|data|.
+   Hanoi    Nj=31   nnz=97     rounds=8 | pattern symmetric: yes | max|A-A^T| = 0.000e+00 (rel 0.000e+00)  EXACT
+   Net3     Nj=92   nnz=320    rounds=8 | pattern symmetric: yes | max|A-A^T| = 0.000e+00 (rel 0.000e+00)  EXACT
+   Modena   Nj=268  nnz=894    rounds=8 | pattern symmetric: yes | max|A-A^T| = 0.000e+00 (rel 0.000e+00)  EXACT
+   City_D   Nj=541  nnz=1645   rounds=8 | pattern symmetric: yes | max|A-A^T| = 0.000e+00 (rel 0.000e+00)  EXACT
+   ky4      Nj=959  nnz=3219   rounds=8 | pattern symmetric: yes | max|A-A^T| = 0.000e+00 (rel 0.000e+00)  EXACT
+   Pescara  Nj=68   nnz=254    rounds=8 | pattern symmetric: yes | max|A-A^T| = 0.000e+00 (rel 0.000e+00)  EXACT
+
+==============================================================================
+S2  run-to-run reproducibility of the gradient, per path (node <node-21>)
+   self = max|g(run1) - g(run2)| / max|g| for the SAME path;
+   cross = the same between cudss and dense.
+   If self(cudss) ~ self(dense) ~ cross, the disagreement is the
+   unrolled route being chaotic, not the sparse path being wrong.
+   net      B    K  param | self(cudss)  self(dense)  cross     | max|g_dense|
+   Hanoi    8    11 d     | 5.3268e-13   4.1937e-13   3.9613e-14 | 8.6747e+00
+   Hanoi    8    11 r     | 3.8823e-14   3.3867e-14   2.8747e-14 | 3.3394e+04
+   Hanoi    64   10 d     | 3.2637e-14   3.6468e-14   3.0792e-14 | 2.5037e+01
+   Hanoi    64   10 r     | 1.5799e-14   1.5799e-14   2.3471e-14 | 9.5790e+04
+   Net3     8    8  d     | 1.6115e-13   6.9393e-14   4.8932e-13 | 1.0023e+02
+   Net3     8    8  r     | 2.4632e-11   1.4889e-11   2.8664e-11 | 6.8755e+03
+   Net3     64   7  d     | 3.1501e-05   4.2877e-05   3.2074e-05 | 5.0345e+01
+   Net3     64   7  r     | 2.0397e-11   4.1625e-11   2.2028e-11 | 1.2249e+04
+   Modena   8    12 d     | 4.8833e-11   4.8868e-11   4.8875e-11 | 2.9519e+02
+   Modena   8    12 r     | 1.6338e-13   7.1546e-14   2.8339e-14 | 2.5996e+03
+   Modena   64   7  d     | 1.7063e-10   2.8723e-11   1.1007e-10 | 2.0338e+02
+   Modena   64   7  r     | 3.3552e-13   5.4575e-14   3.2408e-13 | 6.1994e+03
+   City_D   8    10 d     | 5.9152e-03   1.0381e-06   5.9152e-03 | 1.3662e+08
+   City_D   8    10 r     | 2.3616e-12   4.7591e-12   1.5898e-12 | 3.3262e+05
+   City_D   64   8  d     | 2.4937e-06   2.2510e-05   1.3033e-05 | 2.4247e+08
+   City_D   64   8  r     | 1.4121e-11   5.5929e-12   1.7217e-11 | 3.2054e+05
+   ky4      8    7  d     | 1.2562e-05   1.0111e-04   1.0111e-04 | 5.7108e+02
+   ky4      8    7  r     | 3.1093e-09   2.6436e-10   3.0933e-09 | 1.9470e+03
+   ky4      64   8  d     | 2.3107e-04   3.4470e-04   4.5999e-04 | 2.6016e+02
+   ky4      64   8  r     | 1.6873e-08   1.6927e-07   2.7642e-08 | 2.1559e+03
+   Pescara  8    8  d     | 1.5511e-07   5.4199e-05   5.4277e-05 | 3.6880e+02
+   Pescara  8    8  r     | 1.6617e-09   2.0112e-09   2.0814e-09 | 5.0486e+02
+   Pescara  64   7  d     | 2.1693e-11   2.1645e-11   2.5951e-13 | 3.4439e+02
+   Pescara  64   7  r     | 4.1191e-15   8.0328e-15   8.4387e-15 | 1.4352e+03
+
+AUD5 DONE
+AUD JOB DONE

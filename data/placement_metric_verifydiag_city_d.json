@@ -1,0 +1,61 @@
+{
+ "all_match": true,
+ "n_cases": 6,
+ "cases": [
+  {
+   "case": "ga40",
+   "reason_identical": true,
+   "k_sub_fast": 20,
+   "k_sub_solve": 20,
+   "rank_eps_fast": 110,
+   "rank_eps_solve": 110,
+   "one_minus_cos_theta_max": 6.661338147750939e-16
+  },
+  {
+   "case": "augcover20",
+   "reason_identical": true,
+   "k_sub_fast": 33,
+   "k_sub_solve": 33,
+   "rank_eps_fast": 144,
+   "rank_eps_solve": 144,
+   "one_minus_cos_theta_max": 9.992007221626409e-16
+  },
+  {
+   "case": "augdopt40",
+   "reason_identical": true,
+   "k_sub_fast": 56,
+   "k_sub_solve": 56,
+   "rank_eps_fast": 157,
+   "rank_eps_solve": 157,
+   "one_minus_cos_theta_max": 7.771561172376096e-16
+  },
+  {
+   "case": "augrand20_r0",
+   "reason_identical": true,
+   "k_sub_fast": 27,
+   "k_sub_solve": 27,
+   "rank_eps_fast": 130,
+   "rank_eps_solve": 130,
+   "one_minus_cos_theta_max": 5.551115123125783e-16
+  },
+  {
+   "case": "augrand20_r1",
+   "reason_identical": true,
+   "k_sub_fast": 24,
+   "k_sub_solve": 24,
+   "rank_eps_fast": 130,
+   "rank_eps_solve": 130,
+   "one_minus_cos_theta_max": 6.661338147750939e-16
+  },
+  {
+   "case": "augrand20_r2",
+   "reason_identical": true,
+   "k_sub_fast": 24,
+   "k_sub_solve": 24,
+   "rank_eps_fast": 125,
+   "rank_eps_solve": 125,
+   "one_minus_cos_theta_max": 8.881784197001252e-16
+  }
+ ],
+ "note": "fast_diag（查灵敏度缓存）与 calibrate.get_diag（重解）的 reason/k_sub/rank_eps/子空间主角对拍"
+}

@@ -1,0 +1,54 @@
+<node-11>
+NVIDIA GeForce RTX 5090, 32607 MiB
+====================================================================================================
+L-TOWN 主线 · 显存全表（R5 统一口径，MiB，每配置全新进程） | node: <node-11>
+md5 dgga/solver.py aeefca0ee016bbbbc1a05c4ff8dffbcb
+md5 dgga/autodiff.py e4b8cfe49536f85b435e04e5ed5621d2
+sha256 INP 8e3009b8fd5e0b9d79e0c0d999cc6af9b2b4132d84d2cadc04e1bdf07086dc02
+B 列: [1, 8, 64, 256, 512, 1024] | OOM 细扫: [1536, 2048, 3072, 4096, 6144, 8192, 12288, 16384] | impl 抽查: [1, 64, 256]
+
+RESULT 1 dense ok ctx=588.19 torch_peak=23.92 torch_resv=42.00 nontorch=70.00 total=112.00 conv=1/1 iters=17
+RESULT 1 cudss ok ctx=588.19 torch_peak=0.78 torch_resv=2.00 nontorch=44.00 total=46.00 conv=1/1 iters=17
+RESULT 8 dense ok ctx=588.19 torch_peak=200.50 torch_resv=214.00 nontorch=78.00 total=292.00 conv=8/8 iters=17
+RESULT 8 cudss ok ctx=588.19 torch_peak=3.63 torch_resv=6.00 nontorch=44.00 total=50.00 conv=8/8 iters=17
+RESULT 64 dense ok ctx=588.19 torch_peak=1517.82 torch_resv=1546.00 nontorch=78.00 total=1624.00 conv=64/64 iters=17
+RESULT 64 cudss ok ctx=588.19 torch_peak=26.95 torch_resv=46.00 nontorch=76.00 total=122.00 conv=64/64 iters=17
+RESULT 256 dense ok ctx=588.19 torch_peak=6050.29 torch_resv=7260.00 nontorch=78.00 total=7338.00 conv=256/256 iters=17
+RESULT 256 cudss ok ctx=588.19 torch_peak=111.56 torch_resv=124.00 nontorch=172.00 total=296.00 conv=256/256 iters=17
+RESULT 512 dense ok ctx=588.19 torch_peak=12087.83 torch_resv=14486.00 nontorch=78.00 total=14564.00 conv=512/512 iters=17
+RESULT 512 cudss ok ctx=588.19 torch_peak=214.10 torch_resv=258.00 nontorch=332.00 total=590.00 conv=512/512 iters=17
+RESULT 1024 dense ok ctx=588.19 torch_peak=24167.91 torch_resv=28990.00 nontorch=78.00 total=29068.00 conv=1024/1024 iters=17
+RESULT 1024 cudss ok ctx=588.19 torch_peak=427.39 torch_resv=592.00 nontorch=620.00 total=1212.00 conv=1024/1024 iters=17
+RESULT 1 impl_dense ok ctx=588.19 torch_peak=23.92 torch_resv=42.00 nontorch=70.00 total=112.00 gnorm=4.039813e+03 rss_hwm_delta=575.4MiB groups=1
+RESULT 64 impl_dense ok ctx=588.19 torch_peak=1517.82 torch_resv=1546.00 nontorch=78.00 total=1624.00 gnorm=1.437096e+04 rss_hwm_delta=574.5MiB groups=1
+RESULT 256 impl_dense ok ctx=588.19 torch_peak=6050.29 torch_resv=7260.00 nontorch=78.00 total=7338.00 gnorm=3.068792e+04 rss_hwm_delta=604.2MiB groups=1
+RESULT 1536 dense OOM ctx=588.19
+RESULT 1536 cudss ok ctx=588.19 torch_peak=627.90 torch_resv=824.00 nontorch=908.00 total=1732.00 conv=1536/1536 iters=17
+RESULT 2048 cudss ok ctx=588.19 torch_peak=835.89 torch_resv=1124.00 nontorch=1196.00 total=2320.00 conv=2048/2048 iters=17
+RESULT 3072 cudss ok ctx=588.19 torch_peak=1277.56 torch_resv=1608.00 nontorch=1772.00 total=3380.00 conv=3072/3072 iters=17
+RESULT 4096 cudss ok ctx=588.19 torch_peak=1675.56 torch_resv=2168.00 nontorch=2348.00 total=4516.00 conv=4096/4096 iters=17
+RESULT 6144 cudss ok ctx=588.19 torch_peak=2508.87 torch_resv=3184.00 nontorch=3500.00 total=6684.00 conv=6144/6144 iters=17
+RESULT 8192 cudss ok ctx=588.19 torch_peak=3343.66 torch_resv=4288.00 nontorch=4652.00 total=8940.00 conv=8192/8192 iters=17
+RESULT 12288 cudss ok ctx=588.19 torch_peak=5041.96 torch_resv=6268.00 nontorch=6956.00 total=13224.00 conv=12288/12288 iters=17
+RESULT 16384 cudss ok ctx=588.19 torch_peak=6696.84 torch_resv=8454.00 nontorch=9260.00 total=17714.00 conv=16384/16384 iters=17
+
+====================================================================================================
+§M1 显存全表（R5 口径；纯前向=SM，训练形态的 GPU 段）  node=<node-11>
+B     | dense peak     resv     非torch   total    | cudss peak    resv     非torch   total    | total 倍数
+1     |      23.9      42.0     70.0     112.0 |       0.8       2.0     44.0      46.0 |   2.43x
+8     |     200.5     214.0     78.0     292.0 |       3.6       6.0     44.0      50.0 |   5.84x
+64    |    1517.8    1546.0     78.0    1624.0 |      26.9      46.0     76.0     122.0 |  13.31x
+256   |    6050.3    7260.0     78.0    7338.0 |     111.6     124.0    172.0     296.0 |  24.79x
+512   |   12087.8   14486.0     78.0   14564.0 |     214.1     258.0    332.0     590.0 |  24.68x
+1024  |   24167.9   28990.0     78.0   29068.0 |     427.4     592.0    620.0    1212.0 |  23.98x
+
+§M2 impl_dense 抽查（完整训练步：GPU 前向 + CPU 隐式伴随）  node=<node-11>
+B=1     ctx=588.19 torch_peak=23.92 torch_resv=42.00 nontorch=70.00 total=112.00 gnorm=4.039813e+03 rss_hwm_delta=575.4MiB groups=1
+B=64    ctx=588.19 torch_peak=1517.82 torch_resv=1546.00 nontorch=78.00 total=1624.00 gnorm=1.437096e+04 rss_hwm_delta=574.5MiB groups=1
+B=256   ctx=588.19 torch_peak=6050.29 torch_resv=7260.00 nontorch=78.00 total=7338.00 gnorm=3.068792e+04 rss_hwm_delta=604.2MiB groups=1
+
+§M3 OOM 边界（纯前向，每候选 B 全新进程）  node=<node-11>
+dense  最大跑通 B=1024  首个 OOM B=1536
+cudss  最大跑通 B=16384  首个 OOM B=None
+LT MEM DONE
+LT MEM JOB DONE rc=0

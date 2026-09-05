@@ -1,0 +1,56 @@
+<node-11>
+NVIDIA GeForce RTX 5090, 32607 MiB
+================================================================================================
+L-TOWN 主线 · 时间全表（P4/P5 同口径；f+b=实际训练形态 GPU前向+隐式伴随）
+node: <node-11> | torch 2.11.0+cu128 | NVIDIA GeForce RTX 5090
+nvmath 1.0.0 | B 列: [1, 8, 64, 256, 512, 1024]
+md5 dgga/solver.py aeefca0ee016bbbbc1a05c4ff8dffbcb
+md5 dgga/autodiff.py e4b8cfe49536f85b435e04e5ed5621d2
+sha256 INP 8e3009b8fd5e0b9d79e0c0d999cc6af9b2b4132d84d2cadc04e1bdf07086dc02
+
+### L-TOWN Nj=782 L=909 N=785 nnz=2592 K=17（CPU B=8 max iters）
+/data/run01/<user>/wdsgpu/hydrograd/ltmain/dgga/solver.py:2460: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/ltmain/dgga/solver.py:2460: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+/data/run01/<user>/wdsgpu/hydrograd/ltmain/dgga/solver.py:2803: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:213.)
+  return torch.as_tensor(np.asarray(x), dtype=dt, device=dev)
+  B=1     fwd dense  85.97536 cudss  56.96928 | impl(共享CPU) 330.70364 ms/场景 (状态组 1, 两路状态同 1/1, dense收敛 1/1) | f+b dense 416.67901 cudss 387.67292 |g|=4.0398e+03
+     分解 一轮线代 f+b(ms/轮): A    9.0870 | Badj    3.2352 | C    2.0545 | Badj/C   1.57x  A/Badj   2.81x  A/C   4.42x | gA一致 (B/A) 4.69e-09 (C/A) 1.10e-09
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=8     fwd dense  20.57489 cudss   7.70824 | impl(共享CPU) 325.79641 ms/场景 (状态组 1, 两路状态同 8/8, dense收敛 8/8) | f+b dense 346.37130 cudss 333.50465 |g|=5.6368e+03
+     分解 一轮线代 f+b(ms/轮): A   53.6579 | Badj    8.9599 | C    2.4712 | Badj/C   3.63x  A/Badj   5.99x  A/C  21.71x | gA一致 (B/A) 7.31e-09 (C/A) 8.78e-09
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=64    fwd dense   5.92883 cudss   1.37688 | impl(共享CPU) 322.89575 ms/场景 (状态组 1, 两路状态同 64/64, dense收敛 64/64) | f+b dense 328.82458 cudss 324.27263 |g|=1.4371e+04
+     分解 一轮线代 f+b(ms/轮): A  234.0929 | Badj   21.9452 | C    5.4879 | Badj/C   4.00x  A/Badj  10.67x  A/C  42.66x | gA一致 (B/A) 5.99e-09 (C/A) 7.53e-09
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=256   fwd dense   3.78218 cudss   0.69076 | impl(共享CPU) 322.93477 ms/场景 (状态组 1, 两路状态同 256/256, dense收敛 256/256) | f+b dense 326.71695 cudss 323.62553 |g|=3.0688e+04
+     分解 一轮线代 f+b(ms/轮): A  885.2662 | Badj   55.1514 | C   15.8914 | Badj/C   3.47x  A/Badj  16.05x  A/C  55.71x | gA一致 (B/A) 1.19e-08 (C/A) 1.48e-08
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=512   fwd dense   3.48386 cudss   0.57129 | impl(共享CPU) 328.17874 ms/场景 (状态组 1, 两路状态同 512/512, dense收敛 512/512) | f+b dense 331.66260 cudss 328.75004 |g|=4.1798e+04
+     分解 一轮线代 f+b(ms/轮): A 1756.4152 | Badj  101.0583 | C   29.7429 | Badj/C   3.40x  A/Badj  17.38x  A/C  59.05x | gA一致 (B/A) 1.48e-08 (C/A) 1.21e-08
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=1024  fwd dense   3.32662 cudss   0.51793 | impl(共享CPU) 322.06151 ms/场景 (状态组 1, 两路状态同 1024/1024, dense收敛 1024/1024) | f+b dense 325.38814 cudss 322.57944 |g|=5.7950e+04
+     分解 一轮线代 f+b(ms/轮): A OOM       | Badj OOM       | C   57.2626 | Badj/C   -     A/Badj   -     A/C   -    | gA一致 (B/A)   -     (C/A)   -    
+
+================================================================================================
+§T1 汇总（ms/场景）  node=<node-11>
+B     K  | fwd dense  fwd cudss  倍数   | impl(CPU伴随/场景) | f+b dense  f+b cudss  倍数   | 状态组/两路状态同
+1     17 |  85.97536   56.96928   1.51x |    330.70364 | 416.67901  387.67292   1.07x | 1 / 1
+8     17 |  20.57489    7.70824   2.67x |    325.79641 | 346.37130  333.50465   1.04x | 1 / 8
+64    17 |   5.92883    1.37688   4.31x |    322.89575 | 328.82458  324.27263   1.01x | 1 / 64
+256   17 |   3.78218    0.69076   5.48x |    322.93477 | 326.71695  323.62553   1.01x | 1 / 256
+512   17 |   3.48386    0.57129   6.10x |    328.17874 | 331.66260  328.75004   1.01x | 1 / 512
+1024  17 |   3.32662    0.51793   6.42x |    322.06151 | 325.38814  322.57944   1.01x | 1 / 1024
+
+§T2 倍数分解（一轮线性代数 f+b，ms/轮，整批；A 含 ACTIVE PRV CBIG 行）  node=<node-11>
+B     | A 稠密+autograd | Badj 稠密+手写伴随 | C cudss(gr=2) | Badj/C(稀疏赢)  A/Badj(通用autograd欠账)  A/C(仓库现状)
+1     |          9.0870 |             3.2352 |        2.0545 |          1.57x                   2.81x          4.42x
+8     |         53.6579 |             8.9599 |        2.4712 |          3.63x                   5.99x         21.71x
+64    |        234.0929 |            21.9452 |        5.4879 |          4.00x                  10.67x         42.66x
+256   |        885.2662 |            55.1514 |       15.8914 |          3.47x                  16.05x         55.71x
+512   |       1756.4152 |           101.0583 |       29.7429 |          3.40x                  17.38x         59.05x
+1024  |             OOM |                OOM |       57.2626 |              -                       -              -
+LT TIME DONE
+LT TIME JOB DONE rc=0

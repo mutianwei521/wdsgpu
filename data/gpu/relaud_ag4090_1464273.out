@@ -1,0 +1,30 @@
+<node-04>
+NVIDIA GeForce RTX 4090, 23028 MiB
+========================================================================================
+aud_gpu 敌意复测 | node: <node-04> | torch 2.11.0+cu128 | NVIDIA GeForce RTX 4090
+  B=8     dense  warmup=2.297s reps(s)=['0.1981', '0.1980', '0.2016', '0.1980'] peak_alloc=201MiB
+/data/run01/<user>/wdsgpu/hydrograd/relaud/dgga/solver.py:2460: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/relaud/dgga/solver.py:2460: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=8     cudss  warmup=5.167s reps(s)=['0.1131', '0.1125', '0.1088', '0.1083'] peak_alloc=12MiB
+  B=8     公平性: iters同 8/8 状态同 8/8 conv 8+8/8 max|dH|=2.759e-06 ft  有效
+  B=8     结果: fwd_d=24.745(min)/24.760(med) fwd_c=13.538/14.069 ms/场景 倍数(min)=1.83x
+  B=256   dense  warmup=1.507s reps(s)=['1.5014', '1.4975', '1.4981', '1.4962'] peak_alloc=6058MiB
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=256   cudss  warmup=0.957s reps(s)=['0.3040', '0.2998', '0.3004', '0.3022'] peak_alloc=131MiB
+  B=256   公平性: iters同 256/256 状态同 256/256 conv 256+256/256 max|dH|=7.565e-06 ft  有效
+  B=256   结果: fwd_d=5.845(min)/5.852(med) fwd_c=1.171/1.181 ms/场景 倍数(min)=4.99x
+  B=512   dense  warmup=2.887s reps(s)=['2.8820', '2.8789', '2.8826', '2.8826'] peak_alloc=12115MiB
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=512   cudss  warmup=1.837s reps(s)=['0.4960', '0.4983', '0.4966', '0.4997'] peak_alloc=260MiB
+  B=512   公平性: iters同 512/512 状态同 512/512 conv 512+512/512 max|dH|=8.295e-06 ft  有效
+  B=512   结果: fwd_d=5.623(min)/5.630(med) fwd_c=0.969/0.973 ms/场景 倍数(min)=5.80x
+
+【汇总 node=<node-04>】
+  B=8     fwd_d=24.745 fwd_c=13.538 ms/场景 倍数=1.83x 
+  B=256   fwd_d=5.845 fwd_c=1.171 ms/场景 倍数=4.99x 
+  B=512   fwd_d=5.623 fwd_c=0.969 ms/场景 倍数=5.80x 
+AUD_GPU_RESULT PASS
+AG4090 DONE rc=0

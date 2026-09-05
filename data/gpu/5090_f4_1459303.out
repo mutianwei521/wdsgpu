@@ -1,0 +1,106 @@
+NVIDIA GeForce RTX 5090, 32607 MiB
+node: <node-20> | cpus: 8
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1912: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1912: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+NVIDIA GeForce RTX 5090 | torch 2.11.0+cu128 | cuda 12.8 | host <node-20> | cpus 128
+nvmath 1.0.0
+缺省 cudss_cache_max = False
+
+==============================================================================
+§A 释放接口：cudss_free() 到底还没还设备内存（ky4，MiB）
+   列：设备已用 / torch 保留 / 非torch（cuDSS 那块就在这一列）
+B    阶段                               设备已用    torch保留     非torch
+256  0 建 state 前                     610.2       22.0      588.2
+256  1 plan() 后                      836.2       22.0      814.2  (plan 1613.5 ms)
+256  2 首解后（含数值分解）                    980.2      164.0      816.2  (iters 9)
+256  3 丢输入 + empty_cache()           838.2       22.0      816.2  ← 只 empty_cache() 收不回
+256  4 cudss_free()                  804.2       22.0      782.2  (释放 1 份)
+256  5 再 empty_cache()               784.2        2.0      782.2
+     ⇒ 一份 state 的非torch(cuDSS) 占用 = 228.0 MiB；cudss_free() 还回 34.0 MiB；单靠 empty_cache() 只还 0.0 MiB
+1024 0 建 state 前                     804.2       22.0      782.2
+1024 1 plan() 后                     1396.2       68.0     1328.2  (plan 4474.7 ms)
+1024 2 首解后（含数值分解）                   2010.2      682.0     1328.2  (iters 9)
+1024 3 丢输入 + empty_cache()          1376.2       48.0     1328.2  ← 只 empty_cache() 收不回
+1024 4 cudss_free()                 1342.2       48.0     1294.2  (释放 1 份)
+1024 5 再 empty_cache()              1296.2        2.0     1294.2
+     ⇒ 一份 state 的非torch(cuDSS) 占用 = 546.0 MiB；cudss_free() 还回 34.0 MiB；单靠 empty_cache() 只还 0.0 MiB
+free() 调用计数 = 2
+cudss_session：进入前 1294.2 → 内部 1328.2 → 退出后 1294.2 MiB（free 计数 1，cache len 0）
+
+==============================================================================
+§B 变批量循环 ky4 B∈{1,8,64,256}，每策略 6 轮（cap=None ≡ 修复前）
+策略       轮            设备已用    torch保留     非torch    plan数      本轮ms
+cap=None   0          1598.2      174.0     1424.2        4    1515.8
+cap=None   1          1618.2      194.0     1424.2        4     233.7
+cap=None   2          1618.2      194.0     1424.2        4     232.8
+cap=None   3          1618.2      194.0     1424.2        4     235.8
+cap=None   4          1618.2      194.0     1424.2        4     232.9
+cap=None   5          1618.2      194.0     1424.2        4     233.2
+cap=2      0          1554.2      194.0     1360.2        4    1477.2
+cap=2      1          1554.2      194.0     1360.2        8    1479.2
+cap=2      2          1554.2      194.0     1360.2       12    1489.8
+cap=2      3          1554.2      194.0     1360.2       16    1594.1
+cap=2      4          1554.2      194.0     1360.2       20    1476.8
+cap=2      5          1554.2      194.0     1360.2       24    1474.9
+cap=4      0          1598.2      174.0     1424.2        4    1479.4
+cap=4      1          1618.2      194.0     1424.2        4     242.8
+cap=4      2          1618.2      194.0     1424.2        4     233.4
+cap=4      3          1618.2      194.0     1424.2        4     233.7
+cap=4      4          1618.2      194.0     1424.2        4     234.1
+cap=4      5          1618.2      194.0     1424.2        4     233.4
+
+策略           末轮非torch   plan总数   free总数         均轮ms
+cap=None         1424.2        4        0        447.4
+cap=2            1360.2       24       22       1498.7
+cap=4            1424.2        4        0        442.8
+
+==============================================================================
+§D 现实形态：每 epoch = 4×B=256 + 1×尾批 B=37，跑 4 个 epoch
+策略          plan数    free数      总耗时ms     末轮非torch
+cap=1             8        7     6710.2       1328.2
+cap=2             2        0     3265.6       1360.2
+cap=None          2        0     3393.1       1360.2
+
+==============================================================================
+§E 逐出→重进的代价（ky4，ms）：缓存命中的一次 solve vs 重 plan+solve
+B=64    命中    51.37 | 未命中(含 plan)    264.01 | 重建代价   212.65 ms = 3.323 ms/矩阵
+B=256   命中   124.02 | 未命中(含 plan)   1102.05 | 重建代价   978.03 ms = 3.820 ms/矩阵
+
+==============================================================================
+§C ragged 变批量（80 个互不相同的 B，ky4 B=177..256）：
+   cap=None（修复前）应单调爬升直至 OOM；cap=2（缺省）应持平
+  --- cap=None ---
+    第i个      B         设备已用      torch保留       非torch    cache
+      0    177       1432.2        104.0       1328.2        1
+      8    185       1748.2        164.0       1584.2        9
+     16    193       2404.2        244.0       2160.2       17
+     24    201       3180.2        284.0       2896.2       25
+     32    209       3996.2        364.0       3632.2       33
+     40    217       4824.2        424.0       4400.2       41
+     48    225       5704.2        504.0       5200.2       49
+     56    233       6564.2        564.0       6000.2       57
+     64    241       7444.2        644.0       6800.2       65
+     72    249       8388.2        724.0       7664.2       73
+     79    256       9248.2        784.0       8464.2       80
+  80 个批量全部跑完，末态非torch = 8464.2 MiB，cache 80 份
+  收尾 cudss_free() 后非torch = 5902.2 MiB
+  --- cap=2 ---
+    第i个      B         设备已用      torch保留       非torch    cache
+      0    177       6040.2        104.0       5936.2        1
+      8    185       6092.2        124.0       5968.2        2
+     16    193       6092.2        124.0       5968.2        2
+     24    201       6092.2        124.0       5968.2        2
+     32    209       6112.2        144.0       5968.2        2
+     40    217       6112.2        144.0       5968.2        2
+     48    225       6132.2        164.0       5968.2        2
+     56    233       6132.2        164.0       5968.2        2
+     64    241       6132.2        164.0       5968.2        2
+     72    249       6132.2        164.0       5968.2        2
+     79    256       6132.2        164.0       5968.2        2
+  80 个批量全部跑完，末态非torch = 5968.2 MiB，cache 2 份
+  收尾 cudss_free() 后非torch = 5902.2 MiB
+
+F4 GPU JOB DONE
+F4 JOB DONE

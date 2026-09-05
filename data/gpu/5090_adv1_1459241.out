@@ -1,0 +1,351 @@
+NVIDIA GeForce RTX 5090, 32607 MiB
+cpus: 8
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:2001: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:213.)
+  return torch.as_tensor(np.asarray(x), dtype=dt, device=dev)
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+NVIDIA GeForce RTX 5090 | torch 2.11.0+cu128 | cuda 12.8 | cpus 128
+nvmath 1.0.0 | CUBLAS_WORKSPACE_CONFIG = :4096:8
+dgga/solver.py mtime Sat Aug 22 14:14:03 2026
+
+======================================================================================================================
+[A] 等价性 + 线性解调用计数（deterministic=True）。判据：iters 逐项相等；dense chol==itmax & cholesky_solve==3*itmax；cudss fact==itmax & solve==3*itmax
+net          B  em itmax | d_ch/d_cs c_fa/c_so |    max|dH|    max|dQ|    max|dE| | iters逐项相等 / 备注
+Net1         1   0     4 |   4/12   4/12 |  5.684e-13  1.693e-12  0.000e+00 | OK
+Net1         1   1     5 |   5/15   5/15 |  2.274e-13  2.487e-14  0.000e+00 | OK | emitter占比0.851
+Net1         8   0     4 |   4/12   4/12 |  1.364e-12  4.109e-12  0.000e+00 | OK
+Net1         8   1     5 |   5/15   5/15 |  2.501e-12  8.890e-12  2.265e-12 | OK | emitter占比0.898
+Net1        64   0     4 |   4/12   4/12 |  1.592e-12  5.630e-12  0.000e+00 | OK
+Net1        64   1     5 |   5/15   5/15 |  7.162e-12  1.941e-11  4.326e-12 | OK | emitter占比0.893
+Net1       256   0     4 |   4/12   4/12 |  2.581e-11  1.024e-11  0.000e+00 | OK
+Net1       256   1     5 |   5/15   5/15 |  2.842e-11  3.090e-11  4.562e-12 | OK | emitter占比0.906
+Anytown      1   0     5 |   5/15   5/15 |  6.253e-13  3.267e-12  0.000e+00 | OK
+Anytown      1   1     7 |   7/21   7/21 |  1.137e-13  3.902e-14  4.619e-14 | OK | emitter占比5.227
+Anytown      8   0     6 |   6/18   6/18 |  9.408e-12  1.707e-11  0.000e+00 | OK
+Anytown      8   1     7 |   7/21   7/21 |  1.990e-13  7.105e-14  6.395e-14 | OK | emitter占比5.188
+Anytown     64   0     7 |   7/21   7/21 |  4.206e-12  1.466e-11  0.000e+00 | OK
+Anytown     64   1     7 |   7/21   7/21 |  3.979e-13  1.415e-13  9.948e-14 | OK | emitter占比5.378
+Anytown    256   0     8 |   8/24   8/24 |  6.480e-12  6.034e-11  0.000e+00 | OK
+Anytown    256   1     7 |   7/21   7/21 |  1.023e-12  2.379e-13  1.510e-13 | OK | emitter占比5.445
+Hanoi        1   0     4 |   4/12   4/12 |  5.969e-13  6.253e-13  0.000e+00 | OK
+Hanoi        1   1     9 |   9/27   9/27 |  4.547e-13  4.690e-13  1.015e-13 | OK | emitter占比0.127
+Hanoi        8   0     4 |   4/12   4/12 |  2.217e-12  1.393e-12  0.000e+00 | OK
+Hanoi        8   1     9 |   9/27   9/27 |  1.492e-12  1.220e-12  1.600e-13 | OK | emitter占比0.146
+Hanoi       64   0     5 |   5/15   5/15 |  3.240e-12  2.046e-12  0.000e+00 | OK
+Hanoi       64   1     9 |   9/27   9/27 |  2.117e-12  1.680e-12  3.046e-12 | OK | emitter占比0.140
+Hanoi      256   0     5 |   5/15   5/15 |  3.011e-11  4.377e-12  0.000e+00 | OK
+Hanoi      256   1     9 |   9/27   9/27 |  6.082e-12  1.734e-12  1.446e-11 | OK | emitter占比0.141
+Net2         1   0     5 |   5/15   5/15 |  3.292e-09  1.431e-09  0.000e+00 | OK
+Net2         1   1     7 |   7/21   7/21 |  2.160e-12  6.339e-13  1.986e-12 | OK | emitter占比9.235
+Net2         8   0     6 |   6/18   6/18 |  2.278e-08  8.362e-09  0.000e+00 | OK
+Net2         8   1     7 |   7/21   7/21 |  1.330e-11  1.325e-12  1.638e-11 | OK | emitter占比8.754
+Net2        64   0     6 |   6/18   6/18 |  1.607e-10  4.457e-10  0.000e+00 | OK
+Net2        64   1     7 |   7/21   7/21 |  2.356e-11  1.597e-12  4.103e-11 | OK | emitter占比8.867
+Net2       256   0     6 |   6/18   6/18 |  6.848e-10  2.378e-10  0.000e+00 | OK
+Net2       256   1     7 |   7/21   7/21 |  3.240e-11  2.179e-12  5.831e-11 | OK | emitter占比8.719
+Fossolo      1   0     5 |   5/15   5/15 |  5.684e-13  4.356e-12  0.000e+00 | OK
+Fossolo      1   1     8 |   8/24   8/24 |  1.137e-13  4.192e-13  2.717e-10 | OK | emitter占比15.474
+Fossolo      8   0     7 |   7/21   7/21 |  1.421e-12  4.806e-12  0.000e+00 | OK
+Fossolo      8   1     8 |   8/24   8/24 |  1.023e-12  8.349e-13  5.793e-10 | OK | emitter占比15.703
+Fossolo     64   0     6 |   6/18   6/18 |  1.080e-12  9.389e-12  0.000e+00 | OK
+Fossolo     64   1     8 |   8/24   8/24 |  1.762e-12  3.722e-12  7.823e-10 | OK | emitter占比15.637
+Fossolo    256   0     7 |   7/21   7/21 |  2.728e-12  1.425e-11  0.000e+00 | OK
+Fossolo    256   1     8 |   8/24   8/24 |  1.418e-10  1.572e-12  7.618e-10 | OK | emitter占比15.729
+Pescara      1   0     5 |   5/15   5/15 |  7.161e-07  2.452e-08  0.000e+00 | OK
+Pescara      1   1     7 |   7/21   7/21 |  4.489e-06  8.919e-08  1.019e-08 | OK | emitter占比1.524
+Pescara      8   0     5 |   5/15   5/15 |  1.452e-05  4.529e-07  0.000e+00 | OK
+Pescara      8   1     7 |   7/21   7/21 |  1.409e-05  3.198e-07  3.861e-08 | OK | emitter占比1.559
+Pescara     64   0     5 |   5/15   5/15 |  1.539e-05  4.511e-07  0.000e+00 | OK
+Pescara     64   1     7 |   7/21   7/21 |  1.854e-05  3.720e-07  4.821e-08 | OK | emitter占比1.506
+Pescara    256   0     5 |   5/15   5/15 |  2.165e-05  5.900e-07  0.000e+00 | OK
+Pescara    256   1     7 |   7/21   7/21 |  2.874e-05  5.870e-07  6.488e-08 | OK | emitter占比1.510
+Net3         1   0     5 |   5/15   5/15 |  1.921e-06  5.684e-07  0.000e+00 | OK
+Net3         1   1     8 |   8/24   8/24 |  3.473e-06  7.240e-07  5.222e-08 | OK | emitter占比5.977
+Net3         8   0     6 |   6/18   6/18 |  4.720e-06  1.013e-06  0.000e+00 | OK
+Net3         8   1     8 |   8/24   8/24 |  2.536e-06  5.684e-07  3.790e-08 | OK | emitter占比6.381
+Net3        64   0     6 |   6/18   6/18 |  3.274e-06  7.025e-07  0.000e+00 | OK
+Net3        64   1     8 |   8/24   8/24 |  4.443e-06  9.260e-07  6.831e-08 | OK | emitter占比6.269
+Net3       256   0     6 |   6/18   6/18 |  4.551e-06  9.759e-07  0.000e+00 | OK
+Net3       256   1     9 |   9/27   9/27 |  4.832e-06  1.007e-06  7.206e-08 | OK | emitter占比6.102
+Modena       1   0     4 |   4/12   4/12 |  4.690e-12  5.134e-12  0.000e+00 | OK
+Modena       1   1    12 |  12/36  12/36 |  1.521e-12  1.710e-13  3.113e-10 | OK | emitter占比10.326
+Modena       8   0     5 |   5/15   5/15 |  1.234e-11  1.041e-11  0.000e+00 | OK
+Modena       8   1    12 |  12/36  12/36 |  1.058e-10  6.573e-12  4.655e-10 | OK | emitter占比10.282
+Modena      64   0     5 |   5/15   5/15 |  8.535e-11  2.009e-11  0.000e+00 | OK
+Modena      64   1    12 |  12/36  12/36 |  1.421e-11  8.772e-12  2.744e-08 | OK | emitter占比10.205
+Modena     256   0     5 |   5/15   5/15 |  6.536e-10  4.050e-11  0.000e+00 | OK
+Modena     256   1    12 |  12/36  12/36 |  9.083e-10  2.278e-11  2.842e-07 | OK | emitter占比10.184
+City_D       1   0     5 |   5/15   5/15 |  1.089e-06  6.926e-07  0.000e+00 | OK
+City_D       1   1     8 |   8/24   8/24 |  1.124e-07  6.010e-08  4.166e-08 | OK | emitter占比63.378
+City_D       8   0     5 |   5/15   5/15 |  7.121e-06  1.287e-06  0.000e+00 | OK
+City_D       8   1     8 |   8/24   8/24 |  2.162e-07  7.401e-08  7.400e-08 | OK | emitter占比62.301
+City_D      64   0     5 |   5/15   5/15 |  1.653e-05  2.482e-06  0.000e+00 | OK
+City_D      64   1     8 |   8/24   8/24 |  2.561e-07  1.004e-07  1.004e-07 | OK | emitter占比62.933
+City_D     256   0     5 |   5/15   5/15 |  1.950e-05  2.548e-06  0.000e+00 | OK
+City_D     256   1     8 |   8/24   8/24 |  4.032e-07  1.271e-07  1.271e-07 | OK | emitter占比62.978
+ky4          1   0     9 |   9/27   9/27 |  8.737e-08  5.867e-09  0.000e+00 | OK
+ky4          1   1     7 |   7/21   7/21 |  4.413e-08  4.077e-08  3.682e-08 | OK | emitter占比382.695
+ky4          8   0     9 |   9/27   9/27 |  4.107e-07  1.809e-07  0.000e+00 | OK
+ky4          8   1     7 |   7/21   7/21 |  1.326e-07  2.061e-08  1.137e-06 | OK | emitter占比382.438
+ky4         64   0     9 |   9/27   9/27 |  1.096e-06  2.868e-07  0.000e+00 | OK
+ky4         64   1     7 |   7/21   7/21 |  1.334e-07  6.120e-08  8.523e-07 | OK | emitter占比382.469
+ky4        256   0     9 |   9/27   9/27 |  1.744e-06  5.467e-07  0.000e+00 | OK
+ky4        256   1     7 |   7/21   7/21 |  1.228e-07  7.553e-08  8.893e-07 | OK | emitter占比381.873
+
+======================================================================================================================
+[B] 计时（determinism 关；warm=3，reps=9，报中位数与最好值；计时区内 plan 计数必须 0）
+net          B itmax |   dense中位   dense最好 |   cudss中位   cudss最好 |    中位x    最好x |  plan ms     摊销解 | 计时区plan
+Net1         1     4 |   9.00722   8.95987 |  11.83270  11.72577 |  0.76x  0.76x |      6.4   never | 0
+Net1         8     4 |   1.25425   1.25122 |   1.66298   1.65548 |  0.75x  0.76x |      6.5   never | 0
+Net1        64     4 |   0.15714   0.15669 |   0.35203   0.35118 |  0.45x  0.45x |      7.6   never | 0
+Net1       256     4 |   0.03954   0.03938 |   0.21137   0.21062 |  0.19x  0.19x |     10.5   never | 0
+Anytown      1     6 |  14.85395  14.80850 |  19.22269  19.19009 |  0.77x  0.77x |      6.5   never | 0
+Anytown      8     6 |   2.09173   2.08563 |   2.68257   2.67282 |  0.78x  0.78x |      6.7   never | 0
+Anytown     64     7 |   0.30384   0.30321 |   0.64459   0.64294 |  0.47x  0.47x |     10.1   never | 0
+Anytown    256     7 |   0.07629   0.07602 |   0.37657   0.37591 |  0.20x  0.20x |     17.6   never | 0
+Hanoi        1     4 |   6.17584   6.13949 |   8.78470   8.73762 |  0.70x  0.70x |      6.5   never | 0
+Hanoi        8     4 |   0.93026   0.92500 |   1.28631   1.28229 |  0.72x  0.72x |      6.9   never | 0
+Hanoi       64     5 |   0.14346   0.14297 |   0.37999   0.37913 |  0.38x  0.38x |     10.9   never | 0
+Hanoi      256     5 |   0.03610   0.03606 |   0.24852   0.24769 |  0.15x  0.15x |     21.3   never | 0
+Net2         1     5 |   7.99834   7.91739 |  11.23811  11.17377 |  0.71x  0.71x |      6.4   never | 0
+Net2         8     6 |   1.41585   1.41018 |   1.93611   1.91776 |  0.73x  0.74x |      7.0   never | 0
+Net2        64     6 |   0.17702   0.17669 |   0.46164   0.46012 |  0.38x  0.38x |     11.3   never | 0
+Net2       256     6 |   0.04535   0.04508 |   0.29926   0.29841 |  0.15x  0.15x |     22.8   never | 0
+Fossolo      1     6 |   9.05227   9.01000 |  13.11850  12.92253 |  0.69x  0.70x |      6.6   never | 0
+Fossolo      8     6 |   1.39405   1.38393 |   1.89598   1.88173 |  0.74x  0.74x |      7.2   never | 0
+Fossolo     64     6 |   0.17259   0.17207 |   0.45688   0.45635 |  0.38x  0.38x |     13.3   never | 0
+Fossolo    256     7 |   0.05094   0.05061 |   0.34793   0.34746 |  0.15x  0.15x |     26.7   never | 0
+Pescara      1     5 |   8.39344   8.36410 |  10.96253  10.91774 |  0.77x  0.77x |      6.7   never | 0
+Pescara      8     5 |   1.26112   1.25777 |   1.59133   1.57986 |  0.79x  0.80x |      8.0   never | 0
+Pescara     64     5 |   0.15773   0.15663 |   0.37937   0.37792 |  0.42x  0.41x |     18.4   never | 0
+Pescara    256     5 |   0.04061   0.04048 |   0.24882   0.24803 |  0.16x  0.16x |     43.1   never | 0
+Net3         1     6 |  14.05661  13.98845 |  17.36051  17.23424 |  0.81x  0.81x |      6.8   never | 0
+Net3         8     6 |   2.11063   2.10121 |   2.45676   2.44481 |  0.86x  0.86x |      8.8   never | 0
+Net3        64     6 |   0.26435   0.26359 |   0.52394   0.52298 |  0.50x  0.50x |     23.8   never | 0
+Net3       256     6 |   0.06809   0.06798 |   0.31456   0.31414 |  0.22x  0.22x |     62.6   never | 0
+Modena       1     5 |  10.97337  10.92236 |  10.96691  10.91915 |  1.00x  1.00x |      7.5  1159.7 | 0
+Modena       8     5 |   2.01650   2.00574 |   1.61843   1.60359 |  1.25x  1.25x |     12.6     3.9 | 0
+Modena      64     5 |   0.27875   0.27807 |   0.38024   0.37892 |  0.73x  0.73x |     55.6   never | 0
+Modena     256     5 |   0.12881   0.12865 |   0.24984   0.24900 |  0.52x  0.52x |    198.2   never | 0
+City_D       1     5 |  15.25741  15.21777 |  11.01536  10.95292 |  1.39x  1.39x |      8.2     1.9 | 0
+City_D       8     5 |   3.56260   3.55832 |   1.61315   1.59940 |  2.21x  2.22x |     16.7     1.1 | 0
+City_D      64     5 |   0.80155   0.80075 |   0.38019   0.37958 |  2.11x  2.11x |     86.8     3.2 | 0
+City_D     256     5 |   0.46120   0.46018 |   0.24871   0.24787 |  1.85x  1.86x |    367.4     6.8 | 0
+ky4          1     9 |  45.40270  45.34920 |  26.25391  26.13783 |  1.73x  1.74x |     10.9     0.6 | 0
+ky4          8     9 |  13.69103  13.67585 |   3.70657   3.70261 |  3.69x  3.69x |     36.1     0.5 | 0
+ky4         64     9 |   4.29517   4.28949 |   0.79404   0.79010 |  5.41x  5.43x |    209.3     0.9 | 0
+ky4        256     9 |   2.96987   2.96815 |   0.47685   0.47410 |  6.23x  6.26x |    946.1     1.5 | 0
+
+======================================================================================================================
+[C] 稠密基线公平性微基准（B=256，取最后一次 cholesky 见到的真实 A）：
+    dense 每轮线代 = chol + 3×cholesky_solve + 2×残差；残差现用(A*H^T).sum(-1)（为批不变性），bmm 更快但破位级一致
+net         Nj |     chol     cs×1  resElem   resBmm |     轮elem      轮bmm | 若基线用bmm的整解倍数（按[B]中位数折算）
+Net3        92 |   0.2702   0.1839   0.0321   0.0684 |    0.8862    0.9587 | dense_bmm=0.06979 ms/场景 → 0.22x（原 0.22x）
+Modena     268 |   2.3542   0.6925   0.2621   0.1506 |    4.9560    4.7331 | dense_bmm=0.12446 ms/场景 → 0.50x（原 0.52x）
+City_D     541 |  11.8387   2.1405   1.1437   0.4201 |   20.5477   19.1006 | dense_bmm=0.43294 ms/场景 → 1.74x（原 1.85x）
+ky4        959 |  53.3695   5.4943   3.6063   1.1844 |   77.0649   72.2211 | dense_bmm=2.79958 ms/场景 → 5.87x（原 6.23x）
+
+======================================================================================================================
+[D] 与 CPU f64 dense 基准比（B=8，同一批场景）：|cudss-cpu| vs |gpu_dense-cpu|
+net      | |cudss-cpu| |gpuden-cpu| | 判定
+Net1     |   9.095e-13   1.023e-12 | cudss更准
+Anytown  |   1.052e-12   1.364e-12 | cudss更准
+Hanoi    |   1.421e-12   2.245e-12 | cudss更准
+Net2     |   7.685e-11   1.108e-10 | cudss更准
+Fossolo  |   1.194e-12   5.684e-13 | dense更准
+Pescara  |   1.290e-05   1.980e-05 | cudss更准
+Net3     |   2.758e-06   3.049e-06 | 同量级
+Modena   |   1.558e-11   2.453e-11 | cudss更准
+City_D   |   5.140e-06   5.104e-06 | 同量级
+ky4      |   1.324e-07   1.625e-07 | cudss更准
+
+======================================================================================================================
+[E] 梯度守卫（GPU）
+  [OK] solve() requires_grad → NotImplementedError: linear_solver='cudss' 是纯前向通路：nvmath 的 DirectSolver 不接 autograd，继续算下去会*
+  [OK] 只有 res_head requires_grad → 也 raise
+  [OK] no_grad 下 requires_grad 输入不 raise（纯前向合法）
+  [OK] solve_unrolled requires_grad → raise
+  [info] cudss 输出 head.requires_grad = False
+  [OK] polished cudss vs dense: max|ΔH|=2.842e-14 ft max|Δq|=2.220e-16 cfs
+
+ADV_GPU 结束
+
+================ 显存：每配置一个全新进程（独立复核）================
+MEM Net3     B=64    dense  | torch峰值 首解=    50.61 次解=    50.76 MiB | 基线alloc=   0.14 | 设备级 起=   590.2 峰=   842.2 终=   842.2 MiB | 首解=   337.5 ms 次解=    17.3 ms | iters=6
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+MEM Net3     B=64    cudss  | torch峰值 首解=     3.29 次解=     3.45 MiB | 基线alloc=   0.14 | 设备级 起=   590.2 峰=   660.2 终=   660.2 MiB | 首解=   862.9 ms 次解=    34.5 ms | iters=6
+MEM Net3     B=256   dense  | torch峰值 首解=   106.28 次解=   106.89 MiB | 基线alloc=   0.43 | 设备级 起=   590.2 峰=   906.2 终=   906.2 MiB | 首解=   346.9 ms 次解=    17.9 ms | iters=6
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+MEM Net3     B=256   cudss  | torch峰值 首解=    13.00 次解=    13.62 MiB | 基线alloc=   0.43 | 设备级 起=   590.2 峰=   672.2 终=   672.2 MiB | 首解=  1045.9 ms 次解=    87.5 ms | iters=6
+MEM Modena   B=64    dense  | torch峰值 首解=   181.38 次解=   181.80 MiB | 基线alloc=   0.35 | 设备级 起=   508.2 峰=   972.2 终=   972.2 MiB | 首解=   313.6 ms 次解=    19.5 ms | iters=5
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+MEM Modena   B=64    cudss  | torch峰值 首解=     7.22 次解=     7.64 MiB | 基线alloc=   0.35 | 设备级 起=   508.2 峰=   666.2 终=   666.2 MiB | 首解=   907.6 ms 次解=    27.1 ms | iters=5
+MEM Modena   B=256   dense  | torch峰值 首解=   614.39 次解=   616.07 MiB | 基线alloc=   1.15 | 设备级 起=   508.2 峰=  1436.2 终=  1436.2 MiB | 首解=   342.9 ms 次解=    33.9 ms | iters=5
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+MEM Modena   B=256   cudss  | torch峰值 首解=    28.61 次解=    30.30 MiB | 基线alloc=   1.15 | 设备级 起=   508.2 峰=   738.2 终=   738.2 MiB | 首解=  1126.1 ms 次解=    68.6 ms | iters=5
+MEM City_D   B=64    dense  | torch峰值 首解=   613.73 次解=   614.54 MiB | 基线alloc=   0.69 | 设备级 起=   508.2 峰=  1428.2 终=  1428.2 MiB | 首解=   354.2 ms 次解=    52.4 ms | iters=5
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+MEM City_D   B=64    cudss  | torch峰值 首解=    13.32 次解=    14.12 MiB | 基线alloc=   0.69 | 设备级 起=   508.2 峰=   692.2 终=   692.2 MiB | 首解=   931.8 ms 次解=    25.4 ms | iters=5
+MEM City_D   B=256   dense  | torch峰值 首解=  2361.50 次解=  2365.77 MiB | 基线alloc=   2.27 | 设备级 起=   528.2 峰=  3720.2 终=  3720.2 MiB | 首解=   394.2 ms 次解=   118.5 ms | iters=5
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+MEM City_D   B=256   cudss  | torch峰值 首解=    54.98 次解=    58.67 MiB | 基线alloc=   2.27 | 设备级 起=   528.2 峰=   834.2 终=   834.2 MiB | 首解=  1333.1 ms 次解=    67.3 ms | iters=5
+MEM ky4      B=64    dense  | torch峰值 首解=  1852.63 次解=  1854.14 MiB | 基线alloc=   1.30 | 设备级 起=   590.2 峰=  2672.2 终=  2672.2 MiB | 首解=   607.2 ms 次解=   275.9 ms | iters=9
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+MEM ky4      B=64    cudss  | torch峰值 首解=    32.50 次解=    34.00 MiB | 基线alloc=   1.30 | 设备级 起=   590.2 峰=   744.2 终=   744.2 MiB | 首解=  1090.3 ms 次解=    51.9 ms | iters=9
+MEM ky4      B=256   dense  | torch峰值 首解=  7302.43 次解=  7309.32 MiB | 基线alloc=   4.13 | 设备级 起=   610.2 峰=  9890.2 终=  9890.2 MiB | 首解=  1092.4 ms 次解=   761.7 ms | iters=9
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+MEM ky4      B=256   cudss  | torch峰值 首解=   135.36 次解=   140.10 MiB | 基线alloc=   4.13 | 设备级 起=   610.2 峰=   980.2 终=   980.2 MiB | 首解=  1980.0 ms 次解=   126.2 ms | iters=9
+
+================ 大批量 / OOM 边界（ky4）================
+MEM ky4      B=512   dense  | torch峰值 首解= 14570.96 次解= 14582.31 MiB | 基线alloc=   7.89 | 设备级 起=   610.2 峰= 18956.2 终= 18952.2 MiB | 首解=  1734.4 ms 次解=  1427.5 ms | iters=9
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+MEM ky4      B=512   cudss  | torch峰值 首解=   264.69 次解=   277.41 MiB | 基线alloc=   7.89 | 设备级 起=   610.2 峰=  1298.2 终=  1298.2 MiB | 首解=  3219.1 ms 次解=   231.5 ms | iters=9
+MEM ky4      B=1024  dense  | torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 7.02 GiB. GPU 0 has a total capacity of 31.36 GiB of which
+terminate called without an active exception
+/var/spool/slurmd/job1459241/slurm_script: line 20: 451329 Aborted                 (core dumped) python3 -X utf8 adv_mem.py ky4 $B $p
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+MEM ky4      B=1024  cudss  | torch峰值 首解=   519.90 次解=   543.99 MiB | 基线alloc=  15.42 | 设备级 起=   610.2 峰=  2022.2 终=  2022.2 MiB | 首解=  5853.7 ms 次解=   435.6 ms | iters=9
+MEM ky4      B=2048  dense  | torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 14.04 GiB. GPU 0 has a total capacity of 31.36 GiB of whic
+terminate called without an active exception
+/var/spool/slurmd/job1459241/slurm_script: line 20: 469294 Aborted                 (core dumped) python3 -X utf8 adv_mem.py ky4 $B $p
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+MEM ky4      B=2048  cudss  | torch峰值 首解=  1031.14 次解=  1079.90 MiB | 基线alloc=  32.36 | 设备级 起=   622.2 峰=  3402.2 终=  3402.2 MiB | 首解= 11484.8 ms 次解=   968.4 ms | iters=9
+ADV JOB DONE

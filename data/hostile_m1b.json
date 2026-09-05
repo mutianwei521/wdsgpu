@@ -1,0 +1,87 @@
+[
+ {
+  "tau": 0.9,
+  "n_clusters": 6,
+  "mean_radius_m": 1426.8781594716245,
+  "mean_district_km": 13.985959311196835,
+  "total_km": 83.91575586718099,
+  "top3_candidates": 23,
+  "top3_district_km": 34.69833751752341,
+  "top3_share_of_network": 0.41349013851990757,
+  "top3_radius_m": [
+   2343.5468900573887,
+   1771.1094199719123,
+   1040.604861725665
+  ],
+  "top1_district_km": 10.723104731070004,
+  "top1_radius_m": 2343.5468900573887
+ },
+ {
+  "tau": 0.95,
+  "n_clusters": 8,
+  "mean_radius_m": 1085.527965431027,
+  "mean_district_km": 10.489469483397624,
+  "total_km": 83.91575586718099,
+  "top3_candidates": 14,
+  "top3_district_km": 18.528380718484005,
+  "top3_share_of_network": 0.22079740004737725,
+  "top3_radius_m": [
+   2343.5468900573887,
+   66.76887985499629,
+   1040.604861725665
+  ],
+  "top1_district_km": 10.723104731070004,
+  "top1_radius_m": 2343.5468900573887
+ },
+ {
+  "tau": 0.99,
+  "n_clusters": 13,
+  "mean_radius_m": 729.0338361045475,
+  "mean_district_km": 6.455058143629307,
+  "total_km": 83.91575586718099,
+  "top3_candidates": 10,
+  "top3_district_km": 10.432012558669001,
+  "top3_share_of_network": 0.12431530230366317,
+  "top3_radius_m": [
+   749.5645143277249,
+   66.76887985499629,
+   1040.604861725665
+  ],
+  "top1_district_km": 2.6267365712550004,
+  "top1_radius_m": 749.5645143277249
+ },
+ {
+  "tau": 0.995,
+  "n_clusters": 17,
+  "mean_radius_m": 378.9982844435577,
+  "mean_district_km": 4.936220933363588,
+  "total_km": 83.91575586718099,
+  "top3_candidates": 8,
+  "top3_district_km": 8.659944492074,
+  "top3_share_of_network": 0.10319807529089849,
+  "top3_radius_m": [
+   749.5645143277249,
+   0.0,
+   66.76887985499629
+  ],
+  "top1_district_km": 2.6267365712550004,
+  "top1_radius_m": 749.5645143277249
+ },
+ {
+  "tau": 0.999,
+  "n_clusters": 25,
+  "mean_radius_m": 179.16428101077912,
+  "mean_district_km": 3.3566302346872394,
+  "total_km": 83.91575586718099,
+  "top3_candidates": 7,
+  "top3_district_km": 7.4236755943755,
+  "top3_share_of_network": 0.08846581333457142,
+  "top3_radius_m": [
+   749.5645143277249,
+   0.0,
+   39.4588614707709
+  ],
+  "top1_district_km": 2.6267365712550004,
+  "top1_radius_m": 749.5645143277249
+ }
+]

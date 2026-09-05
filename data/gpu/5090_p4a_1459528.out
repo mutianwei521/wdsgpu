@@ -1,0 +1,192 @@
+NVIDIA GeForce RTX 5090, 32607 MiB
+node: <node-01> | cpus: 8
+/data/run01/<user>/wdsgpu/hgp4/dgga/solver.py:2016: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hgp4/dgga/solver.py:2016: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+node: <node-01> | torch 2.11.0+cu128 | nvmath 1.0.0
+solver.py md5: 45b0b0eeb66ed4e15ef81c53809d229a
+REP=5  BS=(8, 64, 256)
+==============================================================================
+J1  forward heads: self-rerun jitter of GGASolver.solve  (node <node-01>, REP=5)
+    self  = max over the 10 pairs of the 5 reruns, max|dH| in ft
+    cross = max over the 25 cudss-vs-dense pairs
+    ratio = cross / max(self_cudss, self_dense)   <=3 means 'inside the jitter'
+    net      Nj   B    K  | self(cudss) ft  self(dense) ft  cross ft     | maxH ft   | ratio
+    Hanoi    32   8    11 | 3.836931e-13   2.557954e-13   2.842171e-13 | 3.290e+02 |   0.74x OK
+        rel: self(cudss)=1.166e-15 self(dense)=7.776e-16 cross=8.640e-16
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    Hanoi    32   64   10 | 3.055334e-13   4.618528e-13   4.050094e-13 | 3.291e+02 |   0.88x OK
+        rel: self(cudss)=9.284e-16 self(dense)=1.403e-15 cross=1.231e-15
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    Hanoi    32   256  11 | 3.283560e-10   1.094236e-10   2.770690e-10 | 3.291e+02 |   0.84x OK
+        rel: self(cudss)=9.978e-13 self(dense)=3.325e-13 cross=8.419e-13
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    Net3     92   8    8  | 3.684164e-12   1.431744e-12   3.634426e-12 | 2.207e+02 |   0.99x OK
+        rel: self(cudss)=1.669e-14 self(dense)=6.487e-15 cross=1.647e-14
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    Net3     92   64   7  | 7.618128e-09   6.926223e-09   8.078155e-09 | 2.210e+02 |   1.06x OK
+        rel: self(cudss)=3.447e-11 self(dense)=3.134e-11 cross=3.656e-11
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    Net3     92   256  10 | 5.234034e-06   4.963771e-06   4.970495e-06 | 2.528e+02 |   0.95x OK
+        rel: self(cudss)=2.071e-08 self(dense)=1.964e-08 cross=1.966e-08
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    Fossolo  36   8    7  | 1.477929e-12   2.557954e-12   2.131628e-12 | 3.977e+02 |   0.83x OK
+        rel: self(cudss)=3.716e-15 self(dense)=6.431e-15 cross=5.359e-15
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    Fossolo  36   64   6  | 2.444267e-12   2.387424e-12   2.160050e-12 | 3.980e+02 |   0.88x OK
+        rel: self(cudss)=6.142e-15 self(dense)=5.999e-15 cross=5.428e-15
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    Fossolo  36   256  7  | 8.668621e-12   4.234835e-12   7.389644e-12 | 3.980e+02 |   0.85x OK
+        rel: self(cudss)=2.178e-14 self(dense)=1.064e-14 cross=1.857e-14
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    Modena   268  8    12 | 5.812240e-12   4.632739e-12   7.489120e-12 | 2.453e+02 |   1.29x OK
+        rel: self(cudss)=2.370e-14 self(dense)=1.889e-14 cross=3.053e-14
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    Modena   268  64   7  | 2.387424e-11   1.422507e-11   2.400213e-11 | 2.454e+02 |   1.01x OK
+        rel: self(cudss)=9.728e-14 self(dense)=5.796e-14 cross=9.780e-14
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    Modena   268  256  12 | 1.257234e-10   1.017924e-10   1.619185e-10 | 2.454e+02 |   1.29x OK
+        rel: self(cudss)=5.123e-13 self(dense)=4.148e-13 cross=6.598e-13
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    City_D   541  8    10 | 4.887569e-08   5.708822e-08   5.851160e-08 | 1.284e+02 |   1.02x OK
+        rel: self(cudss)=3.807e-10 self(dense)=4.447e-10 cross=4.558e-10
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    City_D   541  64   8  | 2.298207e-07   1.639714e-07   1.948751e-07 | 1.284e+02 |   0.85x OK
+        rel: self(cudss)=1.790e-09 self(dense)=1.277e-09 cross=1.518e-09
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    City_D   541  256  12 | 1.877742e-07   1.876586e-07   1.972277e-07 | 1.284e+02 |   1.05x OK
+        rel: self(cudss)=1.462e-09 self(dense)=1.462e-09 cross=1.536e-09
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    ky4      959  8    7  | 7.766289e-08   6.899313e-08   6.927939e-08 | 8.146e+02 |   0.89x OK
+        rel: self(cudss)=9.534e-11 self(dense)=8.469e-11 cross=8.504e-11
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    ky4      959  64   8  | 1.909241e-07   1.985678e-07   1.982421e-07 | 8.150e+02 |   1.00x OK
+        rel: self(cudss)=2.343e-10 self(dense)=2.437e-10 cross=2.433e-10
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    ky4      959  256  8  | 3.485638e-08   3.273851e-08   3.451680e-08 | 8.150e+02 |   0.99x OK
+        rel: self(cudss)=4.277e-11 self(dense)=4.017e-11 cross=4.235e-11
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    Pescara  68   8    8  | 3.921765e-06   5.722924e-06   5.875453e-06 | 1.877e+02 |   1.03x OK
+        rel: self(cudss)=2.090e-08 self(dense)=3.049e-08 cross=3.131e-08
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    Pescara  68   64   7  | 1.129763e-12   9.192647e-13   1.208811e-12 | 1.880e+02 |   1.07x OK
+        rel: self(cudss)=6.011e-15 self(dense)=4.891e-15 cross=6.431e-15
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    Pescara  68   256  7  | 3.087308e-12   2.870593e-12   3.247180e-12 | 1.880e+02 |   1.05x OK
+        rel: self(cudss)=1.642e-14 self(dense)=1.527e-14 cross=1.727e-14
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+
+==============================================================================
+J2  unrolled gradients: self-rerun jitter  (node <node-01>, REP=5)
+    L = sum(W * head_ft), K = converged iteration count.
+    all figures RELATIVE to max|g| of the dense run.
+    net      B    K  par | self(cudss)  self(dense)  cross      | max|g_dense| | ratio
+    Hanoi    8    11 d   | 3.0638e-13   1.1443e-12   7.2548e-13 | 8.6747e+00 |   0.63x OK
+    Hanoi    8    11 rh  | 1.7490e-14   9.8146e-15   1.7700e-14 | 2.6470e+00 |   1.01x OK
+    Hanoi    8    11 ke  | 9.5595e-13   2.1684e-12   1.9099e-12 | 8.4037e+03 |   0.88x OK
+    Hanoi    8    11 r   | 5.0221e-14   4.7593e-14   4.5932e-14 | 3.3394e+04 |   0.91x OK
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    Hanoi    64   10 d   | 3.3630e-14   4.1151e-14   5.4702e-14 | 2.5037e+01 |   1.33x OK
+    Hanoi    64   10 rh  | 1.7161e-14   1.3922e-14   1.7161e-14 | 3.5646e+00 |   1.00x OK
+    Hanoi    64   10 ke  | 1.6623e-13   1.7853e-13   2.2944e-13 | 6.8629e+03 |   1.29x OK
+    Hanoi    64   10 r   | 1.3520e-14   1.9901e-14   1.8230e-14 | 9.5790e+04 |   0.92x OK
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    Hanoi    256  11 d   | 2.8284e-09   2.8284e-09   2.8285e-09 | 4.1162e+01 |   1.00x OK
+    Hanoi    256  11 rh  | 1.7209e-09   3.4418e-09   2.5813e-09 | 3.5239e+00 |   0.75x OK
+    Hanoi    256  11 ke  | 7.6417e-09   2.5470e-09   5.0946e-09 | 1.2607e+05 |   0.67x OK
+    Hanoi    256  11 r   | 3.4339e-10   9.8711e-10   6.8535e-10 | 2.6323e+06 |   0.69x OK
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    Net3     8    8  d   | 3.2385e-13   3.1773e-13   6.5047e-13 | 1.0023e+02 |   2.01x OK
+    Net3     8    8  rh  | 2.8418e-13   2.8454e-13   2.8465e-13 | 3.7692e+00 |   1.00x OK
+    Net3     8    8  ke  | 3.8383e-13   1.4665e-12   1.1075e-12 | 1.0320e+04 |   0.76x OK
+    Net3     8    8  r   | 5.7267e-11   5.2532e-11   7.7142e-11 | 6.8755e+03 |   1.35x OK
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    Net3     64   7  d   | 3.1767e-05   8.5761e-05   6.4322e-05 | 5.0345e+01 |   0.75x OK
+    Net3     64   7  rh  | 1.2405e-11   1.7857e-11   1.8655e-11 | 4.1114e+00 |   1.04x OK
+    Net3     64   7  ke  | 1.0482e-09   7.3051e-10   9.3141e-10 | 2.7384e+04 |   0.89x OK
+    Net3     64   7  r   | 6.6352e-11   4.0146e-11   7.4943e-11 | 1.2249e+04 |   1.13x OK
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    Net3     256  10 d   | 2.8661e-06   2.8824e-06   3.5644e-06 | 1.5822e+02 |   1.24x OK
+    Net3     256  10 rh  | 1.0954e-08   5.7412e-09   8.4493e-09 | 5.6540e+00 |   0.77x OK
+    Net3     256  10 ke  | 3.9893e-09   3.2475e-09   3.6438e-09 | 1.6491e+04 |   0.91x OK
+    Net3     256  10 r   | 9.4349e-10   9.2037e-10   1.3110e-09 | 3.1375e+05 |   1.39x OK
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    Fossolo  8    7  d   | 2.5024e-12   2.3661e-12   2.4993e-12 | 3.7098e+03 |   1.00x OK
+    Fossolo  8    7  rh  | 7.5556e-14   1.0600e-13   1.0764e-13 | 5.0827e+00 |   1.02x OK
+    Fossolo  8    7  ke  | 1.5879e-11   2.2708e-11   2.8009e-11 | 1.6792e+01 |   1.23x OK
+    Fossolo  8    7  r   | 9.0319e-13   1.0053e-12   1.1317e-12 | 1.1846e+02 |   1.13x OK
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    Fossolo  64   6  d   | 8.9059e-12   1.3323e-11   1.3324e-11 | 7.1901e+03 |   1.00x OK
+    Fossolo  64   6  rh  | 1.2796e-13   1.7275e-13   1.7391e-13 | 1.7116e+01 |   1.01x OK
+    Fossolo  64   6  ke  | 8.2735e-11   1.6510e-10   2.4459e-10 | 2.1097e+00 |   1.48x OK
+    Fossolo  64   6  r   | 4.0659e-12   1.7043e-12   2.8952e-12 | 2.1546e+02 |   0.71x OK
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    Fossolo  256  7  d   | 8.9048e-10   5.3923e-11   5.9312e-10 | 5.0404e+03 |   0.67x OK
+    Fossolo  256  7  rh  | 6.2654e-16   4.6990e-16   7.8317e-16 | 5.6704e+00 |   1.25x OK
+    Fossolo  256  7  ke  | 1.5135e-12   1.5054e-12   1.6365e-12 | 2.7689e+02 |   1.08x OK
+    Fossolo  256  7  r   | 1.7390e-13   1.7565e-13   2.9475e-13 | 1.5560e+03 |   1.68x OK
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    Modena   8    12 d   | 7.3227e-11   4.8851e-11   7.3244e-11 | 2.9519e+02 |   1.00x OK
+    Modena   8    12 rh  | 2.3267e-14   3.5227e-14   3.5662e-14 | 4.0845e+00 |   1.01x OK
+    Modena   8    12 ke  | 6.9098e-14   7.2132e-14   9.0625e-14 | 6.9711e+03 |   1.26x OK
+    Modena   8    12 r   | 2.1341e-13   6.1575e-14   1.5114e-13 | 2.5996e+03 |   0.71x OK
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    Modena   64   7  d   | 1.7060e-10   3.9474e-10   2.9565e-10 | 2.0338e+02 |   0.75x OK
+    Modena   64   7  rh  | 4.1561e-14   8.2339e-14   8.2633e-14 | 4.5412e+00 |   1.00x OK
+    Modena   64   7  ke  | 6.0788e-12   1.1963e-11   1.8043e-11 | 1.7245e+03 |   1.51x OK
+    Modena   64   7  r   | 2.2123e-13   3.5518e-13   4.1636e-13 | 6.1994e+03 |   1.17x OK
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    Modena   256  12 d   | 7.1408e-08   1.0711e-07   1.0711e-07 | 2.7083e+02 |   1.00x OK
+    Modena   256  12 rh  | 1.3977e-08   4.1933e-08   4.1933e-08 | 7.6698e+00 |   1.00x OK
+    Modena   256  12 ke  | 2.5611e-07   3.8419e-07   3.8418e-07 | 7.3452e+04 |   1.00x OK
+    Modena   256  12 r   | 1.3762e-08   1.9894e-08   1.9189e-08 | 6.4512e+05 |   0.96x OK
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    City_D   8    10 d   | 7.4597e-03   5.3918e-07   7.4597e-03 | 1.3662e+08 |   1.00x OK
+    City_D   8    10 rh  | 8.9616e-12   1.0423e-11   1.2611e-11 | 8.2140e+00 |   1.21x OK
+    City_D   8    10 ke  | 4.0620e-11   3.0020e-11   3.6594e-11 | 1.5163e+05 |   0.90x OK
+    City_D   8    10 r   | 9.6244e-12   5.7991e-12   1.3722e-11 | 3.3262e+05 |   1.43x OK
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    City_D   64   8  d   | 6.5557e-06   3.2267e-05   2.9215e-05 | 2.4247e+08 |   0.91x OK
+    City_D   64   8  rh  | 5.2731e-13   3.2527e-13   5.4032e-13 | 3.7721e+00 |   1.02x OK
+    City_D   64   8  ke  | 7.5209e-10   4.9909e-10   5.8294e-10 | 3.0711e+04 |   0.78x OK
+    City_D   64   8  r   | 3.1444e-11   2.9279e-11   3.2694e-11 | 3.2054e+05 |   1.04x OK
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    City_D   256  12 d   | 1.1944e+01   2.8393e-03   1.1944e+01 | 3.1459e+08 |   1.00x OK
+    City_D   256  12 rh  | 5.0996e-12   2.8725e-11   2.8702e-11 | 4.8530e+00 |   1.00x OK
+    City_D   256  12 ke  | 1.4407e-02   5.5034e-08   1.4407e-02 | 8.7307e+04 |   1.00x OK
+    City_D   256  12 r   | 2.3758e-07   4.0889e-10   1.5666e-07 | 8.6628e+05 |   0.66x OK
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    ky4      8    7  d   | 1.0155e-04   7.4407e-05   1.0183e-04 | 5.7108e+02 |   1.00x OK
+    ky4      8    7  rh  | 1.7119e-10   1.7065e-10   1.7131e-10 | 3.3967e+00 |   1.00x OK
+    ky4      8    7  ke  | 3.1458e-11   3.0317e-11   3.1855e-11 | 4.0622e+03 |   1.01x OK
+    ky4      8    7  r   | 4.4877e-08   6.0349e-08   6.1887e-08 | 1.9470e+03 |   1.03x OK
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    ky4      64   8  d   | 3.4729e-04   3.5028e-04   3.5049e-04 | 2.6016e+02 |   1.00x OK
+    ky4      64   8  rh  | 2.4402e-10   3.2302e-10   3.2374e-10 | 3.7190e+00 |   1.00x OK
+    ky4      64   8  ke  | 1.7470e-09   1.9886e-09   2.0426e-09 | 5.4169e+02 |   1.03x OK
+    ky4      64   8  r   | 2.6679e-07   1.9792e-07   2.4625e-07 | 2.1559e+03 |   0.92x OK
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    ky4      256  8  d   | 1.7586e-06   dense-OOM     dense-OOM   | 1.1263e+03 |   -
+    ky4      256  8  rh  | 3.3321e-11   dense-OOM     dense-OOM   | 6.1813e+00 |   -
+    ky4      256  8  ke  | 1.8900e-11   dense-OOM     dense-OOM   | 9.2612e+03 |   -
+    ky4      256  8  r   | 1.4179e-10   dense-OOM     dense-OOM   | 5.8183e+03 |   -
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    Pescara  8    8  d   | 1.3068e-07   5.4311e-05   5.4233e-05 | 3.6880e+02 |   1.00x OK
+    Pescara  8    8  rh  | 1.4969e-08   1.7950e-08   1.8420e-08 | 3.7676e+00 |   1.03x OK
+    Pescara  8    8  ke  | 5.9011e-10   8.9294e-10   6.5531e-10 | 5.0925e+02 |   0.73x OK
+    Pescara  8    8  r   | 9.7246e-09   3.9993e-09   9.5401e-09 | 5.0486e+02 |   0.98x OK
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    Pescara  64   7  d   | 1.0856e-11   1.0856e-11   1.0862e-11 | 3.4439e+02 |   1.00x OK
+    Pescara  64   7  rh  | 1.6894e-15   2.6749e-15   2.6749e-15 | 6.3089e+00 |   1.00x OK
+    Pescara  64   7  ke  | 2.0489e-13   4.2457e-13   4.1695e-13 | 7.9247e+02 |   0.98x OK
+    Pescara  64   7  r   | 1.6717e-14   8.4882e-15   2.4848e-14 | 1.4352e+03 |   1.49x OK
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    Pescara  256  7  d   | 7.5332e-11   1.5053e-10   1.1300e-10 | 5.6338e+02 |   0.75x OK
+    Pescara  256  7  rh  | 2.5391e-13   1.2727e-13   3.8119e-13 | 4.1357e+00 |   1.50x OK
+    Pescara  256  7  ke  | 1.7900e-12   1.1942e-12   2.3874e-12 | 3.0972e+03 |   1.33x OK
+    Pescara  256  7  r   | 1.3792e-13   1.9219e-13   1.8831e-13 | 1.6964e+03 |   0.98x OK
+
+P4A DONE in 259.2 s
+P4 JOB DONE

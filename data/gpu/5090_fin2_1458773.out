@@ -1,0 +1,27 @@
+NVIDIA GeForce RTX 5090
+cpus: 8
+/data/run01/<user>/wdsgpu/hydrograd/final2.py:56: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a = torch.sparse_csr_tensor(ip, ii, dv, size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/final2.py:56: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a = torch.sparse_csr_tensor(ip, ii, dv, size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+DirectSolver 方法: ['factorization_config', 'factorization_info', 'factorize', 'free', 'plan', 'plan_config', 'plan_info', 'release_operands', 'reset_operands', 'reset_operands_unchecked', 'solution_config', 'solve']
+==================================================================================
+net         Nj      B |   dense ms/sc |     plan ms  fact ms/sc solve ms/sc |  sparse 快
+Modena     268      1 |       0.84915 |      380.73     0.08981     0.09324 |     4.64x
+Modena     268     64 |       0.02068 |       46.93     0.00266     0.01091 |     1.52x
+Modena     268    256 |       0.01195 |      149.06     0.00183     0.00895 |     1.11x
+City_D     541      1 |       1.60868 |        6.94     0.07803     0.08482 |     9.88x
+City_D     541     64 |       0.08112 |       67.11     0.00325     0.01069 |     5.82x
+City_D     541    256 |       0.05493 |      273.42     0.00219     0.00939 |     4.74x
+ky4        959      1 |       2.77387 |        9.05     0.10666     0.09455 |    13.79x
+ky4        959     64 |       0.28920 |      149.76     0.00580     0.01146 |    16.76x
+ky4        959    256 |       0.22976 |      690.77     0.00384     0.01001 |    16.59x

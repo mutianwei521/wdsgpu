@@ -1,0 +1,175 @@
+[① align city_d]
+  -> PASS rc=0 3s  H=1.421e-14, Q=1.776e-15, Qc=4.599e-08
+[① align city_d_emit]
+  -> PASS rc=0 3s  H=1.421e-14, Q=3.553e-15, Qc=4.645e-08, e=2.776e-16
+[① align rand_main_0000]
+  -> PASS rc=0 3s  H=0.000e+00, Q=5.551e-17, Qc=0.000e+00
+[① align rand_main_0001]
+  -> PASS rc=0 3s  H=0.000e+00, Q=1.110e-16, Qc=0.000e+00
+[① align rand_main_0002]
+  -> PASS rc=0 3s  H=0.000e+00, Q=5.551e-17, Qc=0.000e+00
+[① align rand_main_0003]
+  -> PASS rc=0 3s  H=0.000e+00, Q=1.388e-17, Qc=0.000e+00
+[① align rand_main_0004]
+  -> PASS rc=0 3s  H=0.000e+00, Q=1.388e-17, Qc=0.000e+00
+[① align rand_main_0005]
+  -> PASS rc=0 3s  H=0.000e+00, Q=4.441e-16, Qc=0.000e+00
+[① align rand_main_0006]
+  -> PASS rc=0 3s  H=2.842e-14, Q=5.551e-17, Qc=0.000e+00
+[① align rand_main_0007]
+  -> PASS rc=0 3s  H=2.842e-14, Q=5.551e-17, Qc=0.000e+00
+[① align rand_main_0008]
+  -> PASS rc=0 3s  H=2.842e-14, Q=2.220e-16, Qc=0.000e+00
+[① align rand_main_0009]
+  -> PASS rc=0 3s  H=0.000e+00, Q=6.939e-18, Qc=0.000e+00
+[① align rand_main_0010]
+  -> PASS rc=0 3s  H=0.000e+00, Q=5.551e-17, Qc=0.000e+00
+[① align rand_main_0011]
+  -> PASS rc=0 3s  H=2.842e-14, Q=2.776e-17, Qc=0.000e+00
+[① align rand_main_0012]
+  -> PASS rc=0 3s  H=2.842e-14, Q=2.220e-16, Qc=0.000e+00
+[① align rand_main_0013]
+  -> PASS rc=0 3s  H=2.842e-14, Q=2.220e-16, Qc=0.000e+00
+[① align rand_main_0014]
+  -> PASS rc=0 3s  H=2.842e-14, Q=1.110e-16, Qc=0.000e+00
+[① align rand_main_0015]
+  -> PASS rc=0 3s  H=0.000e+00, Q=1.388e-17, Qc=0.000e+00
+[① align rand_main_0016]
+  -> PASS rc=0 3s  H=2.842e-14, Q=2.220e-16, Qc=0.000e+00
+[① align rand_main_0017]
+  -> PASS rc=0 3s  H=2.842e-14, Q=5.551e-17, Qc=0.000e+00
+[① align rand_main_0018]
+  -> PASS rc=0 3s  H=0.000e+00, Q=5.551e-17, Qc=0.000e+00
+[① align rand_main_0019]
+  -> PASS rc=0 3s  H=2.842e-14, Q=5.551e-17, Qc=0.000e+00
+[① align rand_small_0000]
+  -> PASS rc=0 3s  H=1.421e-14, Q=1.110e-16, Qc=0.000e+00
+[① align rand_small_0001]
+  -> PASS rc=0 3s  H=2.842e-14, Q=1.110e-16, Qc=0.000e+00
+[① align rand_small_0002]
+  -> PASS rc=0 3s  H=0.000e+00, Q=5.551e-17, Qc=0.000e+00
+[② align 回放 EXA4]
+  -> PASS rc=0 3s  H=5.684e-14, Q=8.882e-16, Qc=0.000e+00, Td=2.776e-17
+[② align 回放 EXA6]
+  -> PASS rc=0 3s  H=0.000e+00, Q=8.882e-16, Qc=0.000e+00, Td=2.220e-16
+[② align 回放 city_h]
+  -> PASS rc=0 3s  H=1.421e-14, Q=7.105e-15, Qc=0.000e+00, Td=0.000e+00
+[② align 回放 ky3]
+  -> PASS rc=0 3s  H=0.000e+00, Q=8.882e-16, Qc=0.000e+00, Td=2.220e-16
+[② align 回放 ky5]
+  -> PASS rc=0 3s  H=0.000e+00, Q=3.553e-15, Qc=0.000e+00, Td=4.441e-16
+[③ align_eps EXA4]
+  -> PASS rc=0 3s  H=5.684e-14, Q=8.882e-16, Qc=0.000e+00, 状态PASS, 泵设定Δ=0.000e+00
+[③ align_eps EXA5]
+  -> PASS rc=0 3s  H=5.684e-14, Q=8.882e-16, Qc=0.000e+00, 状态PASS, 泵设定Δ=0.000e+00
+[③ align_eps EXA6]
+  -> PASS rc=0 3s  H=0.000e+00, Q=8.882e-16, Qc=0.000e+00, 状态PASS, 泵设定Δ=0.000e+00
+[③ align_eps city_h]
+  -> PASS rc=0 3s  H=1.421e-14, Q=7.105e-15, Qc=0.000e+00, 状态PASS, 泵设定Δ=0.000e+00
+[③ align_eps ky3]
+  -> PASS rc=0 3s  H=0.000e+00, Q=8.882e-16, Qc=0.000e+00, 状态PASS, 泵设定Δ=0.000e+00
+[③ align_eps ky5]
+  -> PASS rc=0 3s  H=0.000e+00, Q=3.553e-15, Qc=0.000e+00, 状态PASS, 泵设定Δ=0.000e+00
+[④ validate_reference]
+  -> rc=0 3s
+[⑤ gradcheck_3way]
+  -> PASS rc=0 68s  B-C最差=5.85e-08, A-C最差=7.46e-07
+[⑥ audit_grad_adversarial]
+  -> PASS rc=0 76s  22/22 PASS
+[⑦ check_taskd]
+  -> PASS rc=0 4s  ①H=2.842e-14,Q=8.882e-16, ②H=2.842e-14,Q=1.110e-16, ③H=0.000e+00,Q=0.000e+00
+[⑧ gradcheck_dw]
+  -> PASS rc=0 11s  两场景最差=6.142e-07
+全量回归扫掠报告（regression_all.py）
+生成时间: 2026-08-08 22:19:47   解释器: <python>   总用时 273s
+======================================================================================================================
+项目                    | 关键指标                              | 门槛                               | 实测                                                                         | 判定 | 用时s
+------------------------+---------------------------------------+------------------------------------+------------------------------------------------------------------------------+------+------
+① align city_d          | max|ΔH|ft/|ΔQ|cfs/关闭管              | H<1e-6,Q<1e-6,Qc<1e-5              | H=1.421e-14, Q=1.776e-15, Qc=4.599e-08                                       | PASS | 3    
+① align city_d_emit     | max|ΔH|ft/|ΔQ|cfs/关闭管              | H<1e-6,Q<1e-6,Qc<1e-5,e<1e-6       | H=1.421e-14, Q=3.553e-15, Qc=4.645e-08, e=2.776e-16                          | PASS | 3    
+① align rand_main_0000  | max|ΔH|ft/|ΔQ|cfs/关闭管              | H<1e-6,Q<1e-6,Qc<1e-5              | H=0.000e+00, Q=5.551e-17, Qc=0.000e+00                                       | PASS | 3    
+① align rand_main_0001  | max|ΔH|ft/|ΔQ|cfs/关闭管              | H<1e-6,Q<1e-6,Qc<1e-5              | H=0.000e+00, Q=1.110e-16, Qc=0.000e+00                                       | PASS | 3    
+① align rand_main_0002  | max|ΔH|ft/|ΔQ|cfs/关闭管              | H<1e-6,Q<1e-6,Qc<1e-5              | H=0.000e+00, Q=5.551e-17, Qc=0.000e+00                                       | PASS | 3    
+① align rand_main_0003  | max|ΔH|ft/|ΔQ|cfs/关闭管              | H<1e-6,Q<1e-6,Qc<1e-5              | H=0.000e+00, Q=1.388e-17, Qc=0.000e+00                                       | PASS | 3    
+① align rand_main_0004  | max|ΔH|ft/|ΔQ|cfs/关闭管              | H<1e-6,Q<1e-6,Qc<1e-5              | H=0.000e+00, Q=1.388e-17, Qc=0.000e+00                                       | PASS | 3    
+① align rand_main_0005  | max|ΔH|ft/|ΔQ|cfs/关闭管              | H<1e-6,Q<1e-6,Qc<1e-5              | H=0.000e+00, Q=4.441e-16, Qc=0.000e+00                                       | PASS | 3    
+① align rand_main_0006  | max|ΔH|ft/|ΔQ|cfs/关闭管              | H<1e-6,Q<1e-6,Qc<1e-5              | H=2.842e-14, Q=5.551e-17, Qc=0.000e+00                                       | PASS | 3    
+① align rand_main_0007  | max|ΔH|ft/|ΔQ|cfs/关闭管              | H<1e-6,Q<1e-6,Qc<1e-5              | H=2.842e-14, Q=5.551e-17, Qc=0.000e+00                                       | PASS | 3    
+① align rand_main_0008  | max|ΔH|ft/|ΔQ|cfs/关闭管              | H<1e-6,Q<1e-6,Qc<1e-5              | H=2.842e-14, Q=2.220e-16, Qc=0.000e+00                                       | PASS | 3    
+① align rand_main_0009  | max|ΔH|ft/|ΔQ|cfs/关闭管              | H<1e-6,Q<1e-6,Qc<1e-5              | H=0.000e+00, Q=6.939e-18, Qc=0.000e+00                                       | PASS | 3    
+① align rand_main_0010  | max|ΔH|ft/|ΔQ|cfs/关闭管              | H<1e-6,Q<1e-6,Qc<1e-5              | H=0.000e+00, Q=5.551e-17, Qc=0.000e+00                                       | PASS | 3    
+① align rand_main_0011  | max|ΔH|ft/|ΔQ|cfs/关闭管              | H<1e-6,Q<1e-6,Qc<1e-5              | H=2.842e-14, Q=2.776e-17, Qc=0.000e+00                                       | PASS | 3    
+① align rand_main_0012  | max|ΔH|ft/|ΔQ|cfs/关闭管              | H<1e-6,Q<1e-6,Qc<1e-5              | H=2.842e-14, Q=2.220e-16, Qc=0.000e+00                                       | PASS | 3    
+① align rand_main_0013  | max|ΔH|ft/|ΔQ|cfs/关闭管              | H<1e-6,Q<1e-6,Qc<1e-5              | H=2.842e-14, Q=2.220e-16, Qc=0.000e+00                                       | PASS | 3    
+① align rand_main_0014  | max|ΔH|ft/|ΔQ|cfs/关闭管              | H<1e-6,Q<1e-6,Qc<1e-5              | H=2.842e-14, Q=1.110e-16, Qc=0.000e+00                                       | PASS | 3    
+① align rand_main_0015  | max|ΔH|ft/|ΔQ|cfs/关闭管              | H<1e-6,Q<1e-6,Qc<1e-5              | H=0.000e+00, Q=1.388e-17, Qc=0.000e+00                                       | PASS | 3    
+① align rand_main_0016  | max|ΔH|ft/|ΔQ|cfs/关闭管              | H<1e-6,Q<1e-6,Qc<1e-5              | H=2.842e-14, Q=2.220e-16, Qc=0.000e+00                                       | PASS | 3    
+① align rand_main_0017  | max|ΔH|ft/|ΔQ|cfs/关闭管              | H<1e-6,Q<1e-6,Qc<1e-5              | H=2.842e-14, Q=5.551e-17, Qc=0.000e+00                                       | PASS | 3    
+① align rand_main_0018  | max|ΔH|ft/|ΔQ|cfs/关闭管              | H<1e-6,Q<1e-6,Qc<1e-5              | H=0.000e+00, Q=5.551e-17, Qc=0.000e+00                                       | PASS | 3    
+① align rand_main_0019  | max|ΔH|ft/|ΔQ|cfs/关闭管              | H<1e-6,Q<1e-6,Qc<1e-5              | H=2.842e-14, Q=5.551e-17, Qc=0.000e+00                                       | PASS | 3    
+① align rand_small_0000 | max|ΔH|ft/|ΔQ|cfs/关闭管              | H<1e-6,Q<1e-6,Qc<1e-5              | H=1.421e-14, Q=1.110e-16, Qc=0.000e+00                                       | PASS | 3    
+① align rand_small_0001 | max|ΔH|ft/|ΔQ|cfs/关闭管              | H<1e-6,Q<1e-6,Qc<1e-5              | H=2.842e-14, Q=1.110e-16, Qc=0.000e+00                                       | PASS | 3    
+① align rand_small_0002 | max|ΔH|ft/|ΔQ|cfs/关闭管              | H<1e-6,Q<1e-6,Qc<1e-5              | H=0.000e+00, Q=5.551e-17, Qc=0.000e+00                                       | PASS | 3    
+② 回放 EXA4             | max|ΔH|/|ΔQ|/关闭管/tank净流入        | H<1e-6,Q<1e-6,Qc<1e-5              | H=5.684e-14, Q=8.882e-16, Qc=0.000e+00, Td=2.776e-17                         | PASS | 3    
+② 回放 EXA6             | max|ΔH|/|ΔQ|/关闭管/tank净流入        | H<1e-6,Q<1e-6,Qc<1e-5              | H=0.000e+00, Q=8.882e-16, Qc=0.000e+00, Td=2.220e-16                         | PASS | 3    
+② 回放 city_h          | max|ΔH|/|ΔQ|/关闭管/tank净流入        | H<1e-6,Q<1e-6,Qc<1e-5              | H=1.421e-14, Q=7.105e-15, Qc=0.000e+00, Td=0.000e+00                         | PASS | 3    
+② 回放 ky3              | max|ΔH|/|ΔQ|/关闭管/tank净流入        | H<1e-6,Q<1e-6,Qc<1e-5              | H=0.000e+00, Q=8.882e-16, Qc=0.000e+00, Td=2.220e-16                         | PASS | 3    
+② 回放 ky5              | max|ΔH|/|ΔQ|/关闭管/tank净流入        | H<1e-6,Q<1e-6,Qc<1e-5              | H=0.000e+00, Q=3.553e-15, Qc=0.000e+00, Td=4.441e-16                         | PASS | 3    
+③ EPS EXA4              | 帧序列int相等+ΔH/ΔQ/状态/泵设定       | H<1e-6,Q<1e-6,Qc<1e-5,状态逐帧一致 | H=5.684e-14, Q=8.882e-16, Qc=0.000e+00, 状态PASS, 泵设定Δ=0.000e+00          | PASS | 3    
+③ EPS EXA5              | 帧序列int相等+ΔH/ΔQ/状态/泵设定       | H<1e-6,Q<1e-6,Qc<1e-5,状态逐帧一致 | H=5.684e-14, Q=8.882e-16, Qc=0.000e+00, 状态PASS, 泵设定Δ=0.000e+00          | PASS | 3    
+③ EPS EXA6              | 帧序列int相等+ΔH/ΔQ/状态/泵设定       | H<1e-6,Q<1e-6,Qc<1e-5,状态逐帧一致 | H=0.000e+00, Q=8.882e-16, Qc=0.000e+00, 状态PASS, 泵设定Δ=0.000e+00          | PASS | 3    
+③ EPS city_h           | 帧序列int相等+ΔH/ΔQ/状态/泵设定       | H<1e-6,Q<1e-6,Qc<1e-5,状态逐帧一致 | H=1.421e-14, Q=7.105e-15, Qc=0.000e+00, 状态PASS, 泵设定Δ=0.000e+00          | PASS | 3    
+③ EPS ky3               | 帧序列int相等+ΔH/ΔQ/状态/泵设定       | H<1e-6,Q<1e-6,Qc<1e-5,状态逐帧一致 | H=0.000e+00, Q=8.882e-16, Qc=0.000e+00, 状态PASS, 泵设定Δ=0.000e+00          | PASS | 3    
+③ EPS ky5               | 帧序列int相等+ΔH/ΔQ/状态/泵设定       | H<1e-6,Q<1e-6,Qc<1e-5,状态逐帧一致 | H=0.000e+00, Q=3.553e-15, Qc=0.000e+00, 状态PASS, 泵设定Δ=0.000e+00          | PASS | 3    
+④ 交叉验证 EXA4         | 质量守恒/需水对拍/HW水损              | 质量<1e-5,需水<1e-9,HW中位≤0.05    | 质量=1.137e-06, 豁免集=2.128e-06, 需水=6.939e-18, HW中位=1.342e-08           | PASS | 3    
+④ 交叉验证 EXA5         | 质量守恒/需水对拍/HW水损              | 质量<1e-5,需水<1e-9,HW中位≤0.05    | 质量=1.621e-06, 豁免集=1.453e-06, 需水=6.939e-18, HW中位=6.428e-15           | PASS |      
+④ 交叉验证 EXA6         | 质量守恒/需水对拍/HW水损              | 质量<1e-5,需水<1e-9,HW中位≤0.05    | 质量=1.278e-06, 豁免集=0.000e+00, 需水=5.551e-17, HW中位=3.729e-10           | PASS |      
+④ 交叉验证 city_h      | 质量守恒/需水对拍/HW水损              | 质量<1e-5,需水<1e-9,HW中位≤0.05    | 质量=6.169e-07, 豁免集=1.137e-06, 需水=2.220e-16, HW中位=3.553e-15           | PASS |      
+④ 交叉验证 ky3          | 质量守恒/需水对拍/HW水损              | 质量<1e-5,需水<1e-9,HW中位≤0.05    | 质量=3.071e-09, 豁免集=0.000e+00, 需水=5.551e-17, HW中位=5.865e-15           | PASS |      
+④ 交叉验证 ky5          | 质量守恒/需水对拍/HW水损              | 质量<1e-5,需水<1e-9,HW中位≤0.05    | 质量=5.987e-06, 豁免集=1.849e-03, 需水=1.388e-17, HW中位=1.795e-13           | PASS |      
+④ 交叉验证 city_d       | 质量守恒/需水对拍/HW水损              | 质量<1e-5,需水<1e-9,HW中位≤0.05    | 质量=6.763e-07, 豁免集=2.842e-07, 需水=4.441e-16, HW中位=1.427e-14           | PASS |      
+⑤ 三方对拍(2网x4类)     | B vs C / A vs C 相对误差              | B-C<1e-6, A-C<1e-4                 | B-C最差=5.85e-08, A-C最差=7.46e-07                                           | PASS | 68   
+⑤ torch.gradcheck 0009  | gradcheck(ImplicitGGASolve)           | eps=1e-6,atol=1e-5,rtol=1e-3       | PASS                                                                         | PASS |      
+⑤ city_d B=8 批一致     | 批 vs 逐场景梯度                      | <1e-10                             | demand=0.000e+00, r_hw=0.000e+00                                             | PASS |      
+⑥ 对抗审计(22项)        | 逐项 worst ≤ 各自门槛                 | 逐项门槛(见附录B)                  | 22/22 PASS                                                                   | PASS | 76   
+⑦ 能力对拍 D-W/CMH/FCV  | 3 项 vs DLL（位级）                   | H<1e-6,Q<1e-6,状态一致,迭代数相等  | ①H=2.842e-14,Q=8.882e-16, ②H=2.842e-14,Q=1.110e-16, ③H=0.000e+00,Q=0.000e+00 | PASS | 4    
+⑧ D-W 梯度对拍 balerma  | 伴随 vs 中央差分（demand/r/res_head） | rel<1e-6(或绝对一致<1e-9)          | 两场景最差=6.142e-07                                                         | PASS | 11   
+======================================================================================================================
+总判定: PASS （49/49 项通过）
+
+附录A ⑤ 三方对拍最差坐标：
+  θ=demand   B-C=1.51e-08  A-C=7.46e-07
+  θ=ke       B-C=2.15e-10  A-C=7.22e-09
+  θ=rh       B-C=3.38e-12  A-C=2.22e-09
+  θ=r        B-C=5.85e-08  A-C=7.54e-08
+  θ=demand   B-C=2.03e-08  A-C=2.03e-08
+  θ=ke       B-C=7.68e-09  A-C=7.68e-09
+  θ=rh       B-C=3.62e-12  A-C=3.62e-12
+  θ=r        B-C=3.22e-09  A-C=3.22e-09
+附录B ⑥ 对抗审计逐项：
+  ① d=1e-9(任务字面) I-2 死端管 r_hw 梯度             worst= 0.000e+00  PASS
+  ① d=1e-9(任务字面) I-1 死端 demand 梯度            worst= 2.077e-11  PASS
+  ① d=1e-9(任务字面) FD 对拍(9坐标)                  worst= 3.566e-11  PASS
+  ① d=3e-13(真钳位) I-2 钳位管 r_hw 梯度=0           worst= 0.000e+00  PASS
+  ① d=3e-13(真钳位) I-1 死端 demand 梯度            worst= 4.865e-08  PASS
+  ① d=3e-13(真钳位) FD 对拍(9坐标)                  worst= 2.485e-10  PASS
+  ② a 原基准(钳位支内步长, |ΔG|/噪声上限)                 worst= 1.736e-01  PASS
+  ② b 加基荷 implicit vs unrolled 交叉            worst= 2.728e-07  PASS
+  ② b 加基荷 FD(h=1e-4, 微跳变均化) 观察               worst= 1.215e-05  PASS
+  ③ TCV 两端 demand 梯度                         worst= 5.747e-07  PASS
+  ③ TCV/关闭链路 r_hw 梯度=0                       worst= 0.000e+00  PASS
+  ④ implicit Ke=0 节点 gke 有限且=0               worst= 0.000e+00  PASS
+  ④ unrolled Ke=0 节点 gke 有限且=0               worst= 0.000e+00  PASS
+  ④ 对照: Ke>0 坐标 FD                           worst= 8.015e-11  PASS
+  ⑤ d=0 节点 demand 梯度                         worst= 1.556e-09  PASS
+  ⑥ 双水库水头梯度 FD                               worst= 4.035e-12  PASS
+  ⑥ 平移恒等式 Σgrh=Σw                            worst= 1.319e-15  PASS
+  ⑥ 水库头直通项                                   worst= 1.110e-16  PASS
+  ⑦ rand_main_0009 GPU vs CPU                worst= 3.352e-16  PASS
+  ⑦ city_d GPU vs CPU                        worst= 9.021e-16  PASS
+  ⑧ gradcheck rand_main_0015                 worst= 0.000e+00  PASS
+  ⑧ gradcheck rand_main_0006                 worst= 0.000e+00  PASS
+
+附录C 失败项归因：无 FAIL。
+
+报告已写入 <repo>\data\regression_report.txt；逐项日志在 <repo>\data\regression_logs

@@ -1,0 +1,79 @@
+NVIDIA GeForce RTX 5090, 32607 MiB
+node: <node-20> | cpus: 8
+node: <node-20> | torch 2.11.0+cu128
+solver.py md5: 45b0b0eeb66ed4e15ef81c53809d229a
+==============================================================================
+N1  forward+backward device footprint, FRESH PROCESS per config (node <node-20>)
+   'P3 table' column = torch_peak, i.e. the number data/p3_autograd_wip.txt §4 reports for cudss.
+   'total' = torch reserved + cuDSS's own device memory, context already subtracted.
+   net    Nj   B    K | dense: peak  resv  nontorch total | cudss: peak  resv  nontorch total | P3ratio  honest
+   Net3   92   64   7 |   155.8   180.0   230.0   410.0 |    14.5    16.0    68.0    84.0 |  10.77    4.88
+        raw dense: RESULT Net3.inp 64 dense ok ctx=588.19 torch_peak=155.77 torch_resv=180.00 nontorch=230.00 total=410.00 gnorm=8.30972202e+02
+        raw cudss: RESULT Net3.inp 64 cudss ok ctx=588.19 torch_peak=14.47 torch_resv=16.00 nontorch=68.00 total=84.00 gnorm=8.30994910e+02
+   Net3   92   128  7 |   247.4   294.0   230.0   524.0 |    28.8    30.0    68.0    98.0 |   8.59    5.35
+        raw dense: RESULT Net3.inp 128 dense ok ctx=588.19 torch_peak=247.42 torch_resv=294.00 nontorch=230.00 total=524.00 gnorm=1.22961695e+03
+        raw cudss: RESULT Net3.inp 128 cudss ok ctx=588.19 torch_peak=28.82 torch_resv=30.00 nontorch=68.00 total=98.00 gnorm=1.22966357e+03
+   Net3   92   256  7 |   430.7   468.0   230.0   698.0 |    57.5    62.0    68.0   130.0 |   7.49    5.37
+        raw dense: RESULT Net3.inp 256 dense ok ctx=588.19 torch_peak=430.74 torch_resv=468.00 nontorch=230.00 total=698.00 gnorm=1.78915550e+03
+        raw cudss: RESULT Net3.inp 256 cudss ok ctx=588.19 torch_peak=57.54 torch_resv=62.00 nontorch=68.00 total=130.00 gnorm=1.78918710e+03
+   Net3   92   512  7 |   815.2   854.0   230.0  1084.0 |   115.2   130.0   100.0   230.0 |   7.08    4.71
+        raw dense: RESULT Net3.inp 512 dense ok ctx=588.19 torch_peak=815.16 torch_resv=854.00 nontorch=230.00 total=1084.00 gnorm=2.40865781e+03
+        raw cudss: RESULT Net3.inp 512 cudss ok ctx=588.19 torch_peak=115.17 torch_resv=130.00 nontorch=100.00 total=230.00 gnorm=2.40870983e+03
+   Net3   92   1024 7 |  1530.6  1640.0   230.0  1870.0 |   229.8   270.0   132.0   402.0 |   6.66    4.65
+        raw dense: RESULT Net3.inp 1024 dense ok ctx=588.19 torch_peak=1530.59 torch_resv=1640.00 nontorch=230.00 total=1870.00 gnorm=3.46904613e+03
+        raw cudss: RESULT Net3.inp 1024 cudss ok ctx=588.19 torch_peak=229.77 torch_resv=270.00 nontorch=132.00 total=402.00 gnorm=3.46905843e+03
+   Modena 268  64   7 |   774.3   780.0   230.0  1010.0 |    28.2    32.0    68.0   100.0 |  27.45   10.10
+        raw dense: RESULT Modena.inp 64 dense ok ctx=588.19 torch_peak=774.30 torch_resv=780.00 nontorch=230.00 total=1010.00 gnorm=2.34644637e+04
+        raw cudss: RESULT Modena.inp 64 cudss ok ctx=588.19 torch_peak=28.21 torch_resv=32.00 nontorch=68.00 total=100.00 gnorm=2.34644637e+04
+   Modena 268  128  7 |  1449.1  1514.0   230.0  1744.0 |    56.3    82.0    68.0   150.0 |  25.74   11.63
+        raw dense: RESULT Modena.inp 128 dense ok ctx=588.19 torch_peak=1449.13 torch_resv=1514.00 nontorch=230.00 total=1744.00 gnorm=2.99222598e+04
+        raw cudss: RESULT Modena.inp 128 cudss ok ctx=588.19 torch_peak=56.29 torch_resv=82.00 nontorch=68.00 total=150.00 gnorm=2.99222598e+04
+   Modena 268  256  7 |  2834.1  2914.0   230.0  3144.0 |   112.8   148.0   100.0   248.0 |  25.14   12.68
+        raw dense: RESULT Modena.inp 256 dense ok ctx=588.19 torch_peak=2834.11 torch_resv=2914.00 nontorch=230.00 total=3144.00 gnorm=4.16433662e+04
+        raw cudss: RESULT Modena.inp 256 cudss ok ctx=588.19 torch_peak=112.75 torch_resv=148.00 nontorch=100.00 total=248.00 gnorm=4.16433662e+04
+   Modena 268  512  7 |  5620.8  5720.0   230.0  5950.0 |   239.9   270.0   164.0   434.0 |  23.43   13.71
+        raw dense: RESULT Modena.inp 512 dense ok ctx=588.19 torch_peak=5620.78 torch_resv=5720.00 nontorch=230.00 total=5950.00 gnorm=6.15955163e+04
+        raw cudss: RESULT Modena.inp 512 cudss ok ctx=588.19 torch_peak=239.94 torch_resv=270.00 nontorch=164.00 total=434.00 gnorm=6.15955163e+04
+   Modena 268  1024 7 | 11173.8 11360.0   230.0 11590.0 |   465.6   510.0   260.0   770.0 |  24.00   15.05
+        raw dense: RESULT Modena.inp 1024 dense ok ctx=588.19 torch_peak=11173.83 torch_resv=11360.00 nontorch=230.00 total=11590.00 gnorm=8.71744998e+04
+        raw cudss: RESULT Modena.inp 1024 cudss ok ctx=588.19 torch_peak=465.63 torch_resv=510.00 nontorch=260.00 total=770.00 gnorm=8.71744998e+04
+   City_D 541  64   7 |  2828.8  2878.0   230.0  3108.0 |    52.3    76.0    68.0   144.0 |  54.10   21.58
+        raw dense: RESULT City_D.inp 64 dense ok ctx=588.19 torch_peak=2828.77 torch_resv=2878.00 nontorch=230.00 total=3108.00 gnorm=5.16797304e+09
+        raw cudss: RESULT City_D.inp 64 cudss ok ctx=588.19 torch_peak=52.29 torch_resv=76.00 nontorch=68.00 total=144.00 gnorm=8.25736116e+11
+   City_D 541  128  7 |  5596.7  5650.0   230.0  5880.0 |   104.4   128.0   100.0   228.0 |  53.62   25.79
+        raw dense: RESULT City_D.inp 128 dense ok ctx=588.19 torch_peak=5596.69 torch_resv=5650.00 nontorch=230.00 total=5880.00 gnorm=4.05645827e+11
+        raw cudss: RESULT City_D.inp 128 cudss ok ctx=588.19 torch_peak=104.37 torch_resv=128.00 nontorch=100.00 total=228.00 gnorm=1.38636688e+11
+   City_D 541  256  7 | 11131.9 11520.0   230.0 11750.0 |   215.7   228.0   164.0   392.0 |  51.60   29.97
+        raw dense: RESULT City_D.inp 256 dense ok ctx=588.19 torch_peak=11131.86 torch_resv=11520.00 nontorch=230.00 total=11750.00 gnorm=6.65432451e+12
+        raw cudss: RESULT City_D.inp 256 cudss ok ctx=588.19 torch_peak=215.73 torch_resv=228.00 nontorch=164.00 total=392.00 gnorm=2.62558534e+12
+   City_D 541  512  7 | 22199.4 22998.0   230.0 23228.0 |   431.9   448.0   260.0   708.0 |  51.40   32.81
+        raw dense: RESULT City_D.inp 512 dense ok ctx=588.19 torch_peak=22199.40 torch_resv=22998.00 nontorch=230.00 total=23228.00 gnorm=6.51949768e+12
+        raw cudss: RESULT City_D.inp 512 cudss ok ctx=588.19 torch_peak=431.88 torch_resv=448.00 nontorch=260.00 total=708.00 gnorm=2.00252931e+11
+   City_D 541  1024 7 |   OOM     OOM     OOM     OOM   |   839.9   970.0   452.0  1422.0 |    -       -  
+        raw dense: RESULT City_D.inp 1024 dense OOM ctx=588.19
+        raw cudss: RESULT City_D.inp 1024 cudss ok ctx=588.19 torch_peak=839.90 torch_resv=970.00 nontorch=452.00 total=1422.00 gnorm=2.03061159e+13
+   ky4    959  64   8 |  9666.0  9718.0   230.0  9948.0 |   163.1   204.0   100.0   304.0 |  59.27   32.72
+        raw dense: RESULT ky4.inp 64 dense ok ctx=588.19 torch_peak=9665.96 torch_resv=9718.00 nontorch=230.00 total=9948.00 gnorm=1.49656274e+04
+        raw cudss: RESULT ky4.inp 64 cudss ok ctx=588.19 torch_peak=163.09 torch_resv=204.00 nontorch=100.00 total=304.00 gnorm=1.49652462e+04
+   ky4    959  128  8 | 19239.6 20010.0   230.0 20240.0 |   327.8   378.0   132.0   510.0 |  58.69   39.69
+        raw dense: RESULT ky4.inp 128 dense ok ctx=588.19 torch_peak=19239.64 torch_resv=20010.00 nontorch=230.00 total=20240.00 gnorm=2.08117849e+04
+        raw cudss: RESULT ky4.inp 128 cudss ok ctx=588.19 torch_peak=327.81 torch_resv=378.00 nontorch=132.00 total=510.00 gnorm=2.08118566e+04
+   ky4    959  256  8 |   OOM     OOM     OOM     OOM   |   671.1   700.0   228.0   928.0 |    -       -  
+        raw dense: RESULT ky4.inp 256 dense OOM ctx=588.19
+        raw cudss: RESULT ky4.inp 256 cudss ok ctx=588.19 torch_peak=671.11 torch_resv=700.00 nontorch=228.00 total=928.00 gnorm=3.05226610e+04
+   ky4    959  512  8 |   OOM     OOM     OOM     OOM   |  1312.4  1466.0   388.0  1854.0 |    -       -  
+        raw dense: RESULT ky4.inp 512 dense OOM ctx=588.19
+        raw cudss: RESULT ky4.inp 512 cudss ok ctx=588.19 torch_peak=1312.38 torch_resv=1466.00 nontorch=388.00 total=1854.00 gnorm=4.36771418e+04
+   ky4    959  1024 8 |   OOM     OOM     OOM     OOM   |  2641.6  2890.0   740.0  3630.0 |    -       -  
+        raw dense: RESULT ky4.inp 1024 dense OOM ctx=588.19
+        raw cudss: RESULT ky4.inp 1024 cudss ok ctx=588.19 torch_peak=2641.59 torch_resv=2890.00 nontorch=740.00 total=3630.00 gnorm=6.07154408e+04
+
+==============================================================================
+N2  what does ONE cuDSS state cost, measured in a fresh process
+    (P3 F4 claims 228 MiB for ky4 B=256 and 546 MiB for B=1024)
+   STATE ky4 B=64    before dev=590.2/torch=2.0  after dev=740.2/torch=52.0  -> cuDSS-only=100.0 MiB ; after free(1) dev=706.2 (returned 34.0)
+   STATE ky4 B=256   before dev=610.2/torch=22.0  after dev=962.2/torch=146.0  -> cuDSS-only=228.0 MiB ; after free(1) dev=928.2 (returned 34.0)
+   STATE ky4 B=1024  before dev=610.2/torch=22.0  after dev=1970.2/torch=642.0  -> cuDSS-only=740.0 MiB ; after free(1) dev=1936.2 (returned 34.0)
+
+AUD4 DONE
+P4 JOB DONE

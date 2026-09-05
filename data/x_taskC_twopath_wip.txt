@@ -1,0 +1,142 @@
+# 任务 C：dgga 自有两条路径（epanet vs dense）的结构差异 - 精读记录
+# 仅读 dgga/，不读 C 源码。行号 = 本次快照（solver.py 1707 行、autodiff.py 979 行）
+
+## 0. 两条路径的入口
+- GGASolver.__init__ solver.py:88-238；能力差在 :104-110
+    allowed = ({_CVPIPE,_PIPE,_TCV,_PUMP,_PRV,_PSV,_FCV} if mode=="epanet" else {_PIPE,_TCV})
+  dense 另有三道构造期拒绝：D-W(:116)、tank(:118)、PDA(:121)。
+- solve() solver.py:1420；:1430 拒 link_status/link_setting/status_machine（仅 epanet）。
+- epanet 分支 :1462-1496，核心是 :1473 `for b in range(B_)` - 逐场景串行 numpy。
+- dense 分支 :1498-1660，torch 批量。
+
+## 1. epanet 路径逐特性实现位置
+静态数据（一次性预处理）
+- _build_b2_data solver.py:505-620
+  · 内部 StatusType 编码 XHEAD/TEMPCLOSED/CLOSED/OPEN/ACTIVE/XFLOW/XFCV/XPRESSURE :509-514
+  · 阀静态索引 is_valve_np/valve_links/is_pcv_np :520-524
+  · Ucf 换算 :526-541；init_setting（PRV/PSV/PBV ÷Ucf[PRESSURE]、FCV ÷Ucf[FLOW]、
+    非 ACTIVE 置 MISSING）:546-557
+  · 泵：pl_h0/pl_r/pl_n/pl_q0/pl_hmax/pl_ptype :562-600，CUSTOM 曲线点 :585-600
+  · 水池：tank_nodes/is_tank_node/tn_hmax/tn_hmin/tn_overflow :606-616
+  · _fixed_links（触及定水头节点的链路）:618-620
+- _apply_exact_props solver.py:247-424（INP 原文重算 diam/len/r/Km；D-W 的 R 在 :369-372）
+- _build_epanet_path solver.py:426-503（MMD/符号分解 + 与 C 一致的装配次序索引）
+
+系数（每迭代）
+- _PY_np solver.py:707-818（总分派）
+  · 管道 H-W/C-M :723-733；D-W 转 _dw_PY_np :635-682（逐管道 python 标量循环）
+  · TCV Active 的 Km :738-748；阀开启支 valvecoeff :749-753
+  · 关闭支 P=1/CBIG,Y=q :755-756
+  · PRV/PSV/FCV 且 setting!=MISSING → P=0 :757-760（把系数让给 _valvecoeffs）
+  · 泵 pumpcoeff :762-816：关闭/ω=0 :766-770；NOCURVE :772-775；CUSTOM :778-788
+    （调 _curvecoeff:683-706，while 逐段查找）；转速相似律 :790-793；
+    CONST_HP :794-803；POWER_FUNC 非线性 :804-810；线性 :811-813
+- _valvecoeffs solver.py:847-917（必须在 nodecoeffs 之后调用，依赖已扣需水的 Xflow）
+  · ACTIVE PRV :863-877：P=0、Y=q+Xf[a2]、F[j]+=hset*CBIG、Aii[j]+=CBIG，
+    并按 `if Xf[a2]<0` 追加 F[i]（数据相关分支）
+  · 非 ACTIVE PRV :878-895 内的 else 支；ACTIVE PSV :881-895
+  · FCV :896-917（ACTIVE 切断式 :899-912）（Xf[a1]-=qs, Xf[a2]+=qs, P=1/CBIG）
+- _valvecoeff_scalar solver.py:831-845（valvecoeff 标量版）
+
+状态机（每迭代/收敛后）
+- _cvstatus :1023-1035（CVPIPE；也被 _tankstatus 复用）
+- _pumpstatus :1037-1045（截止扬程 hmax*ω²，超出置 XHEAD）
+- _fcvstatus :1047-1057
+- _tankstatus :1059-1087（满/空池临时关闭进出流链路，含 n1/n2 交换）
+- _linkstatus :1089-1113（逐链路：重开 XHEAD/TEMPCLOSED → CV → 泵 → FCV → tank）
+- _prvstatus :936-965 / _psvstatus :967-996 / _valvestatus :998-1019
+- _pswitch :1115-1150（junction 压力控制，收敛后复核，可改 S 和 K）
+- 驱动节律在 run_gga :1310-1328（valvestatus :1312、linkstatus/pswitch :1319-1323、CheckFreq :1326-1328）：每迭代 valvestatus；收敛后 linkstatus+pswitch；
+  未收敛时 CheckFreq=2 / MaxCheck=10 的周期 linkstatus
+- 病态回退：linsolve 返回 errrow → _badvalve :919-934 → `continue` 重试同一迭代
+  （solver.py:1262-1271，不递增 it）
+
+水池 / 定水头
+- 水池即 node_type!=0 → 落进 fixed_nodes（:132-136），逐帧由 fixed_head 给水头；
+  定水头节点净流入 fixed_dem 在 :1288-1296（仅 status>CLOSED 的链路）
+
+## 2. dense 批量结构（solver.py:1498-1660）
+- 初值 :1499-1516；全头向量用 cat+index_select 重建（避免就地写，autograd 干净）:1518-1521
+- 主循环 `for it in range(1, max_iter+1)` :1529
+- P/Y：_pipe_PY(:1363-1388) + _tcv_PY(:1390-1406)，形状 [B,L]，torch.where 选支 :1531-1539
+- 装配（全部 scatter_add_ 到新建零张量）：
+  · Xflow [B,Nj] :1546-1548
+  · A：先展平 [B,Nj*Nj]，一次 scatter_add_ 到 A_idx（预计算于 :180-186），
+    再 view(B,Nj,Nj) :1549-1552
+  · F :1554-1564（含定水头端接地项 g1/g2）
+  · emitter：A + diag_embed(em/hgrad) :1567-1573
+  · nodecoeffs :1575-1576
+- 线性解 :1583-1595：torch.linalg.cholesky(A) → cholesky_solve → 2 步迭代精化；
+  残差用 (A*Hj^T).sum(-1) 而非 bmm，保证 B=1 与 B>1 位级一致（注释 :1588-1591）
+- newflows :1622-1626；relerr :1631-1636；active 掩码冻结已收敛样本 :1637-1649
+- B 维在最外层：所有张量 [B,·]，A 稠密 [B,Nj,Nj] ⇒ 显存 O(B·Nj²)（Modena Nj=268、
+  B=256 时 A 约 147 MB；Nj=2000 就是 8 GB/批 → 稠密 A 是移植的真正上限）
+- 无状态机：self.closed 由 init_status 定死（:145-147），全程不变
+
+## 3. 哪些逻辑天然串行 / 哪些可向量化
+天然串行（依赖上一次迭代的标量判断或全局顺序）
+ S1 linsolve 零主元 → _badvalve → continue 重试同一迭代（:1262-1271）。
+    批量致命点：torch.linalg.cholesky 对批内任一样本非正定就整批抛异常，
+    没有"只重试第 b 个样本"的语义。要么 per-sample 掩码 + torch.linalg.cholesky_ex
+    的 info 分支，要么把 CBIG 罚函数换成不产生零主元的写法。
+ S2 dqsum/qsum 的左折叠求和（:1284-1285，`sum(np.abs(dq).tolist())`） -
+    纯为位级复刻 C 的舍入次序，可微路径不需要，torch.sum 即可。
+ S3 _pswitch（:1115-1150）：同一链路被多条控制命中时后者覆盖前者，
+    是"最后写入者胜"的顺序语义。控制数很少，可用 segment-last scatter 化解。
+可向量化（其实与串行无关，只是写成了 python 循环）
+ V1 _cvstatus/_pumpstatus/_fcvstatus/_prvstatus/_psvstatus 全部是
+    (当前状态, dh, q, h1, h2, hset) 的纯逐元素分段函数 → 嵌套 torch.where 直译，
+    天然支持 [B,L] 且允许同一阀在不同场景取不同状态。
+ V2 _linkstatus 的 `for k in range(L)`（:1093）链路之间无依赖，可整体向量化。
+ V3 _tankstatus 的 n1/n2 交换（:1064-1070）只依赖静态拓扑 is_fixed_node/is_tank_node，
+    可预计算成静态 tank 端索引 + 符号；剩下全是 H 的比较。
+ V4 _valvecoeffs 的"顺序依赖"只是装配两趟（先 link+node，后 valve），不是逐阀串行；
+    ACTIVE 分支里的 `if Xf[a2]<0` 是逐元素数据相关分支 → torch.where。
+ V5 _dw_PY_np（:635-682）逐管道 python 循环，公式纯逐元素 → 直接 torch 化。
+ V6 _curvecoeff（:683-706）的 while 查段 → torch.searchsorted（批+泵两维）。
+关键结论（批内状态不齐怎么办）
+ EPANET 的状态只以两种方式进线性系统：
+  (a) 改逐链路的 (P,Y) 标量对（关闭支 1/CBIG、开启支 valvecoeff、泵支 pumpcoeff）；
+  (b) 改装配时往 Aii/F/Xflow 加的**值**（ACTIVE PRV/PSV 的 CBIG 罚函数、FCV 的 ±qs）。
+ 两者都不改变**索引结构** - A_idx/f_idx1/f_idx2 是静态的。所以批内状态不同
+ 只需把"按状态挑链路"改成"(B,L) 布尔掩码乘 0/1 后照常 scatter_add"，
+ 每迭代按最坏情况装配（ACTIVE/OPEN/CLOSED 三支全算再 where 选），
+ 代价是常数倍算力，不是结构性障碍。真正的结构性障碍只有 S1。
+
+## 4. ImplicitGGASolve 的泵梯度到底支持到什么程度
+签名 autodiff.py:565-567：(demand,res_head,ke,r_hw,solver,accuracy,max_iter,
+polish_steps, speed, pump_h0, pump_r, status)
+- forward :565-596 → solve_polished :491-547 → s.solve(...)（:518）。
+  含泵网在 GGASolver 构造期就被 dense 拒（solver.py:104-110），所以只能传
+  mode="epanet" 的 solver ⇒ **前向是逐场景 numpy 串行**，不是批量 torch。
+  之后 _polish_np :425-444 对每个 b 用 scipy splu 做整装 Newton（solve_polished :530 `for b in range(B)`）。
+- backward :599-670：`for b in range(B)` :616 + splu(J).solve(v, trans="T") :633，
+  scipy 稀疏 LU，逐样本、CPU。泵 θ 的 ∂F/∂θ 在 :655-659，
+  由 _pump_coeffs_np :74-171 给出 dw=∂φ/∂ω、dh0=∂φ/∂H0、drp=∂φ/∂R；
+  钳位支/关闭支导数置 0（:103-107 等）。
+- status 是**冻结**的 int8[L]（_resolve_pump_args :61-71），不是微分量：
+  梯度是"给定状态下"的隐函数导数，状态切换本身对梯度无贡献。
+- ACTIVE PRV/PSV 的能量行被换成水头约束行：_valve_act_masks :173-189、
+  _residual_np :364-372、_build_J :383-419；被约束端为定水头则 raise（:185-189）。
+- 验收脚本：scripts/audit_prv_dw_adversarial.py:101 建的是 mode="epanet" solver，
+  :177 调 ImplicitGGASolve 传 (speed=K, status=S)；对拍中心差分。
+  scripts/gradcheck_3way.py:81/188 用的是 mode="dense"（无泵网）。
+⇒ 结论：泵/PRV/PSV/FCV 的梯度**已经有了**，但整条路都在串行 numpy/scipy 上；
+  论文里"批量可微"的那条路（dense / solve_unrolled）并不含这些特性。
+
+## 5. 附带发现：solve_unrolled 是被低估的半成品
+autodiff.py:696-967，torch 批量展开（B 维在最外层，装配与 dense 同款 scatter）。
+- 它只读 GGASolver 的**静态属性**（A_idx/f_idx1/lk_both/km_tcv/junc_nodes_t...），
+  这些在 __init__ 里无条件构建（solver.py:178-205），所以它可以直接挂在
+  mode="epanet" 的 solver 上跑 - 即"批量 torch + 有泵网"这条路已经通了一半。
+- 已有的：泵三型 P/Y 的 torch 复刻 :817-895（CONST_HP/POWER/线性/CUSTOM/NOCURVE）、
+  恒功率半步防穿零 :921-924、冻结 status 支 :730-735、ω=0 并入关闭支 :754。
+- 缺的：
+  · PRV/PSV/FCV 完全没有分支 - 非 TCV 阀会掉进 P_pipe（:800-813，:815 只对 is_tcv 换支），
+    而阀的 r_hw=0 ⇒ hgrad=0<RQtol ⇒ 走 RQtol 钳位支，km 还取的是 km_pipe。
+    **静默给出错误结果，没有任何守卫**（solve_unrolled 不检查 link_type）。
+  · D-W 没有（只写了 H-W/C-M 的 hexp 幂律 :800）。
+  · CUSTOM 泵选段是 python 双重循环 `for k in custom_links: for b in range(Bq)`
+    （:853-866），每迭代都 .cpu().numpy() 一次 ⇒ O(K·B·泵) 的同步开销，
+    是批量化的现成瓶颈（改 searchsorted 即可）。
+  · 无状态机（status 冻结传入），无 tank 逻辑（tank 只作定水头节点消费）。

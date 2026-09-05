@@ -1,0 +1,5 @@
+NVIDIA GeForce RTX 5090, 32607 MiB
+node: <node-24> | cpus: 8
+XF-STUB 我是桩，不是回归。将以 rc=2 退出（$XF_RC='2'），节点 <node-24>
+总判定: SKIP（桩）
+REGRESSION_GPU JOB DONE rc=2

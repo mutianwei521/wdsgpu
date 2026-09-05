@@ -1,0 +1,169 @@
+################################################################################
+P1 CSR 值装配通路（sparse_gpu_plan.md §1a, commit b66463f） - 独立对抗性验收
+日期 2026-08-22   torch 2.13.0+cu132   f64（另测 f32）   CPU 单线程 + RTX 5060 8GiB
+立场：敌意审阅者。全部脚本自写，不复用 scripts/verify_csr_assemble.py 的任何断言。
+脚本：scratchpad/aud_00_scan.py, aud_01_pattern.py, aud_02_equiv.py,
+      aud_03_grad.py, aud_04_mem.py, aud_05_cuda.py, aud_06_shadow.py,
+      aud_07_extras.py
+################################################################################
+
+【0】拓扑普查（全部 53 个参考网，独立统计）
+  · 并联管（同一无序节点对多条链路）确实存在于 dense 可跑网：
+      pub_ky4 21 组/42 链、ky5 1 组、pub_pescara 1 组、pub_anytown_wntr 1 组/3 链；
+      epanet-only 网更多：BWSN_2 305 组/813 链、Net6 40 组、bwsn_1 14 组、ky10 2 组。
+  · 自环（n1==n2）：全网 0 条  → 自建。
+  · 孤立 junction（度=0）：全网 0 个 → 自建（上游"实测 0 个"复现）。
+  · dense 模式可构造的网 = 18 个真实/公开网 + 20 rand_main + 3 rand_small。
+    上游只验了其中 10 个；本次覆盖全部。
+
+【1】逐位等价（A 矩阵 + 最终解）  aud_02_equiv.py
+  做法：给 _assemble_csr 套壳，在**真实迭代点**上拿到同一份 vals，就地用 A_idx
+  做一遍稠密 scatter_add，与 _csr_to_dense 的结果逐元素比 max|ΔA|（不是人造 Pm，
+  也不落盘）；再比最终 head/flow/emitter/relerr/iters + 位指纹（int64 重解释）。
+  覆盖：18 网（13 小 + 5 大）× B∈{1,8,64} × emitter{有,无} × t∈{0,6h,13h}
+        + 9 个合成病态网（孤立 junction / 并联管 / 自环 / 三者同时）。
+  结果：**402 个场景**
+    · 388 个完整跑通：max|ΔA| = 0.000e+00（累计 2000+ 次迭代内装配）；
+      max|ΔH| = max|ΔQ| = max|ΔE| = max|Δrelerr| = 0.000e+00；iters 逐项相等；
+      A / head / flow 的位指纹全部相同。**逐位等价，0 例外**。
+    · 14 个场景两条通路**同抛同一异常**，非 CSR 缺陷：
+        - SYN net1 iso2（孤立 junction 无 emitter）×12：两边都是
+          _LinAlgError "not positive-definite"（A[j,j]=0），与上游记载一致；
+        - city_h B=64 no-em ×2：两边都是 NotImplementedError（泵 XHEAD 截止
+          扬程守卫，dense 无状态机），报错文本逐字相同。
+  并联管专项：A[j1,j2] 必须等于 -ΣP（全部平行边之和，不得去重）。
+    pub_ky4 21 组、pub_pescara 1 组、合成 6 重边 5 组：max|A[j1,j2]+ΣP| = 0.000e+00。
+  自环专项：n1==n2 时四段贡献（-P,-P,+P,+P）落同一槽，两条通路顺序一致 ⇒ 0.000e+00。
+  float32 通路（线性解走 LU 均衡分支）：4 网 × B∈{1,8} max|ΔH| = 0.000e+00。
+
+【2】CSR 位型正确性  aud_01_pattern.py
+  用 scipy.sparse 从拓扑**独立重建**位型（coo→csr, sum_duplicates, sort_indices），
+  与上游存的 indptr/indices 逐元素对比。位型在 __init__ 里建、与 mode 无关，
+  故 epanet-only 的大网（BWSN_2 Nj=12523/nnz=41155、Net6、L-TOWN、richmond…）也验了。
+  覆盖 53 参考网 + 8 合成病态网 = **61 网**，检查 6 项：
+    scipy.indptr 逐元素相等 / scipy.indices 逐元素相等 / 每行列号**严格升序**且
+    indptr[0]=0、indptr[-1]=nnz、长度 Nj+1、单调 / dense_pos ≡ row*Nj+col /
+    Nj 个对角全在且 A_csr_diag 落位正确 / **A_csr_dense_pos[A_csr_scatter] == A_idx**
+  结果：61 网 × 6 项，不合格 **0**。
+  最后一项是结构性证据：CSR 的散射目标与稠密的散射目标**逐元素相同、次序相同**，
+  故"每个槽收到的加数序列逐项相同"不是经验观察而是构造事实（浮点求和次序相同）。
+
+【3】显存（实测，非估算）  aud_04_mem.py / aud_05_cuda.py（RTX 5060, 7.96 GiB）
+  A. 装配核单独，B=256，CUDA 峰值分配（torch.cuda.max_memory_allocated）：
+     网       Nj     nnz   CSR峰值      稠密峰值        降幅   CSR ms
+     Net3     92     320    0.62 MiB    16.5 MiB       26x -
+     Modena  268     894    1.75 MiB   140.3 MiB       80x    0.16
+     City_D  541    1645    3.24 MiB   572.0 MiB      178x    0.26
+     ky4     959    3219    6.29 MiB  1796.3 MiB      286x    0.23
+     Net6   3323   10913   22.00 MiB  **OOM**(需 21.1 GiB)  1012x  1.04
+     BWSN_2 12523   41155   80.38 MiB  **OOM**(需 299.1 GiB) 3811x  187.4
+     BWSN_2 稠密 [256,Nj²] 在 GPU 与 CPU 上**都实际分配失败**（OOM /
+     DefaultCPUAllocator 321178828800 bytes） - 299 GiB 这堵墙是实拍的。
+  B. **整条 solve() 的 CUDA 峰值（预热后实测） - 本轮不降反升**：
+     网/B            dense    csr    csr/dense   [B,Nj²]   [B,nnz]
+     Net3   B=64     18.5     18.6   1.006x       4.1 MiB   0.156 MiB
+     Net3   B=256    73.9     74.3   1.006x      16.5 MiB   0.625 MiB
+     Modena B=64    149.0    149.3   1.002x      35.1 MiB   0.437 MiB
+     Modena B=256   581.2    583.2   1.003x     140.3 MiB   1.746 MiB
+     ky4    B=8     227.0    227.1   1.001x      56.1 MiB   0.196 MiB
+     ky4    B=32    908.1    908.7   1.001x     224.5 MiB   0.786 MiB
+     原因：_csr_to_dense 仍开 [B,Nj*Nj]，其后 `A + diag_embed(...)` 再开一份，
+     迭代精化的 `A * Hj^T` 又一份 ⇒ solve 峰值 ≈ 4×[B,Nj²]，CSR 只是**额外**加了
+     [B,nnz]（+0.1~0.6%）。**显存墙在 solve 级别一步未拆**（上游 wip §5 已承认
+     "末尾仍散射回稠密"，但 §4 结论行"显存墙由这一条通路拆掉"表述越界）。
+
+【4】稠密缺省路径未受影响  aud_06_shadow.py
+  影子模块 = `git show b66463f^:dgga/solver.py` 独立载入，同输入逐位对拍。
+  · dense：18 网 × B∈{1,8,64} × emitter{on,off} = 108 场景，
+    max|ΔH|=max|ΔQ|=max|ΔE|=0.000e+00，iters/converged 全等，位指纹全同；
+    city_h B=64 no-em 两边同抛同一 NotImplementedError。
+  · epanet（铁律三）：12 网 × B∈{1,4} = 24 场景（含 c_town/d_town/EXA4/fcv_smoke/
+    bwsn_1/richmond/balerma 等 dense 跑不了的），全部 0.000e+00。
+  · 参数守卫：assemble='xyz'/None → ValueError；mode='epanet'+csr → NotImplementedError；
+    mode='epanet'+'dense' 放行（未破坏既有调用）。
+  不合格 = 0。
+
+【5】梯度  aud_03_grad.py
+  (a) 图未断：csr 路径 head/flow requires_grad=True，∂L/∂demand 非零。
+  (b) 与稠密逐位对拍：8 网 × B∈{1,8} × 三类输入
+      max|Δ∂L/∂demand| = max|Δ∂L/∂ke| = max|Δ∂L/∂res_head| = **0.000e+00**，ΔL=0。
+  (c) 绝对正确性（不只是"和稠密一样"）：pub_hanoi 上 csr 通路的 ∂L/∂demand
+      vs 中心差分 + Richardson 外推，12 个坐标最差相对误差 **3.58e-10**（门槛 1e-6）。
+  (d) 装配核解析 Jacobian：对 requires_grad 的 vals 直接调两核，
+      max|∂(ΣA²)/∂vals − 2·A[目标槽]| = **0.000e+00**；无 index_put_ 之类就地写
+      （_assemble_csr 的 scatter_add_ 作用在新建 zeros 上，_csr_to_dense 用
+       out-of-place scatter），autograd 干净。
+  注：solve_unrolled / ImplicitGGASolve（dgga/autodiff.py）**不接 assemble 参数**，
+      CSR 通路目前只经 GGASolver.solve() 可达。§1b 要一并接。
+
+【6】regression_all 前台 **50/50 PASS**（241s）
+  data/regression_report.txt 与 b66463f 版逐行比对：只有生成时间与逐项"用时s"
+  不同，全部实测数值列**逐字节相同**（含 73 处 0.000e+00 逐位断言）。已 git checkout 还原。
+
+################################################################################
+【CUDA 专项 - 上游未做，本次补】 aud_05_cuda.py
+  上游只对 CPU 下逐位结论，并声明"CUDA 上两条通路都走 atomicAdd，不保证位级复现"。
+  实测该声明是否成立、以及 CSR 是否比稠密更差：
+  1) 装配核 @CUDA B=256：
+     网      csr−den     den−den(重跑)   csr−csr(重跑)
+     Net3    8.882e-16   8.882e-16       8.882e-16
+     Modena  8.882e-16   8.882e-16       8.882e-16
+     City_D  8.882e-16   8.882e-16       8.882e-16
+     ky4     8.882e-16   8.882e-16       8.882e-16
+     ⇒ CSR 的偏差与**稠密通路自己重跑的偏差完全同量级**，CSR 没引入任何额外不定性。
+  2) 整条 solve() @CUDA：
+     网/B          |H_csr−H_den|   |H_den−H_den2|(重跑)   iters
+     Net3   B=8      2.727e-06        2.927e-06           同
+     Net3   B=64     3.721e-06        3.296e-06           同
+     Net3   B=256    5.443e-06        5.738e-06           同
+     Modena B=64     6.386e-11        8.828e-11           同
+     Modena B=256    6.862e-10        2.618e-10           同
+     ky4    B=8      2.842e-07        1.894e-07           同
+     ky4    B=32     1.057e-06        6.927e-07           同
+     ⇒ 同量级（有时 CSR 还更小）。但注意：**稠密 GPU 通路自身重跑就已经差到
+       5.7e-6 ft**，超过项目的 1e-6 ft 对拍门槛。这是既有问题，不是本轮引入，
+       但 §1b 上 GPU 之后会直接撞上。
+  3) **torch.use_deterministic_algorithms(True) 下（torch 2.13 有确定性
+     scatter_add_ CUDA 核，不报错）：**
+     网          det=False(den重跑/csr−den)   det=True(den重跑/csr−den)
+     pub_net3    8.882e-16 / 8.882e-16        **0.000e+00 / 0.000e+00**
+     pub_modena  8.882e-16 / 8.882e-16        **0.000e+00 / 0.000e+00**
+     pub_ky4     8.882e-16 / 8.882e-16        **0.000e+00 / 0.000e+00**
+     ⇒ 逐位等价的结论**可以推广到 CUDA**，只要在确定性模式下跑。
+       建议 §1b 的 GPU 验收固定开 use_deterministic_algorithms(True)。
+
+【对"对角必入位型"这一理由的反证】 aud_07_extras.py §C
+  上游 commit message 称"必须显式存孤立 junction 的结构零才能逐位复现稠密 A"。
+  实验：把多余对角从位型剔掉（只留链路贡献），重算 scatter/dense_pos 再走
+  _csr_to_dense - pub_net1 / SYN iso2 / SYN iso2+ke 上 max|ΔA| 仍 = 0.000e+00
+  （少存 2 个结构零）。因为 _csr_to_dense 从 zeros 起散射，未触及位天然为 0。
+  ⇒ 该理由对**本轮**不成立（陈述越界）；对 §1b 才成立（cuDSS 需显式对角槽承接
+    emitter 项与主元）。**代码本身没问题，改的是说法。**
+
+【缺陷清单】
+  代码缺陷：**0 个**（六项独立复核全部通过，未做任何修复）。
+  表述/工程性问题 3 条（不改数值行为）：
+  D1 wip §4 结论行"显存墙由这一条通路拆掉"越界：实测 solve() 峰值 csr/dense
+     = 1.001~1.006x，一步未降。准确说法是"装配这一步的 [B,Nj²] 拆掉了；
+     solve 级别要等 §1b 删掉 _csr_to_dense 才兑现"。
+  D2 commit message 关于"对角结构零是逐位复现的必要条件"已被反证（见上）。
+  D3 A_csr_diag / A_csr_indptr / A_csr_indices 本轮全是死存储（未被任何执行路径
+     读取），solve_unrolled / ImplicitGGASolve 也不接 assemble。属预留，非缺陷，
+     但 §1b 前无回归保护。
+  另：scripts/gradcheck_3way.py 的未提交改动经核实只是一行 [COORDCOUNT] 调试
+     print，无数值影响；建议 revert 或单独提交，别挂在 release 分支上。
+
+【P2（接 cuDSS）判定】可以进。
+  依据：位型正确性由 scipy 独立复核（61 网 0 不合格）且满足 cuDSS 要求
+  （行内严格升序、indptr 规范、对角全在、int32 索引零转换）；装配等价性有
+  构造性证据（dense_pos[scatter]==A_idx）+ 402 场景实测；梯度未断且绝对正确；
+  缺省路径与 epanet 基准逐位未动；regression 50/50。
+  P2 前置条件 3 条：
+  P1 GPU 验收必须开 use_deterministic_algorithms(True)，否则稠密基线自身重跑
+     就有 5.7e-6 ft 抖动，无法判定 cuDSS 的偏差归属。
+  P2 §1b 必须同时删掉 _csr_to_dense 并给 autodiff.py 的两条入口接上 assemble，
+     否则显存收益仍为 0、可微通路仍走稠密。
+  P3 BWSN_2/Net6 的求解仍卡 CVPIPE/PRV/PSV/FCV 特性门（dense 模式构造即 raise），
+     §1a 的大网数字只来自 epanet 模式构造出来的位型 + 直调 _assemble_csr，
+     并未经过 solve()。cuDSS 要在这两个网上端到端跑，得先补 dense_gap_plan.md §2。
+################################################################################

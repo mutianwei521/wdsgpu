@@ -1,0 +1,33 @@
+NVIDIA GeForce RTX 5090
+cpus: 8
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1895: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1895: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+NVIDIA GeForce RTX 5090 | torch 2.11.0+cu128
+use_deterministic_algorithms(True)
+
+====================================================================================================
+net           Nj    B |     cudss 同实例     cudss 换实例 |     dense 自重跑 | |cudss-dense|
+Net1           9    8 |     7.958e-13     0.000e+00 |     0.000e+00 |     1.023e-12
+Net1           9   64 |     1.000e-11     3.524e-12 |     0.000e+00 |     8.640e-12
+Anytown       19    8 |     5.684e-13     6.821e-13 |     0.000e+00 |     3.695e-13
+Anytown       19   64 |     3.041e-12     1.648e-12 |     0.000e+00 |     1.194e-12
+Hanoi         31    8 |     5.400e-13     2.331e-12 |     0.000e+00 |     3.126e-12
+Hanoi         31   64 |     3.212e-12     3.809e-12 |     0.000e+00 |     7.958e-12
+Net2          35    8 |     2.408e-10     3.524e-11 |     0.000e+00 |     3.728e-10
+Net2          35   64 |     1.338e-10     2.190e-10 |     0.000e+00 |     4.845e-10
+Fossolo       36    8 |     7.958e-13     7.958e-13 |     0.000e+00 |     9.663e-13
+Fossolo       36   64 |     1.876e-12     1.080e-12 |     0.000e+00 |     1.421e-12
+Pescara       68    8 |     5.192e-06     6.216e-06 |     0.000e+00 |     6.004e-06
+Pescara       68   64 |     1.250e-05     1.294e-05 |     0.000e+00 |     1.516e-05
+Net3          92    8 |     4.597e-06     4.216e-06 |     0.000e+00 |     4.407e-06
+Net3          92   64 |     4.909e-06     4.545e-06 |     0.000e+00 |     4.287e-06
+Modena       268    8 |     8.157e-12     1.643e-11 |     0.000e+00 |     1.148e-11
+Modena       268   64 |     2.618e-11     5.531e-11 |     0.000e+00 |     3.601e-11
+City_D       541    8 |     3.410e-06     5.036e-06 |     0.000e+00 |     6.069e-06
+City_D       541   64 |     6.086e-06     6.730e-06 |     0.000e+00 |     6.188e-06
+ky4          959    8 |     2.058e-06     1.575e-07 |     0.000e+00 |     5.612e-07
+ky4          959   64 |     1.216e-06     7.728e-07 |     0.000e+00 |     1.632e-06
+
+P2c 结束

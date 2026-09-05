@@ -1,0 +1,137 @@
+{
+ "generated": "2026-09-04 17:53:45",
+ "rows": [
+  {
+   "stem": "pub_net3",
+   "before": {
+    "F": 183,
+    "changed": null,
+    "max_dH": 2.1458081675973517e-06,
+    "argmax": 144,
+    "max_dQ": 5.684341886080801e-07,
+    "n_ge_tol": 13,
+    "status_all": true,
+    "iters_all": true,
+    "t_all": true,
+    "pass": false,
+    "bitwise_zero": false
+   },
+   "after": {
+    "F": 183,
+    "changed": {
+     "res": 1,
+     "elev": 0,
+     "vset": 0
+    },
+    "max_dH": 0.0,
+    "argmax": 0,
+    "max_dQ": 3.552713678800501e-15,
+    "n_ge_tol": 0,
+    "status_all": true,
+    "iters_all": true,
+    "t_all": true,
+    "pass": true,
+    "bitwise_zero": true
+   }
+  },
+  {
+   "stem": "pub_bwsn_network_1",
+   "before": {
+    "F": 207,
+    "changed": null,
+    "max_dH": 6.085719405746204e-06,
+    "argmax": 133,
+    "max_dQ": 7.046121920151194e-06,
+    "n_ge_tol": 156,
+    "status_all": true,
+    "iters_all": true,
+    "t_all": true,
+    "pass": false,
+    "bitwise_zero": false
+   },
+   "after": {
+    "F": 207,
+    "changed": {
+     "res": 1,
+     "elev": 0,
+     "vset": 3
+    },
+    "max_dH": 0.0,
+    "argmax": 0,
+    "max_dQ": 8.881784197001252e-16,
+    "n_ge_tol": 0,
+    "status_all": true,
+    "iters_all": true,
+    "t_all": true,
+    "pass": true,
+    "bitwise_zero": true
+   }
+  },
+  {
+   "stem": "pub_bwsn_network_2",
+   "before": {
+    "F": 32,
+    "changed": null,
+    "max_dH": 6.836464706592366,
+    "argmax": 16,
+    "max_dQ": 1.4063092592664361e-05,
+    "n_ge_tol": 32,
+    "status_all": true,
+    "iters_all": true,
+    "t_all": true,
+    "pass": false,
+    "bitwise_zero": false
+   },
+   "after": {
+    "F": 32,
+    "changed": {
+     "res": 2,
+     "elev": 0,
+     "vset": 1
+    },
+    "max_dH": 0.0,
+    "argmax": 0,
+    "max_dQ": 7.105427357601002e-15,
+    "n_ge_tol": 0,
+    "status_all": true,
+    "iters_all": true,
+    "t_all": true,
+    "pass": true,
+    "bitwise_zero": true
+   }
+  },
+  {
+   "stem": "pub_anytown",
+   "before": {
+    "F": 9,
+    "changed": null,
+    "max_dH": 6.0822458181064576e-12,
+    "argmax": 3,
+    "max_dQ": 4.74997818855627e-12,
+    "n_ge_tol": 0,
+    "status_all": true,
+    "iters_all": true,
+    "t_all": true,
+    "pass": true,
+    "bitwise_zero": false
+   },
+   "after": {
+    "F": 9,
+    "changed": {
+     "res": 2,
+     "elev": 0,
+     "vset": 0
+    },
+    "max_dH": 0.0,
+    "argmax": 0,
+    "max_dQ": 1.7763568394002505e-15,
+    "n_ge_tol": 0,
+    "status_all": true,
+    "iters_all": true,
+    "t_all": true,
+    "pass": true,
+    "bitwise_zero": true
+   }
+  }
+ ]
+}

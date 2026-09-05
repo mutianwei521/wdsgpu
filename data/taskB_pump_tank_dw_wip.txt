@@ -1,0 +1,140 @@
+# 任务B 精读笔记：泵 / 水池 / Darcy-Weisbach 移植进 dense(批量可微) 路径
+# 源码：ref/EPANET2.2-2.2.0/SRC_engines/  全部行号经逐行核对
+
+## 0. 前提：P/Y 如何进线性系统（决定"只改系数"还是"改结构"）
+hydcoeffs.c:216-252 linkcoeffs() - 对所有 link 一视同仁：
+    218  if (hyd->P[k] == 0.0) continue;          <-- P=0 是"退出常规装配"的唯一开关
+    225  Xflow[n1] -= LinkFlow[k];  226 Xflow[n2] += LinkFlow[k];
+    229  Aij[Ndx[k]] -= P[k];
+    235  Aii[Row[n1]] += P[k];   236 F[Row[n1]] += Y[k];
+    240  else F[Row[n2]] += (P[k]*NodeHead[n1]);   <-- n1 是定水头节点(tank/reservoir)
+    246  Aii[Row[n2]] += P[k];   247 F[Row[n2]] -= Y[k];
+    251  else F[Row[n1]] += (P[k]*NodeHead[n2]);
+=> 结论：只要一个元件走 pipecoeff/pumpcoeff/valvecoeff 给出 (P,Y)，它就"只改系数"。
+   只有 PRV/PSV(ACTIVE) 置 P=0 并另外注入 CBIG 对角 + hset*CBIG 右端
+   (hydcoeffs.c:972-975 / 1024-1027)，FCV(ACTIVE) 注入 ±q 到 Xflow/F (1075-1083)，
+   才是"改结构"。泵不属于这一类。
+hydsolver.c:123  linsolve(sm, net->Njuncs) - 矩阵只有 Njuncs 阶。
+hydsolver.c:431  dq = Y[k] - P[k]*dh；447 LinkFlow[k] -= dq。
+
+## 1. 泵 pumpcoeff  hydcoeffs.c:673-791
+关口（先判、直接返回）：
+  696-701  LinkStatus[k] <= CLOSED  ||  setting==0  -> P=1/CBIG, Y=LinkFlow[k]
+  709-714  Ptype==NOCURVE           -> P=1/CSMALL, Y=LinkFlow[k]（当开阀）
+三类曲线：
+ (a) CUSTOM (多点曲线) 718-733：
+     curvecoeff(pr, pump->Hcurve, q/setting, &h0, &r)   <-- 用"转速归一化流量"查曲线
+     726-728  pump->H0=-h0; pump->R=-r; pump->N=1.0     (取负：扬程增益->水头损失)
+     731  hgrad = pump->R * setting
+     732  hloss = pump->H0*SQR(setting) + hgrad*LinkFlow[k]
+     curvecoeff  hydcoeffs.c:794-831：
+       811 q *= Ucf[FLOW]（曲线存的是原始单位）
+       818-822 while (k2<npts && x[k2]<q) k2++;  夹取段 [k1,k2]   <-- 离散分段选择
+       825 *r=(y[k2]-y[k1])/(x[k2]-x[k1]);  826 *h0=y[k1]-(*r)*x[k1]
+       829-830 单位换算回来
+     => 分段线性插值，段内 dH/dQ 为常数；段边界处 r 跳变（C0 但非 C1）。
+ (b) POWER_FUNC / 常规 734-786：
+     737 h0 = SQR(setting)*pump->H0
+     739 if (|n-1|<TINY) n=1.0
+     740 r  = pump->R * pow(setting, 2.0-n)
+     767-778 n!=1: hgrad = n*r*q^(n-1)；若 hgrad<RQtol 则 hgrad=RQtol,
+             hloss = h0 + hgrad*Q；否则 hloss = h0 + hgrad*Q/n
+     781-785 n==1: hgrad=r, hloss=h0+hgrad*Q
+ (c) CONST_HP 743-762：
+     746 hgrad = -r/q/q
+     748-752 hgrad>CBIG  -> hgrad=CBIG,  hloss=-hgrad*Q
+     753-757 hgrad<RQtol -> hgrad=RQtol, hloss=-hgrad*Q
+     761 否则 hloss = r/LinkFlow[k]
+789-790  P[k]=1/hgrad;  Y[k]=hloss/hgrad
+三点曲线拟合（**解析、且只在解析输入时做一次，不在迭代里**）：
+  input3.c:2035-2099 getpumpcurve()
+    2070-2077 单点曲线：h0=1.33334*h1, q2=2*q1, h2=0
+    2080-2087 三点曲线：h0,h1,q1,h2,q2
+    2090 powercurve(...) ; 2091-2096 H0=-a, R=-b, N=c, Qmax=(-a/b)^(1/c), Hmax=h0
+  input3.c:2101-2129 powercurve()  H = a - b*Q^c
+    2121 *a=h0;  2122 h4=h0-h1;  2123 h5=h0-h2
+    2124 *c = log(h5/h4)/log(q2/q1)      2126 *b = -h4/pow(q1,*c)
+    2125 c<=0 或 c>20 -> 报错206;  2127 b>=0 -> 报错206
+关/最大流判定：hydstatus.c:205-239 pumpstatus()
+    223-227 CONST_HP -> hmax = BIG
+    231     其余     -> hmax = SQR(LinkSetting[k]) * Pump[p].Hmax
+    235     if (dh > hmax + Htol) return XHEAD;
+    237     注释原文："No check is made to see if flow exceeds pump's max. flow"
+            => 2.2 实际不触发 XFLOW，Qmax 只用于报告/能耗，不进求解器。
+  调用点 hydstatus.c:144-148：仅当 Type==PUMP && Status>=OPEN && Setting>0 才判。
+非系数的两处特例（CONST_HP 专属）：
+    hydsolver.c:437-443  若 CONST_HP 且 dq>LinkFlow[k] 则 dq=LinkFlow[k]/2（防负流）
+    hydraul.c:1103-1116  resetpumpflow()：CONST_HP 复位到 Q0
+    hydcoeffs.c:108      resistcoeff: PUMP -> R = CBIG（泵不走 pipe 阻力）
+=> 泵**只改系数不改结构**（P 从不为 0；XHEAD/CLOSED 只是把 P 压到 1/CBIG）。
+
+## 2. 水池 Tank
+节点编号：types.h:816-818 Nnodes/Ntanks/Njuncs；junction=1..Njuncs，tank/reservoir 在后面。
+hydsolver.c:123 只解 Njuncs 阶 -> 定水头节点只经 linkcoeffs.c:240/251 以 P*H 进右端。
+tank 与 reservoir 的差别（都存在 net->Tank[] 里）：
+    types.h:415-433 Stank{Node,A,Hmin,Hmax,H0,Vmin,Vmax,V0,...,CanOverflow}
+    **reservoir 就是 A==0 的 tank**：hydraul.c:510 `if (tank->A == 0.0)` 走定水头模式图案，
+    hydstatus.c:437-438 `tank = &net->Tank[i]; if (tank->A == 0.0) return;  // Ignore reservoirs`
+单帧内水头是常数：
+    hydraul.c:105-113 inithyd: `hyd->NodeHead[tank->Node] = tank->H0;` NodeDemand=0
+    hydraul.c:998-1036 tanklevels() 只在 nexthyd 里被调（hydraul.c:247, 655-657），
+    即**时段之间**才更新水位；单帧稳态求解过程中 H 不变。
+    hydsolver.c:411-414 每次迭代把定水头节点的 NodeDemand 清零，462-463 再累加净流量。
+单帧下唯一的差别 = tankstatus()  hydstatus.c:401-476：
+    444 满池 `NodeHead[n1] >= tank->Hmax - Htol && !tank->CanOverflow` ->
+        447-450 泵入池 -> TEMPCLOSED；454-457 cvstatus(OPEN,h,q)==CLOSED -> TEMPCLOSED
+    461 空池 `NodeHead[n1] <= tank->Hmin + Htol` ->
+        464-466 泵抽池 -> TEMPCLOSED；471-474 cvstatus(CLOSED,h,q)==OPEN -> TEMPCLOSED
+    调用点 hydstatus.c:157-161：只要 link 一端 > Njuncs 就调。
+    421 `if (LinkStatus[k] <= CLOSED) return;`
+=> 若 Hmin < H0 < Hmax（input1.c:365-367 已校验 Hmin<=H0<=Hmax），tankstatus 全程不动作，
+   **单帧稳态下水池 == 定水头节点，逐位等价**。差别只在 H0 恰好贴到 Hmax/Hmin 边界时，
+   连接管会被 TEMPCLOSED（这是状态/结构改动，不是水头改动）。
+
+## 3. Darcy-Weisbach
+阻力常数（不含 f，解析一次算好）：hydcoeffs.c:97-99
+    case DW: link->R = L / 2.0 / 32.2 / d / SQR(PI*SQR(d)/4.0);
+DWpipecoeff hydcoeffs.c:578-620：
+    591-595 q=|Q|; r=R; ml=Km; e = Kc/Diam(相对粗糙度); s = Viscos*Diam
+    600-605 层流 (q <= A2*s, A2=500π 即 Re<=2000)：Hagen-Poiseuille
+            r = 16πs·R;  hloss = Q*(r + ml*q);  hgrad = r + 2*ml*q     <-- 无 f
+    609-615 紊流：f = frictionFactor(q,e,s,&dfdq)
+            r1 = f*r + ml;  hloss = r1*q*Q;  hgrad = 2*r1*q + dfdq*r*q*q
+    618-619 P=1/hgrad; Y=hloss/hgrad
+frictionFactor hydcoeffs.c:623-670，w = q/s = Re·π/4：
+  Re>=4000 (w>=A1=1000π) - Swamee-Jain **显式**逼近 Colebrook-White，644-651：
+      y1 = A8/pow(w,0.9);   A8 = 5.74*(π/4)^0.9
+      y2 = e/3.7 + y1;
+      y3 = A9*log(y2);      A9 = -2/ln(10)
+      f  = 1.0/(y3*y3);
+      *dfdq = 1.8*f*y1*A9/y2/y3/q;        <-- **解析导数，源码直接给出**
+  2000<Re<4000 - Dunlop 三次插值多项式，656-668：
+      y2 = e/3.7 + AB;  y3 = A9*log(y2);  fa = 1/(y3*y3);
+      fb = (2.0 + AC/(y2*y3))*fa;         r = w/A2;
+      x1 = 7fa - fb;  x2 = 0.128 - 17fa + 2.5fb;
+      x3 = -0.128 + 13fa - 2fb;  x4 = 0.032 - 3fa + 0.5fb;
+      f = x1 + r*(x2 + r*(x3 + r*x4));
+      *dfdq = (x2 + r*(2*x3 + r*3*x4))/s/A2;
+  常数 hydcoeffs.c:23-31。
+=> **全程无内迭代**：没有 Colebrook 的隐式不动点循环，两支都是闭式；
+   且 EPANET 自己就用解析 df/dq 组装 hgrad，说明 f 对 q 处处可解析求导。
+   可微性隐患只有 Re=2000 与 Re=4000 两个分段接点（值连续、导数近似连续，非严格 C1）。
+
+## 4. 批量+可微友好度排序（好 -> 差）
+ (1) 水池：最友好。只是把节点加进 fixed_head 向量；进 F 的路径 linkcoeffs.c:240/251
+     dense 路径已经有（solver.py:1558-1561 g1_row/g2_row）。零新分支。
+     代价：只有边界满/空池的 TEMPCLOSED 要么忽略（并在文档里声明），要么按下面 (3) 处理。
+ (2) D-W：次友好。纯逐元素系数运算，两个 torch.where 阈值（Re 2000/4000），
+     解析导数已在源码里，形状与 H-W 完全一致，不碰装配结构。批内不同场景阈值不同，
+     用 where 即可，无结构差异。
+ (3) 泵：最麻烦但仍**不改结构**。三处离散门：
+       (i)  XHEAD/CLOSED/setting==0  -> P=1/CBIG（值切换，可用 mask 融合）
+       (ii) CUSTOM 曲线分段查找 curvecoeff:818-822（批内每个场景落在不同段
+            -> 需要 searchsorted + gather，可向量化）
+       (iii) hgrad 的 RQtol/CBIG 夹取（clamp，逐元素）
+     真正的难点在状态不动点循环 hydsolve:165-179：批内场景收敛步数和状态轨迹不同，
+     需要 per-scenario 的 frozen mask。但泵的状态只影响 P/Y 的取值，
+     不像 PRV/PSV(ACTIVE, hydcoeffs.c:972-975/1024-1027) 那样把行改成 Dirichlet 约束，
+     也不像 FCV(ACTIVE, 1075-1083) 那样注入 ±q，所以批量可以纯靠 mask 完成。
+ 附注：PRV ACTIVE 还读 Xflow[n2]（hydcoeffs.c:973），依赖 matrixcoeffs.c:185-194 的
+     装配顺序（valvecoeffs 必须在 nodecoeffs 之后），这是阀门族比泵难的另一个原因。

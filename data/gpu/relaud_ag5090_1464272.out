@@ -1,0 +1,68 @@
+<node-09>
+NVIDIA GeForce RTX 5090, 32607 MiB
+========================================================================================
+aud_gpu 敌意复测 | node: <node-09> | torch 2.11.0+cu128 | NVIDIA GeForce RTX 5090
+  B=8     dense  warmup=0.603s reps(s)=['0.1870', '0.1842', '0.1839', '0.1841'] peak_alloc=201MiB
+/data/run01/<user>/wdsgpu/hydrograd/relaud/dgga/solver.py:2460: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/relaud/dgga/solver.py:2460: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=8     cudss  warmup=0.996s reps(s)=['0.0870', '0.0871', '0.0865', '0.0865'] peak_alloc=12MiB
+  B=8     公平性: iters同 8/8 状态同 8/8 conv 8+8/8 max|dH|=2.517e-06 ft  有效
+  B=8     结果: fwd_d=22.989(min)/23.019(med) fwd_c=10.809/10.876 ms/场景 倍数(min)=2.13x
+  B=256   dense  warmup=0.988s reps(s)=['0.9860', '0.9921', '0.9861', '0.9860'] peak_alloc=6058MiB
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=256   cudss  warmup=0.954s reps(s)=['0.2638', '0.2636', '0.2640', '0.2645'] peak_alloc=132MiB
+  B=256   公平性: iters同 256/256 状态同 256/256 conv 256+256/256 max|dH|=7.241e-06 ft  有效
+  B=256   结果: fwd_d=3.851(min)/3.852(med) fwd_c=1.030/1.031 ms/场景 倍数(min)=3.74x
+  B=1024  dense  warmup=3.433s reps(s)=['3.4304', '3.4294', '3.4328', '3.4359'] peak_alloc=24204MiB
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=1024  cudss  warmup=3.973s reps(s)=['0.8957', '0.8528', '0.7966', '0.7968'] peak_alloc=493MiB
+  B=1024  公平性: iters同 1024/1024 状态同 1024/1024 conv 1024+1024/1024 max|dH|=7.985e-06 ft  有效
+  B=1024  结果: fwd_d=3.349(min)/3.352(med) fwd_c=0.778/0.833 ms/场景 倍数(min)=4.31x
+
+【汇总 node=<node-09>】
+  B=8     fwd_d=22.989 fwd_c=10.809 ms/场景 倍数=2.13x 
+  B=256   fwd_d=3.851 fwd_c=1.030 ms/场景 倍数=3.74x 
+  B=1024  fwd_d=3.349 fwd_c=0.778 ms/场景 倍数=4.31x 
+AUD_GPU_RESULT PASS
+STEP aud_gpu rc=0
+dgga from: /data/run01/<user>/wdsgpu/hydrograd/relaud/dgga
+/data/run01/<user>/wdsgpu/hydrograd/relaud/dgga/solver.py:2460: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/relaud/dgga/solver.py:2460: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  L-TOWN           装配轮=17 ACTIVE-PRV槽(终态,B=8)=24 nnz=2592 max|A-A^T|=0.000e+00 非对称轮=0  PASS
+/data/home/<user>/.local/lib/python3.10/site-packages/wntr/epanet/io.py:2082: UserWarning: Not all curves were used in "/data/run01/<user>/wdsgpu/hydrograd/relaud/BWSN_Network_1.inp"; added with type None, units conversion left to user
+  warnings.warn('Not all curves were used in "{}"; added with type None, units conversion left to user'.format(self.wn.name))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  BWSN_Network_1   装配轮=8 ACTIVE-PRV槽(终态,B=8)=40 nnz=448 max|A-A^T|=0.000e+00 非对称轮=0  PASS
+AUD_T4PROBE_RESULT PASS
+STEP t4probe_genuine rc=0
+MUTATE OK MF_oneside -> mut_mf/dgga
+dgga from: /data/run01/<user>/wdsgpu/hydrograd/relaud/mut_mf/dgga
+/data/run01/<user>/wdsgpu/hydrograd/relaud/mut_mf/dgga/solver.py:2460: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/relaud/mut_mf/dgga/solver.py:2460: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  L-TOWN           装配轮=4 ACTIVE-PRV槽(终态,B=8)=8 nnz=2592 max|A-A^T|=1.000e+08 非对称轮=4  <-- FAIL
+/data/home/<user>/.local/lib/python3.10/site-packages/wntr/epanet/io.py:2082: UserWarning: Not all curves were used in "/data/run01/<user>/wdsgpu/hydrograd/relaud/mut_mf/BWSN_Network_1.inp"; added with type None, units conversion left to user
+  warnings.warn('Not all curves were used in "{}"; added with type None, units conversion left to user'.format(self.wn.name))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  BWSN_Network_1   装配轮=40 ACTIVE-PRV槽(终态,B=8)=15 nnz=448 max|A-A^T|=1.000e+08 非对称轮=39  <-- FAIL
+AUD_T4PROBE_RESULT FAIL
+STEP t4probe_MF rc=1 期望非0
+STEP upstream_rg_baseline rc=0
+
+================================================================================================
+总判定: PASS （50/50 项通过）
+================================================================================================
+STEP upstream_rg_MF rc=0 rc0即T4网表洞实锤
+
+================================================================================================
+总判定: PASS （50/50 项通过）
+================================================================================================
+AG5090 DONE rc=0 r1=0 r2=0 r3=1 r4=0 r5=0

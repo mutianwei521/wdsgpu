@@ -1,0 +1,44 @@
+{
+ "stem": "pub_net6",
+ "generated": "2026-09-04 09:53:13",
+ "rows": [
+  {
+   "F": 609,
+   "n_fixed": {
+    "res": 0,
+    "elev": 0,
+    "vset": 0
+   },
+   "max_dH": 2.299633160873782e-05,
+   "argmax": 469,
+   "median_dH": 3.982109546996071e-06,
+   "max_dQ": 5.678397556163617e-06,
+   "n_ge_tol": 577,
+   "status_all": true,
+   "iters_all": true,
+   "t_all": true,
+   "pass": false,
+   "combo": "none",
+   "sec": 215.515859899926
+  },
+  {
+   "F": 609,
+   "n_fixed": {
+    "res": 1,
+    "elev": 0,
+    "vset": 0
+   },
+   "max_dH": 0.0,
+   "argmax": 0,
+   "median_dH": 0.0,
+   "max_dQ": 7.105427357601002e-15,
+   "n_ge_tol": 0,
+   "status_all": true,
+   "iters_all": true,
+   "t_all": true,
+   "pass": true,
+   "combo": "res",
+   "sec": 315.61076339997817
+  }
+ ]
+}

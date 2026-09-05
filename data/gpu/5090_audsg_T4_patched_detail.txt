@@ -1,0 +1,80 @@
+WORKER-JSON {"Hanoi": {"nrounds": 8, "worst_sym": 1.1798263699347444e-08, "iters_same": true, "iters_d": [8], "iters_c": [8], "maxdH": 1.2274199434614275e-08, "grad_rel": 5.649603123579335e-15}, "Net3": {"nrounds": 10, "worst_sym": 3.647386620286852e-05, "iters_same": true, "iters_d": [10], "iters_c": [10], "maxdH": 2.075181200211773e-06, "grad_rel": 1.6049841856544888e-07}, "Modena": {"nrounds": 14, "worst_sym": 4.4628944984026475e-10, "iters_same": true, "iters_d": [13, 14], "iters_c": [13, 14], "maxdH": 3.441127205405792e-08, "grad_rel": 3.5929072168666724e-10}, "ky4": {"nrounds": 7, "worst_sym": 1.6333215335784246e-10, "iters_same": true, "iters_d": [7], "iters_c": [7], "maxdH": 3.0811077067482984e-07, "grad_rel": 4.356527673252239e-05}}
+/tmp/audsg_8y_joli7/dgga/solver.py:2016: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/tmp/audsg_8y_joli7/dgga/solver.py:2016: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+
+
+===== regression_gpu =====
+================================================================================================
+regression_gpu.py - cuDSS 通路不变量回归（审计 R2 + P4 终审 T4）
+设备: NVIDIA GeForce RTX 5090 | torch 2.11.0+cu128 | nvmath 1.0.0 | 节点 <node-22>
+网络目录: /data/run01/<user>/wdsgpu/hgaudit/p2nets
+================================================================================================
+
+【T1 迭代数逐项相等（cudss vs dense）】
+  Hanoi    B=1    迭代 dense=8 cudss=8 逐项相等=是 | max|dH|=9.875e-09 ft（仅报告，非门槛） PASS
+  Hanoi    B=8    迭代 dense=8 cudss=8 逐项相等=是 | max|dH|=1.227e-08 ft（仅报告，非门槛） PASS
+  Net3     B=1    迭代 dense=7 cudss=7 逐项相等=是 | max|dH|=4.246e-06 ft（仅报告，非门槛） PASS
+  Net3     B=8    迭代 dense=10 cudss=10 逐项相等=是 | max|dH|=2.075e-06 ft（仅报告，非门槛） PASS
+  Modena   B=8    迭代 dense={13,14} cudss={13,14} 逐项相等=是 | max|dH|=3.441e-08 ft（仅报告，非门槛） PASS
+  Modena   B=64   迭代 dense=7 cudss=7 逐项相等=是 | max|dH|=6.932e-08 ft（仅报告，非门槛） PASS
+  City_D   B=8    迭代 dense=8 cudss=8 逐项相等=是 | max|dH|=3.125e-08 ft（仅报告，非门槛） PASS
+  City_D   B=64   迭代 dense=7 cudss=7 逐项相等=是 | max|dH|=4.479e-07 ft（仅报告，非门槛） PASS
+  ky4      B=8    迭代 dense=7 cudss=7 逐项相等=是 | max|dH|=3.080e-07 ft（仅报告，非门槛） PASS
+  ky4      B=64   迭代 dense={8,9} cudss={8,9} 逐项相等=是 | max|dH|=9.857e-08 ft（仅报告，非门槛） PASS
+
+【T2 bwd_refactorize（slots 足够时必须为 0；slots=1 时必须为 K−1）】
+  Hanoi    B=1    K=6 slots=6  | fac=6  (期望6  ) bwd_refac=0 (期望0) bwd_reuse=6 (期望6) solve=18  bwd_solve=18   PASS
+  Hanoi    B=1    K=6 slots=1  | fac=11 (期望11 ) bwd_refac=5 (期望5) bwd_reuse=1 (期望1) solve=18  bwd_solve=18   PASS
+  Net3     B=1    K=6 slots=6  | fac=6  (期望6  ) bwd_refac=0 (期望0) bwd_reuse=6 (期望6) solve=18  bwd_solve=18   PASS
+  Net3     B=1    K=6 slots=1  | fac=11 (期望11 ) bwd_refac=5 (期望5) bwd_reuse=1 (期望1) solve=18  bwd_solve=18   PASS
+  Modena   B=8    K=6 slots=6  | fac=6  (期望6  ) bwd_refac=0 (期望0) bwd_reuse=6 (期望6) solve=18  bwd_solve=18   PASS
+  Modena   B=8    K=6 slots=1  | fac=11 (期望11 ) bwd_refac=5 (期望5) bwd_reuse=1 (期望1) solve=18  bwd_solve=18   PASS
+  City_D   B=8    K=5 slots=5  | fac=5  (期望5  ) bwd_refac=0 (期望0) bwd_reuse=5 (期望5) solve=15  bwd_solve=15   PASS
+  City_D   B=8    K=5 slots=1  | fac=9  (期望9  ) bwd_refac=4 (期望4) bwd_reuse=1 (期望1) solve=15  bwd_solve=15   PASS
+  ky4      B=8    K=5 slots=5  | fac=5  (期望5  ) bwd_refac=0 (期望0) bwd_reuse=5 (期望5) solve=15  bwd_solve=15   PASS
+  ky4      B=8    K=5 slots=1  | fac=9  (期望9  ) bwd_refac=4 (期望4) bwd_reuse=1 (期望1) solve=15  bwd_solve=15   PASS
+
+【T3 复用即逐位核对（stale 必须 0，且事件数必须 >0）】
+  Hanoi    B=1    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+  Hanoi    B=1    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+  Hanoi    B=8    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+  Hanoi    B=8    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+  Net3     B=1    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+  Net3     B=1    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+  Net3     B=8    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+  Net3     B=8    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+  Modena   B=8    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+  Modena   B=8    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+  Modena   B=64   slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+  Modena   B=64   slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+  City_D   B=8    slots=5  | 伴随事件=5  其中复用=5  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+  City_D   B=8    slots=1  | 伴随事件=5  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+  City_D   B=64   slots=5  | 伴随事件=5  其中复用=5  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+  City_D   B=64   slots=1  | 伴随事件=5  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+  ky4      B=8    slots=5  | 伴随事件=5  其中复用=5  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+  ky4      B=8    slots=1  | 伴随事件=5  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+  ky4      B=64   slots=5  | 伴随事件=5  其中复用=5  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+  ky4      B=64   slots=1  | 伴随事件=5  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+
+【T4 cuDSS 收到的 csr_data 逐位对称（max|A−A^T| 必须 ==0.0，无容差）】
+  Hanoi    B=1    | 装配次数=19 (前向 8 ) nnz=97     max|A−A^T|=1.180e-08 非对称次数=8  <-- FAIL
+  Hanoi    B=8    | 装配次数=8  (前向 8 ) nnz=97     max|A−A^T|=1.180e-08 非对称次数=8  <-- FAIL
+  Net3     B=1    | 装配次数=18 (前向 7 ) nnz=320    max|A−A^T|=2.154e-10 非对称次数=7  <-- FAIL
+  Net3     B=8    | 装配次数=10 (前向 10) nnz=320    max|A−A^T|=3.647e-05 非对称次数=10  <-- FAIL
+  Modena   B=8    | 装配次数=25 (前向 14) nnz=894    max|A−A^T|=4.463e-10 非对称次数=14  <-- FAIL
+  Modena   B=64   | 装配次数=7  (前向 7 ) nnz=894    max|A−A^T|=4.463e-10 非对称次数=7  <-- FAIL
+  City_D   B=8    | 装配次数=17 (前向 8 ) nnz=1645   max|A−A^T|=3.639e-09 非对称次数=8  <-- FAIL
+  City_D   B=64   | 装配次数=7  (前向 7 ) nnz=1645   max|A−A^T|=3.823e-09 非对称次数=7  <-- FAIL
+  ky4      B=8    | 装配次数=16 (前向 7 ) nnz=3219   max|A−A^T|=1.633e-10 非对称次数=7  <-- FAIL
+  ky4      B=64   | 装配次数=9  (前向 9 ) nnz=3219   max|A−A^T|=9.514e-11 非对称次数=9  <-- FAIL
+
+================================================================================================
+总判定: FAIL （40/50 项通过）
+未通过项: T4 Hanoi B=1, T4 Hanoi B=8, T4 Net3 B=1, T4 Net3 B=8, T4 Modena B=8, T4 Modena B=64, T4 City_D B=8, T4 City_D B=64, T4 ky4 B=8, T4 ky4 B=64
+================================================================================================
+/tmp/audsg_8y_joli7/dgga/solver.py:2016: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/tmp/audsg_8y_joli7/dgga/solver.py:2016: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))

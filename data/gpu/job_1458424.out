@@ -1,0 +1,6 @@
+NVIDIA GeForce RTX 5090
+cpus: 8
+network      Nj | GPU-CPU max|dH| (ft), 8 repeats
+City_D      541 | min 9.756e-06  max 1.684e-05  spread 1.73x  distinct 8
+Net3         92 | min 2.947e-06  max 4.733e-06  spread 1.61x  distinct 2
+Modena      268 | min 1.067e-10  max 1.789e-10  spread 1.68x  distinct 6

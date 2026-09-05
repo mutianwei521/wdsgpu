@@ -1,0 +1,79 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dgga"
+version = "0.2.0"
+description = "HydroGrad: a bit-faithful, differentiable re-implementation of the EPANET 2.2 hydraulic engine (global gradient algorithm) in PyTorch"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+keywords = [
+    "epanet",
+    "water-distribution-network",
+    "differentiable-simulation",
+    "hydraulics",
+    "adjoint",
+    "pytorch",
+    "hydrograd",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+]
+authors = [
+    { name = "Tianwei Mu", email = "1189233@mail.dhu.edu.cn" },
+    { name = "Yue Wang" },
+    { name = "Mingzhe Yuan", email = "mzyuan@sia.cn" },
+    { name = "Wenhong Wang" },
+    { name = "Qing Luo" },
+    { name = "Min Xiao" },
+    { name = "Jun Li" },
+    { name = "Hui Yang" },
+]
+# The CPU path (bit-exact replica, dense batched path, CPU implicit adjoint)
+# needs only these four. wntr supplies the INP parser and, for the reference
+# and benchmark pipeline only, the double-precision EPANET 2.2 library.
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "torch>=2.0",
+    "wntr>=1.0",
+]
+
+[project.optional-dependencies]
+# Sparse batched GPU route (assemble="csr", linear_solver="cudss") and the GPU
+# implicit adjoint on that route: CUDA, float64 and nvmath-python's cuDSS
+# bindings. The route raises without them; nothing falls back silently.
+cudss = [
+    "nvmath-python[cu12]==1.0.0",
+]
+# Global-optimisation baselines of the calibration study (scripts/baselines_calib.py).
+baselines = [
+    "cma>=3.3",
+]
+dev = [
+    "matplotlib>=3.7",
+    "pytest>=7.4",
+]
+
+[project.urls]
+Homepage = "https://github.com/mutianwei521/wdsgpu"
+Source = "https://github.com/mutianwei521/wdsgpu"
+"Bug Tracker" = "https://github.com/mutianwei521/wdsgpu/issues"
+
+[tool.setuptools]
+packages = ["dgga"]
+
+[tool.setuptools.package-data]
+dgga = ["CONTRACT.md"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

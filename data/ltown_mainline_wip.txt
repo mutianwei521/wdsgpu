@@ -1,0 +1,148 @@
+################################################################################
+L-TOWN 主线证据包（将来直接进论文的那组数）
+日期 2026-08-24   基线 = HEAD 42314b7（工作树干净；本轮零 dgga 改动）
+本机 python: wm-course (torch 2.13.0+cu132)；集群: gpu_5090 两节点
+################################################################################
+
+【网与出处（先钉死）】
+  L-TOWN v1.2（BattLeDIM 2020，Vrachimis 等；Zenodo record 4017659；CC-BY-4.0）
+  Nj=782  L=909（PIPE905+PUMP1+PRV3）  N=785（1 水池+2 水库）  H-W  CMH/米
+  INP 自带 ACCURACY=0.01, TRIALS=50, Unbalanced Continue 10, CHECKFREQ 2
+  sha256（EXAMPLE 原始，LF） = 0bfeaa806cd67a865014f0f7bb066dbde2b08664338f46ee57aa81043f2bad83
+  sha256（_cleaned 测量用，CRLF）= 8e3009b8fd5e0b9d79e0c0d999cc6af9b2b4132d84d2cadc04e1bdf07086dc02
+  _cleaned 与原始的**全部**内容差 = 删掉 [OPTIONS] 里一行 "Pattern 1"（默认
+  模式指针；本仓 parse 层语义一致）+ 换行符 LF→CRLF。networks/ 不进库，
+  复现走 Zenodo 出处 + 本 sha256。
+
+【里程碑（滚动记录）】
+
+M1 任务一 · 正确性（scripts/ltown_mainline/correct_ltown.py，本机前台实测）：
+  §1 epanet 通路 vs 双精度 DLL（帧 t=0，tank 头取参考帧，参考 data/reference/
+     prv_L_TOWN_ref.npz）：
+     max|dH| conn=all=2.842e-14 ft（非零元 266/782）max|dQ|=1.110e-16 cfs
+     iters 17/17  状态 909/909 全同
+     **"逐位 0"的正确读法**：L-TOWN 是 SI 网（CMH/米），DLL 的 API 出口把内部
+     ft/cfs 乘 Ucf 变米/CMH，参考端再除回内部单位，这一往返本身就有 ≤1 ULP。
+     在 DLL 的用户单位出口上逐位比（×0.3048 / ×101.94 后 torch/numpy ==）：
+     **head 785/785、flow 909/909 全部逐位相同**；内部 ft 的 ULP 距离 max=1.00。
+     ⇒ epanet 通路与 DLL 位级一致，残差全部可归因于参考端单位往返。
+  §2 dense(SM) vs DLL 同帧：max|dH|=1.366e-06 ft  max|dQ|=4.184e-07 cfs
+     iters=17  状态全同  diag_ratio=3.012e+08（κ~1.6e11 下线代次序差的量级）
+  §3 CSR vs dense 装配（linear_solver 同为 dense）：逐迭代 A 17 轮逐位相同
+     （max|dA|==0.0），终态 head/flow/emitter/status/iters 逐位相同 PASS
+  §4 三方迭代数：DLL=17 epanet=17 dense(SM)=17 相等
+  §5 收敛帧 κ(A)（ACTIVE PRV=3/3 在场）：名义帧 cond2=1.644e+11
+     （diag_ratio 代理 3.024e+08）；DLL 帧 cond2=1.641e+11
+  §6 参考解收紧（dgga.reference.tight_reference，能量失衡口径）：
+     DLL 帧 base 7.944e-05 ft → K_extra=10 后 2.179e-12 ft  met(≤1e-8)=True
+     名义帧 base 7.791e-05 ft → K_extra=10 后 3.673e-13 ft  met=True
+     （工单写"K≥20"是 NW_Model 的口径；L-TOWN K=10 已到 1e-12，如实报）
+     INP 精度停机解 vs 收紧解：1.748e-04 / 1.695e-04 ft - 这就是 ACCURACY=0.01
+     的停机噪声地板，凡拿 L-TOWN 当参考的对拍都要先过 tight_reference。
+
+M2 任务三 · 梯度证据（本机前台）：
+  ① ImplicitGGASolve vs 中央差分（scripts/prv_port/check_prv_grad.py 复跑，
+    冻结状态 S*，每 ±h 点重跑状态机、弃切换点坐标；FD 基线 solve_polished）：
+    θ=demand（6 坐标，含 3 个 PRV 下游节点）最差 rel=7.259e-07
+    θ=res_head（3）5.586e-11  θ=ke（3）1.153e-08  θ=r_hw（4）1.488e-08
+    全部 < 1e-6，弃用切换点坐标 0 个，总判定 PASS（与 prv 轮 M6 逐位同数）
+  ② unrolled 路径在 L-TOWN 的判定（如实记录）：
+    unrolled_grad_health/solve_unrolled 对 PRV 网**维持构造期 raise**：
+      dense+SM：NotImplementedError "solve_unrolled 支持 CVPIPE/PIPE/PUMP/TCV；
+        出现 link_type=[3] (PRV)。…请改用 ImplicitGGASolve"
+      dense(plain)：构造期 NotImplementedError "mode=dense 只支持
+        link_type∈[1,2,7]，出现 link_type=[3]（PRV）"
+    ⇒ L-TOWN 上不存在"展开路径梯度"这回事（守卫拦死，不会静默给错数）；
+      可用梯度 = ImplicitGGASolve（①已对拍）。
+
+M3 任务二 · GPU 全表（集群作业，滚动填数）：
+  作业：ltt(时间) 1464186 节点 <node-11>（RTX 5090 32607 MiB）
+        ltm(显存) 1464195 节点（待定，--exclude=<node-11>）
+        第二节点复测：待 ltt/ltm 首轮完成后 --exclude 提交
+  口径：
+  · 前向 = solve(status_machine=True)（PRV 网必须状态机），dense vs csr+cudss
+  · f+b = **实际训练形态**：GPU 批量前向（no_grad）拿逐场景收敛状态 →
+    ImplicitGGASolve 按唯一状态分组、冻结状态做 CPU 隐式伴随（epanet 求解器 +
+    scipy splu）。两列共享同一 CPU 伴随段，表里分列打出，不合成一个数。
+    solve_unrolled 对 PRV 维持 raise ⇒ P4/P5 那种"unrolled K 步 + backward"
+    的 f+b 形态在 L-TOWN 不存在。
+  · 显存 R5 口径（torch_peak/torch_resv/nontorch/total，ctx 实测，
+    每配置全新进程）；OOM 边界 1024 后倍增细扫。
+  · 倍数拆两因子（P4 §11.2）：A 稠密+autograd / Badj 稠密+手写伴随（脚本内
+    对照，不进 dgga）/ C cudss(gr=2)，A 取收敛帧装配值（ACTIVE PRV CBIG 行在场）。
+  作业与节点（全部 gpu_5090，rc 全 0）：
+    ltt1=1464186@<node-11>  ltm1=1464195@<node-23>
+    ltt2=1464218@<node-09>  ltm2=1464219@<node-11>（--exclude 强制换机）
+    原始输出 data/gpu/5090_ltt_{1464186,1464218}.out、5090_ltm_{1464195,1464219}.out
+    区间合成 scripts/ltown_mainline/lt_merge.py（只读，不重算）
+  ltt1（torch 2.11.0+cu128, RTX 5090 32607 MiB, nvmath 1.0.0；md5 与本机同）：
+  K=17（CPU B=8 max iters）；ms/场景：
+    B     fwd_d     fwd_c    倍数  | impl(CPU) | f+b_d    f+b_c    倍数
+    1     85.975    56.969   1.51x | 330.70    | 416.68   387.67   1.07x
+    8     20.575     7.708   2.67x | 325.80    | 346.37   333.50   1.04x
+    64     5.929     1.377   4.31x | 322.90    | 328.82   324.27   1.01x
+    256    3.782     0.691   5.48x | 322.93    | 326.72   323.63   1.01x
+    512    3.484     0.571   6.10x | 328.18    | 331.66   328.75   1.01x
+    1024   3.327     0.518   6.42x | 322.06    | 325.39   322.58   1.01x
+    （全部 B：状态组=1、dense/cudss 两路终态逐样本同 B/B、dense 收敛 B/B）
+  分解（ms/轮，A=稠密+autograd/Badj=稠密+手写伴随/C=cudss gr=2；A 取收敛帧
+  装配值，ACTIVE PRV CBIG 行在场）：
+    B=1   9.09/3.24/2.05    Badj/C 1.57x  A/Badj  2.81x  A/C  4.42x
+    B=8   53.66/8.96/2.47   3.63x/ 5.99x/21.71x
+    B=64  234.09/21.95/5.49 4.00x/10.67x/42.66x
+    B=256 885.27/55.15/15.89 3.47x/16.05x/55.71x
+    B=512 1756.42/101.06/29.74 3.40x/17.38x/59.05x
+    B=1024 A/Badj OOM（分解脚本要另留 [B,Nj,Nj] 梯度，非求解器 OOM）C=57.26
+    gA 一致性（Badj vs A / C vs A）4.69e-09 ~ 1.48e-08 全对上
+  ltm1（R5，ctx=588.19 与 P4 两节点逐位同）total=torch_resv+nontorch（MiB）：
+    B     dense总   cudss总   倍数
+    1     112       46        2.43x   （dense 非torch B=1 是 70，B>=8 恒 78）
+    8     292       50        5.84x
+    64    1624      122      13.31x
+    256   7338      296      24.79x
+    512   14564     590      24.68x
+    1024  29068     1212     23.98x
+    OOM 边界（纯前向，全新进程倍增细扫）：dense 最大 1024/首 OOM **1536**；
+    cudss 一路到 **16384 全收敛**（total 17714 MiB）未触界。
+    impl_dense 抽查（完整训练步）：GPU 四量与纯前向**逐位同格**
+    （B=1:112 / 64:1624 / 256:7338），CPU RSS 峰值增量 575~599 MiB，
+    gnorm 与 ltt 同数（B=1 4.039813e+03 / 64 1.437096e+04 / 256 3.068792e+04）
+ - "隐式伴随不吃 GPU 显存"实证。
+  M3' 节点2 复测（ltt2=1464218@<node-09>，ltm2=1464219@<node-11>，rc 全 0）：
+  · 时间（两节点区间，lt_merge.py 合成）ms/场景：
+    B     fwd_d           fwd_c          倍数        impl(CPU)     f+b倍数
+    1     85.98~100.51    56.97~79.01    1.27~1.51x  330.7~487.4   1.04~1.07x
+    8     20.57~22.98      7.71~10.76    2.13~2.67x  325.8~479.5   1.02~1.04x
+    64     5.93~6.19       1.38~2.01     3.08~4.31x  322.9~484.1   1.01x
+    256    3.78~3.85       0.69~1.03     3.75~5.48x  322.9~479.5   1.01x
+    512    3.48~3.50       0.57~0.85     4.12~6.10x  328.2~480.4   1.01x
+    1024   3.33~3.35       0.52~0.77     4.36~6.42x  322.1~472.7   1.01x
+    每格：状态组=1、两路终态逐样本同 B/B、dense 收敛 B/B；gnorm 两节点逐位同。
+    cudss 大 B 与 impl 的跨节点差 ~48% = 纯 CPU 侧（cuDSS 每轮 factorize 的
+    CPU 开销 / 伴随本来就在 CPU），引用给区间。
+  · 分解（节点2 值）：Badj/C 1.69/3.30/3.04/2.38/2.29x（B=1/8/64/256/512），
+    A/Badj 2.85/6.24/10.85/16.15/17.44x；gA 一致性全网格 1.10e-09~1.94e-08。
+    B=1024 A/Badj 两节点都 OOM（分解脚本另持 [B,Nj²] 梯度，非求解器）。
+  · 显存：**两节点（<node-23>/<node-11>）全部格逐位相同**（dense/cudss
+    主网格+细扫 diff==空），ctx 都是 588.19；OOM 边界同：dense 1024 ok/1536 OOM，
+    cudss 16384 全收敛（17714 MiB）未触界。impl_dense 抽查 GPU 四量逐位同格，
+    RSS 增量 574.5~604.2 MiB。
+  · 结论（如实）：前向稀疏赢 1.3→6.4x 随 B 单调；实际训练形态 f+b 端到端只
+    1.01~1.07x - 伴随段（CPU 串行 322~487 ms/场景）盖过 GPU 前向；显存/准入
+    23.98~24.79x 与 dense OOM@1536 vs cudss ≥16384 才是主线故事。
+    "把 ImplicitGGASolve 批量化/搬上 GPU（复用 cudss 分解解 J^Tλ=g）"
+    = 训练回路头号未做项，写进 mainline_evidence.md §3.4。
+
+M4 回归 + 影子包：本轮零 dgga 改动（md5 solver.py aeefca0ee016bbbbc1a05c4ff8dffbcb /
+  autodiff.py e4b8cfe49536f85b435e04e5ed5621d2，与 4 个集群作业抬头逐份核对
+  一致）⇒ 依铁律三，无 dgga 改动则免影子包对拍（新增只有 scripts/ 与 data/）。
+  regression_all 前台 **51/51 PASS**（2026-08-24 11:32，总用时 251s；
+  ⑨ 正品 86/86 逐位对称 + 4/4 变异体变红；报告 data/regression_report.txt）。
+
+M5 交付物：
+  · data/mainline_evidence.md - 论文素材四节：出处/正确性/GPU 全表（时间、
+    两因子、显存、诚实边界）/规模轴统一表（L-TOWN 行 + NW_Model 无 LICENSE
+    注记 + ky4/KL/ky8/ky13）。不动 paper/。
+  · scripts/ltown_mainline/{correct_ltown.py, lt_time_gpu.py, lt_mem_gpu.py,
+    lt_merge.py, probe_impl_cost.py, ltt.sh, ltm.sh}
+  · data/gpu/5090_ltt_{1464186,1464218}.out, 5090_ltm_{1464195,1464219}.out

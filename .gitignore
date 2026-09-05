@@ -1,0 +1,69 @@
+# ===========================================================================
+# Network files
+# ===========================================================================
+# networks/ holds only what this repository is allowed to redistribute: the
+# 23 synthetic networks (networks/random_main, networks/random_small) and the
+# generator under networks/synthetic. Everything fetched by
+# scripts/fetch_benchmarks.py (third-party benchmark INP files, ~174 MB with
+# L-TOWN_Real) lands in networks/public/ and stays out of git.
+networks/public/
+networks/*/_cleaned/
+
+# ===========================================================================
+# Large generated artefacts (rebuildable, see README "Reproduce the paper")
+# ===========================================================================
+# EPANET reference solutions (*.npz, ~498 MB for all 52 networks).
+data/reference/
+data/benchmark_logs/
+data/regression_logs/
+data/audit_d_tmp/
+data/benchmark_state.json
+# Local re-runs of the archived reports write *.local.txt; the archived report
+# (without .local) is the measured evidence the paper cites.
+data/*.local.txt
+# Sensitivity caches of the placement experiments (rebuild: place_sensors.py --stage full).
+data/placement_cache_*.npz
+# Global-optimiser baseline shards (merged into data/baselines_gd.json).
+data/baselines_part_gpu.json
+data/baselines_part_sa.json
+# Training scenarios/labels of the unrolled-solver line (not part of this release).
+data/mlds/
+
+# Paper build products, if a manuscript tree is placed next to the code.
+paper/build/
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+# The raw cluster job outputs under data/gpu/ are evidence and are tracked
+# despite the *.out rule above (added with git add -f).
+!data/gpu/*.out
+
+# ===========================================================================
+# Python
+# ===========================================================================
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# ===========================================================================
+# Editors / OS
+# ===========================================================================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

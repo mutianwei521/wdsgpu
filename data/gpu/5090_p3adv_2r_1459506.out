@@ -1,0 +1,69 @@
+NVIDIA GeForce RTX 5090, 32607 MiB
+node: <node-22> | cpus: 8
+/data/run01/<user>/wdsgpu/hgaudit/dgga/solver.py:2016: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hgaudit/dgga/solver.py:2016: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hgaudit/aud2_gpu.py:130: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)
+  dH = float((o1["head_ft"] - o2["head_ft"]).abs().max())
+node: <node-22> | torch 2.11.0+cu128 | dev NVIDIA GeForce RTX 5090 | nvmath 1.0.0
+solver.py md5: 45b0b0eeb66ed4e15ef81c53809d229a
+
+==============================================================================
+T0  harness self-checks (node <node-22>)
+   ky4: Nj=959 nnz=3219 converged iters K=9
+   work done per fwd+bwd, K=9, slots=1 (default):
+     cudss : DirectSolver.factorize=17  DirectSolver.solve=54
+             expected fwd 1 fac + 3 solve per round = 9 fac, 27 solve;
+             bwd adds 3 solve/round and (K-1) refac  ->  17 fac, 54 solve
+     dense : linalg.cholesky=9  cholesky_solve=27 (fwd 1+3 per round)
+   same answer? max|dH|=1.134e-06 ft  max|dQ|=3.131e-07 cfs  rel grad diff=1.634e-02
+   cudss_plan(B=64) = 213.15 ms (reported) / 229.29 ms (wall)
+   warmup adequacy, 12 timed reps after 3 warmups (ms/round):
+     109.84 109.49 109.42 109.65 109.52 109.59 109.49 109.35 109.58 110.14 108.89 109.10
+     first/median = 1.003 ; spread(max-min)/median = 0.011
+
+==============================================================================
+T1  end-to-end solve_unrolled, ms/scenario (node <node-22>)
+   plan() pre-warmed and outside the timed region; 3 warmups;
+   torch.cuda.synchronize() on both sides of every rep.
+   net    Nj   K B    | dense fwd  cudss fwd  x   | dense f+b   cudss f+b   x     | reps d/c | max|dH| ft
+   Net3   92   5 8    |   1.54709   1.82677   0.85 |   4.32143   4.34181   1.00 | 40/40 | 4.07e-06
+   Net3   92   5 64   |   0.19312   0.41011   0.47 |   0.49665   0.91463   0.54 | 40/40 | 4.32e-06
+   Net3   92   6 128  |   0.11580   0.37215   0.31 |   0.31057   0.80273   0.39 | 40/29 | 3.76e-06
+   Net3   92   6 256  |   0.05944   0.30997   0.19 |   0.16647   0.68031   0.24 | 40/17 | 4.46e-06
+   Net3   92   6 512  |   0.03186   0.28914   0.11 |   0.10601   0.57594   0.18 | 40/8 | 5.07e-06
+   Modena 268  5 8    |   1.91885   1.51140   1.27 |   6.95133   3.59101   1.94 | 40/40 | 1.57e-10
+   Modena 268  5 64   |   0.26492   0.36795   0.72 |   1.14278   0.81946   1.39 | 40/40 | 5.97e-11
+   Modena 268  5 128  |   0.17421   0.28873   0.60 |   0.98094   0.66034   1.49 | 23/32 | 1.47e-10
+   Modena 268  5 256  |   0.12825   0.25762   0.50 |   0.89013   0.51906   1.71 | 13/22 | 9.60e-10
+   Modena 268  5 512  |   0.10407   0.23139   0.45 |   0.84028   0.46349   1.81 | 6/12 | 1.91e-10
+   City_D 541  5 8    |   3.45556   1.51015   2.29 |  15.86279   3.60152   4.40 | 23/40 | 8.62e-06
+   City_D 541  5 64   |   0.79602   0.36848   2.16 |   5.72411   0.81951   6.98 | 8/40 | 1.55e-05
+   City_D 541  5 128  |   0.58298   0.28826   2.02 |   5.28905   0.62015   8.53 | 4/37 | 2.40e-05
+   City_D 541  5 256  |   0.47215   0.25852   1.83 |   5.04843   0.52012   9.71 | 3/22 | 1.54e-05
+   City_D 541  5 512  |   0.42545   0.22915   1.86 |   4.94506   0.46346  10.67 | 3/12 | 1.81e-05
+   ky4    959  9 8    |  13.19310   3.30352   3.99 |  88.30598   8.25498  10.70 | 4/40 | 2.14e-07
+   ky4    959  9 64   |   4.32570   0.74185   5.83 |  50.24063   1.73210  29.01 | 3/27 | 1.72e-06
+   ky4    959  9 128  |   3.44389   0.55573   6.20 |  48.33323   1.24490  38.83 | 3/19 | 1.40e-06
+   ky4    959  9 256  |   3.04695   0.49167   6.20 |   OOM       1.02307   -    | -/10 | 8.36e-06
+   ky4    959  9 512  |   2.85777   0.42758   6.68 |   OOM       0.89686   -    | -/6 | 5.53e-06
+
+==============================================================================
+T2  linear-algebra microbenchmark on the REAL last-round A/F (node <node-22>)
+   A = dense + torch generic autograd (repo status quo)
+   B = dense + hand-written adjoint (the fair baseline)
+   C = cudss (grad_refine 2 / 0)
+   net    B    | A ms/round   B ms/round   C(gr2)     C(gr0)    | A/C2   B/C2   B/A  | gA cross-check
+   Net3   64   |     2.7157      1.8020     7.2570     4.9464 |   0.37   0.25  0.664 | B 5.4e-09 C 8.3e-10 (gF 6.3e-10/7.4e-10)
+   Net3   256  |     4.5220      1.9039    23.3886    15.7158 |   0.19   0.08  0.421 | B 6.0e-09 C 9.0e-10 (gF 6.2e-10/5.8e-10)
+   Modena 64   |    15.0407      3.9200     7.2951     4.9656 |   2.06   0.54  0.261 | B 1.4e-13 C 1.1e-13 (gF 4.4e-14/4.5e-14)
+   Modena 256  |    52.0569      7.6858    23.4523    15.6933 |   2.22   0.33  0.148 | B 5.3e-13 C 1.9e-13 (gF 1.2e-13/5.7e-14)
+   City_D 64   |    85.2967     13.6371     7.2684     4.9394 |  11.74   1.88  0.160 | B 1.7e-08 C 7.7e-09 (gF 1.9e-14/4.6e-14)
+   City_D 256  |   310.4670     28.4167    23.4491    15.6517 |  13.24   1.21  0.092 | B 1.9e-08 C 4.5e-09 (gF 7.5e-14/6.4e-14)
+   ky4    64   |   391.9725     39.2013     8.3165     4.9580 |  47.13   4.71  0.100 | B 2.3e-10 C 1.1e-10 (gF 6.1e-11/6.6e-11)
+   ky4    256  |  1496.4072     96.5893    23.4173    15.6354 |  63.90   4.12  0.065 | B 1.6e-09 C 1.2e-09 (gF 1.0e-10/2.6e-10)
+
+AUD2 DONE
+AUD JOB DONE

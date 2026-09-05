@@ -1,0 +1,100 @@
+<node-03>
+NVIDIA GeForce RTX 4090, 24564 MiB
+========================================================================================
+P5·D1 定位 | node: <node-03> | torch 2.11.0+cu128 | NVIDIA GeForce RTX 4090
+========================================================================================
+
+########## Nj=8566 ##########
+[T1] Nj=8566 B=1  空闲 23687 MiB
+  OK  numel=73376356
+[T1] Nj=8566 B=2  空闲 23687 MiB
+  OK  numel=146752712
+[T2] Nj=8566 B=1  空闲 23687 MiB
+  OK  scatter_add_ 到 numel=73376356, 索引 10482337
+[T2] Nj=8566 B=2  空闲 23687 MiB
+  OK  scatter_add_ 到 numel=146752712, 索引 10482337
+[T3] Nj=8566 B=1  空闲 23687 MiB
+  OK  cholesky  L[0,0,0]=2.000000
+[T3] Nj=8566 B=2  空闲 23687 MiB
+  OK  cholesky  L[0,0,0]=2.000000
+[T4] Nj=8566 B=1  空闲 23687 MiB
+  OK  cholesky_solve  x[0,0,0]=3.660254e-01
+[T4] Nj=8566 B=2  空闲 23687 MiB
+  FAIL AcceleratorError
+  CUDA error: invalid argument
+  Search for `cudaErrorInvalidValue' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+  Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+  
+Traceback (most recent call last):
+  File "/data/run01/<user>/wdsgpu/hydrograd/p5/p5_d1_isolate.py", line 60, in child
+    x = torch.cholesky_solve(F, L)
+torch.AcceleratorError: CUDA error: invalid argument
+Search for `cudaErrorInvalidValue' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+########## Nj=4096 ##########
+[T1] Nj=4096 B=1  空闲 23687 MiB
+  OK  numel=16777216
+[T1] Nj=4096 B=2  空闲 23687 MiB
+  OK  numel=33554432
+[T2] Nj=4096 B=1  空闲 23687 MiB
+  OK  scatter_add_ 到 numel=16777216, 索引 2396746
+[T2] Nj=4096 B=2  空闲 23687 MiB
+  OK  scatter_add_ 到 numel=33554432, 索引 2396746
+[T3] Nj=4096 B=1  空闲 23687 MiB
+  OK  cholesky  L[0,0,0]=2.000000
+[T3] Nj=4096 B=2  空闲 23687 MiB
+  OK  cholesky  L[0,0,0]=2.000000
+[T4] Nj=4096 B=1  空闲 23687 MiB
+  OK  cholesky_solve  x[0,0,0]=3.660254e-01
+[T4] Nj=4096 B=2  空闲 23687 MiB
+  OK  cholesky_solve  x[0,0,0]=3.660254e-01
+
+########## Nj=6000 ##########
+[T1] Nj=6000 B=1  空闲 23687 MiB
+  OK  numel=36000000
+[T1] Nj=6000 B=2  空闲 23687 MiB
+  OK  numel=72000000
+[T2] Nj=6000 B=1  空闲 23687 MiB
+  OK  scatter_add_ 到 numel=36000000, 索引 5142858
+[T2] Nj=6000 B=2  空闲 23687 MiB
+  OK  scatter_add_ 到 numel=72000000, 索引 5142858
+[T3] Nj=6000 B=1  空闲 23687 MiB
+  OK  cholesky  L[0,0,0]=2.000000
+[T3] Nj=6000 B=2  空闲 23687 MiB
+  OK  cholesky  L[0,0,0]=2.000000
+[T4] Nj=6000 B=1  空闲 23687 MiB
+  OK  cholesky_solve  x[0,0,0]=3.660254e-01
+[T4] Nj=6000 B=2  空闲 23687 MiB
+  OK  cholesky_solve  x[0,0,0]=3.660254e-01
+
+########## Nj=8192 ##########
+[T1] Nj=8192 B=1  空闲 23687 MiB
+  OK  numel=67108864
+[T1] Nj=8192 B=2  空闲 23687 MiB
+  OK  numel=134217728
+[T2] Nj=8192 B=1  空闲 23687 MiB
+  OK  scatter_add_ 到 numel=67108864, 索引 9586981
+[T2] Nj=8192 B=2  空闲 23687 MiB
+  OK  scatter_add_ 到 numel=134217728, 索引 9586981
+[T3] Nj=8192 B=1  空闲 23687 MiB
+  OK  cholesky  L[0,0,0]=2.000000
+[T3] Nj=8192 B=2  空闲 23687 MiB
+  OK  cholesky  L[0,0,0]=2.000000
+[T4] Nj=8192 B=1  空闲 23687 MiB
+  OK  cholesky_solve  x[0,0,0]=3.660254e-01
+[T4] Nj=8192 B=2  空闲 23687 MiB
+  FAIL AcceleratorError
+  CUDA error: invalid argument
+  Search for `cudaErrorInvalidValue' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+  Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+  
+Traceback (most recent call last):
+  File "/data/run01/<user>/wdsgpu/hydrograd/p5/p5_d1_isolate.py", line 60, in child
+    x = torch.cholesky_solve(F, L)
+torch.AcceleratorError: CUDA error: invalid argument
+Search for `cudaErrorInvalidValue' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+P5 D1 ISOLATE END
+P5 ISOLATE JOB DONE rc=0

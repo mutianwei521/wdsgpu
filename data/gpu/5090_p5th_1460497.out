@@ -1,0 +1,41 @@
+<node-17>
+NVIDIA GeForce RTX 5090, 32607 MiB
+P5 门槛二分 | node: <node-17> | torch 2.11.0+cu128 | NVIDIA GeForce RTX 5090
+
+#### batch=2  先确认两端
+  Nj=4096   R OK 0.250000
+  Nj=8192   R FAIL AcceleratorError CUDA error: invalid argument
+  bisect Nj=6144   R FAIL AcceleratorError CUDA error: invalid argument
+  bisect Nj=5120   R OK 0.250000
+  bisect Nj=5632   R OK 0.250000
+  bisect Nj=5888   R OK 0.250000
+  bisect Nj=6016   R OK 0.250000
+  bisect Nj=6080   R FAIL AcceleratorError CUDA error: invalid argument
+  bisect Nj=6048   R FAIL AcceleratorError CUDA error: invalid argument
+  bisect Nj=6032   R FAIL AcceleratorError CUDA error: invalid argument
+  bisect Nj=6024   R FAIL AcceleratorError CUDA error: invalid argument
+  bisect Nj=6020   R FAIL AcceleratorError CUDA error: invalid argument
+  bisect Nj=6018   R FAIL AcceleratorError CUDA error: invalid argument
+  bisect Nj=6017   R FAIL AcceleratorError CUDA error: invalid argument
+  ==> batch=2: cholesky_solve 最大可用 Nj = 6016，Nj = 6017 起失败
+      (lo²=36192256  hi²=36204289  B*hi²=72408578  B*hi²*8B=0.54 GiB)
+
+#### batch=4  先确认两端
+  Nj=4096   R OK 0.250000
+  Nj=8192   R FAIL AcceleratorError CUDA error: invalid argument
+  bisect Nj=6144   R FAIL AcceleratorError CUDA error: invalid argument
+  bisect Nj=5120   R OK 0.250000
+  bisect Nj=5632   R OK 0.250000
+  bisect Nj=5888   R OK 0.250000
+  bisect Nj=6016   R OK 0.250000
+  bisect Nj=6080   R FAIL AcceleratorError CUDA error: invalid argument
+  bisect Nj=6048   R FAIL AcceleratorError CUDA error: invalid argument
+  bisect Nj=6032   R FAIL AcceleratorError CUDA error: invalid argument
+  bisect Nj=6024   R FAIL AcceleratorError CUDA error: invalid argument
+  bisect Nj=6020   R FAIL AcceleratorError CUDA error: invalid argument
+  bisect Nj=6018   R FAIL AcceleratorError CUDA error: invalid argument
+  bisect Nj=6017   R FAIL AcceleratorError CUDA error: invalid argument
+  ==> batch=4: cholesky_solve 最大可用 Nj = 6016，Nj = 6017 起失败
+      (lo²=36192256  hi²=36204289  B*hi²=144817156  B*hi²*8B=1.08 GiB)
+P5 THRESH END
+P5 THRESH JOB DONE rc=0

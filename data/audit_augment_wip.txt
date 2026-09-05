@@ -1,0 +1,155 @@
+增设（augment）包敌意验证记录 - 自写脚本 scripts/audit_augment/*，不复用 augment_suite / place_sensors / dgga.placement 的判定逻辑
+工作站 <workstation>；V100 主机 <v100-host>；控制重跑主机 ['<v100-host>']
+
+一、增设曲线复算（hv_fisher.py：自写普查判据 / Fisher 矩阵显式求逆 / SVD 型 CRLB；随机抽 3 档 k）
+  抽样种子 20260903 → k = [5, 10, 80]；T=25 候选 541 P=475 结构性 47（死支 41 + 钳位 6）
+  [OK] sigma_prior_same = True
+  [OK] sigma_noise_same = True
+  [OK] atol_zero = True
+  [OK] frames_25_same = True
+  [OK] orders_disjoint_from_S0_and_unique = True
+  [OK] n_target_149 = 149
+  [OK] target_equals_cache_mask149 = True
+  [OK] t0_census_equals_25frame_census = True
+  [OK] n_unob_t0 = 149
+  [OK] census_partition = {'identifiable': 279, 'unobservable': 149, 'dead': 41, 'clamped': 6, 'sum': 475, 'P': 475}
+  [OK] census_partition_matches_paper_279_149_41_6 = True
+  [OK] S0_is_seed2026_sample_of_junctions = True
+  [OK] s0_rank_f_crlb_match = True
+  [OK] all_rows_match = True
+  [OK] monotonic_all_steps_both_objectives = True
+  [OK] section36_city_d_table_matches = True
+  [OK] section36_hanoi_crlb_matches = True
+  [OK] sigma_ladder_all_match = True
+  [OK] n_free_432 = True
+  S0：可辨识 279 unob 149 秩 110 f=81.059474 CRLB_ident=1.5826e+23 k_sub=20 CRLB_sub=7.4152e+02（与 placement_augment / augment_suite 逐项同）
+      目标  +k   找回   未找回 unob   丢失   可辨识    秩          f CRLB_ident k_sub   CRLB_sub   找回管后验std中位 ≤σp/2 | 上游 找回/unob | 计数 谱 后验
+    dopt   5   21   128  128    0   300  118   116.2110  1.495e+23    24  4.567e+02       14.786     3 |  21/128 | True True True
+    dopt  10   23   126  126    0   302  123   142.4013  1.449e+23    28  3.589e+02       14.355     8 |  23/126 | True True True
+    dopt  80   76    73   73    0   355  196   323.4933  8.355e+21    79  1.430e+03       13.141    24 |  76/73  | True True True
+   cover   5   37   112  112    0   316  122    99.0556  1.488e+23    22  4.888e+02       14.976     2 |  37/112 | True True True
+   cover  10   62    87   87    0   341  132   119.4199  1.409e+23    28  6.856e+02       14.905     3 |  62/87  | True True True
+   cover  80  149     0    0    0   428  202   285.4574  5.658e+21    59  4.856e+02       14.943    15 | 149/0   | True True True
+  单调性 dopt：80 步逐步核对，可辨识集缩小 0 次，后验方差上升 0 次，丢失最大 0；逐步找回曲线与上游逐元素同=True；80% 需 +-1（上游 -1），全部 +-1（上游 -1）
+  单调性 cover：80 步逐步核对，可辨识集缩小 0 次，后验方差上升 0 次，丢失最大 0；逐步找回曲线与上游逐元素同=True；80% 需 +32（上游 32），全部 +56（上游 56）
+  §3.6 锚点（同判据、同 SVD 公式）：k=10 D-opt 32/159 随机中位 9.0/199.0（论文 32/159，9/199）同；k=20 D-opt 43/148 随机中位 18.5/174.0（论文 43/148，18.5/174）同；k=40 D-opt 52/135 随机中位 31.5/140.5（论文 52/135，31.5/140.5）同；k=60 D-opt 68/105 随机中位 43.0/125.5（论文 68/105，43/125.5）同；k=80 D-opt 73/97 随机中位 53.0/109.5（论文 73/97，53/109.5）同
+    k=40 丢失 38（论文 38）；k=40 CRLB_ident 4.1453e+22 vs 主线 json 4.1453e+22
+  Hanoi CRLB（表 2 同公式）：k=2 D-opt 0.0340/表 0.034 随机中位 0.077/表 0.077 同；k=4 D-opt 0.1528/表 0.153 随机中位 0.696/表 0.696 同；k=6 D-opt 0.4538/表 0.454 随机中位 2.509/表 2.509 同；k=8 D-opt 0.8316/表 0.832 随机中位 5.164/表 5.164 同；k=10 D-opt 1.4746/表 1.475 随机中位 13.642/表 13.642 同
+  V100 独立重跑（<v100-host>，同缓存文件）：计数逐项相同；数值相对差>1e-9 的项：['dopt+5 crlb_ident rel 2.6e-07', 'dopt+10 crlb_ident rel 1.1e-06', 'dopt+80 crlb_ident rel 7.0e-08', 'cover+5 crlb_ident rel 2.2e-07', 'cover+10 crlb_ident rel 7.6e-08', 'cover+80 crlb_ident rel 4.6e-09']；V100 上 False 的 check：['all_rows_match']
+  σ 梯（B）：找回管 |Ĉ−C_true| 用本脚本的真值再生（seed 7）与本脚本的找回掩码复算：
+     augcover20 σ=0.03  找回  95 |ΔC|中位  14.76 先验  19.09 优于先验  45 ≤10  34 unob 记录/复算 54/54 C0 反推 130.0 与上游同=True
+     augcover20 σ=0.1   找回  95 |ΔC|中位  15.45 先验  19.09 优于先验  44 ≤10  32 unob 记录/复算 54/54 C0 反推 130.0 与上游同=True
+     augcover20 σ=0.3   找回  95 |ΔC|中位  19.72 先验  19.09 优于先验  40 ≤10  25 unob 记录/复算 54/54 C0 反推 130.0 与上游同=True
+     augcover40 σ=0.03  找回 133 |ΔC|中位  16.86 先验  19.46 优于先验  58 ≤10  46 unob 记录/复算 16/16 C0 反推 130.0 与上游同=True
+     augcover40 σ=0.1   找回 133 |ΔC|中位  18.35 先验  19.46 优于先验  56 ≤10  44 unob 记录/复算 16/16 C0 反推 130.0 与上游同=True
+     augcover40 σ=0.3   找回 133 |ΔC|中位  21.98 先验  19.46 优于先验  49 ≤10  31 unob 记录/复算 16/16 C0 反推 130.0 与上游同=True
+      augdopt20 σ=0.03  找回  35 |ΔC|中位  11.54 先验  21.86 优于先验  21 ≤10  15 unob 记录/复算 114/114 C0 反推 130.0 与上游同=True
+      augdopt20 σ=0.1   找回  35 |ΔC|中位  11.54 先验  21.86 优于先验  24 ≤10  15 unob 记录/复算 114/114 C0 反推 130.0 与上游同=True
+      augdopt20 σ=0.3   找回  35 |ΔC|中位  12.24 先验  21.86 优于先验  20 ≤10  13 unob 记录/复算 114/114 C0 反推 130.0 与上游同=True
+      augdopt40 σ=0.03  找回  52 |ΔC|中位  12.12 先验  18.29 优于先验  26 ≤10  24 unob 记录/复算 97/97 C0 反推 130.0 与上游同=True
+      augdopt40 σ=0.1   找回  52 |ΔC|中位  13.16 先验  18.29 优于先验  26 ≤10  22 unob 记录/复算 97/97 C0 反推 130.0 与上游同=True
+      augdopt40 σ=0.3   找回  52 |ΔC|中位  11.91 先验  18.29 优于先验  23 ≤10  24 unob 记录/复算 97/97 C0 反推 130.0 与上游同=True
+           ga40 σ=0.03  找回   0 |ΔC|中位    nan 先验    nan 优于先验   0 ≤10   0 unob 记录/复算 149/149 C0 反推 130.0 与上游同=True
+           ga40 σ=0.1   找回   0 |ΔC|中位    nan 先验    nan 优于先验   0 ≤10   0 unob 记录/复算 149/149 C0 反推 130.0 与上游同=True
+           ga40 σ=0.3   找回   0 |ΔC|中位    nan 先验    nan 优于先验   0 ≤10   0 unob 记录/复算 149/149 C0 反推 130.0 与上游同=True
+
+二、工单漏损重跑公平性（hv_leak_fair.py：自写配方重放 / 跳数 / 足迹 / 字典相干）
+  [OK] demo_true_nodes_replayed = True
+  [OK] demo_sensors_replayed = True
+  [OK] demo_candidates_49 = True
+  [OK] recipe_same = True
+  [OK] S0_is_seed2026_draw = True
+  [OK] overlap_demo40_S0 = 22
+  [OK] overlap_matches_record_22 = True
+  [OK] leak_nodes_in_candidate_pool_of_placement = {'T1': True, 'T2': True, 'T3': True}
+  [OK] leak_node_in_S0 = {'T1': False, 'T2': False, 'T3': False}
+  [OK] leak_node_in_demo40 = {'T1': False, 'T2': False, 'T3': False}
+  [OK] true_leak_flows_match_record = True
+  [OK] true_leak_flows_match_demo = True
+  [OK] coherence_all_match = True
+  [OK] coherence_two_denominators_identical_on_city_d = True
+  真值漏损流量 LPS：{'T1': 2.9958, 'T2': 1.4942, 'T3': 2.1961}（与记录逐位同）
+  足迹 T1（单独存在，25 帧，全部 junction）：max 0.0893 ft，峰值在漏点本节点=True，max>噪声(0.1 ft) 的 junction 0 个（距漏点跳数 []），rms>噪声 0 个
+  足迹 T2（单独存在，25 帧，全部 junction）：max 0.7418 ft，峰值在漏点本节点=True，max>噪声(0.1 ft) 的 junction 23 个（距漏点跳数 [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 10, 11, 11, 12, 13, 14, 14, 15, 15, 16, 17, 18]），rms>噪声 23 个
+  足迹 T3（单独存在，25 帧，全部 junction）：max 0.1446 ft，峰值在漏点本节点=True，max>噪声(0.1 ft) 的 junction 16 个（距漏点跳数 [0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 6, 7]），rms>噪声 10 个
+           配置   传感   增设 | T1: 距S0 距增设 ≤1跳 ≤2跳 rms    max | T2: 距S0 距增设 ≤1跳 ≤2跳 rms    max | T3: 距S0 距增设 ≤1跳 ≤2跳 rms    max | 相干max 中位 >.999 与记录同 | 记录 top3 支撑
+       demo40   40    0 | T1:   6  None    0    0 0.003 0.004 | T2:   8  None    0    0 0.061 0.419 | T3:   3  None    0    0 0.049 0.145 | 1.000000 0.9341   51  True | 0/3 ['nontrue', 'nontrue']
+         ga40   40    0 | T1:   5  None    0    0 0.003 0.004 | T2:   8  None    0    0 0.061 0.419 | T3:   3  None    0    0 0.052 0.145 | 1.000000 0.9276   48  True | 0/3 ['nontrue', 'nontrue']
+    augcover5   45    5 | T1:   5    24    0    0 0.003 0.004 | T2:   8     0    1    1 0.103 0.742 | T3:   3    35    0    0 0.051 0.145 | 1.000000 0.9190   44     - | （未跑）
+     augdopt5   45    5 | T1:   5    16    0    0 0.003 0.004 | T2:   8     0    1    1 0.108 0.742 | T3:   3    30    0    0 0.051 0.145 | 1.000000 0.9225   38     - | （未跑）
+   augcover10   50   10 | T1:   5     0    1    1 0.010 0.089 | T2:   8     0    1    1 0.102 0.742 | T3:   3    32    0    0 0.050 0.145 | 1.000000 0.8457   25     - | （未跑）
+    augdopt10   50   10 | T1:   5     9    0    0 0.003 0.004 | T2:   8     0    1    1 0.108 0.742 | T3:   3    30    0    0 0.050 0.145 | 1.000000 0.9232   38     - | （未跑）
+   augcover20   60   20 | T1:   5     0    1    1 0.010 0.089 | T2:   8     0    1    1 0.093 0.742 | T3:   3    24    0    0 0.050 0.145 | 1.000000 0.7958   22  True | 1/3 ['T2', 'nontrue']
+    augdopt20   60   20 | T1:   5     8    0    0 0.003 0.004 | T2:   8     0    1    1 0.099 0.742 | T3:   3    19    0    0 0.048 0.145 | 1.000000 0.8974   34  True | 1/3 ['T2', 'nontrue']
+   augcover40   80   40 | T1:   5     0    1    1 0.008 0.089 | T2:   8     0    1    1 0.086 0.742 | T3:   3    23    0    0 0.049 0.145 | 1.000000 0.7888   18  True | 1/3 ['T2', 'nontrue']
+    augdopt40   80   40 | T1:   5     8    0    0 0.003 0.004 | T2:   8     0    1    1 0.104 0.742 | T3:   3    17    0    0 0.045 0.145 | 1.000000 0.8457   27  True | 1/3 ['T2', 'nontrue']
+   augcover80  120   80 | T1:   5     0    1    1 0.008 0.089 | T2:   8     0    1    1 0.093 0.742 | T3:   3    19    0    0 0.046 0.145 | 0.999994 0.8058   20  True | 1/3 ['T2', 'nontrue']
+    augdopt80  120   80 | T1:   5     0    1    1 0.008 0.089 | T2:   8     0    1    1 0.118 0.742 | T3:   3    16    0    0 0.043 0.145 | 1.000000 0.7906   23  True | 1/3 ['T2', 'nontrue']
+  增设序列首次落到漏点 h 跳内的步号（-1=80 步内未落）：{'dopt': {'T1': {'within_0': 69, 'within_1': 69, 'within_2': 69, 'within_3': 42}, 'T2': {'within_0': 5, 'within_1': 5, 'within_2': 5, 'within_3': 5}, 'T3': {'within_0': -1, 'within_1': -1, 'within_2': -1, 'within_3': -1}}, 'cover': {'T1': {'within_0': 9, 'within_1': 9, 'within_2': 9, 'within_3': 9}, 'T2': {'within_0': 3, 'within_1': 3, 'within_2': 3, 'within_3': 3}, 'T3': {'within_0': -1, 'within_1': -1, 'within_2': -1, 'within_3': -1}}}
+  噪声实现：{'demo_field_shape': [25, 40], 'augment_field_shape': [25, 542], 'max_abs_diff_on_demo40': 0.4464644927344609, 'same_realisation': False, 'note': "the 'noisy' group of the rerun is a different realisation from the paper's demo group; the demo group itself was reproduced separately (noisy_demo)"}
+
+三、控制重跑（hv_leak_control.py，V100 主机，反演器 = demo_leak_inversion 原样，噪声组 = 重跑同实现 seed 909）
+                    spec   传感   增设 |      T1 距/≤1/漏点有传感 |      T2 距/≤1/漏点有传感 |      T3 距/≤1/漏点有传感 |    相干max     中位 >.999     T2劲敌     T3劲敌 | L1top3 | 支撑 top1 top3 | T2误差 | final_mse 秒
+        cover:20;add:3:0   61   21 |         0/ 1/ True |         0/ 1/ True |         0/ 1/ True | 1.000000 0.7968    22  0.99898  0.99957 |      2 | ['T2', 'nontrue'] False 1/3 | 0.021 | 1.083e-02 3117
+      支撑成员：T2 1.463 LPS；非真值(与T3 coh=0.89041) 1.641 LPS
+       cover:20;drop:2:0   59   19 |         0/ 1/ True |         8/ 0/False |         3/ 0/False | 1.000000 0.7958    27  1.00000  0.99952 |      1 | ['nontrue', 'nontrue'] False 0/3 | 1.000 | 1.061e-02 3093
+      支撑成员：非真值(与T3 coh=0.99942) 2.269 LPS；非真值(与T2 coh=0.99999) 1.519 LPS
+       cover:20;drop:2:2   59   19 |         0/ 1/ True |         8/ 0/False |         3/ 0/False | 1.000000 0.7958    27  1.00000  0.99952 |      1 | ['nontrue', 'nontrue'] False 0/3 | 1.000 | 1.061e-02 3156
+      支撑成员：非真值(与T3 coh=0.99942) 2.269 LPS；非真值(与T2 coh=0.99999) 1.519 LPS
+        dopt:20;drop:2:0   59   19 |         5/ 0/False |         8/ 0/False |         3/ 0/False | 1.000000 0.9018    39  1.00000  0.99949 |      0 | ['nontrue', 'T3'] True 1/3 | 1.000 | 1.037e-02 3772
+      支撑成员：非真值(与T2 coh=0.99999) 1.456 LPS；T3 2.350 LPS
+               rand:20:0   60   20 |         5/ 0/False |         8/ 0/False |         3/ 0/False | 1.000000 0.9332    38  1.00000  0.99954 |      1 | ['nontrue', 'T3'] True 1/3 | 1.000 | 1.000e-02 3665
+      支撑成员：非真值(与T2 coh=0.99999) 1.477 LPS；T3 2.282 LPS
+               rand:20:1   60   20 |         5/ 0/False |         8/ 0/False |         3/ 0/False | 1.000000 0.9189    37  1.00000  0.99952 |      1 | ['T3', 'nontrue'] True 1/3 | 1.000 | 1.047e-02 3689
+      支撑成员：T3 2.289 LPS；非真值(与T2 coh=0.99999) 1.503 LPS
+               rand:20:2   60   20 |         5/ 0/False |         2/ 0/False |         3/ 0/False | 1.000000 0.9299    37  1.00000  0.99953 |      1 | ['nontrue', 'nontrue'] False 0/3 | 1.000 | 1.050e-02 3660
+      支撑成员：非真值(与T2 coh=1.00000) 1.528 LPS；非真值(与T3 coh=0.99953) 2.222 LPS
+               rand:20:3   60   20 |         5/ 0/False |         8/ 0/False |         3/ 0/False | 1.000000 0.9132    35  1.00000  0.99953 |      1 | ['T3', 'nontrue'] True 1/3 | 1.000 | 1.041e-02 3781
+      支撑成员：T3 2.289 LPS；非真值(与T2 coh=0.99999) 1.503 LPS
+               rand:20:4   60   20 |         5/ 0/False |         8/ 0/False |         3/ 0/False | 1.000000 0.9399    46  1.00000  0.99953 |      0 | ['nontrue', 'nontrue'] False 0/3 | 1.000 | 1.034e-02 3617
+      支撑成员：非真值(与T2 coh=0.97990) 1.833 LPS；非真值(与T3 coh=0.99953) 2.242 LPS
+               rand:40:0   80   40 |         5/ 0/False |         8/ 0/False |         1/ 1/False | 1.000000 0.9130    33  1.00000  0.99965 |      1 | ['nontrue', 'nontrue'] False 0/3 | 1.000 | 1.060e-02 3770
+      支撑成员：非真值(与T1 coh=0.96368) 4.890 LPS；非真值(与T2 coh=0.99999) 1.462 LPS
+                      s0   40    0 |         5/ 0/False |         8/ 0/False |         3/ 0/False | 1.000000 0.9276    48  1.00000  0.99939 |      1 | ['nontrue', 'nontrue'] False 0/3 | 1.000 | 1.046e-02 3672
+      支撑成员：非真值(与T2 coh=0.99999) 1.503 LPS；非真值(与T3 coh=0.99939) 2.180 LPS
+              s0;add:2:0   41    1 |         5/ 0/False |         0/ 1/ True |         3/ 0/False | 1.000000 0.9276    44  0.99905  0.99939 |      2 | ['T2', 'nontrue'] False 1/3 | 0.030 | 1.036e-02 3670
+      支撑成员：T2 1.449 LPS；非真值(与T3 coh=0.99926) 2.265 LPS
+              s0;add:3:0   41    1 |         5/ 0/False |         8/ 0/False |         0/ 1/ True | 1.000000 0.9195    47  1.00000  0.99948 |      1 | ['nontrue', 'nontrue'] False 0/3 | 1.000 | 1.053e-02 3760
+      支撑成员：非真值(与T2 coh=0.99999) 1.505 LPS；非真值(与T3 coh=0.99948) 2.038 LPS
+
+四、regression_all（工作站，--out scratch）：总判定: FAIL （53/54 项通过）；FAIL 项 ['⑫ 匿名化守卫']（= ⑫ 匿名化守卫的冻结树旧命中，非守卫 53/53）
+
+五、公平性判定与机理（自写控制重跑，V100 主机 36 线程：13 个案例并行，3 线程/进程，每案 3093–3848 s，GPU 闲置；hv_fisher 在 V100 上 84 s）
+  1. 配方：seed 2026 / 噪声 seed 909 / 0.1 ft / 25 帧 / 49 候选 / λ=1e-4（= demo 的 λ*）/ 100 步逐项相同；真值流量逐位同；S0 = seed 2026 抽样；demo 原 40 与 S0 重合 22。
+     噪声实现：重跑的 noisy 组按 [25,N] 全节点场生成，与论文 demo 的 [25,40] 场不是同一实现（demo40 传感器上最大差 0.45 ft）；但 demo40 在两种实现下都 0/3、S0 0/3、noisy_demo 组逐位复现论文 → 组内比较公平，"0/3 → 1/3" 是同一实现内的比较。
+  2. trivial 成功判定（决定性）：
+     · City D 增设候选池 = 全部 541 junction，含三个漏点节点本身（L-TOWN 重跑反而把漏点排除出候选池，两网口径不一致）。
+     · cover 序列第 3 步、dopt 序列第 5 步就把传感器装到了 T2 漏点本节点（跳数 0），所以 k≥5 的六个增设配置全部含"T2 本节点传感器"。
+     · 控制：S0 + 仅 1 个装在 T2 节点的传感器（41 个）→ 1/3，T2 找回（流量误差 3.0%）；cover+20 去掉那 1 个传感器（59 个）→ 0/3，支撑退回 S0 的两个近邻；dopt+20 去掉它 → T2 丢；随机 +20（同候选池，5 个种子）→ T2 0/5；随机 +40 → 0/3。
+     ⇒ 六个增设配置的 "1/3" 完全由"传感器恰在漏点上"解释，不是增设设计（Fisher / 覆盖目标）的效果。
+  3. 未找回的机理：
+     · T1（3 L/s）：单独足迹在全网任一 junction 上 max 0.089 ft < 0.1 ft 噪声（超噪声的 junction 0 个）；cover 第 9 步已把传感器装到 T1 本节点仍找不回；L1 阶段在 cover20/40/80、dopt80 下能把 T1 排进 top-3，非线性支撑搜索剪掉。物理不可测，与布点无关：上游机理成立。
+     · T3（2.2 L/s）：上游写"所有配置下保留 coh≥0.9993 的近双胞胎，物理极限而非布点极限" - 不成立。增设序列 80 步内从未落到 T3 的 3 跳内（最近增设传感器距 T3 16–35 跳），设计集从未检验过 T3；控制重跑里随机 +20 的 5 个种子有 3 个找回 T3（top-1 为真，流量误差 4%），dopt+20 去掉 T2 节点传感器后也找回 T3（误差 7%）；而 S0 + T3 本节点传感器、cover20 + T3 本节点传感器都找不回。T3 的劲敌相干在全部集合里都是 0.9994–0.9997，找回与否在同一相干水平上摇摆：这是离散支撑搜索对传感集敏感的问题，既不是相干决定的物理极限，也不是"装到旁边就行"。如实报，不解释成设计效果。
+  4. 相干双分母：City D 无精确正交对（0/1176），中位(全对) = 中位(非正交对)；L-TOWN 记录 1770 对 / 275 正交 / 1495 区内，中位 0.8258 / 0.8713 与论文正文同数；两处判据同为 |coh| < 1e-12。口径一致。
+  5. CRLB 口径：增设 json 的 crlb_ident 与 §3.6 同一 SVD 公式（Hanoi 表 2 的 10 个数、City D k=40 的 4.145e22 均由本脚本复得）；但 City D 的 CRLB_ident（~1e23）被 eps 秩阈值处 ~1e-13·σ1 的方向主导，Windows↔Linux 相对差 1.1e-6（dopt+10），量级无意义；CRLB_sub（σ_i > 1e-2 σ1）跨平台一致到 1e-9。两口径分列未混；正文只应引找回数与 CRLB_sub。
+
+六、"闭环是否已实证"独立结论
+  A 增设曲线：实证。三档 k（seed 20260903 抽到 5/10/80）自写 Fisher / 阈值重算逐项同；80 步单调 0 违例、丢失恒 0；cover 找回 37/62/95/133/149、dopt 21/23/35/52/76；从零重选丢 38/38/24/21/15；与 §3.6 表 2 的从零重选 32/43/52/68/73 与随机中位 9/18.5/31.5/43/53 同判据复得。
+  B σ 梯：部分实证。σ=0.03/0.1 找回管 |ΔC| 中位低于先验（dopt+20：11.5 vs 21.9，24/35 优于先验；cover+20：15.5 vs 19.1，44/95）；σ=0.3 时 cover+20/40 的找回管中位 19.7/22.0 反高于先验 19.1/19.5；全网 info C-RMSE 只从 25.6 到 23.2–24.3。真值再生、找回掩码自算，与上游逐位同。
+  C 漏损搜索：未实证。L-TOWN 11 个配置全部与 S0 同型（1/3）；City D 唯一的 "1/3" 由漏点本节点传感器解释（去掉即 0/3，S0 + 那 1 个传感器即 1/3，随机 +20 对 T2 0/5），随机 +20 在 T3 上 3/5 反而优于设计集的 0/6。"布点修复可辨识性 ⇒ 找回 §3.4/3.5 丢失的漏点"这一环没有证据。
+  D 公开网：实证（Hanoi 曲线与标定；L-TOWN 曲线；L-TOWN 漏损同 C 未实证）。
+  E 措辞：已入 json / wip / CHANGELOG。
+  总判定：部分实证。普查口径的可辨识性恢复（A、D）与 σ≤0.1 的标定改善（B）已实证；漏损找回（C）未实证，且六个 "1/3" 不得写成增设效果。
+  入文写法：
+    实证："Keeping the 40 designated sensors and adding k under the coverage objective restores the census identifiability of 37/62/95/133/149 of the 149 unobservable pipes at k = 5/10/20/40/80 (all 149 at +56, 80 % at +32) with no pipe lost; the D-optimal objective restores 21/23/35/52/76. This is a design and simulation study; no sensor has been installed."
+    部分实证："With the augmented sets, calibration at sigma <= 0.1 ft moves the recovered pipes off the prior (median |dC| 11.5 to 18.4 against 18.3 to 21.9 for the prior) but not at 0.3 ft; the network-wide error barely moves (25.6 to 23.2 to 24.3)."
+    未实证（必须写）："The augmented sets do not recover the leaks lost in Section 3.5. On L-TOWN all eleven sets return S0's 1/3. On City D the single extra hit is attributable to an added sensor coinciding with the leak node: removing that one sensor returns 0/3, S0 plus that one sensor alone returns the same 1/3, and twenty random additions recover it in 0 of 5 draws. One leak's footprint (max 0.09 ft) lies below the 0.1 ft noise at every junction; the third is recovered by some sensor sets (3 of 5 random +20) and by none of the designed ones, at rival coherence 0.9994 to 0.9997 throughout. Placement for roughness identifiability does not close the leak-search loop; coherence-driven placement was not attempted."
+    不可写："sensor placement repairs identifiability and recovers the lost leaks"；"T3 is a physics limit"。
+
+七、铁律核验
+  · regression_all 工作站前台（--out scratch）：53/54，唯一 FAIL = ⑫ 匿名化守卫的 11 处命中，全部在冻结的 submission/nature_water 树（与上一轮同一份清单），非守卫 53/53。
+  · dgga 影子包（git archive 8b5e4f7）：bayes_dopt_greedy / eval_subset / zero_col_curve / random_orders / norm_order / aopt_greedy / submodularity_check 在 City D 与 Hanoi 缓存上 180 个数组逐位同；HEAD 的 bayes_dopt_augment(S0=∅) 与 bayes_dopt_greedy 逐位同（序、增益、f 曲线、证书；4092/4092 与 201/201 次评估）。dgga 对 8b5e4f7 的 diff 只有 placement.py（+276/−1），autodiff.py 未动。
+  · 冻结树 nature_water/、paper/、fullpaper_docx/、submission/、water_research/ 对 8b5e4f7 零 diff；未 push。
+  · 可读输出零编号：自写扫描 25 个文件，命中的 token 全是计数 / 年份 / 版本号（40、80、149、36…）；控制重跑 json 只含 T1–T3 标签、跳数与 kind；本目录两个重放脚本与已入库的 demo_leak_inversion.py 一样含两个漏点节点的匿名 id 常量，任何输出里没有。
+  · 另一会话的 scripts/augment_public.py 改动、augment_public_compare.py、augment_public_v100.sh、data/v100_augpub/ 未纳入本提交。
+

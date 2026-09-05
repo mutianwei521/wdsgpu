@@ -1,0 +1,285 @@
+################################################################################
+最后一道关 - 敌意审阅者对 P4 收尾（提交 e26d2f5）的六项独立复核
+日期 2026-08-22   立场：自己写脚本、自己提交 GPU 作业、不复用上游任何测试脚本。
+被审对象：scripts/regression_gpu.py（T1–T4，50 项）、scripts/regression_gpu.sh、
+  README.md 的两句数字与分解表两个口径、dgga/ 三个缺省通路。
+本轮新增脚本（全部我自己写）：scripts/xfinal/
+  xf_t4_precheck.py   本机 CPU 前置：证明我造的变体真造出不对称、对照真没有
+  xf_t4_teeth.py      GPU：14 个变体 × 出厂 regression_gpu.py 全表
+  xf_t3_teeth.py      GPU：放宽被测代码的复用谓词 × 新/旧两份探针
+  xf_rc_scan.py       本机：全仓 35 个 shell 脚本的"末条命令"分类
+  xf_readme_recalc.py 本机：只用原始 .out 的 ms 值自己重算全部比值
+  xf_dense_reach.py   本机：21 个 public 网各建两遍 + 真解 B=2
+  xf_shadow_sha.py    本机：影子包（0a80e63）对拍 120 个逐字节 sha256
+  xf_gradhealth.py    本机：8 个网各测一次 unrolled demand 梯度可用性
+  xf_alias.py         GPU：_cudss_load 两条分支到底走哪一条
+集群作业（全部 --gpus=1 -p gpu_5090，未用 hp_4090）：
+  1460050 xft4  <node-22> | 1460051 xft4  <node-23>   T4 牙齿阶梯，两节点
+  1460052 xft3  <node-23> | 1460053 xft3  <node-23>   T3 放宽谓词，两节点
+  1460054/55/56 regp4 (出厂 .sh + 我的桩，XF_RC=0/1/2)
+  1460057/58   xfrcold (修前 .sh + 同一个桩，XF_RC=2/1)
+  1460063 regp4 <node-22>  变异树端到端真跑（rc=1 从 py 一直传到作业状态）
+  1460064 regp4 <node-23>  正品树端到端真跑（rc=0）
+  1460078/79 xfal <node-13> / <node-19>   alias 分支，两节点
+原始输出：data/gpu/5090_xf_*.out（13 份）
+
+================================================================================
+【一句话结论】六项全部核过。**T4 在 1 ULP 上就红**（最小可见 7.105e-15），
+三个对称对照一个都不误报；退出码从 py 一直传到 sacct；T3 新探针抓得住、旧探针
+确实全绿；README 两句与分解表四列全部能从原始 .out 复现；缺省 120 项逐字节未变、
+regression_all 本机 51/51。**判定：可交付**，但下面列的九条缺口必须随仓带走。
+
+================================================================================
+§1 T4 真有牙吗 - 有，且是 1 ULP 级
+--------------------------------------------------------------------------------
+ 1.1 我自己挑的三个注入点（上游只挑了 emitter index_add 之后那一处）：
+     S1 emitter 对角 index_add 之后（`if linear_solver=="cudss"` 体内）
+     S2 `_assemble_csr` 之后，我**自己补一层 cudss 判断**保证变体仍是 cuDSS 专属
+     S3 `_cudss_load` **内部**（探边：T4 量的是传进去的实参）
+     扰动挑当轮 |值| 最大的**非对角**槽，只写一侧；1 ULP 用 torch.nextafter。
+ 1.2 本机 CPU 前置（xf_t4_precheck.py，4 网真位型，人造严格对称 data）：
+     S1/S2 的 1 ULP 变体 max|A−A^T| = **2.220446e-16**（四网同值），
+     1e-14→1.40e-14~1.49e-14，……1e-2→1.40e-2~1.49e-2；
+     三个对称对照 C1/C2/C3 **max|A−A^T| 恒 0.000000e+00**，而"值变了"分别是
+     1.50e-06 / 1.00e-06 / 1.49e-04 ⇒ 对照确实"对称但不同"，不是没改。
+ 1.3 GPU 两节点（1460050 <node-22> / 1460051 <node-23>），跑**出厂那份**
+     regression_gpu.py 全 50 项，14 个变体逐格结果**两节点逐位相同**：
+       变体            T1红  T2红  T3红  T4红   T4 十格 max|A−A^T| 的最小/最大
+       C0_clean        0/10  0/10  0/20  0/10   0.000e+00 / 0.000e+00   (PASS 50/50)
+       S1_emit_ulp     0/10  0/10  0/20 10/10   **7.105e-15** / 1.863e-09
+       S1_emit_1e-14   0/10  0/10  0/20 10/10   4.263e-13 / 1.006e-07
+       S1_emit_1e-12   0/10  0/10  0/20 10/10   4.237e-11 / 1.000e-05
+       S1_emit_1e-09   1/10  0/10  0/20 10/10   4.237e-08 / 1.000e-02
+       S1_emit_1e-06   6/10  0/10  0/20 10/10   4.237e-05 / 1.000e+01
+       S1_emit_1e-04   8/10  0/10  0/20 10/10   4.226e-03 / 1.000e+03
+       S1_emit_1e-02   9/10  0/10  0/20 10/10   1.412e+00 / 1.000e+05
+       S2_asm_ulp      0/10  0/10  0/20 10/10   7.105e-15 / 1.863e-09
+       S2_asm_1e-09    1/10  0/10  0/20 10/10   4.237e-08 / 1.000e-02
+       S3_load_1e-06   0/10  0/10 **20/20** 0/10  0.000e+00（见 §1.5）
+       C1_symscale     6/10  0/10  0/20  **0/10**  0.000e+00
+       C2_symdiag      1/10  0/10  0/20  **0/10**  0.000e+00
+       C3_sympair_1e-04 9/10 0/10  0/20  **0/10**  0.000e+00
+ 1.4 判定：**合格**。
+     (a) 1 ULP 变体 T4 **10/10 全红**，最小可见量 7.105e-15（Hanoi B=8）、
+         次小 5.684e-14（Modena B=8） - 不是"只在大扰动上红"。
+     (b) 同一格上 T1/T2/T3 在 1 ULP、1e-14、1e-12 三档**一条都不红**；
+         T1 要到 1e-09 才红 1/10 格，1e-02 才红 9/10。T4 与 T1 之间隔着
+         **至少 7 个数量级**的灵敏度差，上游"这条守卫非补不可"的说法成立。
+     (c) **对称对照全部不误报**：最狠的 C3 与 S1 是同一段代码、同一个 1e-4
+         幅度，只是把转置那一半也改了 - T1 红 9/10、T4 **0/10**。
+         说明 T4 判的是"不对称"，不是"值变了"。
+ 1.5 **S3 是一条真缺口（探边结果，如实记）**：把扰动放进 `_cudss_load` 内部，
+     T4 **十格全绿 0.000e+00**。因为 T4 的探针量的是**传给** `_cudss_load` 的
+     实参，改它写进 cuDSS 缓冲的东西 T4 看不见。这次是 T3 兜住了（20/20 红，
+     缓冲与 saved data 不再逐位相等）；但若同一处畸变在前向与反向重装载里
+     **一致**发生，T3 也看不见。见 §6 缺口 ①。
+ 1.6 成本：一个变体跑完 50 项 16.3~19.9 s；14 个变体 275 s(node1) / 359 s(node2)。
+
+================================================================================
+§2 退出码真的传出来了吗 - 传出来了，且修前修后各自坐实
+--------------------------------------------------------------------------------
+ 2.1 我自己写一个桩（scripts/xfinal/rc/regression_gpu.py），按 $XF_RC 退 0/1/2，
+     放在**未改一字的出厂 regression_gpu.sh** 旁边提交：
+       作业      脚本        py 打印的     sacct State    ExitCode
+       1460054  出厂 .sh    rc=0          COMPLETED      **0:0**
+       1460055  出厂 .sh    rc=1          **FAILED**     **1:0**
+       1460056  出厂 .sh    rc=2          **FAILED**     **2:0**
+       1460058  修前 .sh    rc=1          COMPLETED      **0:0**  ← 被吞
+       1460057  修前 .sh    rc=2          COMPLETED      **0:0**  ← 被吞
+     五份日志的末行都写着正确的 rc，差别只在作业退出码。
+ 2.2 端到端真跑（不是桩）：
+       1460063 变异树（我的 S1_emit_1e-09）→ py 印 **FAIL 39/50**、rc=1 →
+               sacct **FAILED 1:0**；未通过项 = 10 条 T4 + T1 Net3 B=1。
+       1460064 正品树 → **PASS 50/50**、rc=0 → sacct **COMPLETED 0:0**。
+ 2.3 本机 SKIP 通道：`python regression_gpu.py` 打印 "总判定: SKIP（退出码 2）"，
+     实测 **rc=2**（本机 RTX 5060 Laptop 有 CUDA 无 nvmath）。
+ 2.4 **全仓扫描（xf_rc_scan.py，35 个 shell 脚本）**：
+       A 末条是 `exit $rc`（退出码会传）：**2 个** - regression_gpu.sh、
+         p4_closeout/p4cdec.sh
+       B 末条是 `echo`（脚本恒退 0，退出码被吞）：**29 个** - 含
+         aud_p4/{audr2,audsg2,audtbl}.sh、p3_adversarial/aud1..aud6.sh、
+         p3_autograd/p3a..p3e.sh、p4_corrections/p4a..p4e.sh、
+         p4_remeasure/{p4rt,p4rm,p4r7}.sh、audit_p2_adversarial/*、p2_f4/*
+       C 末条既非 echo 也非 exit：**4 个**（p2_cudss/p2{,b,c}.sh 末条就是
+         python，退出码天然传出；w6_run_one.ps1 末条是 Write-Output）
+     其中 aud_p4 的三个是**审计自证**脚本：日志里印着 `rc=$?` 是对的，但作业
+     状态永远 COMPLETED。上一轮 closeout §9 自己也记了这件事仍未修。
+ 2.5 python 侧：regression_all.py `return 0 if all_ok else 1` + `sys.exit(main())`，
+     regression_gpu.py / check_symmetry.py 同样，**py 侧没有同类问题**。
+
+================================================================================
+§3 T3 改完还抓得住吗 - 抓得住，且旧探针确实全绿
+--------------------------------------------------------------------------------
+ 3.1 我**改被测代码**（不是改探针）放宽 `_cudss_adjoint` 的复用谓词：
+       W1_drop_gen  丢掉 `st.get("gen") == gen`
+       W2_drop_all  连 B 检查一起丢：`reuse = (st.get("solver") is not None)`
+     同一棵变异树上跑两份探针：new=出厂那份；old=把 probe 闭包换回 6ed0808 的
+     旧写法（把谓词抄一份自己算），**逐字从 git 取**。
+ 3.2 两节点（1460052 / 1460053 <node-23>）结果完全一致：
+       变异         探针  T1红  T2红  **T3红**  T4红  总判定
+       C0_clean     new   0/10  0/10   0/20     0/10  PASS 50/50
+       C0_clean     old   0/10  0/10   0/20     0/10  PASS 50/50
+       W1_drop_gen  new   0/10  5/10  **10/20** 0/10  FAIL 35/50
+       W1_drop_gen  old   0/10  5/10  **0/20**  0/10  FAIL 45/50
+       W2_drop_all  new   0/10  5/10  **10/20** 0/10  FAIL 35/50
+       W2_drop_all  old   0/10  5/10  **0/20**  0/10  FAIL 45/50
+ 3.3 新探针红的那 10 行全是 slots=1 的格，逐行实测（stale / worstDelta）：
+       Hanoi  B=1  事件6 复用6 stale=5 incoh=0 worstDelta=5.192e+02
+       Hanoi  B=8  事件6 复用6 stale=5 incoh=0 worstDelta=3.165e+03
+       Net3   B=1  事件6 复用6 stale=5 incoh=0 worstDelta=**9.976e+06**
+       Net3   B=8  事件6 复用6 stale=5 incoh=0 worstDelta=4.370e+04
+       Modena B=8  事件6 复用6 stale=5 incoh=0 worstDelta=1.188e+05
+       Modena B=64 事件6 复用6 stale=5 incoh=0 worstDelta=9.948e+06
+       City_D B=8  事件5 复用5 stale=4 incoh=0 worstDelta=**2.000e+07**
+       City_D B=64 事件5 复用5 stale=4 incoh=0 worstDelta=**2.000e+07**
+       ky4    B=8  事件5 复用5 stale=4 incoh=0 worstDelta=3.534e+05
+       ky4    B=64 事件5 复用5 stale=4 incoh=0 worstDelta=4.036e+05
+     对照 slots=K 的 10 行仍然 stale=0 incoh=0 worstDelta=0.000e+00。
+     旧探针在**同一次变异**上把这 20 行全判 PASS、worstDelta 全 0.000e+00。
+ 3.4 判定：**合格**。改法（读被测代码的计数器增量而不是重实现谓词）确实把
+     "谁放宽 solver 侧谓词、探针就跟着看见"这件事做实了。
+     顺带：T2 在同一变异上红 5/10（bwd_refactorize 计数对不上），所以这条
+     变异并非只有 T3 能抓；但**只有 T3 能说出"复用的那一次缓冲差了 2.0e+07"**。
+
+================================================================================
+§4 README / 口径 - 四列全部从原始 .out 复现，两处措辞偏紧
+--------------------------------------------------------------------------------
+ 4.1 一致性（xf_readme_recalc.py，只认 data/gpu/5090_p4rt_{1459647,1459681,
+     1459702}.out，**只取 ms 原始值与一致性原值自己算**，不抄它印的 x 倍数）：
+       测量数 **348**（每格两个比值 B/A、C/A），**58 个不同的格 × 3 节点 = 174 次格测量**
+       全网格最小 **3.26e-16** @ Net1 B=1 (B/A)
+       全网格最大 **5.30e-08** @ **Pescara B=1 (C/A)**
+       8 格子集（48 个测量）最小 **1.85e-13** @ Modena B=256 (C/A)
+                            最大 **3.93e-08** @ **City_D B=64 (B/A)**
+       旧印 4.3e-16~7.2e-09：更小的 **6** 个、更大的 **57** 个，全落在
+       **Pescara / City_D**；超过 1e-08 的也只有这两张网。
+     ⇒ README 现印的 "3.3e-16 to 5.3e-08"、"1.9e-13 to 3.9e-08"、两个最差格、
+       "两张网 Pescara 与 City_D"、"348 measurements" **全部对得上**。
+ 4.2 分解表四列（我自己从 ms 原始值算，三节点区间）：
+       net    B    | 第4列 Badj/C  | 第6列 A/Badj  | 第7列 A/C     | README 印
+       Net3   256  | 0.057–0.058x  | 3.25–3.37x    | 0.19–0.20x    | 全部一致
+       Modena 256  | 0.251–0.261x  | 8.35–8.59x    | 2.10–2.24x    | 全部一致
+       Modena 1024 | 0.209–0.215x  | 10.61–10.81x  | 2.22–2.32x    | 全部一致
+       City_D 64   | 1.345–1.450x  | 8.11–8.19x    | 10.91–11.88x  | 全部一致
+       City_D 256  | 0.981–1.033x  | 12.88–13.02x  | 12.64–13.45x  | 全部一致
+       City_D 1024 | 0.910–0.938x  | 15.03–15.22x  | 13.67–14.28x  | 全部一致
+       ky4    64   | 4.112–4.355x  | 12.26–12.39x  | 50.42–53.97x  | 全部一致
+       ky4    256  | 3.469–3.674x  | 17.47–17.58x  | 60.62–64.56x  | 全部一致
+     第 5 列（等工作量 Badj_r2/C，来自 5090_p4cdec_{1459999,1460001}.out）：
+       Net3 256 0.078–0.081x | Modena 256 0.331–0.338x | Modena 1024 0.277–0.280x
+       City_D 64 1.889–1.924x | City_D 256 1.289–1.312x | City_D 1024 1.153–1.173x
+       ky4 64 5.535–5.561x | ky4 256 4.376–4.443x  ⇒ 与 README 印的逐格一致。
+     "重测的第 4 列落在现印区间内"：**8/8 格成立**（印刷精度内）。
+ 4.3 两处偏紧（不是错，是措辞）：
+     (a) 等工作量的溢价我算到 **+21.2% ~ +32.7%**（上限出在 City_D B=64 第二
+         节点），README 写 "21–32%"，上限**抹掉了 0.7 个百分点**。closeout
+         §5.2 的表里其实已经印了 32.7%。
+     (b) "348 measurements over **174 cells**"：实际是 **58 个不同的格**，
+         每格在 3 个节点上各测一次 = 174 次格测量、348 个比值。按字面读会
+         以为网格有 174 格。
+ 4.4 网数（xf_dense_reach.py，判据比上游更严：不止构造成功，还要真解出 B=2；
+     有 `_cleaned/` 的用 `_cleaned/`）：
+       缺省可达 **8/21**：Anytown, Fossolo_poly1, Hanoi, Modena, Net1, Net2,
+                          Net3, Pescara
+       加 dense_tank_bound_check=False 可达 **10/21**，多出来的正是
+       **Anytown_wntr 与 ky4**（两个都卡在水池 H0 落在边界上）
+       其余 11 个：Net6/D-Town/Richmond_standard/ky10 卡 CVPIPE+PRV，
+       BWSN_Network_2 卡 CVPIPE+PSV+FCV，C-Town_BATADAL 卡 CVPIPE+PRV+FCV，
+       L-TOWN / L-TOWN_Real / BWSN_Network_1 卡 PRV，Richmond_skeleton 卡
+       CVPIPE，Balerma 卡 D-W。**与 README 一字不差。**
+
+================================================================================
+§5 缺省逐字节未变 - 120/120 项 sha256 相同，回归 51/51
+--------------------------------------------------------------------------------
+ 5.1 影子包（xf_shadow_sha.py）：基线取 **0a80e63**，即 `b66463f` 引入 CSR
+     装配**之前**最后一次 dgga 改动 - 也就是整串 cuDSS/CSR 工作开始之前。
+     solver.py sha256 工作树 4f10b00cc07230d5 vs 影子 60a45adbdb3858cd（确不同）。
+     两棵树各起一个子进程，6 个网（Net1/Hanoi/Net2/Net3/Anytown/Modena）上比
+     **120 个量的 sha256**：
+       P1 mode="epanet"：head / flow / emitter / setting / iters / relerr /
+          fixed_demand / status（42 项）
+       P2 mode="dense" 三缺省 s.solve：head_ft / flow_cfs / iters（18 项）
+       P3u solve_unrolled 缺省：head / flow **+ gD / gR / gK 三个梯度**（30 项）
+       P3i implicit_solve 缺省：head **+ gD / gR / gK 三个梯度**（24 项）
+     结果：**逐字节相同 120 项，不同 0，单边 0**。
+     探针自检：把工作树的 `torch.cholesky_solve` 之后加 **1 ULP**，同一套对拍
+     立刻报 **34/120 项不同**（P2 的 head/flow、P3u/P3i 的 head 与三个梯度全部
+     变；P1 的 epanet 通路不受影响，符合预期）⇒ 这套对拍有牙，不是空转。
+ 5.2 本机前台 `scripts/regression_all.py`：**总判定 PASS（51/51 项通过），296 s**。
+     与提交版 data/regression_report.txt 逐行 diff **只有 7 行不同**：
+       · 生成时间与总用时（246s→296s）、⑤⑥⑦⑧⑨ 五个用时列
+       · ⑦ city_d GPU-vs-CPU **7.351e-16 → 2.954e-16**（门槛 1e-8，atomicAdd
+         跨运行不定，是已记录的行为）
+     **其余实测值逐字符不变**，含第 ⑨ 项"正品 72/72 逐位对称、变异 4/4 变红、
+     最差=0.000e+00、A 动态范围=2.63e+15"。跑完已 `git checkout` 还原报告，
+     避免用纯计时噪声去污染已提交的产物。
+ 5.3 `git diff 6ed0808..HEAD -- dgga/` 为空 ⇒ 收尾那一提交确实一个字节没碰 dgga。
+
+================================================================================
+§6 还剩哪些缺口（九条，按严重度排）
+--------------------------------------------------------------------------------
+ ① **T4 够不着 `_cudss_load` 内部**（§1.5 实测：S3 变体 T4 十格全绿）。
+    T4 量的是传进去的实参；`_cudss_load` 自己写错（或未来 nvmath/torch 换了
+    行为）它看不见。这次靠 T3 兜住，但前向与反向**一致**畸变时 T3 也看不见。
+ ② **`_cudss_load` 的第二条分支从来没被执行过**（xf_alias.py，两节点
+    1460078 <node-13> / 1460079 <node-19>，5 网 × B∈{1,8,64} = 15 格
+    **alias 全为 True**，False 出现 0 次）。也就是说 `for i, v in
+    enumerate(st["vviews"]): v.copy_(data[i])` 这条退路在 torch 2.11+cu128 上
+    是**死代码**，零测试零守卫。哪天 sparse_csr_tensor 改成拷贝 values，
+    整条 cuDSS 通路会静默切到一条没人验过的路上，且叠加缺口 ① 就是全盲。
+ ③ **29/35 个 shell 脚本仍然吞退出码**（§2.4）。只有 regression_gpu.sh 与
+    p4cdec.sh 传得出去。谁按作业状态接 CI，其余脚本一律"永远绿"。
+ ④ **regression_gpu.py 的 sys.path 次序会认错 dgga**：它先 insert(ROOT) 再
+    insert(HERE)，而 HERE 已经在 sys.path[0] 里所以不会再插 - 结果**父目录
+    的 dgga 优先于自己目录的 dgga**。我本轮就踩了：作业 1460059 本该跑变异树，
+    实际跑的是父目录的正品树（日志里 solver.py 路径写着 hgfinal 而不是
+    hgfinal/rcreal），50/50 PASS，差点被我读成"T4 没有牙"。换到不含 dgga 的
+    父目录（hgfinalreal）后 1460063 立刻 FAIL 39/50。
+ ⑤ **cuDSS 的四条不变量在没有 nvmath 的机器上零覆盖**：本机 rc=2 SKIP。
+    只跑 `regression_all.py`（51 项）的人，对 cuDSS 通路的验证覆盖是 **0**。
+    regression_all 的第 ⑨ 项（check_symmetry，72 配置 18 网）是 CPU-only，
+    `linear_solver=="cudss"` 那段 emitter 装配它永远走不到。
+ ⑥ **cuDSS 侧的对称守卫只覆盖 5 张网 × 2 个批量**（Hanoi/Net3/Modena/City_D/
+    ky4）。CPU 侧覆盖 18 网 × 4 通路，两边不是一个量级。
+ ⑦ **unrolled demand 梯度的限制比 README 写的多一张网**（xf_gradhealth.py，
+    本机 CPU，调被测代码自己的 `unrolled_grad_health`）：
+      Net1 1.246e-13 可用 | Hanoi 1.523e-11 可用 | Net2 4.025e-10 可用
+      Modena 5.466e-11 可用 | **Pescara 1.099e-07 有条件**
+      **Net3 3.983e-03 不建议** | **City_D 1.670e-04 不建议** | **ky4 1.802e-04 不建议**
+    三张"不建议"与 README 完全一致；但 **Pescara 是"有条件"**，README 的
+    Honest edges 只点了三张"不建议"的网，没提它。而 Pescara 恰恰是全网格
+    一致性最差的那一格（B=1，5.30e-08） - 两件事是一回事，应该合并写。
+ ⑧ **Net6 / BWSN_Network_2 的特性门确认仍在**（§4.4）：Net6 缺 CVPIPE+PRV、
+    BWSN_2 缺 CVPIPE+PSV+FCV，是构造期能力门不是显存墙，cuDSS 一个都解不开。
+ ⑨ **分解表第 5 列（等工作量）外人复现不了**：它依赖一个"稠密+手写伴随"的
+    对照，而那个对照按设计**不在 dgga 里**（写进去就会改缺省梯度）。只有
+    scripts/p4_closeout/p4c_dec_gpu.py 里有。另：sparse_gpu_plan.md §10.2 的
+    "90.3x 口径缺口"仍未补（上一轮自己记的，本轮仍未动）。
+
+================================================================================
+§7 外人拿到这个仓库能不能用 - 能，但必须先读这七条
+--------------------------------------------------------------------------------
+ 1. **缺省是冻结的**：mode="epanet" / assemble="dense" / linear_solver="dense"
+    三条缺省的数值与梯度逐位不可动。要加"稠密+手写伴随"，走新的
+    `linear_solver="dense_adjoint"`，不要塞进现有那条。（本轮 120/120 sha256
+    验的就是这件事。）
+ 2. **不跑 regression_gpu.py 就等于没验 cuDSS**。本机没有 nvmath 时它退 2 且
+    明说"未被验证过"；不要把 SKIP 读成 PASS。集群上 `sbatch regression_gpu.sh`
+    应看到 **PASS 50/50 / rc=0 / COMPLETED 0:0**，全表约 46 s。
+ 3. **接 CI 只认 regression_gpu.sh 与 p4cdec.sh 的作业状态**，其余 29 个 .sh
+    的作业状态永远是 COMPLETED，只能读日志末行的 `rc=`。
+ 4. **不要把 regression_gpu.py 放进一个父目录也有 dgga 的子目录里**（缺口 ④），
+    否则它会静默测错那棵树。要么放在树根，要么显式设 PYTHONPATH。
+ 5. **两个倍数口径别混着说**：分解表第 4 列（现印口径，稀疏侧占便宜、是下界）
+    与第 5 列（等工作量）差 +21.2%~+32.7%，说的时候必须点名是哪一个。
+    端到端那张 f+b 表的 29x 是"这次反向便宜了 29 倍"，不是"这个梯度可以用"。
+ 6. **用 solve_unrolled 前先跑 `unrolled_grad_health`**。实测 Net3/City_D/ky4
+    "不建议"、Pescara "有条件"；不合格就换 `ImplicitGGASolve`。这与线性求解器
+    无关，两条通路上一样。
+ 7. **文件位置两个坑**：City_D 在 `datasets/city_d.inp`，不在 `networks/public`
+    （所以"21 个 public 网"那句不含它，而它撑着半张主表）；
+    `networks/public/_cleaned/` 下有 6 个替身，其中 **Fossolo_poly1 / Pescara /
+    BWSN_Network_1 必须用替身**（本轮实测：用原始那份，wntr 直接抛
+    Error 200 / KeyError '79'），Modena / L-TOWN / L-TOWN_Real 用哪份都一样。
+    我第一遍就是漏了这条，把可达网数误数成 6/21 与 8/21。
+################################################################################

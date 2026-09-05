@@ -1,0 +1,9 @@
+NVIDIA GeForce RTX 4090
+cpus: 6
+network      Nj  pump  tank     B      CPU ms     GPU ms   GPU/CPU    GPU-CPU ft
+Anytown      19     1     0   256      0.1047     0.0843     1.24x     2.132e-12
+Net2         35     0     1   256      0.1330     0.0565     2.35x     1.057e-10
+Net3         92     2     3   256      1.0546     0.0854    12.35x     3.913e-06
+Modena      268     0     0   256      7.5992     0.1802    42.18x     1.263e-10
+City_D      541     0     0   256     31.3710     0.6834    45.91x     1.395e-05
+ky4         959     2     4   256    175.2446     4.5312    38.67x     2.168e-06

@@ -1,0 +1,132 @@
+NVIDIA GeForce RTX 5090, 32607 MiB
+node: <node-23> | cpus: 8
+====================================================================================================
+XF-2  T3 探针改完还抓得住吗（放宽被测代码的复用谓词）| 节点 <node-23>
+====================================================================================================
+
+### C0_clean
+  探针=new rc=0 | T1 0/10红 T2 0/10红 T3 0/20红 T4 0/10红 | 总判定: PASS （50/50 项通过）
+  探针=old rc=0 | T1 0/10红 T2 0/10红 T3 0/20红 T4 0/10红 | 总判定: PASS （50/50 项通过）
+  [T3/new] 红 0/20 行
+          Hanoi    B=1    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Hanoi    B=1    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Hanoi    B=8    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Hanoi    B=8    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Net3     B=1    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Net3     B=1    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Net3     B=8    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Net3     B=8    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Modena   B=8    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Modena   B=8    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Modena   B=64   slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Modena   B=64   slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          City_D   B=8    slots=5  | 伴随事件=5  其中复用=5  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          City_D   B=8    slots=1  | 伴随事件=5  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          City_D   B=64   slots=5  | 伴随事件=5  其中复用=5  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          City_D   B=64   slots=1  | 伴随事件=5  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          ky4      B=8    slots=5  | 伴随事件=5  其中复用=5  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          ky4      B=8    slots=1  | 伴随事件=5  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          ky4      B=64   slots=5  | 伴随事件=5  其中复用=5  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          ky4      B=64   slots=1  | 伴随事件=5  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+  [T3/old] 红 0/20 行
+          Hanoi    B=1    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Hanoi    B=1    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Hanoi    B=8    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Hanoi    B=8    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Net3     B=1    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Net3     B=1    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Net3     B=8    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Net3     B=8    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Modena   B=8    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Modena   B=8    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Modena   B=64   slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Modena   B=64   slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          City_D   B=8    slots=5  | 伴随事件=5  其中复用=5  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          City_D   B=8    slots=1  | 伴随事件=5  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          City_D   B=64   slots=5  | 伴随事件=5  其中复用=5  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          City_D   B=64   slots=1  | 伴随事件=5  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          ky4      B=8    slots=5  | 伴随事件=5  其中复用=5  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          ky4      B=8    slots=1  | 伴随事件=5  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          ky4      B=64   slots=5  | 伴随事件=5  其中复用=5  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          ky4      B=64   slots=1  | 伴随事件=5  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+  => 新探针 T3 红 0 行 / 旧探针 T3 红 0 行  OK
+
+### W1_drop_gen
+  探针=new rc=1 | T1 0/10红 T2 5/10红 T3 10/20红 T4 0/10红 | 总判定: FAIL （35/50 项通过）
+  探针=old rc=1 | T1 0/10红 T2 5/10红 T3 0/20红 T4 0/10红 | 总判定: FAIL （45/50 项通过）
+  [T3/new] 红 10/20 行
+      RED Hanoi    B=1    slots=1  | 伴随事件=6  其中复用=6  stale=5 incoh=0 worstDelta=5.192e+02  <-- FAIL
+      RED Hanoi    B=8    slots=1  | 伴随事件=6  其中复用=6  stale=5 incoh=0 worstDelta=3.165e+03  <-- FAIL
+      RED Net3     B=1    slots=1  | 伴随事件=6  其中复用=6  stale=5 incoh=0 worstDelta=9.976e+06  <-- FAIL
+      RED Net3     B=8    slots=1  | 伴随事件=6  其中复用=6  stale=5 incoh=0 worstDelta=4.370e+04  <-- FAIL
+      RED Modena   B=8    slots=1  | 伴随事件=6  其中复用=6  stale=5 incoh=0 worstDelta=1.188e+05  <-- FAIL
+      RED Modena   B=64   slots=1  | 伴随事件=6  其中复用=6  stale=5 incoh=0 worstDelta=9.948e+06  <-- FAIL
+      RED City_D   B=8    slots=1  | 伴随事件=5  其中复用=5  stale=4 incoh=0 worstDelta=2.000e+07  <-- FAIL
+      RED City_D   B=64   slots=1  | 伴随事件=5  其中复用=5  stale=4 incoh=0 worstDelta=2.000e+07  <-- FAIL
+      RED ky4      B=8    slots=1  | 伴随事件=5  其中复用=5  stale=4 incoh=0 worstDelta=3.534e+05  <-- FAIL
+      RED ky4      B=64   slots=1  | 伴随事件=5  其中复用=5  stale=4 incoh=0 worstDelta=4.036e+05  <-- FAIL
+  [T3/old] 红 0/20 行
+          Hanoi    B=1    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Hanoi    B=1    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Hanoi    B=8    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Hanoi    B=8    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Net3     B=1    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Net3     B=1    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Net3     B=8    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Net3     B=8    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Modena   B=8    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Modena   B=8    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Modena   B=64   slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Modena   B=64   slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          City_D   B=8    slots=5  | 伴随事件=5  其中复用=5  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          City_D   B=8    slots=1  | 伴随事件=5  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          City_D   B=64   slots=5  | 伴随事件=5  其中复用=5  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          City_D   B=64   slots=1  | 伴随事件=5  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          ky4      B=8    slots=5  | 伴随事件=5  其中复用=5  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          ky4      B=8    slots=1  | 伴随事件=5  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          ky4      B=64   slots=5  | 伴随事件=5  其中复用=5  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          ky4      B=64   slots=1  | 伴随事件=5  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+  => 新探针 T3 红 10 行 / 旧探针 T3 红 0 行  OK
+
+### W2_drop_all
+  探针=new rc=1 | T1 0/10红 T2 5/10红 T3 10/20红 T4 0/10红 | 总判定: FAIL （35/50 项通过）
+  探针=old rc=1 | T1 0/10红 T2 5/10红 T3 0/20红 T4 0/10红 | 总判定: FAIL （45/50 项通过）
+  [T3/new] 红 10/20 行
+      RED Hanoi    B=1    slots=1  | 伴随事件=6  其中复用=6  stale=5 incoh=0 worstDelta=5.192e+02  <-- FAIL
+      RED Hanoi    B=8    slots=1  | 伴随事件=6  其中复用=6  stale=5 incoh=0 worstDelta=3.165e+03  <-- FAIL
+      RED Net3     B=1    slots=1  | 伴随事件=6  其中复用=6  stale=5 incoh=0 worstDelta=9.976e+06  <-- FAIL
+      RED Net3     B=8    slots=1  | 伴随事件=6  其中复用=6  stale=5 incoh=0 worstDelta=4.370e+04  <-- FAIL
+      RED Modena   B=8    slots=1  | 伴随事件=6  其中复用=6  stale=5 incoh=0 worstDelta=1.188e+05  <-- FAIL
+      RED Modena   B=64   slots=1  | 伴随事件=6  其中复用=6  stale=5 incoh=0 worstDelta=9.948e+06  <-- FAIL
+      RED City_D   B=8    slots=1  | 伴随事件=5  其中复用=5  stale=4 incoh=0 worstDelta=2.000e+07  <-- FAIL
+      RED City_D   B=64   slots=1  | 伴随事件=5  其中复用=5  stale=4 incoh=0 worstDelta=2.000e+07  <-- FAIL
+      RED ky4      B=8    slots=1  | 伴随事件=5  其中复用=5  stale=4 incoh=0 worstDelta=3.534e+05  <-- FAIL
+      RED ky4      B=64   slots=1  | 伴随事件=5  其中复用=5  stale=4 incoh=0 worstDelta=4.036e+05  <-- FAIL
+  [T3/old] 红 0/20 行
+          Hanoi    B=1    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Hanoi    B=1    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Hanoi    B=8    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Hanoi    B=8    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Net3     B=1    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Net3     B=1    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Net3     B=8    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Net3     B=8    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Modena   B=8    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Modena   B=8    slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Modena   B=64   slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          Modena   B=64   slots=1  | 伴随事件=6  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          City_D   B=8    slots=5  | 伴随事件=5  其中复用=5  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          City_D   B=8    slots=1  | 伴随事件=5  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          City_D   B=64   slots=5  | 伴随事件=5  其中复用=5  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          City_D   B=64   slots=1  | 伴随事件=5  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          ky4      B=8    slots=5  | 伴随事件=5  其中复用=5  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          ky4      B=8    slots=1  | 伴随事件=5  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          ky4      B=64   slots=5  | 伴随事件=5  其中复用=5  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+          ky4      B=64   slots=1  | 伴随事件=5  其中复用=1  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+  => 新探针 T3 红 10 行 / 旧探针 T3 红 0 行  OK
+
+====================================================================================================
+总判定: T3 新探针有牙 | 用时 220 s
+XF2-JSON [{"name": "C0_clean", "t3_red_new": 0, "t3_red_old": 0, "rc_new": 0, "rc_old": 0, "red_new": {"T1": 0, "T2": 0, "T3": 0, "T4": 0}, "tot_new": {"T1": 10, "T2": 10, "T3": 20, "T4": 10}, "verdict_new": "总判定: PASS （50/50 项通过）", "verdict_old": "总判定: PASS （50/50 项通过）"}, {"name": "W1_drop_gen", "t3_red_new": 10, "t3_red_old": 0, "rc_new": 1, "rc_old": 1, "red_new": {"T1": 0, "T2": 5, "T3": 10, "T4": 0}, "tot_new": {"T1": 10, "T2": 10, "T3": 20, "T4": 10}, "verdict_new": "总判定: FAIL （35/50 项通过）", "verdict_old": "总判定: FAIL （45/50 项通过）"}, {"name": "W2_drop_all", "t3_red_new": 10, "t3_red_old": 0, "rc_new": 1, "rc_old": 1, "red_new": {"T1": 0, "T2": 5, "T3": 10, "T4": 0}, "tot_new": {"T1": 10, "T2": 10, "T3": 20, "T4": 10}, "verdict_new": "总判定: FAIL （35/50 项通过）", "verdict_old": "总判定: FAIL （45/50 项通过）"}]
+====================================================================================================
+XFT3 JOB DONE rc=0

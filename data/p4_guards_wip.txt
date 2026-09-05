@@ -1,0 +1,213 @@
+################################################################################
+P4 - 把不变量写进回归（审计 R1 + R2）与展开梯度的支持声明（R4）
+日期 2026-08-22
+本机 CPU：所有 §1 数字；集群 RTX 5090 / gpu_5090：所有 §2 数字（两节点各一份）。
+新增文件：
+  scripts/check_symmetry.py        R1：A 逐位精确对称守卫 + 变异证伪
+  networks/variants/sym_torture.inp R1：孤立 junction + 并联管 + ACTIVE TCV +
+                                   关闭支 + 水池 + emitter 的合成小网
+  scripts/regression_gpu.py        R2：cuDSS 三条不变量（CPU 上明确 SKIP）
+  scripts/regression_gpu.sh        R2：sbatch（--gpus=1 -p gpu_5090）
+  scripts/p4_r4_probe.py           R4：κ / K-稳定性 / vs 隐式伴随 的实测
+改动文件：
+  scripts/regression_all.py        新增第 ⑨ 项（调 check_symmetry.py）
+  dgga/autodiff.py                 模块 docstring + solve_unrolled docstring 写死
+                                   R4 结论；新增 unrolled_grad_health()（新 API，
+                                   缺省通路一行不动）
+**dgga/solver.py 本轮零改动**（md5 45b0b0ee… 与 c827987/ad36c31 一致）。
+R9 点名的"顺手给稠密通路写伴随"**没做**，缺省梯度未动。
+
+================================================================================
+§1 R1 - A 逐位精确对称写进 regression_all（最高优先级）
+--------------------------------------------------------------------------------
+1.1 为什么这条必须有
+  cuDSS 伴随（solver.py `_CudssSolveFn`）把前向的**数值分解**直接拿去解
+  A^T λ = g，合法性全挂在 A^T = A 上；稠密通路的 cholesky 只读下三角，A 失去
+  对称后前向照样收敛、迭代数照样对、结果看不出异样，**只有梯度会静默地错**。
+  P3 审计 §1.4 实测过 6 网×8 轮全 0，但此前**零自动保护**。
+
+1.2 实现要点（不改 dgga 一行）
+  · 捕获点 = `torch.linalg.cholesky` 的入参，即"线性求解器实际看到的那个 A"，
+    也正是伴随要复用其分解的那个矩阵；CSR 侧另外捕 `_assemble_csr` 的返回值
+    （cuDSS 通路唯一经过的那份数据），按转置槽 t(k) 逐位比。
+  · **捕获点失效必须变红**：断言"捕获轮数 == 期望轮数"（solve 是收敛迭代数、
+    solve_unrolled 是 K）。将来谁把 cholesky 换成 cholesky_ex，本项 FAIL 而不是
+    静默什么都不查。
+  · 位型层另有静态断言：CSR 位型转置闭合 + Nj 个对角全部在位。
+  · `networks/` 整目录在 .gitignore 里（真实管网保密 + 第三方 benchmark 不转发），
+    所以 sym_torture.inp 的**原文存在 check_symmetry.py 里**（`SYM_TORTURE_INP`），
+    运行时 `ensure_sym_torture()` 按需落盘（LF 换行、内容一致则不写）。
+    实测：删掉该文件后重跑，脚本自建并照样 72/72 + 4/4。
+    否则一份干净 clone 上这批状态会**静默少测**。
+
+1.3 覆盖（"足够多的网与状态"，18 网/状态 × 4 条装配-求解组合 = 72 个配置）
+  组合 = {solve, solve_unrolled} × {assemble=dense, assemble=csr}
+  · 并联管：ky4 21 对、sym_torture 1 对（两条链路落进同一 CSR 槽）
+  · 孤立 junction：sym_torture（不接任何链路，对角只由 emittercoeffs 提供）
+  · 有/无 emitter：city_d_emit、sym_torture、Hanoi/Net3/ky4/ky5 的注入 ke
+  · 泵/水池：ky4（2 泵 4 池）、Net3（2 泵 3 池）、ky5（11 泵）、EXA6、Net1
+  · 跨数量级 P：关闭支 1/CBIG=1e-8 与 ACTIVE TCV 1/CSMALL=1e6 同时在场
+    （city_d 79 TCV + 4 关闭支；ky4/Net3/city_h/sym_torture 有关闭支），
+    再叠 ×1e-3/×1e3 的需水缩放。**覆盖是量出来的**：每个配置打印 |A| 非零
+    动态范围，最大 **2.63e+15**（city_d）。
+  · 批：B=1（单场景）与 B=2/3/4 都在表内。
+
+1.4 实测（本机 CPU，scripts/check_symmetry.py，前台）
+  **72/72 PASS；最差 max|A−A^T| = 0.000e+00（稠密）/ 0.000e+00（CSR），逐位。**
+  逐网摘录（Nj / nnz / |A| 动态范围）：
+    sym_torture 7/21/2.60e+08   Hanoi 31/97/4.40e+03   Modena 268/894/1.67e+05
+    rand_0009 38/136/1.80e+05   rand_0014 104/540/5.29e+05  Net1 9/31/1.05e+03
+    Net3 92/320/1.00e+15        EXA6 109/351/3.02e+09  ky5 423/1413/3.91e+07
+    ky4 959/3219/3.76e+13       city_d 541/1645/2.63e+15  city_h 920/2992/2.01e+15
+
+1.5 **证明这条断言真能抓错**（不是加了个恒真检查）
+  做法：把 dgga 复制到临时目录，**源码级**注入四种单侧装配，子进程跑同一套检查。
+  | 变异体 | 注入点 | 形态 | 结果 |
+  |---|---|---|---|
+  | M1_asym_valve_1ulp | solver.py solve() | 转置那格 ×(1+1e-13) 的非对称阀 | **RED** 8/16 配置红，最差 9.984e-07 |
+  | M2_prv_penalty_row | solver.py solve() | 只写 (r,c) 不写 (c,r) 的 −1e6 大 M（PRV ACTIVE 罚函数行） | **RED** 4/16，最差 1.000e+06 |
+  | M3_csr_one_sided | solver.py _assemble_csr | CSR 单侧改一个非对角槽 −1e3 | **RED** 8/16，稠密与 CSR 两栏都红 |
+  | M4_unrolled_one_sided | autodiff.py solve_unrolled | 展开路径单侧 +1e-9 | **RED** 4/16，最差 1.000e-09 |
+  四个变异体**全部如期变红**；四个都只红在自己注入的那条通路上（M4 只红
+  unrolled、M2/M1 只红 solve/dense 与 solve/csr、M3 只红 csr），说明检查有分辨率
+  而不是一红全红。
+
+1.6 **为什么判据必须逐位、不能给容差**（实测支撑，不是口号）
+  M1 是"转置那格差 1e-13 相对量"的非对称阀。它在
+    sym_torture 上 max|A−A^T| = **2.065e-13**
+    Hanoi +emit  上          = **9.635e-12**
+    Net3 / city_d（有 TCV，P=1e6）上 = 9.984e-07
+  ⇒ 一条 1e-9 的容差门槛会把前两网**整网放行**，能不能抓到取决于**恰好测了哪张
+  网**；逐位判据不取决于此。而 1e-13 的相对不对称足以污染伴随（伴随复用的是
+  A 的分解，误差按 κ(A)~1e15 放大）。
+
+1.7 接进 regression_all
+  第 ⑨ 项 `⑨ A 对称守卫(18网x4通路)`，门槛写作 "==0.0 逐位; 4/4 变异变红"。
+  CPU-only，不要求 CUDA。用时见 §4。
+
+================================================================================
+§2 R2 - scripts/regression_gpu.py（cuDSS 不变量），集群真跑
+--------------------------------------------------------------------------------
+2.0 SKIP 语义（缺 nvmath/CUDA 时**明确 SKIP 并说明**，不是静默 PASS）
+  退出码 0=PASS / 1=FAIL / **2=SKIP**。本机（RTX 5060 Laptop，有 CUDA 无 nvmath）
+  实跑输出：
+    总判定: SKIP（退出码 2）
+    原因: 有 CUDA（NVIDIA GeForce RTX 5060 Laptop GPU）但 nvmath.sparse.advanced.
+          DirectSolver 导入失败：ModuleNotFoundError("No module named 'nvmath'")。
+          ...**本项 SKIP，不是 PASS** - cuDSS 的三条不变量本次未被验证过。
+
+2.1 集群实测：**两个节点各 40/40 PASS**
+  作业 1459575 节点 <node-01>；作业 1459579 节点 <node-20>。
+  RTX 5090 / gpu_5090 / torch 2.11.0+cu128 / nvmath 1.0.0；
+  dgga/solver.py md5 45b0b0ee…（与提交版一致，集群侧核过）。
+  原始输出：data/gpu/5090_regp4_1459575.out、data/gpu/5090_regp4_1459579.out。
+
+  T1 迭代数逐项相等（10 配置） - 全部"逐项相等=是"：
+    Hanoi B=1/8: 8/8      Net3 B=1: 7  B=8: 10   Modena B=8: {13,14} B=64: 7
+    City_D B=8: 8 B=64: 7 ky4 B=8: 7  B=64: {8,9}
+    顺带报的 max|dH|（**非门槛**，改判据的理由见 sparse_gpu_plan.md §7.2）：
+    1.1e-13 ~ 1.3e-06 ft（最大那格是 Net3 B=1，两节点分别 1.288e-06 / 6.907e-07）。
+
+  T2 bwd_refactorize（10 配置） - 全部逐项等于期望：
+    slots=K 时 factorize=K、bwd_refactorize=**0**、bwd_reuse=K；
+    slots=1 时 factorize=2K−1、bwd_refactorize=K−1、bwd_reuse=1。
+    例：ky4 K=5 slots=5 → fac=5 refac=0 reuse=5 solve=15 bwd_solve=15；
+        ky4 K=5 slots=1 → fac=9 refac=4 reuse=1 solve=15 bwd_solve=15。
+    **反面也验了**：如果只查"slots 够时 refac==0"，一个压根不数的计数器同样能过；
+    加上"slots=1 时必须恰好是 K−1"才排除掉这种可能。
+
+  T3 复用即逐位核对（20 配置） - 全部 **stale=0、worstDelta=0.000e+00**，
+    且伴随事件数 = K（不是靠"一次都没复用"蒙混）：slots=K 时复用=K，
+    slots=1 时复用=1。判据与 solver._cudss_adjoint 里的 reuse 谓词逐字一致，
+    比的是 cuDSS 手上那块 `st["vals"]` 与 autograd `save_for_backward` 的 `data`。
+
+2.2 与 regression_all 的关系
+  **分开**：regression_all 是 CPU 全量、必须 50/50（现 51/51，见 §4）；
+  regression_gpu 需要 CUDA+nvmath，CPU 上 SKIP。不合并是故意的 -
+  合并会让"因为没硬件所以没验"混进"通过"里。
+
+================================================================================
+§3 R4 - 展开路径 demand 梯度：**明确结论**
+--------------------------------------------------------------------------------
+3.1 实测（本机 CPU，B=8，scripts/p4_r4_probe.py）
+  M1 κ₂(A)：收敛点 A 的 2-范数条件数（场景 0，捕获点同 §1.2）
+  M2 K-稳定性：rel(Kc→Kc+5) 与 rel(Kc+5→Kc+10)，rel = max|Δg|/max|g|
+  M3 与 ImplicitGGASolve（不动点梯度、独立 scipy 稀疏 LU 通路）的相对差
+
+  网              Nj   Kc  κ₂(A)      max|g_d|   M2 Kc→+5  M2 +5→+10 M3 vs 隐式  结论
+  Hanoi           31   4   1.267e+03  2.315e+01  3.300e-08  1.356e-11 1.061e-11  可用
+  rand_main_0009  38   6   3.316e+05  1.613e+03  2.909e-12  6.665e-13 3.558e-12  可用
+  Modena          268  5   3.811e+05  6.292e+02  2.997e-05  3.576e-08 2.139e-08  有条件
+  EXA6            109  5   1.013e+10  1.727e+02  1.843e-07  1.255e-07 9.787e-08  有条件
+  ky3             273  8   4.556e+07  7.356e+02  2.173e-06  2.181e-06 1.962e-06  有条件
+  ky5             423  8   3.362e+07  1.025e+03  2.217e-03  3.544e-06 2.100e-06  有条件
+  city_h         920  6   1.844e+10  4.528e+02  7.106e-05  1.611e-07 2.114e-07  有条件
+  Net3            92   5   1.594e+09  1.375e+02  4.351e-03  1.818e-03 2.175e-03  **不建议**
+  ky4             959  9   2.367e+08  6.055e+02  5.642e-04  1.082e-03 5.642e-04  **不建议**
+  City_D  541  5   3.328e+15  1.360e+08  2.521e-01  1.000e+00 2.521e-01  **不建议**
+
+3.2 结论（写进 dgga/autodiff.py 的模块 docstring 与 solve_unrolled docstring）
+  · **City_D/city_d、ky4、Net3 上"不建议 = 不支持"**：请改用 ImplicitGGASolve。
+    City_D 尤其不是"精度差一点"，是**发散**：max|g_d| 随 K 走
+      Kc / +2 / +5 / +10 / +15 = 1.360e+08 / 1.002e+11 / 1.360e+08 /
+                                  3.982e+17 / 1.149e+16
+    在 1e8~1e17 之间乱跳（同一批输入、同一份代码、CPU 上确定性运算）。
+    对照组 Hanoi/Modena/Net3/ky4/city_h 的 max|g_d| 在这五档上一位不变。
+    （根因在 solver.py `_pipe_PY` 的注释里早有一句"city_d 死支 q 恰为 0 的钳位管
+     实测 gA 随 K 指数增长"；本轮把它量成了表，并把结论写进了 API 文档。）
+  · **有条件（Modena/EXA6/ky3/ky5/city_h）**：可当一阶优化的搜索方向用，
+    **不能**当"可验证的导数" - 别拿它去过 1e-6 的对拍门槛。
+  · **可用（Hanoi/rand_main_0009）**：rel<1e-8 且 vs 隐式 <1e-6。
+  · 三档门槛落在代码里：`autodiff.GRAD_HEALTH_OK=1e-8`、`GRAD_HEALTH_COND=1e-5`。
+
+3.3 **订正审计 R4 的"κ≥7e8 的网"这个说法 - 不成立**
+  实测反例摆着：
+    EXA6    κ₂=1.013e+10  → M3 = 9.787e-08（好）
+    city_h κ₂=1.844e+10  → M3 = 2.114e-07（好）
+    Net3    κ₂=1.594e+09，Nj 只有 **92** → M3 = 2.175e-03（坏）
+  ⇒ κ 既不充分也不必要，"大网才有问题"也不对（Net3 是全表最小的坏网之一）。
+  也**不是 RQtol 钳位支**：钳位支数 / 不稳定 junction 数 / 其中与钳位支相邻的数
+    ky4    1 条钳位支，243 个不稳定坐标，**其中 0 个**与钳位支相邻
+    City_D 27 条，540 个不稳定，其中 50 个（9.3%）相邻
+    city_h 15 条，15 个不稳定，其中 0 个相邻（且该网判为好）
+  ⇒ 结构判据一概不可靠。**唯一可靠的是行为判据：把 K 加长一截，看梯度还动不动。**
+
+3.4 落地接口（新 API，缺省通路一行不动）
+  `dgga.autodiff.unrolled_grad_health(solver, demand, res_head, ke=None,
+      r_hw=None, K=None, dK=5, param="demand", weights=None, vs_implicit=False)`
+  → dict(verdict∈{可用,有条件,不建议}, rel_K, rel_implicit, gmax, K, dK, param)
+  成本 = 两次展开反传（vs_implicit=True 时再加一次隐式伴随，慢得多）。
+  自检复现表（与 §3.1 逐项一致）：
+    Hanoi  可用   rel_K=1.356e-11  rel_implicit=1.061e-11
+    Net3   不建议 rel_K=1.818e-03  rel_implicit=2.176e-03
+    Modena 有条件 rel_K=3.576e-08
+    ky4    不建议 rel_K=1.082e-03
+    City_D 不建议 rel_K=1.000e+00  gmax=3.982e+17
+  **没有**做成 solve_unrolled 里的自动 warning：那要么每次调用多付两次反传，
+  要么按 κ/结构猜 - 而 §3.3 刚证明结构判据不可靠。宁可给一个诚实的显式接口。
+
+================================================================================
+§4 缺省未变 + regression_all
+--------------------------------------------------------------------------------
+  · dgga/solver.py **本轮零改动**；dgga/autodiff.py 只加 docstring 与一个新函数，
+    `solve_unrolled` / `ImplicitGGASolve` / `solve_polished` 的计算体一行未动。
+  · mode="epanet" 逐位复刻路径、assemble="dense"、linear_solver="dense" 三个缺省
+    未被触及；本轮**没有**给稠密通路写伴随（审计 R9 点名，遵守）。
+  · regression_all 前台跑 **3 次，三次都 51/51 PASS**（251 / 252 / 250 s）。
+    51 = 原 50 项 + 新增第 ⑨ 项（A 对称守卫，19 s）。
+  · **原 50 项逐行未动**：把两份报告的表格按 (项目, 实测, 判定) 三列对比，
+    与提交版 data/regression_report.txt **只多出 ⑨ 那一行，其余 51 行
+    （含表头）逐字符相同** - 包括所有 0.000e+00 的逐位断言、⑤ 的
+    B-C最差=5.85e-08 / A-C最差=7.46e-07、⑥ 的 22/22、⑧ 的 6.142e-07。
+    （附录 B 里 ⑦ 的两个 GPU-vs-CPU 值仍随运行变动：本轮两次分别是
+     3.302e-16/5.638e-16 与 3.481e-16/1.838e-16，门槛 1e-8，走 atomicAdd
+     跨运行本就不定，与 P3 审计 §6.2 记的行为一致。）
+  · ⑨ 的表格列里避开了竖线字符（"max(A−A^T) 逐位"而不是 "max|A−A^T|"），
+    否则报告表格按 | 分列会被打乱。
+
+================================================================================
+§5 留给下一轮（本轮**没做**，别当已做）
+  R3 抖动基线表、R5 显存统一口径、R6 跨节点成对（本轮 R2 已按两节点做）、
+  R7 逐出压力测试、R8 三条文档（ke=0 不可微 / 逐出=replan / 预热只热 slot 0）、
+  R9 的 `linear_solver="dense_adjoint"` 新开关。
+################################################################################

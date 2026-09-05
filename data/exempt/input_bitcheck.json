@@ -1,0 +1,250 @@
+{
+ "generated": "2026-09-04 09:23:38",
+ "rows": [
+  {
+   "stem": "pub_net3",
+   "fields": {
+    "elev_ft": {
+     "n_compared": 97,
+     "n_ulp_diff": 11,
+     "max_ulp": 1,
+     "n_ulp_eq_1": 11
+    },
+    "roughness": {
+     "n_compared": 119,
+     "n_ulp_diff": 0,
+     "max_ulp": 0,
+     "n_ulp_eq_1": 0
+    },
+    "diam_ft": {
+     "n_compared": 119,
+     "n_ulp_diff": 71,
+     "max_ulp": 2,
+     "n_ulp_eq_1": 11
+    },
+    "len_ft": {
+     "n_compared": 119,
+     "n_ulp_diff": 12,
+     "max_ulp": 1,
+     "n_ulp_eq_1": 12
+    },
+    "valve_setting_user": {
+     "n_compared": 2,
+     "n_ulp_diff": 0,
+     "max_ulp": 0,
+     "n_ulp_eq_1": 0
+    }
+   }
+  },
+  {
+   "stem": "pub_bwsn_network_1",
+   "fields": {
+    "elev_ft": {
+     "n_compared": 129,
+     "n_ulp_diff": 7,
+     "max_ulp": 1,
+     "n_ulp_eq_1": 7
+    },
+    "roughness": {
+     "n_compared": 178,
+     "n_ulp_diff": 0,
+     "max_ulp": 0,
+     "n_ulp_eq_1": 0
+    },
+    "diam_ft": {
+     "n_compared": 178,
+     "n_ulp_diff": 88,
+     "max_ulp": 2,
+     "n_ulp_eq_1": 68
+    },
+    "len_ft": {
+     "n_compared": 178,
+     "n_ulp_diff": 15,
+     "max_ulp": 1,
+     "n_ulp_eq_1": 15
+    },
+    "valve_setting_user": {
+     "n_compared": 10,
+     "n_ulp_diff": 3,
+     "max_ulp": 2,
+     "n_ulp_eq_1": 2
+    }
+   }
+  },
+  {
+   "stem": "pub_bwsn_network_2",
+   "fields": {
+    "elev_ft": {
+     "n_compared": 12527,
+     "n_ulp_diff": 1001,
+     "max_ulp": 1,
+     "n_ulp_eq_1": 1001
+    },
+    "roughness": {
+     "n_compared": 14831,
+     "n_ulp_diff": 0,
+     "max_ulp": 0,
+     "n_ulp_eq_1": 0
+    },
+    "diam_ft": {
+     "n_compared": 14831,
+     "n_ulp_diff": 7772,
+     "max_ulp": 2,
+     "n_ulp_eq_1": 612
+    },
+    "len_ft": {
+     "n_compared": 14831,
+     "n_ulp_diff": 1732,
+     "max_ulp": 1,
+     "n_ulp_eq_1": 1732
+    },
+    "valve_setting_user": {
+     "n_compared": 5,
+     "n_ulp_diff": 1,
+     "max_ulp": 1,
+     "n_ulp_eq_1": 1
+    }
+   }
+  },
+  {
+   "stem": "pub_net6",
+   "fields": {
+    "elev_ft": {
+     "n_compared": 3356,
+     "n_ulp_diff": 349,
+     "max_ulp": 1,
+     "n_ulp_eq_1": 349
+    },
+    "roughness": {
+     "n_compared": 3892,
+     "n_ulp_diff": 0,
+     "max_ulp": 0,
+     "n_ulp_eq_1": 0
+    },
+    "diam_ft": {
+     "n_compared": 3892,
+     "n_ulp_diff": 1621,
+     "max_ulp": 2,
+     "n_ulp_eq_1": 247
+    },
+    "len_ft": {
+     "n_compared": 3892,
+     "n_ulp_diff": 427,
+     "max_ulp": 1,
+     "n_ulp_eq_1": 427
+    },
+    "valve_setting_user": {
+     "n_compared": 63,
+     "n_ulp_diff": 0,
+     "max_ulp": 0,
+     "n_ulp_eq_1": 0
+    }
+   }
+  },
+  {
+   "stem": "pub_c_town_batadal",
+   "fields": {
+    "elev_ft": {
+     "n_compared": 396,
+     "n_ulp_diff": 0,
+     "max_ulp": 0,
+     "n_ulp_eq_1": 0
+    },
+    "roughness": {
+     "n_compared": 444,
+     "n_ulp_diff": 0,
+     "max_ulp": 0,
+     "n_ulp_eq_1": 0
+    },
+    "diam_ft": {
+     "n_compared": 444,
+     "n_ulp_diff": 130,
+     "max_ulp": 1,
+     "n_ulp_eq_1": 130
+    },
+    "len_ft": {
+     "n_compared": 444,
+     "n_ulp_diff": 0,
+     "max_ulp": 0,
+     "n_ulp_eq_1": 0
+    },
+    "valve_setting_user": {
+     "n_compared": 15,
+     "n_ulp_diff": 1,
+     "max_ulp": 9027048120434819072,
+     "n_ulp_eq_1": 0
+    }
+   }
+  },
+  {
+   "stem": "pub_d_town",
+   "fields": {
+    "elev_ft": {
+     "n_compared": 407,
+     "n_ulp_diff": 0,
+     "max_ulp": 0,
+     "n_ulp_eq_1": 0
+    },
+    "roughness": {
+     "n_compared": 459,
+     "n_ulp_diff": 0,
+     "max_ulp": 0,
+     "n_ulp_eq_1": 0
+    },
+    "diam_ft": {
+     "n_compared": 459,
+     "n_ulp_diff": 144,
+     "max_ulp": 1,
+     "n_ulp_eq_1": 144
+    },
+    "len_ft": {
+     "n_compared": 459,
+     "n_ulp_diff": 0,
+     "max_ulp": 0,
+     "n_ulp_eq_1": 0
+    },
+    "valve_setting_user": {
+     "n_compared": 15,
+     "n_ulp_diff": 0,
+     "max_ulp": 0,
+     "n_ulp_eq_1": 0
+    }
+   }
+  },
+  {
+   "stem": "ky5",
+   "fields": {
+    "elev_ft": {
+     "n_compared": 430,
+     "n_ulp_diff": 22,
+     "max_ulp": 1,
+     "n_ulp_eq_1": 22
+    },
+    "roughness": {
+     "n_compared": 507,
+     "n_ulp_diff": 0,
+     "max_ulp": 0,
+     "n_ulp_eq_1": 0
+    },
+    "diam_ft": {
+     "n_compared": 507,
+     "n_ulp_diff": 374,
+     "max_ulp": 2,
+     "n_ulp_eq_1": 42
+    },
+    "len_ft": {
+     "n_compared": 507,
+     "n_ulp_diff": 48,
+     "max_ulp": 1,
+     "n_ulp_eq_1": 48
+    },
+    "valve_setting_user": {
+     "n_compared": 11,
+     "n_ulp_diff": 0,
+     "max_ulp": 0,
+     "n_ulp_eq_1": 0
+    }
+   }
+  }
+ ]
+}

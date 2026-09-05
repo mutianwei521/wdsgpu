@@ -1,0 +1,62 @@
+NVIDIA GeForce RTX 5090
+cpus: 8
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1890: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1890: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+NVIDIA GeForce RTX 5090 | torch 2.11.0+cu128
+
+============================================================================================================
+§A ΔH 归属：两条 GPU 通路各自与 **CPU f64 dense 基准**（回归里与 EPANET 对到 1e-14 的那条）的距离；κ 为最后一轮 A 的 2-范数条件数
+net           B  iters | |cudss-cpu| |gpuDen-cpu| |cudss-gpuD| |    κ(A_末轮) | |H|max
+Net1          8      4 |   1.251e-12   1.819e-12   1.364e-12 |  1.654e+03 | 1010.0
+Anytown       8      6 |   4.547e-13   8.811e-13   6.537e-13 |  4.005e+02 | 278.7
+Hanoi         8      5 |   2.188e-12   3.382e-12   4.320e-12 |  3.474e+03 | 329.9
+Net2          8      6 |   3.098e-11   2.518e-11   4.331e-11 |  4.798e+04 | 321.0
+Fossolo       8      7 |   7.958e-13   1.307e-12   9.095e-13 |  2.102e+05 | 398.9
+Pescara       8      5 |   4.359e-06   1.792e-05   1.517e-05 |  1.744e+10 | 187.8
+Net3          8      5 |   3.298e-06   3.035e-06   3.659e-06 |  2.180e+09 | 303.0
+Modena        8      5 |   2.331e-11   1.043e-11   1.671e-11 |  4.019e+05 | 245.8
+City_D        8      5 |   3.189e-06   5.792e-06   5.902e-06 |  3.422e+15 | 128.8
+ky4           8      9 |   3.130e-07   2.822e-07   1.271e-07 |  7.476e+08 | 827.5
+
+============================================================================================================
+§B matrix_type：GENERAL（缺省，带主元 LU）vs SPD（Cholesky）
+net           B | GEN |Δ vs cpu| SPD |Δ vs cpu| |     GEN ms/sc     SPD ms/sc |   SPD/GEN
+Net3         64 |     3.690e-06     3.697e-06 |       0.37050       0.37134 |     1.00x
+Net3        256 |     5.082e-06     4.539e-06 |       0.21642       0.21650 |     1.00x
+Pescara      64 |     1.344e-05     1.708e-05 |       0.26906       0.26770 |     0.99x
+Pescara     256 |     1.310e-05     1.785e-05 |       0.17154       0.17067 |     0.99x
+Modena       64 |     9.177e-11     1.050e-10 |       0.26805       0.26789 |     1.00x
+Modena      256 |     3.454e-09     1.422e-09 |       0.17071       0.17130 |     1.00x
+City_D       64 |     6.663e-06     9.562e-06 |       0.27073       0.27123 |     1.00x
+City_D      256 |     1.325e-05     1.404e-05 |       0.17152       0.17080 |     1.00x
+ky4          64 |     7.254e-07     1.508e-06 |       0.55710       0.56056 |     1.01x
+ky4         256 |     2.216e-06     2.572e-06 |       0.32658       0.32614 |     1.00x
+
+============================================================================================================
+§C 单轮迭代耗时拆解（B=256，ms/轮，整批不除以 B）
+net           Nj |     csr装配 factorize   solve×1   stack×1    SpMV×1 |      稠密装配   chol+2解
+Net1           9 |    0.0172    0.0680    2.2662    0.0450    0.0330 |    0.0208    0.3235
+Net3          92 |    0.0177    0.1572    2.2939    0.0474    0.0338 |    0.0265    0.7807
+Modena       268 |    0.0190    0.4748    2.3402    0.0479    0.0336 |    0.3094    4.9767
+City_D       541 |    0.0222    0.5658    2.4402    0.0490    0.0369 |    1.2143   20.7523
+ky4          959 |    0.0293    0.9977    2.6116    0.0447    0.0449 |    3.7473   77.3283
+
+============================================================================================================
+§D 精化步数的时间代价（B=256，整解 ms/场景）
+net       |    refine=0    refine=1    refine=2 |    dense 基准
+Net3      |     0.09801     0.15874     0.21916 |     0.05305
+Modena    |     0.07168     0.12216     0.17186 |     0.12282
+City_D    |     0.07205     0.12176     0.17207 |     0.46003
+ky4       |     0.14895     0.23884     0.32827 |     2.98042
+
+============================================================================================================
+§E 显存墙倒下的直接后果：ky4 上两条通路各自能吃多大的 B（单卡 32GiB）
+B      | dense（峰值 MiB / ms/场景）      | cudss（峰值 MiB / ms/场景）     
+256    |     7353.9 MiB /   2.9895  |      217.0 MiB /   0.3265 
+512    |    14628.1 MiB /   2.8073  |      339.2 MiB /   0.2933 
+1024   | torch.OutOfMemoryError: CU |      610.2 MiB /   0.2697 
+2048   | torch.OutOfMemoryError: CU |     1156.8 MiB /   0.2631 
+
+P2b 结束

@@ -1,0 +1,27 @@
+NVIDIA GeForce RTX 5090, 32607 MiB
+node: <node-21> | cpus: 8
+/data/run01/<user>/wdsgpu/hgaudit/dgga/solver.py:2016: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hgaudit/dgga/solver.py:2016: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+node: <node-21> | torch 2.11.0+cu128 | nvmath 1.0.0
+solver.py md5: 45b0b0eeb66ed4e15ef81c53809d229a
+==============================================================================
+P1/P2  plan() accounting and the price of an evicted slot (node <node-21>)
+   Modena  B=128  K=8 slots=8  WARM  : plan=0 factorize=8  bwd_refactorize=0  wall=127.0 ms
+   Modena  B=128  K=8 slots=8  EVICTED backward only: plan=8 factorize=8  bwd_refactorize=8  wall=930.9 ms
+            gradient after eviction vs clean: 3.799e-08
+            -> the counter reports 8 'refactorize' but 8 of them were full rebuild+plan()
+   ky4     B=128  K=8 slots=8  WARM  : plan=0 factorize=8  bwd_refactorize=0  wall=138.8 ms
+   ky4     B=128  K=8 slots=8  EVICTED backward only: plan=8 factorize=8  bwd_refactorize=8  wall=3702.2 ms
+            gradient after eviction vs clean: 8.705e-05
+            -> the counter reports 8 'refactorize' but 8 of them were full rebuild+plan()
+
+==============================================================================
+P3  does cudss_plan(B) warm the slots the differentiable path uses?
+   after cudss_plan(128): plan calls=1  cache=[(128, 0)]
+   first differentiable fwd+bwd after that warmup: plan calls=5, wall=733.2 ms (each plan cost ~100.5 ms)
+   second one: plan calls=0, wall=94.6 ms  -> warmup shortfall = 638.7 ms on the first differentiable step
+
+AUD6 DONE
+AUD JOB DONE

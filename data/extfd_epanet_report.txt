@@ -1,0 +1,21 @@
+<repo>\dgga\solver.py:1437: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\torch\csrc\utils\tensor_numpy.cpp:219.)
+  return torch.as_tensor(np.asarray(x), dtype=dt, device=dev)
+=== city_d_emit: N=542 Nj=541 L=554 emitters=5 Qexp=2.0 Hexp=1.852 ===
+解析侧: GGA iters=80 精抛光后 ||F||inf = 2.842e-14
+EPANET: ACCURACY 回读 = 1.0e-08（EN_setoption 未被钳位）
+EPANET t=0 基准: iters=201 relerr=5.82e-08 warn=1 （极限环平台，达不到 1e-8，见文件头） L=3.1426802277e+03
+基准一致性: max|dH|(EPANET vs 解析) = 1.473e-06 ft, |dL| = 2.317e-05
+Ke_int(C) 换算链自检: max 相对偏差 = 2.21e-16
+====================================================================================================
+               θ     ID           x0          EPANET-FD                 解析       相对误差       单步偏离   relerr
+       emitter C    642          0.3  -7.8815418506e+00  -7.8815267946e+00   1.91e-06   1.59e-05  9.6e-08
+       emitter C   3083          0.8   1.8181527863e+00   1.8181699400e+00   9.43e-06   4.08e-04  1.0e-07
+       emitter C    712          0.6   1.3263562272e+00   1.3263522367e+00   3.01e-06   9.73e-05  8.5e-08
+demand(f0=0.916)    179       3.0619   3.0912804798e+01   3.0912865781e+01   1.97e-06   4.07e-05  1.0e-07
+demand(f0=0.616)    200      0.23712  -5.0265239011e+01  -5.0266441569e+01   2.39e-05   6.79e-06  8.8e-08
+demand(f0=0.616)    983      0.51131  -1.6173892919e+01  -1.6173859506e+01   2.07e-06   1.31e-05  1.2e-07
+        res head   2506       127.42   2.4847425486e+01   2.4847435251e+01   3.93e-07   8.43e-07  1.1e-07
+         rough C   2267          130  -4.6504157515e-01  -4.6504016246e-01   3.04e-06   2.93e-03  1.0e-07
+====================================================================================================
+最差坐标: ('demand(f0=0.616)', '200') rel=2.39e-05
+外部对拍(EPANET-FD vs 解析, 门槛 1e-04): PASS

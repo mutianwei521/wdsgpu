@@ -1,0 +1,127 @@
+=========================================================================
+dense（批量可微）泵/水池移植 - 对抗性验收（独立复核 a51eec9）
+日期 2026-08-22。审阅者自写脚本，未复用上游任何测试脚本。
+=========================================================================
+
+【0】审阅结论一句话
+上游 a51eec9 的两条守卫（水池 tankstatus / 泵 XHEAD）经 100+ 个边界点逐点验证
+与 EPANET 状态机**完全等价**（无误报、无漏报）；epanet 复刻路径逐位未动；
+但泵幂函数支存在一处**可达的静默近似**（下方【5】），已修复。
+
+-------------------------------------------------------------------------
+【1】解锁网数（自数，21 个公开网，取 public_reference_index.json 的 inp_used）
+  改动前（e2c936e）：4  = Hanoi / Fossolo_poly1 / Pescara / Modena
+  改动后守卫开    ：8  = 上述 4 + Anytown + Net1 + Net2 + Net3
+  改动后守卫关    ：9  = 再 + ky4（T-2 的 H0 恰等于 Hmin）
+  仍被拒 12 个的原因：PRV/PSV/FCV/CVPIPE（10 个）、D-W（Balerma）、
+                      Anytown_wntr（两个水池 H0==Hmin，运行期守卫实测确会命中）
+  ⇒ 上游报的 4→8（/9）属实。
+
+-------------------------------------------------------------------------
+【2】dense vs epanet vs EPANET DLL 参考解（t=0，B=1，junction 位 max|ΔH| ft）
+  网           dense-vs-epanet ΔH / ΔQ      dense-vs-DLL ΔH   epanet-vs-DLL ΔH
+  Anytown      1.71e-13 / 6.87e-13          4.26e-13          3.98e-13
+  Net1         6.82e-13 / 1.50e-12          6.82e-13          0.00e+00
+  Net2         1.01e-11 / 5.23e-12          1.01e-11          0.00e+00
+  Net3         3.88e-07 / 5.68e-07          3.88e-07          3.98e-10
+  ky4(守卫关)  5.30e-08 / 1.89e-08          5.30e-08          0.00e+00
+  （纯管道旧网：Hanoi 3.6e-12 / Fossolo 5.1e-13 / Modena 5.2e-12 / Pescara 3.97e-6）
+  迭代数：8 网全部与 epanet 路径逐项相等；亦与 DLL 的 iterations 相等。
+
+【2b】收敛性是"真收敛"而非钳位假象（不看 relerr，自算物理残差）
+  能量残差 max|hloss(q)-(H1-H2)|、质量残差 max|Σq_in-Σq_out-d-e|，
+  288 个随机场景（需水 ×0.25~3、逐点抖动、随机漏损 emitter、水库水头抖动）：
+    网          dense 能量残差 / 质量残差      epanet 能量残差 / 质量残差
+    Anytown     1.285e-03 / 8.9e-10           1.285e-03 / 1.1e-09
+    Net1        2.679e-04 / 9.0e-12           2.679e-04 / 2.1e-11
+    Net2        7.833e-04 / 3.5e-11           7.833e-04 / 7.9e-11
+    Net3        1.374e-02 / 8.7e-07           1.374e-02 / 1.2e-06
+    ky4         3.822e-05 / 3.3e-06           3.822e-05 / 3.3e-06
+  两条路径残差逐项同量级同数值 ⇒ dense 的收敛程度 = EPANET 自身的收敛程度，
+  残差来自 EPANET 的 relerr<=Hacc 判据本身，不是 dense 的钳位。
+  288 场景中 dense 与 epanet 的迭代数**逐项相等**（iters_ne=0）。
+  B=32 批量 vs 逐场景 max|ΔH|：0 ~ 7e-6（Pescara，纯管道旧路径）。
+
+-------------------------------------------------------------------------
+【3】水池边界守卫（自建最小 INP，5 种拓扑 × 9 个水头点 = 54 点）
+  拓扑：pipe→tank / pipe←tank / pump→tank / pump←tank / pipe→tank(CanOverflow=YES)
+  水头扫描：Hmin-1, Hmin, Hmin+Htol, Hmin+2Htol, 中点, Hmax-2Htol, Hmax-Htol,
+            Hmax, Hmax+1
+  判据：dense 是否 raise  ==  mode='epanet'+status_machine=True 是否置 TEMPCLOSED
+  结果：**54/54 完全一致**（含 CanOverflow=YES 全程不动作、泵进/出水池方向不同）。
+        放行分支 dense vs 状态机 max|ΔH| ≤ 5.7e-14 ft。
+  构造期守卫：H0==Hmin → raise；H0==Hmax(CanOverflow=0) → raise；
+              H0==Hmax(CanOverflow=YES) → 放行；H0=Hmin+Htol/2 → raise；
+              H0 内点 → 放行。全部符合 hydstatus.c:444/:461 + input1.c:27。
+
+-------------------------------------------------------------------------
+【4】泵 XHEAD 关停守卫（自建 R1--管--J1--泵-->R2，扫 R2 水头 100~400 ft）
+  6 种泵：POWER_FUNC(3pt) / POWER_FUNC(1pt) / CONST_HP / 幂函数+SPEED 0.5 /
+          CUSTOM(4pt) / CUSTOM+SPEED 0.6，共 52 个点。
+  判据：dense 是否 raise == epanet 状态机是否给 XHEAD(=0)。**52/52 一致**。
+  CONST_HP 全程 hmax=BIG=1e10 ⇒ 永不 XHEAD（hydstatus.c:223-227）✓
+  SPEED 0.5/0.6 的阈值分别落在 0.25·Hmax / 0.36·Hmax ✓（:231 SQR(setting)）
+  把守卫打掉后的"若不报错"解 vs 真实 EPANET：ΔH 最大 2.40e+01 ft、ΔQ 5.98 cfs
+  ⇒ 报错是必要的，不是保守。
+
+【4b】漏报方向（最危险）专测：240 个随机场景（水池水位在 [Hmin,Hmax] 均匀取样、
+  水库抖动、需水 ×0.1~3.1），凡 dense 放行的场景一律与 status_machine=True 对拍：
+    Anytown 3.95e-12 / Net1 1.60e-11 / Net2 6.08e-10 / Net3 4.43e-06 / ky4 1.18e-06
+  **零漏报**（无一场景"dense 放行而 EPANET 状态机会切换状态"）。
+  ky4 在"水位停在 H0=Hmin"的 32 场景批中命中守卫 11 次，11 次经状态机复核**全部**
+  确实会切换状态 ⇒ 也零误报。故"关掉静态守卫就能多跑 ky4"只对不触发的场景成立。
+
+-------------------------------------------------------------------------
+【5】发现并修复的缺陷（dgga/solver.py::_pump_PY）
+ (a) 幂函数泵 pow(|q|, N-1) 的 clamp_min(1e-30) 会**改写分支**（严重，可达）
+     管道支用 clamp_min(1e-30) 是安全的：指数 Hexp-1=0.852 固定，
+     1e-30^0.852≈2.5e-26 ⇒ hgrad 必 < RQtol，落 hydcoeffs.c:554 钳位支，前向不变。
+     泵的指数 N-1 由曲线拟合决定、可任意接近 0：Net3 泵 N=1.088 时
+     1e-30^0.088 = 2.3e-3 ⇒ hgrad=6.7e-3 ≫ RQtol=1e-7，**整支不再钳位**，
+     P 从 EPANET 的 1/RQtol=1e7 变成 1.5e2、Y 从 -2e9 变成 -3.05e4。
+     实测可达路径：solve(q0=零向量)（公开入参）。修复前 Net3：
+       迭代数 dense=25 vs epanet=28，max|ΔH|=2.57e-04 ft；
+     修复后：迭代数 28=28，max|ΔH|=3.98e-06 ft。
+     泵 P/Y 单元对拍（400 组随机流量含 q=0/负流/极端值）：
+       Net3 maxabs ΔP 1.00e+07 → **0.000e+00**（逐位）。
+     修法：显式取 C 的 pow(0,·)=0(N>1)/1(N==1)/+inf(N<1)，基用 where 换成 1.0
+     仅为反传安全；+inf 只发给真正会选中该支的 POWER_FUNC 泵，避免 0×nan 梯度。
+ (b) CONST_HP 的 hgrad 除法次序：C 是 (-r/q)/q，原实现写成 -r/(q*q)，差 1ulp。
+     ky4 泵位 maxabs ΔP 3.47e-18 → **0.000e+00**（逐位）；整网 ΔH 8.42e-08 → 5.30e-08。
+ 修复后重测：pytest 61 passed；solver.py 冒烟通过；regression_all **PASS 50/50**；
+ 梯度全部有限、gradcheck 仍通过（见【6】）。
+
+-------------------------------------------------------------------------
+【6】可微性（新增分支未断图）
+  torch.gradcheck（float64，accuracy=0 + 固定 K 步使函数光滑）：
+    Net1(泵+池) / Anytown(CUSTOM 泵) / Net2(池) 对 demand 与 res_head 均 True。
+  自动微分 vs epanet 前向中心差分（步长与量纲匹配）：
+    d/d(demand) 最大相对误差：Net1 5.5e-07、Anytown 1.2e-06、Net2 5.1e-06、
+                              Net3 6.5e-05、ky4 4.6e-05
+    d/d(水池水头)（本次新能力）：Net1 tank 3.9e-11、Net2 tank 2.7e-10、
+                                 Net3 三个 tank 4.3e-06~1.1e-05、
+                                 ky4 四个 tank 1.5e-06~5.2e-06
+  NaN 压力测试（q0 含精确 0，含 CONST_HP 网）：demand/head 梯度全部有限。
+  注：#7 首轮对零需水节点用 h=1e-9 得到"梯度差 3 个量级"，经步长扫描确认是
+      FD 自身的抵消噪声（h≥1e-3 后 FD 收敛到自动微分值），非代码缺陷。
+
+-------------------------------------------------------------------------
+【7】epanet 复刻路径逐位未变（铁律四）
+  把 e2c936e 的 solver.py 做成影子包 dgga_old（其余模块共用当前树），
+  21 公开网 + city_d，3 个时刻 × {状态机开/关} × {有/无 emitter} + B=3 批量，
+  逐位比较 head/flow/emitter/iters/relerr/status/setting/fixed_demand 8 个键：
+    **286 次比较，逐位不等项 = 0**。
+  regression_all 报告逐行 diff（vs e2c936e）只差一行：
+    ⑦ city_d GPU vs CPU  2.954e-16 → 2.757e-16（cuBLAS run-to-run 噪声），
+    其余全部逐字相同，含所有 worst=0.000e+00 的逐位断言。
+
+-------------------------------------------------------------------------
+【8】仍存在的限制（不是缺陷，是必须写进论文的口径）
+  · 守卫是"整批 raise"：B 中任一场景命中即整批失败，未返回逐场景掩码。
+  · dense 输出 dict 无 status/setting/fixed_demand_cfs 键（epanet 路径才有）。
+  · dense 仍拒 link_status/link_setting/status_machine（已实测三者均 raise）。
+  · 幂函数泵 N<1（Net6 有 5 个）且流量恰为 0 时，C 给 pow(0,负)=+inf→hloss=nan，
+    dense 现在同样给 inf/nan（逐字一致，但两边都是垃圾值）。Net6 本就被 CVPIPE/PRV 拒。
+  · autodiff.solve_unrolled 的入口守卫只看 link_type、不看 headloss_form，
+    D-W 网（Balerma）仍被放行 - 与本次改动无关，但建议补 raise。
+=========================================================================

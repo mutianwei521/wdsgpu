@@ -1,0 +1,27 @@
+NVIDIA GeForce RTX 5090
+cpus: 8
+/data/home/<user>/.local/lib/python3.10/site-packages/torch/profiler/profiler.py:224: UserWarning: Warning: Profiler clears events at the end of each cycle.Only events from the current cycle will be reported.To keep events across cycles, set acc_events=True.
+  _warn_once(
+==============================================================================
+(a) batched dense Cholesky microbenchmark, B=256
+    Nj  dtype |    chol ms    TFLOPS |   solve ms    TFLOPS | f32/f64
+   268     64 |      2.355     0.697 |     0.6806     0.054 |
+   268     32 |      0.667     2.463 |     0.2911     0.126 |    3.5x
+   541     64 |     11.793     1.146 |     2.1254     0.071 |
+   541     32 |      3.034     4.453 |     1.0692     0.140 |    3.9x
+   959     64 |     52.730     1.427 |     5.5397     0.085 |
+   959     32 |     13.669     5.506 |     2.6211     0.180 |    3.9x
+
+(b) real ky4 solve on GPU: top kernels by CUDA time
+total CUDA time 1486.3 ms across 152 op types
+  aten::linalg_cholesky_ex                        437.30 ms   29.4%  x9
+  void potrf_syrk_nc_kernel<double, 5, 6, 3, 3    381.74 ms   25.7%  x126
+  aten::copy_                                      91.02 ms    6.1%  x108
+  aten::_cholesky_solve_helper                     81.32 ms    5.5%  x27
+  Memcpy DtoD (Device -> Device)                   66.03 ms    4.4%  x63
+  void dtrsv_notrans_kernel_outplace_batched<1     49.87 ms    3.4%  x27
+  aten::mul                                        44.47 ms    3.0%  x410
+  void at::native::elementwise_kernel<128, 2,      43.85 ms    3.0%  x73
+  void potrf_syrk_T16_nc_kernel<double, 5, 4,      36.56 ms    2.5%  x405
+  void at::native::vectorized_elementwise_kern     32.77 ms    2.2%  x164
+kernel launches per solve (approx): 6385

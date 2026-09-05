@@ -1,0 +1,118 @@
+cff-version: 1.2.0
+message: >-
+  If you use HydroGrad (the dgga package) in your work, please cite the
+  software record below and, once published, the article describing it.
+  Until an archival DOI is minted, cite the repository URL and the commit.
+type: software
+title: "HydroGrad: a bit-faithful, differentiable re-implementation of the EPANET 2.2 global gradient algorithm"
+abstract: >-
+  HydroGrad (Python package dgga) reproduces the EPANET 2.2 hydraulic engine
+  frame for frame and iteration for iteration in PyTorch, and makes the steady
+  state differentiable with respect to demands, pipe resistances, reservoir
+  heads, pump curve coefficients and emitter (leak) coefficients through an
+  implicit adjoint and an unrolled route. It adds a batched status machine, a
+  sparse batched GPU route (cuDSS) and a GPU implicit adjoint that reuses the
+  forward factorisation.
+authors:
+  - family-names: Mu
+    given-names: Tianwei
+    affiliation: "School of Municipal Engineering and Environment, Shenyang Jianzhu University"
+    email: 1189233@mail.dhu.edu.cn
+  - family-names: Wang
+    given-names: Yue
+    affiliation: "School of Municipal Engineering and Environment, Shenyang Jianzhu University"
+  - family-names: Yuan
+    given-names: Mingzhe
+    affiliation: "Guangzhou Institute of Industrial Intelligence; Shenyang Institute of Automation, Chinese Academy of Sciences"
+    email: mzyuan@sia.cn
+  - family-names: Wang
+    given-names: Wenhong
+    affiliation: "Guangzhou Institute of Industrial Intelligence"
+  - family-names: Luo
+    given-names: Qing
+    affiliation: "College of Environment, Shenyang University"
+  - family-names: Xiao
+    given-names: Min
+    affiliation: "College of Environment, Shenyang University"
+  - family-names: Li
+    given-names: Jun
+    affiliation: "School of Municipal Engineering and Environment, Shenyang Jianzhu University"
+  - family-names: Yang
+    given-names: Hui
+    affiliation: "School of Municipal Engineering and Environment, Shenyang Jianzhu University"
+version: 0.2.0
+date-released: "2026-09-05"
+repository-code: "https://github.com/mutianwei521/wdsgpu"
+url: "https://github.com/mutianwei521/wdsgpu"
+license: MIT
+keywords:
+  - EPANET
+  - water distribution networks
+  - differentiable simulation
+  - adjoint sensitivity
+  - hydraulic simulation
+  - model calibration
+  - leak localisation
+  - PyTorch
+# Archival DOI: to be added when the Zenodo snapshot of the submitted version is minted.
+# doi: 10.5281/zenodo.XXXXXXX
+preferred-citation:
+  # Manuscript submitted to Water Research (under review). Replace the
+  # placeholders (journal volume, pages, DOI) when the article is published.
+  type: article
+  title: "Water-network decisions share one hydraulic gradient, and it can now be computed exactly"
+  authors:
+    - family-names: Mu
+      given-names: Tianwei
+    - family-names: Wang
+      given-names: Yue
+    - family-names: Yuan
+      given-names: Mingzhe
+    - family-names: Wang
+      given-names: Wenhong
+    - family-names: Luo
+      given-names: Qing
+    - family-names: Xiao
+      given-names: Min
+    - family-names: Li
+      given-names: Jun
+    - family-names: Yang
+      given-names: Hui
+  journal: "Water Research"
+  year: 2026
+  status: submitted
+  notes: "Under review. Volume, pages and DOI to be added on publication."
+references:
+  # Companion software paper submitted to Environmental Modelling & Software
+  # (under review); placeholders as above.
+  - type: article
+    title: "HydroGrad: A Bit-Faithful, Differentiable Global Gradient Algorithm for Water Distribution Networks"
+    authors:
+      - family-names: Mu
+        given-names: Tianwei
+      - family-names: Wang
+        given-names: Yue
+      - family-names: Yuan
+        given-names: Mingzhe
+      - family-names: Wang
+        given-names: Wenhong
+      - family-names: Luo
+        given-names: Qing
+      - family-names: Xiao
+        given-names: Min
+      - family-names: Li
+        given-names: Jun
+      - family-names: Yang
+        given-names: Hui
+    journal: "Environmental Modelling & Software"
+    year: 2026
+    status: submitted
+    notes: "Under review. Volume, pages and DOI to be added on publication."
+  - type: data
+    title: "City D and City H water distribution network datasets"
+    authors:
+      - family-names: Mu
+        given-names: Tianwei
+    year: 2026
+    license: CC-BY-4.0
+    notes: "datasets/ in this repository; DOI to be added on archival release."

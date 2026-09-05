@@ -1,0 +1,353 @@
+NVIDIA GeForce RTX 5090, 32607 MiB
+node: <node-19> | cpus: 8
+================================================================================================
+P4 全面重测 · 时间全表 | node: <node-19> | torch 2.11.0+cu128 | NVIDIA GeForce RTX 5090
+nvmath 1.0.0 | B 列: [1, 8, 64, 256, 512, 1024]
+md5 dgga/solver.py 45b0b0eeb66ed4e15ef81c53809d229a
+md5 dgga/autodiff.py e4b8cfe49536f85b435e04e5ed5621d2
+
+### Net1     Nj=9    L=13    N=11    nnz=31     K=4
+/data/run01/<user>/wdsgpu/hgp4rm/dgga/solver.py:2016: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hgp4rm/dgga/solver.py:2016: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=1     fwd  dense  8.88234  cudss 11.81148  |  fwd+bwd  dense  19.98421  cudss  23.80999
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    1.3583 | Badj稠密+手写伴随    0.6186 | C cudss    1.8109 | A/C   0.75x  Badj/C   0.34x  A/Badj   2.20x | 一致性 gA(B/A) 3.26e-16 (C/A) 8.68e-16
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=8     fwd  dense  1.23846  cudss  1.67653  |  fwd+bwd  dense   2.73963  cudss   3.35654
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    1.7309 | Badj稠密+手写伴随    0.8243 | C cudss    2.4838 | A/C   0.70x  Badj/C   0.33x  A/Badj   2.10x | 一致性 gA(B/A) 5.66e-16 (C/A) 9.75e-16
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=64    fwd  dense  0.15555  cudss  0.35055  |  fwd+bwd  dense   0.34409  cudss   0.70577
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    1.7192 | Badj稠密+手写伴随    0.8101 | C cudss    7.1302 | A/C   0.24x  Badj/C   0.11x  A/Badj   2.12x | 一致性 gA(B/A) 6.07e-16 (C/A) 5.03e-16
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=256   fwd  dense  0.03921  cudss  0.21034  |  fwd+bwd  dense   0.08713  cudss   0.42557
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    1.7351 | Badj稠密+手写伴随    0.8434 | C cudss   23.0393 | A/C   0.08x  Badj/C   0.04x  A/Badj   2.06x | 一致性 gA(B/A) 4.85e-16 (C/A) 6.27e-16
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=512   fwd  dense  0.01968  cudss  0.18401  |  fwd+bwd  dense   0.04387  cudss   0.37227
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    1.7545 | Badj稠密+手写伴随    0.8534 | C cudss   43.6133 | A/C   0.04x  Badj/C   0.02x  A/Badj   2.06x | 一致性 gA(B/A) 5.96e-16 (C/A) 7.40e-16
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=1024  fwd  dense  0.00997  cudss  0.17123  |  fwd+bwd  dense   0.02209  cudss   0.34680
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    1.7888 | Badj稠密+手写伴随    0.8620 | C cudss   84.5222 | A/C   0.02x  Badj/C   0.01x  A/Badj   2.08x | 一致性 gA(B/A) 5.96e-16 (C/A) 9.88e-16
+
+### Anytown  Nj=19   L=41    N=22    nnz=95     K=7
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=1     fwd  dense 14.62885  cudss 19.02645  |  fwd+bwd  dense  39.23848  cudss  45.71367
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    1.3655 | Badj稠密+手写伴随    0.5965 | C cudss    1.8820 | A/C   0.73x  Badj/C   0.32x  A/Badj   2.29x | 一致性 gA(B/A) 3.45e-16 (C/A) 6.90e-16
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=8     fwd  dense  2.39347  cudss  3.12110  |  fwd+bwd  dense   5.43161  cudss   6.42191
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    1.8030 | Badj稠密+手写伴随    0.8737 | C cudss    2.4823 | A/C   0.73x  Badj/C   0.35x  A/Badj   2.06x | 一致性 gA(B/A) 8.75e-16 (C/A) 1.13e-15
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=64    fwd  dense  0.30064  cudss  0.64269  |  fwd+bwd  dense   0.69211  cudss   1.32293
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    1.7986 | Badj稠密+手写伴随    0.8661 | C cudss    7.2655 | A/C   0.25x  Badj/C   0.12x  A/Badj   2.08x | 一致性 gA(B/A) 9.57e-15 (C/A) 1.53e-14
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=256   fwd  dense  0.07590  cudss  0.37470  |  fwd+bwd  dense   0.18263  cudss   0.77229
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    1.8158 | Badj稠密+手写伴随    0.8838 | C cudss   23.1492 | A/C   0.08x  Badj/C   0.04x  A/Badj   2.05x | 一致性 gA(B/A) 1.39e-15 (C/A) 1.08e-15
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=512   fwd  dense  0.03827  cudss  0.32648  |  fwd+bwd  dense   0.09685  cudss   0.67562
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    1.8267 | Badj稠密+手写伴随    0.9216 | C cudss   43.9735 | A/C   0.04x  Badj/C   0.02x  A/Badj   1.98x | 一致性 gA(B/A) 4.02e-15 (C/A) 8.04e-15
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=1024  fwd  dense  0.01958  cudss  0.30199  |  fwd+bwd  dense   0.05413  cudss   0.62983
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    1.9847 | Badj稠密+手写伴随    0.9677 | C cudss   85.2548 | A/C   0.02x  Badj/C   0.01x  A/Badj   2.05x | 一致性 gA(B/A) 3.82e-14 (C/A) 1.85e-14
+
+### Hanoi    Nj=31   L=34    N=32    nnz=97     K=4
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=1     fwd  dense  6.12316  cudss  8.82991  |  fwd+bwd  dense  15.58955  cudss  19.23192
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    1.3948 | Badj稠密+手写伴随    0.6060 | C cudss    1.8657 | A/C   0.75x  Badj/C   0.32x  A/Badj   2.30x | 一致性 gA(B/A) 2.86e-15 (C/A) 3.18e-15
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=8     fwd  dense  0.91365  cudss  1.29437  |  fwd+bwd  dense   2.24897  cudss   2.78661
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    1.8539 | Badj稠密+手写伴随    0.9278 | C cudss    2.5854 | A/C   0.72x  Badj/C   0.36x  A/Badj   2.00x | 一致性 gA(B/A) 2.90e-15 (C/A) 4.57e-15
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=64    fwd  dense  0.11412  cudss  0.30559  |  fwd+bwd  dense   0.28434  cudss   0.63568
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    1.8712 | Badj稠密+手写伴随    0.9285 | C cudss    7.2380 | A/C   0.26x  Badj/C   0.13x  A/Badj   2.02x | 一致性 gA(B/A) 1.91e-14 (C/A) 1.99e-14
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=256   fwd  dense  0.02896  cudss  0.20000  |  fwd+bwd  dense   0.07169  cudss   0.40876
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    1.9158 | Badj稠密+手写伴随    0.9645 | C cudss   23.3130 | A/C   0.08x  Badj/C   0.04x  A/Badj   1.99x | 一致性 gA(B/A) 7.03e-15 (C/A) 1.36e-14
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=512   fwd  dense  0.01471  cudss  0.17958  |  fwd+bwd  dense   0.03588  cudss   0.36763
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    1.9690 | Badj稠密+手写伴随    0.9739 | C cudss   43.9068 | A/C   0.04x  Badj/C   0.02x  A/Badj   2.02x | 一致性 gA(B/A) 1.32e-14 (C/A) 1.92e-14
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=1024  fwd  dense  0.00762  cudss  0.16785  |  fwd+bwd  dense   0.01847  cudss   0.34369
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    2.1933 | Badj稠密+手写伴随    1.0353 | C cudss   85.1962 | A/C   0.03x  Badj/C   0.01x  A/Badj   2.12x | 一致性 gA(B/A) 5.92e-14 (C/A) 8.75e-14
+
+### Net2     Nj=35   L=40    N=36    nnz=113    K=6
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=1     fwd  dense  9.32640  cudss 13.37176  |  fwd+bwd  dense  24.33005  cudss  29.68180
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    1.3865 | Badj稠密+手写伴随    0.5939 | C cudss    1.9013 | A/C   0.73x  Badj/C   0.31x  A/Badj   2.33x | 一致性 gA(B/A) 4.42e-14 (C/A) 2.01e-14
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=8     fwd  dense  1.39399  cudss  1.95070  |  fwd+bwd  dense   3.50783  cudss   4.23496
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    1.9236 | Badj稠密+手写伴随    0.9568 | C cudss    2.5455 | A/C   0.76x  Badj/C   0.38x  A/Badj   2.01x | 一致性 gA(B/A) 2.51e-13 (C/A) 3.88e-13
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=64    fwd  dense  0.17567  cudss  0.46143  |  fwd+bwd  dense   0.44366  cudss   0.97325
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    1.9361 | Badj稠密+手写伴随    0.9568 | C cudss    7.2182 | A/C   0.27x  Badj/C   0.13x  A/Badj   2.02x | 一致性 gA(B/A) 1.05e-13 (C/A) 2.42e-13
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=256   fwd  dense  0.04465  cudss  0.29804  |  fwd+bwd  dense   0.11229  cudss   0.61427
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    2.0045 | Badj稠密+手写伴随    1.0058 | C cudss   23.1496 | A/C   0.09x  Badj/C   0.04x  A/Badj   1.99x | 一致性 gA(B/A) 3.43e-12 (C/A) 1.40e-12
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=512   fwd  dense  0.02275  cudss  0.26868  |  fwd+bwd  dense   0.05684  cudss   0.55125
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    2.3652 | Badj稠密+手写伴随    1.0564 | C cudss   43.8315 | A/C   0.05x  Badj/C   0.02x  A/Badj   2.24x | 一致性 gA(B/A) 2.54e-12 (C/A) 7.50e-13
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=1024  fwd  dense  0.01196  cudss  0.25213  |  fwd+bwd  dense   0.03056  cudss   0.51747
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    3.1508 | Badj稠密+手写伴随    1.1227 | C cudss   85.0703 | A/C   0.04x  Badj/C   0.01x  A/Badj   2.81x | 一致性 gA(B/A) 1.04e-11 (C/A) 4.97e-12
+
+### Fossolo  Nj=36   L=58    N=37    nnz=150    K=6
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=1     fwd  dense  7.49917  cudss 10.90679  |  fwd+bwd  dense  24.35495  cudss  29.48837
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    1.3720 | Badj稠密+手写伴随    0.6037 | C cudss    1.8499 | A/C   0.74x  Badj/C   0.33x  A/Badj   2.27x | 一致性 gA(B/A) 2.19e-15 (C/A) 2.07e-15
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=8     fwd  dense  1.35619  cudss  1.90808  |  fwd+bwd  dense   3.52169  cudss   4.28172
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    1.8842 | Badj稠密+手写伴随    0.9376 | C cudss    2.4748 | A/C   0.76x  Badj/C   0.38x  A/Badj   2.01x | 一致性 gA(B/A) 7.89e-16 (C/A) 1.16e-15
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=64    fwd  dense  0.19575  cudss  0.52967  |  fwd+bwd  dense   0.44349  cudss   0.97353
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    1.8978 | Badj稠密+手写伴随    0.9280 | C cudss    7.2234 | A/C   0.26x  Badj/C   0.13x  A/Badj   2.05x | 一致性 gA(B/A) 1.16e-15 (C/A) 1.83e-15
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=256   fwd  dense  0.05020  cudss  0.34855  |  fwd+bwd  dense   0.11162  cudss   0.61716
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    1.9294 | Badj稠密+手写伴随    0.9715 | C cudss   23.1323 | A/C   0.08x  Badj/C   0.04x  A/Badj   1.99x | 一致性 gA(B/A) 8.09e-15 (C/A) 5.02e-15
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=512   fwd  dense  0.02564  cudss  0.31439  |  fwd+bwd  dense   0.05702  cudss   0.55155
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    2.2911 | Badj稠密+手写伴随    1.0342 | C cudss   43.9396 | A/C   0.05x  Badj/C   0.02x  A/Badj   2.22x | 一致性 gA(B/A) 3.86e-15 (C/A) 5.80e-15
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=1024  fwd  dense  0.01359  cudss  0.29435  |  fwd+bwd  dense   0.03089  cudss   0.51826
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    3.1437 | Badj稠密+手写伴随    1.1505 | C cudss   85.1515 | A/C   0.04x  Badj/C   0.01x  A/Badj   2.73x | 一致性 gA(B/A) 1.26e-14 (C/A) 9.90e-15
+
+### Pescara  Nj=68   L=99    N=71    nnz=254    K=5
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=1     fwd  dense  8.32530  cudss 11.00405  |  fwd+bwd  dense  20.82819  cudss  24.53991
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    1.5522 | Badj稠密+手写伴随    0.7314 | C cudss    1.8883 | A/C   0.82x  Badj/C   0.39x  A/Badj   2.12x | 一致性 gA(B/A) 3.81e-08 (C/A) 5.30e-08
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=8     fwd  dense  1.25303  cudss  1.61436  |  fwd+bwd  dense   3.44301  cudss   3.53534
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    3.3762 | Badj稠密+手写伴随    1.1499 | C cudss    2.5300 | A/C   1.33x  Badj/C   0.45x  A/Badj   2.94x | 一致性 gA(B/A) 2.87e-08 (C/A) 1.89e-08
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=64    fwd  dense  0.15649  cudss  0.38285  |  fwd+bwd  dense   0.38726  cudss   0.80968
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    2.2874 | Badj稠密+手写伴随    1.1617 | C cudss    7.2804 | A/C   0.31x  Badj/C   0.16x  A/Badj   1.97x | 一致性 gA(B/A) 2.64e-08 (C/A) 4.42e-08
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=256   fwd  dense  0.04052  cudss  0.25012  |  fwd+bwd  dense   0.10510  cudss   0.51651
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    3.6433 | Badj稠密+手写伴随    1.2167 | C cudss   23.3772 | A/C   0.16x  Badj/C   0.05x  A/Badj   2.99x | 一致性 gA(B/A) 2.47e-08 (C/A) 3.46e-08
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=512   fwd  dense  0.02158  cudss  0.22692  |  fwd+bwd  dense   0.06503  cudss   0.46432
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    5.4787 | Badj稠密+手写伴随    1.3741 | C cudss   44.4221 | A/C   0.12x  Badj/C   0.03x  A/Badj   3.99x | 一致性 gA(B/A) 2.24e-08 (C/A) 3.27e-08
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=1024  fwd  dense  0.01240  cudss  0.21121  |  fwd+bwd  dense   0.04891  cudss   0.43260
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    9.4355 | Badj稠密+手写伴随    1.7087 | C cudss   85.9816 | A/C   0.11x  Badj/C   0.02x  A/Badj   5.52x | 一致性 gA(B/A) 2.93e-08 (C/A) 3.55e-08
+
+### Net3     Nj=92   L=119   N=97    nnz=320    K=5
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=1     fwd  dense 11.79319  cudss 14.71534  |  fwd+bwd  dense  26.61572  cudss  30.71410
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    1.6102 | Badj稠密+手写伴随    0.7399 | C cudss    1.8704 | A/C   0.86x  Badj/C   0.40x  A/Badj   2.18x | 一致性 gA(B/A) 3.73e-10 (C/A) 6.02e-10
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=8     fwd  dense  1.77142  cudss  2.08616  |  fwd+bwd  dense   4.28782  cudss   4.29896
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    3.8151 | Badj稠密+手写伴随    1.3018 | C cudss    2.5327 | A/C   1.51x  Badj/C   0.51x  A/Badj   2.93x | 一致性 gA(B/A) 3.09e-09 (C/A) 6.79e-10
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=64    fwd  dense  0.26161  cudss  0.52563  |  fwd+bwd  dense   0.49432  cudss   0.90503
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    2.7393 | Badj稠密+手写伴随    1.2653 | C cudss    7.2852 | A/C   0.38x  Badj/C   0.17x  A/Badj   2.16x | 一致性 gA(B/A) 2.01e-09 (C/A) 2.24e-09
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=256   fwd  dense  0.06791  cudss  0.31766  |  fwd+bwd  dense   0.13665  cudss   0.53872
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    4.5589 | Badj稠密+手写伴随    1.3584 | C cudss   23.2572 | A/C   0.20x  Badj/C   0.06x  A/Badj   3.36x | 一致性 gA(B/A) 2.26e-09 (C/A) 1.80e-09
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=512   fwd  dense  0.03622  cudss  0.28141  |  fwd+bwd  dense   0.08695  cudss   0.47696
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    7.2098 | Badj稠密+手写伴随    1.5746 | C cudss   44.4290 | A/C   0.16x  Badj/C   0.04x  A/Badj   4.58x | 一致性 gA(B/A) 2.68e-09 (C/A) 1.80e-09
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=1024  fwd  dense  0.02266  cudss  0.25944  |  fwd+bwd  dense   0.06975  cudss   0.44065
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd   13.4207 | Badj稠密+手写伴随    2.3595 | C cudss   85.7041 | A/C   0.16x  Badj/C   0.03x  A/Badj   5.69x | 一致性 gA(B/A) 2.88e-09 (C/A) 1.98e-09
+
+### Modena   Nj=268  L=317   N=272   nnz=894    K=5
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=1     fwd  dense 10.82386  cudss 11.01840  |  fwd+bwd  dense  23.56586  cudss  24.75269
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    2.6103 | Badj稠密+手写伴随    1.2631 | C cudss    1.8632 | A/C   1.40x  Badj/C   0.68x  A/Badj   2.07x | 一致性 gA(B/A) 5.17e-14 (C/A) 1.25e-13
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=8     fwd  dense  2.00887  cudss  1.63940  |  fwd+bwd  dense   6.96314  cudss   3.58540
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd   10.8520 | Badj稠密+手写伴随    2.6472 | C cudss    2.6029 | A/C   4.17x  Badj/C   1.02x  A/Badj   4.10x | 一致性 gA(B/A) 1.49e-13 (C/A) 3.74e-14
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=64    fwd  dense  0.27787  cudss  0.38439  |  fwd+bwd  dense   1.15062  cudss   0.81340
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd   15.1780 | Badj稠密+手写伴随    2.9446 | C cudss    7.3150 | A/C   2.07x  Badj/C   0.40x  A/Badj   5.15x | 一致性 gA(B/A) 3.99e-14 (C/A) 6.19e-14
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=256   fwd  dense  0.12888  cudss  0.25208  |  fwd+bwd  dense   0.89460  cudss   0.51960
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd   52.4271 | Badj稠密+手写伴随    6.1283 | C cudss   23.5893 | A/C   2.22x  Badj/C   0.26x  A/Badj   8.55x | 一致性 gA(B/A) 2.41e-13 (C/A) 1.85e-13
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=512   fwd  dense  0.10215  cudss  0.22558  |  fwd+bwd  dense   0.84497  cudss   0.46009
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd  101.1724 | Badj稠密+手写伴随   10.0861 | C cudss   44.2056 | A/C   2.29x  Badj/C   0.23x  A/Badj  10.03x | 一致性 gA(B/A) 7.53e-12 (C/A) 6.04e-12
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=1024  fwd  dense  0.09142  cudss  0.21069  |  fwd+bwd  dense   0.82454  cudss   0.43235
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd  199.1229 | Badj稠密+手写伴随   18.4947 | C cudss   85.9422 | A/C   2.32x  Badj/C   0.22x  A/Badj  10.77x | 一致性 gA(B/A) 1.11e-12 (C/A) 1.23e-12
+
+### City_D   Nj=541  L=554   N=542   nnz=1645   K=5
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=1     fwd  dense 15.26084  cudss 11.08243  |  fwd+bwd  dense  30.71427  cudss  24.73821
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd    5.2762 | Badj稠密+手写伴随    2.2650 | C cudss    1.8562 | A/C   2.84x  Badj/C   1.22x  A/Badj   2.33x | 一致性 gA(B/A) 2.49e-09 (C/A) 2.29e-09
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=8     fwd  dense  3.55932  cudss  1.63523  |  fwd+bwd  dense  15.99258  cudss   3.58900
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd   27.8614 | Badj稠密+手写伴随    5.5540 | C cudss    2.6137 | A/C  10.66x  Badj/C   2.12x  A/Badj   5.02x | 一致性 gA(B/A) 3.81e-08 (C/A) 4.43e-09
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=64    fwd  dense  0.80060  cudss  0.38490  |  fwd+bwd  dense   5.75524  cudss   0.81394
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd   85.8318 | Badj稠密+手写伴随   10.4740 | C cudss    7.2237 | A/C  11.88x  Badj/C   1.45x  A/Badj   8.19x | 一致性 gA(B/A) 3.93e-08 (C/A) 4.39e-09
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=256   fwd  dense  0.46143  cudss  0.25158  |  fwd+bwd  dense   5.09606  cudss   0.52008
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd  312.9017 | Badj稠密+手写伴随   24.1136 | C cudss   23.5408 | A/C  13.29x  Badj/C   1.02x  A/Badj  12.98x | 一致性 gA(B/A) 3.59e-08 (C/A) 8.20e-09
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=512   fwd  dense  0.41260  cudss  0.22680  |  fwd+bwd  dense   4.99506  cudss   0.46177
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd  617.6222 | Badj稠密+手写伴随   42.9188 | C cudss   44.2494 | A/C  13.96x  Badj/C   0.97x  A/Badj  14.39x | 一致性 gA(B/A) 2.09e-08 (C/A) 9.55e-09
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=1024  fwd  dense  0.38778  cudss  0.21410  |  fwd+bwd  dense OOM        cudss   0.43456
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd 1226.0962 | Badj稠密+手写伴随   80.5602 | C cudss   86.3829 | A/C  14.19x  Badj/C   0.93x  A/Badj  15.22x | 一致性 gA(B/A) 3.36e-08 (C/A) 7.26e-09
+
+### ky4      Nj=959  L=1158  N=964   nnz=3219   K=9
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=1     fwd  dense 45.46969  cudss 26.31268  |  fwd+bwd  dense 127.60521  cudss  58.47248
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd   13.2739 | Badj稠密+手写伴随    3.7567 | C cudss    1.9454 | A/C   6.82x  Badj/C   1.93x  A/Badj   3.53x | 一致性 gA(B/A) 6.16e-11 (C/A) 7.78e-11
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=8     fwd  dense 13.48893  cudss  3.75224  |  fwd+bwd  dense  89.00492  cudss   8.25024
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd   84.0480 | Badj稠密+手写伴随   12.1771 | C cudss    2.6710 | A/C  31.47x  Badj/C   4.56x  A/Badj   6.90x | 一致性 gA(B/A) 2.34e-10 (C/A) 7.39e-11
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=64    fwd  dense  4.30209  cudss  0.79781  |  fwd+bwd  dense  50.75904  cudss   1.71456
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd  396.2662 | Badj稠密+手写伴随   32.0334 | C cudss    7.4102 | A/C  53.48x  Badj/C   4.32x  A/Badj  12.37x | 一致性 gA(B/A) 2.04e-09 (C/A) 4.83e-10
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=256   fwd  dense  2.97448  cudss  0.47463  |  fwd+bwd  dense OOM        cudss   0.98520
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd 1512.6685 | Badj稠密+手写伴随   86.0912 | C cudss   23.4321 | A/C  64.56x  Badj/C   3.67x  A/Badj  17.57x | 一致性 gA(B/A) 2.53e-09 (C/A) 4.68e-10
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=512   fwd  dense  2.80495  cudss  0.42304  |  fwd+bwd  dense OOM        cudss   0.86136
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd OOM       | Badj稠密+手写伴随 OOM       | C cudss   44.7847 | A/C   -     Badj/C   -     A/Badj   -    | 一致性 gA(B/A)   -     (C/A)   -    
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=1024  fwd  dense  2.73176  cudss  0.39488  |  fwd+bwd  dense OOM        cudss   0.79946
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd OOM       | Badj稠密+手写伴随 OOM       | C cudss   86.7049 | A/C   -     Badj/C   -     A/Badj   -    | 一致性 gA(B/A)   -     (C/A)   -    
+
+================================================================================================
+§T1 汇总（ms/场景；倍数 = dense/cudss）  node=<node-19>
+net      Nj    B     K  | fwd dense  fwd cudss  倍数   | f+b dense  f+b cudss  倍数
+Net1     9     1     4  |   8.88234   11.81148   0.75x |  19.98421   23.80999   0.84x
+Net1     9     8     4  |   1.23846    1.67653   0.74x |   2.73963    3.35654   0.82x
+Net1     9     64    4  |   0.15555    0.35055   0.44x |   0.34409    0.70577   0.49x
+Net1     9     256   4  |   0.03921    0.21034   0.19x |   0.08713    0.42557   0.20x
+Net1     9     512   4  |   0.01968    0.18401   0.11x |   0.04387    0.37227   0.12x
+Net1     9     1024  4  |   0.00997    0.17123   0.06x |   0.02209    0.34680   0.06x
+Anytown  19    1     7  |  14.62885   19.02645   0.77x |  39.23848   45.71367   0.86x
+Anytown  19    8     7  |   2.39347    3.12110   0.77x |   5.43161    6.42191   0.85x
+Anytown  19    64    7  |   0.30064    0.64269   0.47x |   0.69211    1.32293   0.52x
+Anytown  19    256   7  |   0.07590    0.37470   0.20x |   0.18263    0.77229   0.24x
+Anytown  19    512   7  |   0.03827    0.32648   0.12x |   0.09685    0.67562   0.14x
+Anytown  19    1024  7  |   0.01958    0.30199   0.06x |   0.05413    0.62983   0.09x
+Hanoi    31    1     4  |   6.12316    8.82991   0.69x |  15.58955   19.23192   0.81x
+Hanoi    31    8     4  |   0.91365    1.29437   0.71x |   2.24897    2.78661   0.81x
+Hanoi    31    64    4  |   0.11412    0.30559   0.37x |   0.28434    0.63568   0.45x
+Hanoi    31    256   4  |   0.02896    0.20000   0.14x |   0.07169    0.40876   0.18x
+Hanoi    31    512   4  |   0.01471    0.17958   0.08x |   0.03588    0.36763   0.10x
+Hanoi    31    1024  4  |   0.00762    0.16785   0.05x |   0.01847    0.34369   0.05x
+Net2     35    1     6  |   9.32640   13.37176   0.70x |  24.33005   29.68180   0.82x
+Net2     35    8     6  |   1.39399    1.95070   0.71x |   3.50783    4.23496   0.83x
+Net2     35    64    6  |   0.17567    0.46143   0.38x |   0.44366    0.97325   0.46x
+Net2     35    256   6  |   0.04465    0.29804   0.15x |   0.11229    0.61427   0.18x
+Net2     35    512   6  |   0.02275    0.26868   0.08x |   0.05684    0.55125   0.10x
+Net2     35    1024  6  |   0.01196    0.25213   0.05x |   0.03056    0.51747   0.06x
+Fossolo  36    1     6  |   7.49917   10.90679   0.69x |  24.35495   29.48837   0.83x
+Fossolo  36    8     6  |   1.35619    1.90808   0.71x |   3.52169    4.28172   0.82x
+Fossolo  36    64    6  |   0.19575    0.52967   0.37x |   0.44349    0.97353   0.46x
+Fossolo  36    256   6  |   0.05020    0.34855   0.14x |   0.11162    0.61716   0.18x
+Fossolo  36    512   6  |   0.02564    0.31439   0.08x |   0.05702    0.55155   0.10x
+Fossolo  36    1024  6  |   0.01359    0.29435   0.05x |   0.03089    0.51826   0.06x
+Pescara  68    1     5  |   8.32530   11.00405   0.76x |  20.82819   24.53991   0.85x
+Pescara  68    8     5  |   1.25303    1.61436   0.78x |   3.44301    3.53534   0.97x
+Pescara  68    64    5  |   0.15649    0.38285   0.41x |   0.38726    0.80968   0.48x
+Pescara  68    256   5  |   0.04052    0.25012   0.16x |   0.10510    0.51651   0.20x
+Pescara  68    512   5  |   0.02158    0.22692   0.10x |   0.06503    0.46432   0.14x
+Pescara  68    1024  5  |   0.01240    0.21121   0.06x |   0.04891    0.43260   0.11x
+Net3     92    1     5  |  11.79319   14.71534   0.80x |  26.61572   30.71410   0.87x
+Net3     92    8     5  |   1.77142    2.08616   0.85x |   4.28782    4.29896   1.00x
+Net3     92    64    5  |   0.26161    0.52563   0.50x |   0.49432    0.90503   0.55x
+Net3     92    256   5  |   0.06791    0.31766   0.21x |   0.13665    0.53872   0.25x
+Net3     92    512   5  |   0.03622    0.28141   0.13x |   0.08695    0.47696   0.18x
+Net3     92    1024  5  |   0.02266    0.25944   0.09x |   0.06975    0.44065   0.16x
+Modena   268   1     5  |  10.82386   11.01840   0.98x |  23.56586   24.75269   0.95x
+Modena   268   8     5  |   2.00887    1.63940   1.23x |   6.96314    3.58540   1.94x
+Modena   268   64    5  |   0.27787    0.38439   0.72x |   1.15062    0.81340   1.41x
+Modena   268   256   5  |   0.12888    0.25208   0.51x |   0.89460    0.51960   1.72x
+Modena   268   512   5  |   0.10215    0.22558   0.45x |   0.84497    0.46009   1.84x
+Modena   268   1024  5  |   0.09142    0.21069   0.43x |   0.82454    0.43235   1.91x
+City_D   541   1     5  |  15.26084   11.08243   1.38x |  30.71427   24.73821   1.24x
+City_D   541   8     5  |   3.55932    1.63523   2.18x |  15.99258    3.58900   4.46x
+City_D   541   64    5  |   0.80060    0.38490   2.08x |   5.75524    0.81394   7.07x
+City_D   541   256   5  |   0.46143    0.25158   1.83x |   5.09606    0.52008   9.80x
+City_D   541   512   5  |   0.41260    0.22680   1.82x |   4.99506    0.46177  10.82x
+City_D   541   1024  5  |   0.38778    0.21410   1.81x |       OOM    0.43456    -   
+ky4      959   1     9  |  45.46969   26.31268   1.73x | 127.60521   58.47248   2.18x
+ky4      959   8     9  |  13.48893    3.75224   3.59x |  89.00492    8.25024  10.79x
+ky4      959   64    9  |   4.30209    0.79781   5.39x |  50.75904    1.71456  29.60x
+ky4      959   256   9  |   2.97448    0.47463   6.27x |       OOM    0.98520    -   
+ky4      959   512   9  |   2.80495    0.42304   6.63x |       OOM    0.86136    -   
+ky4      959   1024  9  |   2.73176    0.39488   6.92x |       OOM    0.79946    -   
+
+§T2 倍数分解（一轮线性代数 f+b，ms/轮，整批）  node=<node-19>
+net      Nj    B     | A 稠密+autograd | Badj 稠密+手写伴随 | C cudss(gr=2) | Badj/C(稀疏赢)  A/Badj(通用autograd欠账)  A/C(仓库现状)
+Net1     9     1     |          1.3583 |             0.6186 |        1.8109 |          0.34x                   2.20x          0.75x
+Net1     9     8     |          1.7309 |             0.8243 |        2.4838 |          0.33x                   2.10x          0.70x
+Net1     9     64    |          1.7192 |             0.8101 |        7.1302 |          0.11x                   2.12x          0.24x
+Net1     9     256   |          1.7351 |             0.8434 |       23.0393 |          0.04x                   2.06x          0.08x
+Net1     9     512   |          1.7545 |             0.8534 |       43.6133 |          0.02x                   2.06x          0.04x
+Net1     9     1024  |          1.7888 |             0.8620 |       84.5222 |          0.01x                   2.08x          0.02x
+Anytown  19    1     |          1.3655 |             0.5965 |        1.8820 |          0.32x                   2.29x          0.73x
+Anytown  19    8     |          1.8030 |             0.8737 |        2.4823 |          0.35x                   2.06x          0.73x
+Anytown  19    64    |          1.7986 |             0.8661 |        7.2655 |          0.12x                   2.08x          0.25x
+Anytown  19    256   |          1.8158 |             0.8838 |       23.1492 |          0.04x                   2.05x          0.08x
+Anytown  19    512   |          1.8267 |             0.9216 |       43.9735 |          0.02x                   1.98x          0.04x
+Anytown  19    1024  |          1.9847 |             0.9677 |       85.2548 |          0.01x                   2.05x          0.02x
+Hanoi    31    1     |          1.3948 |             0.6060 |        1.8657 |          0.32x                   2.30x          0.75x
+Hanoi    31    8     |          1.8539 |             0.9278 |        2.5854 |          0.36x                   2.00x          0.72x
+Hanoi    31    64    |          1.8712 |             0.9285 |        7.2380 |          0.13x                   2.02x          0.26x
+Hanoi    31    256   |          1.9158 |             0.9645 |       23.3130 |          0.04x                   1.99x          0.08x
+Hanoi    31    512   |          1.9690 |             0.9739 |       43.9068 |          0.02x                   2.02x          0.04x
+Hanoi    31    1024  |          2.1933 |             1.0353 |       85.1962 |          0.01x                   2.12x          0.03x
+Net2     35    1     |          1.3865 |             0.5939 |        1.9013 |          0.31x                   2.33x          0.73x
+Net2     35    8     |          1.9236 |             0.9568 |        2.5455 |          0.38x                   2.01x          0.76x
+Net2     35    64    |          1.9361 |             0.9568 |        7.2182 |          0.13x                   2.02x          0.27x
+Net2     35    256   |          2.0045 |             1.0058 |       23.1496 |          0.04x                   1.99x          0.09x
+Net2     35    512   |          2.3652 |             1.0564 |       43.8315 |          0.02x                   2.24x          0.05x
+Net2     35    1024  |          3.1508 |             1.1227 |       85.0703 |          0.01x                   2.81x          0.04x
+Fossolo  36    1     |          1.3720 |             0.6037 |        1.8499 |          0.33x                   2.27x          0.74x
+Fossolo  36    8     |          1.8842 |             0.9376 |        2.4748 |          0.38x                   2.01x          0.76x
+Fossolo  36    64    |          1.8978 |             0.9280 |        7.2234 |          0.13x                   2.05x          0.26x
+Fossolo  36    256   |          1.9294 |             0.9715 |       23.1323 |          0.04x                   1.99x          0.08x
+Fossolo  36    512   |          2.2911 |             1.0342 |       43.9396 |          0.02x                   2.22x          0.05x
+Fossolo  36    1024  |          3.1437 |             1.1505 |       85.1515 |          0.01x                   2.73x          0.04x
+Pescara  68    1     |          1.5522 |             0.7314 |        1.8883 |          0.39x                   2.12x          0.82x
+Pescara  68    8     |          3.3762 |             1.1499 |        2.5300 |          0.45x                   2.94x          1.33x
+Pescara  68    64    |          2.2874 |             1.1617 |        7.2804 |          0.16x                   1.97x          0.31x
+Pescara  68    256   |          3.6433 |             1.2167 |       23.3772 |          0.05x                   2.99x          0.16x
+Pescara  68    512   |          5.4787 |             1.3741 |       44.4221 |          0.03x                   3.99x          0.12x
+Pescara  68    1024  |          9.4355 |             1.7087 |       85.9816 |          0.02x                   5.52x          0.11x
+Net3     92    1     |          1.6102 |             0.7399 |        1.8704 |          0.40x                   2.18x          0.86x
+Net3     92    8     |          3.8151 |             1.3018 |        2.5327 |          0.51x                   2.93x          1.51x
+Net3     92    64    |          2.7393 |             1.2653 |        7.2852 |          0.17x                   2.16x          0.38x
+Net3     92    256   |          4.5589 |             1.3584 |       23.2572 |          0.06x                   3.36x          0.20x
+Net3     92    512   |          7.2098 |             1.5746 |       44.4290 |          0.04x                   4.58x          0.16x
+Net3     92    1024  |         13.4207 |             2.3595 |       85.7041 |          0.03x                   5.69x          0.16x
+Modena   268   1     |          2.6103 |             1.2631 |        1.8632 |          0.68x                   2.07x          1.40x
+Modena   268   8     |         10.8520 |             2.6472 |        2.6029 |          1.02x                   4.10x          4.17x
+Modena   268   64    |         15.1780 |             2.9446 |        7.3150 |          0.40x                   5.15x          2.07x
+Modena   268   256   |         52.4271 |             6.1283 |       23.5893 |          0.26x                   8.55x          2.22x
+Modena   268   512   |        101.1724 |            10.0861 |       44.2056 |          0.23x                  10.03x          2.29x
+Modena   268   1024  |        199.1229 |            18.4947 |       85.9422 |          0.22x                  10.77x          2.32x
+City_D   541   1     |          5.2762 |             2.2650 |        1.8562 |          1.22x                   2.33x          2.84x
+City_D   541   8     |         27.8614 |             5.5540 |        2.6137 |          2.12x                   5.02x         10.66x
+City_D   541   64    |         85.8318 |            10.4740 |        7.2237 |          1.45x                   8.19x         11.88x
+City_D   541   256   |        312.9017 |            24.1136 |       23.5408 |          1.02x                  12.98x         13.29x
+City_D   541   512   |        617.6222 |            42.9188 |       44.2494 |          0.97x                  14.39x         13.96x
+City_D   541   1024  |       1226.0962 |            80.5602 |       86.3829 |          0.93x                  15.22x         14.19x
+ky4      959   1     |         13.2739 |             3.7567 |        1.9454 |          1.93x                   3.53x          6.82x
+ky4      959   8     |         84.0480 |            12.1771 |        2.6710 |          4.56x                   6.90x         31.47x
+ky4      959   64    |        396.2662 |            32.0334 |        7.4102 |          4.32x                  12.37x         53.48x
+ky4      959   256   |       1512.6685 |            86.0912 |       23.4321 |          3.67x                  17.57x         64.56x
+ky4      959   512   |             OOM |                OOM |       44.7847 |              -                       -              -
+ky4      959   1024  |             OOM |                OOM |       86.7049 |              -                       -              -
+
+§T3 OOM 边界（每条通路最大跑通的 B / 最小 OOM 的 B）  node=<node-19>
+net      Nj    | fwd dense      | fwd cudss      | f+b dense      | f+b cudss
+Net1     9     | max ok 1024  OOM -     | max ok 1024  OOM -     | max ok 1024  OOM -     | max ok 1024  OOM -    
+Anytown  19    | max ok 1024  OOM -     | max ok 1024  OOM -     | max ok 1024  OOM -     | max ok 1024  OOM -    
+Hanoi    31    | max ok 1024  OOM -     | max ok 1024  OOM -     | max ok 1024  OOM -     | max ok 1024  OOM -    
+Net2     35    | max ok 1024  OOM -     | max ok 1024  OOM -     | max ok 1024  OOM -     | max ok 1024  OOM -    
+Fossolo  36    | max ok 1024  OOM -     | max ok 1024  OOM -     | max ok 1024  OOM -     | max ok 1024  OOM -    
+Pescara  68    | max ok 1024  OOM -     | max ok 1024  OOM -     | max ok 1024  OOM -     | max ok 1024  OOM -    
+Net3     92    | max ok 1024  OOM -     | max ok 1024  OOM -     | max ok 1024  OOM -     | max ok 1024  OOM -    
+Modena   268   | max ok 1024  OOM -     | max ok 1024  OOM -     | max ok 1024  OOM -     | max ok 1024  OOM -    
+City_D   541   | max ok 1024  OOM -     | max ok 1024  OOM -     | max ok 512   OOM 1024  | max ok 1024  OOM -    
+ky4      959   | max ok 1024  OOM -     | max ok 1024  OOM -     | max ok 64    OOM 256   | max ok 1024  OOM -    
+P4R TIME DONE
+P4R JOB DONE

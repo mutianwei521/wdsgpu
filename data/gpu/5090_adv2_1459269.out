@@ -1,0 +1,276 @@
+NVIDIA GeForce RTX 5090, 32607 MiB
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+node: <node-10> | nproc: 8 | os.cpu_count: 128 | affinity: 8
+gpu: NVIDIA GeForce RTX 5090 | torch 2.11.0+cu128
+cpu: INTEL(R) XEON(R) GOLD 6530
+clocks: 180 MHz, 3090 MHz, 22, 28.13 W, 575.00 W
+
+==============================================================================================================
+[1] 场景发生器 × 计时协议 × 顺序 的 A/B（ms/场景；每格重复 3 轮看漂移）
+net          B 场景        顺序        | dense 三轮                     | cudss 三轮                    
+Modena      64 mine      d先        | 0.2448 0.2458 0.2456         | 0.2605 0.2594 0.2598          → 0.95x (iters=5)
+Modena      64 mine      c先        | 0.2450 0.2454 0.2455         | 0.2593 0.2596 0.2588          → 0.95x (iters=5)
+Modena      64 upstream  d先        | 0.2438 0.2453 0.2457         | 0.2599 0.2586 0.2602          → 0.94x (iters=5)
+Modena      64 upstream  c先        | 0.2462 0.2449 0.2453         | 0.2616 0.2594 0.2609          → 0.94x (iters=5)
+Modena     256 mine      d先        | 0.1229 0.1228 0.1230         | 0.1654 0.1669 0.1671          → 0.74x (iters=5)
+Modena     256 mine      c先        | 0.1228 0.1229 0.1228         | 0.1666 0.1673 0.1664          → 0.74x (iters=5)
+Modena     256 upstream  d先        | 0.1225 0.1229 0.1229         | 0.1667 0.1668 0.1670          → 0.74x (iters=5)
+Modena     256 upstream  c先        | 0.1228 0.1229 0.1231         | 0.1672 0.1668 0.1671          → 0.74x (iters=5)
+City_D      64 mine      d先        | 0.7831 0.7866 0.7863         | 0.2589 0.2599 0.2603          → 3.02x (iters=5)
+City_D      64 mine      c先        | 0.7830 0.7851 0.7826         | 0.2613 0.2612 0.2608          → 3.00x (iters=5)
+City_D      64 upstream  d先        | 0.7835 0.7860 0.7826         | 0.2610 0.2612 0.2606          → 3.00x (iters=5)
+City_D      64 upstream  c先        | 0.7821 0.7843 0.7811         | 0.2622 0.2627 0.2609          → 2.98x (iters=5)
+City_D     256 mine      d先        | 0.4606 0.4608 0.4601         | 0.1653 0.1656 0.1656          → 2.78x (iters=5)
+City_D     256 mine      c先        | 0.4609 0.4600 0.4613         | 0.1649 0.1652 0.1659          → 2.79x (iters=5)
+City_D     256 upstream  d先        | 0.4603 0.4607 0.4602         | 0.1661 0.1659 0.1658          → 2.77x (iters=5)
+City_D     256 upstream  c先        | 0.4612 0.4602 0.4603         | 0.1660 0.1665 0.1662          → 2.77x (iters=5)
+ky4         64 mine      d先        | 4.2818 4.2821 4.2824         | 0.5420 0.5448 0.5448          → 7.86x (iters=9)
+ky4         64 mine      c先        | 4.2867 4.2834 4.2823         | 0.5450 0.5451 0.5451          → 7.86x (iters=9)
+ky4         64 upstream  d先        | 4.2843 4.2853 4.2812         | 0.5461 0.5474 0.5458          → 7.84x (iters=9)
+ky4         64 upstream  c先        | 4.2822 4.2842 4.2830         | 0.5464 0.5464 0.5470          → 7.84x (iters=9)
+ky4        256 mine      d先        | 2.9814 2.9895 2.9898         | 0.3179 0.3183 0.3183          → 9.39x (iters=9)
+ky4        256 mine      c先        | 2.9898 2.9892 2.9893         | 0.3187 0.3184 0.3194          → 9.38x (iters=9)
+ky4        256 upstream  d先        | 2.9898 2.9899 2.9893         | 0.3187 0.3194 0.3188          → 9.38x (iters=9)
+ky4        256 upstream  c先        | 2.9901 2.9897 2.9892         | 0.3190 0.3185 0.3196          → 9.37x (iters=9)
+
+==============================================================================================================
+[2] 预热长度 / 重复次数 敏感性（ky4 B=256，cudss）
+   warm= 0 reps= 5 → 中位 0.31890  最好 0.31831 ms/场景
+   warm= 2 reps= 5 → 中位 0.31856  最好 0.31839 ms/场景
+   warm= 3 reps= 9 → 中位 0.31791  最好 0.31683 ms/场景
+   warm=10 reps=25 → 中位 0.31921  最好 0.31815 ms/场景
+
+[3] cuDSS 每次调用的地板（ky4 B=256，直接打 DirectSolver）
+   factorize      0.9987 ms
+   solve          2.5758 ms
+   stack(solve)   2.5597 ms
+   csr SpMV       0.0385 ms
+   vals.copy_     0.0122 ms
+   每轮 cudss ≈ fact + 3×(solve+stack) = 8.659 ms（×9 轮 /256 = 0.3071 ms/场景）
+
+[4] 计数器包装的税（在 DirectSolver.solve 外面套一层 python lambda）
+   带包装 0.31898 vs 不带 0.31996 ms/场景（差 -0.3%）
+
+[5] 时钟/功耗（跑完之后）: 2737 MHz, 35, 143.40 W
+ADV2 DONE
+
+================ 同节点复跑上游 p2.py（只为核对其 §2 数字是否可复现）================
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:2001: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:213.)
+  return torch.as_tensor(np.asarray(x), dtype=dt, device=dev)
+NVIDIA GeForce RTX 5090 | torch 2.11.0+cu128 | cuda 12.8
+nvmath 1.0.0 | cpus 128 | CUBLAS_WORKSPACE_CONFIG = :4096:8
+确定性探针：use_deterministic_algorithms(True) 下两条通路都跑通 ✓
+
+========================================================================================================
+§1 正确性：cudss vs dense（deterministic=True）
+net           Nj     nnz     B |  max|ΔH| ft max|ΔQ| cfs max|ΔE| cfs | iters=  备注
+Net1           9      31     1 |   6.821e-13   3.516e-12   0.000e+00 | True    dense自重跑 0.0e+00
+Net1           9      31     8 |   1.023e-12   3.813e-12   0.000e+00 | True    dense自重跑 0.0e+00
+Net1           9      31    64 |   8.640e-12   1.297e-11   0.000e+00 | True    dense自重跑 0.0e+00
+Anytown       19      95     1 |   8.811e-13   4.724e-12   0.000e+00 | True    dense自重跑 0.0e+00
+Anytown       19      95     8 |   5.969e-13   4.541e-12   0.000e+00 | True    dense自重跑 0.0e+00
+Anytown       19      95    64 |   1.194e-12   1.135e-10   0.000e+00 | True    dense自重跑 0.0e+00
+Hanoi         31      97     1 |   3.951e-12   3.325e-12   0.000e+00 | True    dense自重跑 0.0e+00
+Hanoi         31      97     8 |   1.592e-12   1.648e-12   0.000e+00 | True    dense自重跑 0.0e+00
+Hanoi         31      97    64 |   1.160e-11   2.672e-12   0.000e+00 | True    dense自重跑 0.0e+00
+Net2          35     113     1 |   4.093e-12   5.062e-12   0.000e+00 | True    dense自重跑 0.0e+00
+Net2          35     113     8 |   3.774e-11   2.293e-11   0.000e+00 | True    dense自重跑 0.0e+00
+Net2          35     113    64 |   2.417e-10   1.312e-10   0.000e+00 | True    dense自重跑 0.0e+00
+Fossolo       36     150     1 |   5.116e-13   6.003e-12   0.000e+00 | True    dense自重跑 0.0e+00
+Fossolo       36     150     8 |   7.390e-13   5.509e-12   0.000e+00 | True    dense自重跑 0.0e+00
+Fossolo       36     150    64 |   1.080e-12   1.422e-11   0.000e+00 | True    dense自重跑 0.0e+00
+Pescara       68     254     1 |   3.082e-06   1.416e-07   0.000e+00 | True    dense自重跑 0.0e+00
+Pescara       68     254     8 |   5.008e-06   1.596e-07   0.000e+00 | True    dense自重跑 0.0e+00
+Pescara       68     254    64 |   1.216e-05   5.386e-07   0.000e+00 | True    dense自重跑 0.0e+00
+Net3          92     320     1 |   2.858e-06   6.134e-07   0.000e+00 | True    dense自重跑 0.0e+00
+Net3          92     320     8 |   3.886e-06   8.335e-07   0.000e+00 | True    dense自重跑 0.0e+00
+Net3          92     320    64 |   3.676e-06   7.891e-07   0.000e+00 | True    dense自重跑 0.0e+00
+Modena       268     894     1 |   7.532e-12   1.440e-12   0.000e+00 | True    dense自重跑 0.0e+00
+Modena       268     894     8 |   2.964e-11   1.472e-11   0.000e+00 | True    dense自重跑 0.0e+00
+Modena       268     894    64 |   5.804e-11   1.621e-11   0.000e+00 | True    dense自重跑 0.0e+00
+City_D       541    1645     1 |   1.688e-06   1.014e-06   0.000e+00 | True    dense自重跑 0.0e+00
+City_D       541    1645     8 |   4.074e-06   1.167e-06   0.000e+00 | True    dense自重跑 0.0e+00
+City_D       541    1645    64 |   1.068e-05   2.467e-06   0.000e+00 | True    dense自重跑 0.0e+00
+ky4          959    3219     1 |   5.066e-08   9.470e-09   0.000e+00 | True    dense自重跑 0.0e+00
+ky4          959    3219     8 |   1.111e-06   1.249e-07   0.000e+00 | True    dense自重跑 0.0e+00
+ky4          959    3219    64 |   2.325e-06   6.864e-07   0.000e+00 | True    dense自重跑 0.0e+00
+
+§1b 精化步数敏感性（refine=0/1/2 时 cudss 与 dense 的 max|ΔH|）
+   Modena   refine=0  max|ΔH|=1.346e-10 ft  iters相等=True
+   Modena   refine=1  max|ΔH|=1.559e-10 ft  iters相等=True
+   Modena   refine=2  max|ΔH|=1.617e-10 ft  iters相等=True
+   City_D   refine=0  max|ΔH|=8.634e-06 ft  iters相等=True
+   City_D   refine=1  max|ΔH|=1.001e-05 ft  iters相等=True
+   City_D   refine=2  max|ΔH|=5.709e-06 ft  iters相等=True
+   ky4      refine=0  max|ΔH|=2.378e-07 ft  iters相等=True
+   ky4      refine=1  max|ΔH|=4.599e-07 ft  iters相等=True
+   ky4      refine=2  max|ΔH|=3.449e-07 ft  iters相等=True
+
+========================================================================================================
+§2 加速：整条 solve() 的 ms/场景（best of 5，含装配+线代+newflows；determinism 关，两条通路同条件）
+net           Nj     B |  iters |  dense ms/sc  cudss ms/sc |       倍数 |    plan ms
+Net1           9     1 |      4 |      6.61017      8.76432 |    0.75x |       6.39
+Net1           9    64 |      4 |      0.11445      0.24689 |    0.46x |       7.46
+Net1           9   256 |      4 |      0.02891      0.14273 |    0.20x |       9.86
+Anytown       19     1 |      5 |      9.11851     11.82275 |    0.77x |       6.40
+Anytown       19    64 |      7 |      0.22182      0.45198 |    0.49x |       9.54
+Anytown       19   256 |      7 |      0.05619      0.25386 |    0.22x |      14.89
+Hanoi         31     1 |      4 |      4.53386      6.50833 |    0.70x |       6.38
+Hanoi         31    64 |      5 |      0.10560      0.26662 |    0.40x |       9.95
+Hanoi         31   256 |      5 |      0.02684      0.16636 |    0.16x |      18.02
+Net2          35     1 |      5 |      5.83464      8.26629 |    0.71x |       6.41
+Net2          35    64 |      6 |      0.13356      0.31937 |    0.42x |      10.23
+Net2          35   256 |      6 |      0.03358      0.20133 |    0.17x |      19.26
+Fossolo       36     1 |      5 |      5.57107      8.01164 |    0.70x |       6.48
+Fossolo       36    64 |      8 |      0.16983      0.42074 |    0.40x |      11.70
+Fossolo       36   256 |      7 |      0.03816      0.23515 |    0.16x |      22.20
+Pescara       68     1 |      5 |      6.35577      8.12547 |    0.78x |       6.57
+Pescara       68    64 |      5 |      0.12085      0.26800 |    0.45x |      15.57
+Pescara       68   256 |      5 |      0.03143      0.16885 |    0.19x |      35.00
+Net3          92     1 |      5 |      8.90695     10.83010 |    0.82x |       6.68
+Net3          92    64 |      6 |      0.20273      0.37079 |    0.55x |      19.27
+Net3          92   256 |      6 |      0.05280      0.21426 |    0.25x |      49.03
+Modena       268     1 |      5 |      9.37995      8.28032 |    1.13x |       7.20
+Modena       268    64 |      5 |      0.24679      0.26993 |    0.91x |      43.70
+Modena       268   256 |      5 |      0.12322      0.17002 |    0.72x |     145.31
+City_D       541     1 |      5 |     14.06078      8.35290 |    1.68x |       7.78
+City_D       541    64 |      5 |      0.78391      0.27284 |    2.87x |      68.66
+City_D       541   256 |      5 |      0.46110      0.16942 |    2.72x |     272.40
+ky4          959     1 |      9 |     41.97525     19.51577 |    2.15x |       9.95
+ky4          959    64 |      9 |      4.28898      0.56188 |    7.63x |     155.86
+ky4          959   256 |      9 |      2.99071      0.32576 |    9.18x |     669.45
+
+========================================================================================================
+§3 显存：整条 solve() 的 CUDA 峰值（torch 分配器，预热后重测）
+   cuDSS 的内部分解缓冲不走 torch 分配器 ⇒ 另列该进程的设备级占用（总-可用）
+net           Nj     B |    dense MiB    cudss MiB       降幅 |    dev dense    dev cudss
+Net1           -    64 |        60.94        60.89    1.00x |       2614.2       2646.2
+Net1           -   256 |        62.15        61.92    1.00x |       2646.2       2678.2
+Anytown        -    64 |        61.92        61.65    1.00x |       2678.2       2710.2
+Anytown        -   256 |        65.85        64.72    1.02x |       2710.2       2742.2
+Hanoi          -    64 |        63.31        61.62    1.03x |       2742.2       2774.2
+Hanoi          -   256 |        71.02        63.98    1.11x |       2774.2       2806.2
+Net2           -    64 |        64.17        62.00    1.03x |       2806.2       2838.2
+Net2           -   256 |        73.39        64.74    1.13x |       2838.2       2870.2
+Fossolo        -    64 |        64.76        62.57    1.04x |       2870.2       2902.2
+Fossolo        -   256 |        74.99        66.21    1.13x |       2902.2       2934.2
+Pescara        -    64 |        72.39        63.91    1.13x |       2934.2       2966.2
+Pescara        -   256 |       104.22        68.79    1.52x |       2986.2       2998.2
+Net3           -    64 |        79.75        64.44    1.24x |       2998.2       3030.2
+Net3           -   256 |       135.63        74.15    1.83x |       3088.2       3068.2
+Modena         -    64 |       211.33        69.17    3.06x |       3206.2       3094.2
+Modena         -   256 |       644.91        91.46    7.05x |       3682.2       3178.2
+City_D         -    64 |       646.67        78.79    8.21x |       3740.2       3198.2
+City_D         -   256 |      2396.32       121.84   19.67x |       6072.2       3348.2
+ky4            -    64 |      1891.63       103.55   18.27x |       5134.2       3366.2
+ky4            -   256 |      7343.34       195.18   37.62x |      12372.2       3650.2
+
+========================================================================================================
+§4 plan 一次性：首解后 plan 计数应停在 1，factorize 计数 == 牛顿迭代数，第二次 solve 不再 plan
+   Modena   B=1    plan_ms=     7.29 | plan 计数 预热后=1 首解后=1 二解后=1 | fact 首解=5(iters=5) 二解累计=10 | solve 首解=15 | values 别名=True
+   Modena   B=64   plan_ms=    41.82 | plan 计数 预热后=1 首解后=1 二解后=1 | fact 首解=5(iters=5) 二解累计=10 | solve 首解=15 | values 别名=True
+   Modena   B=256  plan_ms=   141.08 | plan 计数 预热后=1 首解后=1 二解后=1 | fact 首解=5(iters=5) 二解累计=10 | solve 首解=15 | values 别名=True
+   City_D   B=1    plan_ms=     7.83 | plan 计数 预热后=1 首解后=1 二解后=1 | fact 首解=5(iters=5) 二解累计=10 | solve 首解=15 | values 别名=True
+   City_D   B=64   plan_ms=    63.24 | plan 计数 预热后=1 首解后=1 二解后=1 | fact 首解=5(iters=5) 二解累计=10 | solve 首解=15 | values 别名=True
+   City_D   B=256  plan_ms=   262.08 | plan 计数 预热后=1 首解后=1 二解后=1 | fact 首解=5(iters=5) 二解累计=10 | solve 首解=15 | values 别名=True
+   ky4      B=1    plan_ms=    11.87 | plan 计数 预热后=1 首解后=1 二解后=1 | fact 首解=9(iters=9) 二解累计=18 | solve 首解=27 | values 别名=True
+   ky4      B=64   plan_ms=   148.18 | plan 计数 预热后=1 首解后=1 二解后=1 | fact 首解=9(iters=9) 二解累计=18 | solve 首解=27 | values 别名=True
+   ky4      B=256  plan_ms=   663.37 | plan 计数 预热后=1 首解后=1 二解后=1 | fact 首解=9(iters=9) 二解累计=18 | solve 首解=27 | values 别名=True
+
+========================================================================================================
+§5 autodiff 入口透传（solve_unrolled / solve_polished）
+   Modena   unrolled csr  vs dense: max|ΔH|=1.975e-10 max|ΔQ|=9.237e-12
+   Modena   unrolled cudss vs dense: max|ΔH|=1.034e-10 max|ΔQ|=1.496e-11
+   [OK] 需要梯度时 cudss 明确 raise: linear_solver='cudss' 是纯前向通路：nvmath 的 DirectSolver 不接 autogr
+   Modena   polished cudss vs dense: max|ΔH|=2.842e-14 max|Δq|=2.220e-16
+   ky4      unrolled csr  vs dense: max|ΔH|=1.668e-06 max|ΔQ|=6.640e-08
+   ky4      unrolled cudss vs dense: max|ΔH|=8.949e-07 max|ΔQ|=5.974e-08
+   [OK] 需要梯度时 cudss 明确 raise: linear_solver='cudss' 是纯前向通路：nvmath 的 DirectSolver 不接 autogr
+   ky4      polished cudss vs dense: max|ΔH|=1.137e-13 max|Δq|=5.551e-16
+
+P2 GPU 验收脚本结束
+ADV2 JOB DONE

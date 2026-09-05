@@ -1,0 +1,62 @@
+{
+ "stem": "city_d",
+ "Nj": 541,
+ "L": 554,
+ "threads": 24,
+ "wall_ms": 13.763572499738075,
+ "aten_ops_per_solve": 2328.0,
+ "self_cpu_ms": 14.024659999999999,
+ "unaccounted_ms": -0.2610875002619242,
+ "top": [
+  {
+   "op": "aten::linalg_cholesky_ex",
+   "self_ms": 1.6406050000000028,
+   "count": 5.0
+  },
+  {
+   "op": "aten::_cholesky_solve_helper",
+   "self_ms": 1.5434375000000222,
+   "count": 15.0
+  },
+  {
+   "op": "aten::mul",
+   "self_ms": 1.383992500000085,
+   "count": 162.0
+  },
+  {
+   "op": "aten::copy_",
+   "self_ms": 1.0412349999999502,
+   "count": 113.0
+  },
+  {
+   "op": "aten::index",
+   "self_ms": 0.799205000000015,
+   "count": 68.0
+  },
+  {
+   "op": "aten::where",
+   "self_ms": 0.7797150000000261,
+   "count": 112.0
+  },
+  {
+   "op": "aten::sum",
+   "self_ms": 0.5656600000000108,
+   "count": 30.0
+  },
+  {
+   "op": "aten::fill_",
+   "self_ms": 0.5545849999999499,
+   "count": 73.0
+  },
+  {
+   "op": "aten::add",
+   "self_ms": 0.516947499999933,
+   "count": 50.0
+  },
+  {
+   "op": "aten::tril",
+   "self_ms": 0.5048225000000018,
+   "count": 5.0
+  }
+ ]
+}

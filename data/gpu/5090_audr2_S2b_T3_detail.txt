@@ -1,0 +1,43 @@
+[aud_r2_run] 网表 = ['Net3', 'ky4']
+================================================================================================
+regression_gpu.py - cuDSS 通路不变量回归（审计 R2 + P4 终审 T4）
+设备: NVIDIA GeForce RTX 5090 | torch 2.11.0+cu128 | nvmath 1.0.0 | 节点 <node-13>
+网络目录: /data/run01/<user>/wdsgpu/hgaudit/p2nets
+================================================================================================
+
+【T1 迭代数逐项相等（cudss vs dense）】
+  Net3     B=1    迭代 dense=7 cudss=7 逐项相等=是 | max|dH|=2.927e-06 ft（仅报告，非门槛） PASS
+  Net3     B=8    迭代 dense=10 cudss=10 逐项相等=是 | max|dH|=5.883e-12 ft（仅报告，非门槛） PASS
+  ky4      B=8    迭代 dense=7 cudss=7 逐项相等=是 | max|dH|=3.691e-08 ft（仅报告，非门槛） PASS
+  ky4      B=64   迭代 dense={8,9} cudss={8,9} 逐项相等=是 | max|dH|=4.411e-08 ft（仅报告，非门槛） PASS
+
+【T2 bwd_refactorize（slots 足够时必须为 0；slots=1 时必须为 K−1）】
+  Net3     B=1    K=6 slots=6  | fac=6  (期望6  ) bwd_refac=0 (期望0) bwd_reuse=6 (期望6) solve=18  bwd_solve=18   PASS
+  Net3     B=1    K=6 slots=1  | fac=6  (期望11 ) bwd_refac=0 (期望5) bwd_reuse=6 (期望1) solve=18  bwd_solve=18   <-- FAIL
+  ky4      B=8    K=5 slots=5  | fac=5  (期望5  ) bwd_refac=0 (期望0) bwd_reuse=5 (期望5) solve=15  bwd_solve=15   PASS
+  ky4      B=8    K=5 slots=1  | fac=5  (期望9  ) bwd_refac=0 (期望4) bwd_reuse=5 (期望1) solve=15  bwd_solve=15   <-- FAIL
+
+【T3 复用即逐位核对（stale 必须 0，且事件数必须 >0）】
+  Net3     B=1    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+  Net3     B=1    slots=1  | 伴随事件=6  其中复用=6  stale=5 incoh=0 worstDelta=9.976e+06  <-- FAIL
+  Net3     B=8    slots=6  | 伴随事件=6  其中复用=6  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+  Net3     B=8    slots=1  | 伴随事件=6  其中复用=6  stale=5 incoh=0 worstDelta=4.370e+04  <-- FAIL
+  ky4      B=8    slots=5  | 伴随事件=5  其中复用=5  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+  ky4      B=8    slots=1  | 伴随事件=5  其中复用=5  stale=4 incoh=0 worstDelta=3.534e+05  <-- FAIL
+  ky4      B=64   slots=5  | 伴随事件=5  其中复用=5  stale=0 incoh=0 worstDelta=0.000e+00  PASS
+  ky4      B=64   slots=1  | 伴随事件=5  其中复用=5  stale=4 incoh=0 worstDelta=4.036e+05  <-- FAIL
+
+【T4 cuDSS 收到的 csr_data 逐位对称（max|A−A^T| 必须 ==0.0，无容差）】
+  Net3     B=1    | 装配次数=13 (前向 7 ) nnz=320    max|A−A^T|=0.000e+00 非对称次数=0  PASS
+  Net3     B=8    | 装配次数=10 (前向 10) nnz=320    max|A−A^T|=0.000e+00 非对称次数=0  PASS
+  ky4      B=8    | 装配次数=12 (前向 7 ) nnz=3219   max|A−A^T|=0.000e+00 非对称次数=0  PASS
+  ky4      B=64   | 装配次数=9  (前向 9 ) nnz=3219   max|A−A^T|=0.000e+00 非对称次数=0  PASS
+
+================================================================================================
+总判定: FAIL （14/20 项通过）
+未通过项: T2 Net3 slots=1, T2 ky4 slots=1, T3 Net3 B=1 slots=1, T3 Net3 B=8 slots=1, T3 ky4 B=8 slots=1, T3 ky4 B=64 slots=1
+================================================================================================
+/tmp/audr2_2xju68nw/dgga/solver.py:2016: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/tmp/audr2_2xju68nw/dgga/solver.py:2016: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))

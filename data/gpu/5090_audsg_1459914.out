@@ -1,0 +1,24 @@
+NVIDIA GeForce RTX 5090, 32607 MiB
+node: <node-21> | cpus: 8
+====================================================================================================
+AUDIT R1-b - cuDSS 专属分支的对称守卫缺口 | node: <node-21> | 注入相对量 AUD_MAG = 1e-9
+torch 2.11.0+cu128 | NVIDIA GeForce RTX 5090
+md5 dgga/solver.py 45b0b0eeb66ed4e15ef81c53809d229a
+====================================================================================================
+
+【P1 正品】
+  Hanoi    捕获轮=8   max|data-data^T|=0.000e+00  迭代数相等=True [8]/[8]  max|dH|=2.132e-13 ft  梯度 cudss vs dense 相对差=3.915e-15
+  Net3     捕获轮=10  max|data-data^T|=0.000e+00  迭代数相等=True [10]/[10]  max|dH|=4.462e-12 ft  梯度 cudss vs dense 相对差=3.228e-07
+  Modena   捕获轮=14  max|data-data^T|=0.000e+00  迭代数相等=True [13, 14]/[13, 14]  max|dH|=5.528e-12 ft  梯度 cudss vs dense 相对差=2.047e-12
+  ky4      捕获轮=7   max|data-data^T|=0.000e+00  迭代数相等=True [7]/[7]  max|dH|=4.190e-08 ft  梯度 cudss vs dense 相对差=4.429e-05
+  regression_gpu.py（全量 40 项）: rc=0  总判定: PASS （50/50 项通过）
+
+【P2 注入单侧写(仅 cudss 分支)】
+  Hanoi    捕获轮=8   max|data-data^T|=1.180e-08  迭代数相等=True [8]/[8]  max|dH|=1.227e-08 ft  梯度 cudss vs dense 相对差=3.784e-15
+  Net3     捕获轮=10  max|data-data^T|=3.647e-05  迭代数相等=True [10]/[10]  max|dH|=2.075e-06 ft  梯度 cudss vs dense 相对差=3.245e-07
+  Modena   捕获轮=14  max|data-data^T|=4.463e-10  迭代数相等=True [13, 14]/[13, 14]  max|dH|=3.441e-08 ft  梯度 cudss vs dense 相对差=3.600e-10
+  ky4      捕获轮=7   max|data-data^T|=1.633e-10  迭代数相等=True [7]/[7]  max|dH|=3.083e-07 ft  梯度 cudss vs dense 相对差=2.267e-05
+  regression_gpu.py（全量 40 项）: rc=1  总判定: FAIL （40/50 项通过）
+
+====================================================================================================
+AUDSG JOB DONE rc=0

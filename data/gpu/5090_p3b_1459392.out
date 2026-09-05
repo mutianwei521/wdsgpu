@@ -1,0 +1,77 @@
+NVIDIA GeForce RTX 5090, 32607 MiB
+node: <node-20> | cpus: 8
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:2016: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:2016: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+==============================================================================
+node: <node-20> | torch 2.11.0+cu128 | NVIDIA GeForce RTX 5090 | cpus 128
+nvmath 1.0.0 | CUBLAS_WORKSPACE_CONFIG = :4096:8
+  Net1     Nj=9    nnz=31    收敛迭代数 K=8
+  Net3     Nj=92   nnz=320   收敛迭代数 K=7
+  Modena   Nj=268  nnz=894   收敛迭代数 K=7
+  City_D   Nj=541  nnz=1645  收敛迭代数 K=7
+  ky4      Nj=959  nnz=3219  收敛迭代数 K=8
+
+==============================================================================
+§1 前向+反向 ms/场景（best of 5，warm 2；K=收敛迭代数；slots=K 全复用）
+   末两列 = 同一节点、同一次作业里测的**纯前向**，用来和 P2 的倍数对齐
+net      B    K  | fwd+bwd dense  cudss   倍数 | 纯前向 dense   cudss   倍数
+Net1     64   8  |       0.75921  1.46669  0.52x |      0.26064  0.64938   0.40x  (计时区内 plan=0)
+Net1     256  8  |       0.19053  0.86322  0.22x |      0.06588  0.41398   0.16x  (计时区内 plan=0)
+Net3     64   7  |       0.73808  1.29585  0.57x |      0.27468  0.57989   0.47x  (计时区内 plan=0)
+Net3     256  7  |       0.20374  0.76529  0.27x |      0.07128  0.36772   0.19x  (计时区内 plan=0)
+Modena   64   7  |       1.72884  1.16017  1.49x |      0.38230  0.52486   0.73x  (计时区内 plan=0)
+Modena   256  7  |       1.34876  0.73150  1.84x |      0.18276  0.35361   0.52x  (计时区内 plan=0)
+City_D   64   7  |       8.67587  1.16946  7.42x |      1.13710  0.53181   2.14x  (计时区内 plan=0)
+City_D   256  7  |       7.71541  0.72728 10.61x |      0.67331  0.35236   1.91x  (计时区内 plan=0)
+ky4      64   8  |      45.30257  1.52807 29.65x |      3.92954  0.67873   5.79x  (计时区内 plan=0)
+ky4      256  8  |           nan  0.88078    OOM |      2.74913  0.42208   6.51x  (计时区内 plan=0)
+
+==============================================================================
+§2 逐项线代耗时（B=256，ms/轮，整批）→ 每轮预算与倍数
+net      | csr装配 factorize solve×1 | 稠密装配 chol  cholsolve×1 残差elem | dense反向/轮
+Net3     |  0.0244    0.1674  3.5714 |   0.0261  0.270      0.1830   0.0336 | 4.677
+Modena   |  0.0246    0.4881  3.6109 |   0.1141  2.417      0.7004   0.2629 | 53.259
+City_D   |  0.0274    0.5717  3.6120 |   0.4272 12.085      2.1652   1.1489 | 318.284
+ky4      |  0.0341    1.0080  3.7775 |   1.2789 54.028      5.5381   3.6088 | 1537.047
+
+==============================================================================
+§3 cudss_grad_slots 的代价/收益（ky4 与 Modena，B=256，K=收敛迭代数）
+net      slots | fwd+bwd ms/场景  factorize bwd_refact | torch峰值MiB 设备已用MiB
+Modena   1     |         0.72900  13        6          |       204.3       2258.2
+Modena   2     |         0.73037  12        5          |       207.2       2290.2
+Modena   4     |         0.72771  10        3          |       212.1       2356.2
+Modena   7     |         0.73130  7         0          |       220.5       2454.2
+Modena   11    |         0.73228  7         0          |       220.5       2454.2
+ky4      1     |         0.87814  15        7          |       757.6       2266.2
+ky4      2     |         0.87624  14        6          |       768.0       2318.2
+ky4      4     |         0.87801  12        4          |       784.9       2402.2
+ky4      8     |         0.87728  8         0          |       822.7       2678.2
+ky4      12    |         0.87927  8         0          |       822.7       2678.2
+
+==============================================================================
+§4 显存：前向+反向峰值（每配置前先 free + empty_cache）
+net      B    K  | dense torch峰值  cudss torch峰值  降幅 | cudss 设备已用
+Net3     64   7  |          186.72           110.58   1.7x |         2484.2
+Net3     256  7  |          462.57           157.61   2.9x |         2534.2
+Net3     512  7  |          833.17           223.33   3.7x |         2582.2
+Modena   64   7  |          792.45           126.65   6.3x |         2502.2
+Modena   256  7  |         2866.52           225.61  12.7x |         2582.2
+Modena   512  7  |         5653.31           360.03  15.7x |         2476.2
+City_D   64   7  |         2860.26           153.92  18.6x |         2532.2
+City_D   256  7  |        11165.20           332.97  33.5x |         2474.2
+City_D   512  7  |        22235.85           572.53  38.8x |         2476.2
+ky4      64   8  |         9696.94           276.68  35.0x |         2668.2
+ky4      256  8  |             OOM           823.79      - |         2678.2
+ky4      512  8  |             OOM          1528.85      - |         4088.2
+
+==============================================================================
+§5 cudss_grad_refine 的时间代价（B=256，slots=K，ms/场景）
+net      | refine=0   refine=1   refine=2 | dense fwd+bwd | refine=0 的倍数
+Net3     |   0.55483    0.66090    0.76537 |       0.20352 | 0.37x
+Modena   |   0.52104    0.62920    0.73426 |       1.35121 | 2.59x
+City_D   |   0.51959    0.62494    0.72723 |       7.71313 | 14.84x
+ky4      |   0.64074    0.75862    0.87668 |           OOM | -
+P3B DONE
+P3B JOB DONE

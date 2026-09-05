@@ -1,0 +1,96 @@
+################################################################################
+GPU 伴随发布件敌意审阅（自写脚本，不复用上游测试） - 工作记录（终版）
+日期 2026-08-24  被审 HEAD 2ba77f3（dgga md5: solver 203d1365… autodiff 70b4d799…）
+审计脚本 scripts/aud_ajg/{a1_grad,a2_dense_count,a5_worker,a3_gpu}.py + a3.sh
+集群作业：1465573@<node-09> / 1465577@<node-24>（gpu_5090, RTX5090 32607MiB,
+sacct 均 COMPLETED 0:0，Elapsed 18:48 / 19:10）；日志 data/gpu/5090_audajg_*.out
+################################################################################
+
+【项1 梯度三方对拍（本机 a1_grad.py，rc=0；种子 31415，与上游不同）】
+L-TOWN（PRV3, acc=3e-8, iters=15）：
+  §A vs CPU ImplicitGGASolve（冻结同状态帧，4θ 全向量，门 1e-6）：
+    B=1  demand 5.19e-11 / res_head 1.11e-12 / ke 9.30e-12 / r_hw 3.46e-11
+    B=8 ≤4.30e-11；B=64 ≤8.85e-11；PRV 下游 demand[299/110/225] 10 位一致
+  §B 中央差分（前向=adjoint='gpu' 的同一 dense+精抛光函数；每个 ±h/±h/2 点
+    先跑 dense 状态机、断言终态状态向量与基点逐位同才计入 - 切换点证明
+    避开，状态弃 0、FD 自检弃 0）：demand 最差 6.97e-07（含 PRV 下游）、
+    res_head 2.09e-10、ke 6.62e-08、r_hw 4.61e-09
+  §C 混合状态批（自配逼阀场景，剔未收敛 3/7）：B=4 批内 ACTIVE/OPEN/CLOSED
+    并存，dense vs epanet 状态帧 4/4 逐位同，GPU 批量伴随 vs CPU 分组冻结
+    逐场景最差 rel=7.29e-11
+BWSN_1（PRV8）：§A B=1/8/64 4θ ≤1.23e-09（8 下游坐标一致）；§B 最差 1.06e-07；
+  §C B=14（剔 3）8 阀三态直方图全出（如 PRV176: ACTIVE1/CLOSED13），
+  10 状态组，逐场景最差 rel=3.97e-09（最差场景含 CLOSED×3）
+集群抽查（两节点 §1，B=8）：dense vs CPU=4.500e-15、cudss vs CPU=4.32~4.50e-15、
+  cudss vs dense=1.80e-16，PRV 下游 3 坐标三路 10 位一致。
+→ ACTIVE/CLOSED 混批下 GPU 约化伴随（Woodbury 行替换）与 CPU 伴随一致坐实。
+
+【项2 分解复用（自写计数器，与项目计数器无共享）】
+本机 dense 面（a2_dense_count.py rc=0）：monkeypatch torch.linalg.{cholesky,
+  cholesky_ex,lu_factor,qr,solve}+scipy splu：L-TOWN/BWSN_1/Hanoi 三网
+  backward 期间 Nj 系统 cholesky=0；bwd 仅小 Woodbury 电容 solve
+  （[8,3,3]/[8,8,8] 各 3 次，非 Nj 分解）；splu 在 gpu 通路 0 次
+  （探针自证 CPU 伴随 splu=4>0）。
+集群 cudss 面（两节点 §4，nvmath DirectSolver.factorize 独立 monkeypatch）：
+  fwd=23、**bwd 增量=0**；与项目计数（factorize=23/bwd_refactorize=0/
+  bwd_reuse=1/bwd_solve=99）互证。
+逐出（两节点 §5，cudss_cache_max=1）：
+  (a) 异 B 交错（fwd8→fwd16→bwd8→bwd16）：梯度 vs 干净参考 rel=1.80e-16/
+      1.47e-16，bwd 期间独立 factorize=2 = 项目 bwd_refactorize=2（显式计数，
+      不静默）；(b) 同 B 槽复写：rel=1.80e-16，bwd_refactorize=1。
+  → 逐出行为=正确 + 显式重分解计数，无静默错。
+
+【项3 倍数独立重测（两节点，独立种子 424242、独立计时 min/median≥3 rep）】
+公平性：--cpus-per-task=8（gpu_5090 每卡配额 8 核，16 核提交被 slurm 拒）；
+  OMP/MKL/OPENBLAS 未设；§2 三档线程 B=64 implCPU：
+  节点1 默认8线程 488.27 / 全核128 488.95 / 单线程 487.34 ms/场景，
+  节点2 495.80/496.16/495.38，cpu/wall 占用 1.00~1.01 核（本机 391/385/386）
+  → CPU 伴随（scipy splu 逐场景串行）天然单核，**基线无自缚**。
+f+b 全表 ms/场景（旧c=cudss前向+CPU伴随同节点实测 / 新c=adjoint='gpu'+cudss）：
+  B      节点1 旧c    新c     倍数   | 节点2 旧c    新c     倍数
+  8      500.154   21.128   23.67x  | 508.603   21.306   23.87x
+  64     488.067    4.543  107.43x  | 496.961    4.569  108.77x
+  256    480.178    2.763  173.78x  | 492.968    2.777  177.49x
+  1024   476.333    2.263  210.53x  | 494.923    2.345  211.08x
+  每 B 梯度全张量 rel(新c, CPU)=3.90e-15~6.80e-15；|g| 三路逐 B 两节点同数
+  （5.620861e3/1.325945e4/3.017980e4/5.860853e4）。
+→ 与主线 v2 报告（22.98~23.72/105.4~108.5/177.9~180.6/211.9x）同量级复现。
+
+【项4 变异体有牙】
+本机（check_prv_batch --B 24 L-TOWN，洞 A 新判据）：
+  正品 rc=0（调度 28/30、终态 30/30、分岔 2 全归停时、头差 6.15e-03 ft）
+  MB_valve_freq rc=1（调度 0/30，节律 BUG 30/30）；MD_open_case rc=1
+  （终态 6/30，BUG14+刀刃10）；ME_y_predemand rc=1（终态 11/30，刀刃23/漂移4）
+集群（regression_gpu 新网表，两节点同判）：正品 **54/54 PASS rc=0**
+  （T4 L-TOWN max|A−A^T|=0.000e+00、ACTIVE-PRV 槽=192>0）；
+  MF_oneside **50/54 FAIL rc=1**（T1 L-TOWN B=8/64 dense Cholesky 显式崩 +
+  T4 max|A−A^T|=1.000e+08 非对称 4/4）→ 洞 B 修复检出力实锤。
+
+【项5 缺省逐字节】
+自写影子电池 a5_worker.py（5 网 Hanoi/Modena/city_d/L-TOWN/BWSN_1 ×
+  {epanet solve_polished 出口、CPU 伴随 B=1/4 四类 θ 梯度张量+输出、
+  dense 缺省前向、冻结状态帧} sha256）：工作树 vs git archive b68c4d0
+  **107/107 键逐位同**（唯一 diff=UserWarning 路径行，非数值）。
+regression_all 前台：**53/53 PASS**（⑨ 正品 86/86 逐位+变异 4/4 红；
+  ⑩ §C PRV 不一致=0、§D 变异红 3/3；⑪ head 785/785 flow 909/909 逐位）。
+
+【修复清单】本轮未发现判定级新洞。非判定级观察：
+  n1. nvmath 警告"未配置多线程接口库" - 只影响 plan 构建速度，不影响公平性
+      （新旧两列共用同一前向）；可在集群侧装 threading 库微降首解延迟。
+  n2. a3 §2/§3 的 implCPU 逐 B 单调略降（489→476）：状态组=1 时 splu 结构
+      复用摊薄，属真实行为，非计时误差。
+  n3. 旧基线是"逐场景串行 CPU 伴随"（现状训练形态）；若有人实现 8 进程并行
+      CPU 伴随，212x 会按并行度折减（8 核配额下限 ~26x）。这是上游已记账的
+      审计欠账 b（CPU 伴随批量化），论文措辞必须把基线钉死为
+      "既有串行 CPU 伴随训练管线"而非"最优 CPU 实现"。
+
+【最终判定】f+b 那一列**可以写进论文**：两节点独立复现 23.7~23.9x（B=8）、
+  107.4~108.8x（B=64）、173.8~177.5x（B=256）、210.5~211.1x（B=1024），
+  与主线 v2 的 211.9x 同量级；梯度三方 1e-9~1e-15、混合 PRV 状态批一致、
+  伴随零新增分解（独立计数）、逐出不静默、缺省逐位、变异体全红。
+  前提措辞两条：①基线注明"prior serial CPU-adjoint training pipeline
+  (scipy splu, measured 1.0-core occupancy, thread-insensitive)"；
+  ②大 B 列注明 cudss 通路（dense B=1024 伴随形态 OOM 边界已在 v2 记录）。
+  还差（加分非阻塞）：并行 CPU 伴随基线（欠账 b）以堵审稿人"CPU 没用满"
+  之问 - 实测已给出单核占用与三档线程不敏感证据，可先以此应对。
+################################################################################

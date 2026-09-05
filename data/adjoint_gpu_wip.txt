@@ -1,0 +1,118 @@
+################################################################################
+隐式伴随批量化上 GPU（adjoint="gpu"，CPU 伴随缺省逐位不动） - 滚动工作记录
+日期 2026-08-24  基线 = HEAD 9a35829（工作树干净）
+################################################################################
+
+【数学路线（待数值证明）】
+J = [[D,0,−A12],[0,E',S],[A21,P_e,0]]（autodiff._build_J）。J^T λ = (gQ,gE,gH) 消元：
+  λ_l = D^{-1}(gQ − B λ_m)   （B[k,j1]=−1, B[k,j2]=+1，junction 端）
+  λ_e = (gE + λ_m)/hge       （emitter 行）
+  节点方程：(B^T D^{-1} B + diag(em/hge)) λ_m = B^T D^{-1} gQ − em·gE/hge − gH
+  左端矩阵 = 收敛态 GGA 矩阵 Ā（P=1/hgrad 逐支同装配值）⇒ 复用前向分解。
+ACTIVE PRV 的坑（先证明）：真雅可比该行是约束行 H[n2]−hset（D_kk=0 不可逆）。
+  Q_prv 列给出 λ_m 约束：λ_m[j2] − λ_m[j1] = gQ[k_prv]（n1 定水头时无 λ_m[j1] 项）；
+  H[j2] 列只定 λ_l[prv]（自由量，且不进任何 θ 梯度：dr=0、无 rh 耦合）。
+  ⇒ 精确约化 = 节点系统 M：非 j2 行同 Ā（P_prv=0 已排除），j2 行换成约束行。
+  big-M 的 Â = Ā + CBIG·e_{j2}e_{j2}^T 与 M 差 rank-p 行替换 ⇒ Woodbury：
+  M^{-1}r = Â^{-1}r − S·C^{-1}·(W^T Â^{-1} r)，S=Â^{-1}[e_{j2a}]，
+  C_ab = (s_b)_{j2a} − (s_b)_{j1a}（解析消去 δ_ab），W_a^T x = x_{j2a}−x_{j1a}−(Âx)_{j2a}。
+  naive（直接 Â^{-1}r）预计 λ_m[j2]≈r_j2/CBIG → 与真值差 O(1)（待量化）。
+数值护栏：κ(Â)~1.6e11 ⇒ 全部解均带迭代精化（真 Â 的 SpMV 残差回代），
+  Woodbury 后再对真 M 做外层精化一步。
+已知不可约化支：CONST_HP 泵钳位支（残差导数 −CBIG/−RQtol vs 装配 +CBIG/+RQtol
+  符号翻转）⇒ 检测到即 raise（不静默）；D-W 同理先拒。
+
+【进度】
+[x] 一、数学对照（scripts/adjoint_gpu/probe_math.py，L-TOWN 名义帧 CPU）：
+    naive big-M 复用：λ_m 最大相对差 6.337e-01；PRV 下游 demand 梯度
+    参考 2.382973e+02 vs 约化 -8.89e-08（O(1) 全错，坑坐实）；
+    woodbury 行替换：λ_m rel 1.412e-10，四类 θ rel ≤1.4e-10（demand
+    1.412e-10 / res_head 7.1e-13 / ke 7.7e-11 / r_hw 2.9e-11）→ 放行。
+[x] 二、实现（dgga/autodiff.py ImplicitGGASolveGPU + implicit_solve(adjoint=)）：
+    · 前向 = mode='dense' 批量 GGA（含 PRV 状态机）→ **GPU 约化整装 Newton
+      精抛光**（_adjgpu_polish，polish_steps 缺省 2；primal 2p 列 Woodbury：
+      ACTIVE 下游行=Dirichlet、上游行=两质量行相加消 Δq_prv）→ 终态重装配+
+      分解一份交反向。为什么必须精抛光+终态分解（BWSN_1 实测教训）：
+      (a) GGA 半迭代停机地板 ~1e-8（ky4 近零流量管把 res_head 梯度误差抬到
+          5.4e-4）；(b) 罚函数定点 H[j2]=hset+O(1/CBIG) 与 CPU 约束行定点差
+          1e-8 级；(c) κ~1e10-12 下用"旧状态分解"解"新状态系统"的 γ=κ·δ>1，
+          迭代精化直接发散（BWSN_1 批一致 rel=1.0 的根因）。
+    · 反向 = 约化伴随（p 列 Woodbury 行替换 + 真 M 外层精化），复用前向终态
+      分解，**零新增 factorize**；per-scenario ACTIVE 掩码；grh 直通 gH 定水头位。
+    · 守卫 raise：epanet/f32/泵θ/status 入参/D-W/CONST_HP 钳位支/级联共下游
+      PRV/create_graph/未收敛场景。keep_factor 开关进 solve()（缺省 False
+      逐位不变；cudss 分支同一 _cudss_forward 调用只留句柄）。
+[x] 三、本地验收（scripts/adjoint_gpu/check_adjoint_gpu.py，rc=0 全 PASS）：
+    §A vs CPU ImplicitGGASolve（同冻结状态帧，loss 含 gH/gQ/gE 全通道）：
+      L-TOWN demand 1.5e-11 / res_head 8.3e-14 / ke 8.5e-12 / r_hw 3.2e-12
+      （PRV 下游 3 坐标数值逐位打印一致）；Hanoi ≤4e-15；Modena ≤2.6e-15；
+      ky4 ≤1.5e-12；BWSN_1 ≤2.3e-10（PRV 下游 8 坐标一致）。
+    §B vs 中央差分（solve_polished 冻结状态基线，±h 重跑状态机弃切换点 +
+      FD 双步长自检 + 类内绝对尺度档）：全部 PASS，最差 rel 8.4e-7（Modena
+      ke，FD 噪声地板），弃用坐标 0（步长按 θ 类调优后）。
+    §C dense 分解计数（monkeypatch cholesky/cholesky_ex）：前向 = GGA迭代数+
+      polish_steps+1，**backward 0 次** 5/5 网 PASS。
+    §D 批一致 B=8 vs 逐场景单跑：≤3.4e-16（BWSN_1/L-TOWN 逐位 0/2e-16），
+      门槛 1e-10 PASS；SM 网状态组数打印。
+    §E 守卫三项全 PASS。
+[x] 集群节点1：作业 1464991@<node-06>（RTX 5090 32607MiB, gpu_5090,
+    torch 2.11.0+cu128, nvmath 1.0.0）COMPLETED rc=0：
+    §1（B=8, deterministic）cudss 计数：前向 factorize=23（GGA 19 + polish 3 +
+      终态 1）；**backward 期间 factorize 增量 = 0**、bwd_refactorize=0、
+      bwd_reuse=1 → 伴随零新增分解 PASS；
+      梯度对拍 demand：cudss vs CPU=3.296e-15，dense vs CPU=3.159e-15，
+      cudss vs dense=2.747e-16（B=8 状态组=1）。
+    §2 时间（ms/场景；旧=GPU前向+CPU伴随同节点重测，新=adjoint='gpu' 一把梭）：
+      B     fwd_d    fwd_c   implCPU  旧f+b_d  旧f+b_c | 新f+b_d 新f+b_c | 加速(旧c/新c)
+      8     20.724   7.956   347.76   368.49   355.72  | 46.694  15.480  |  22.98x
+      64     5.864   1.404   331.29   337.15   332.69  | 11.990   3.155  | 105.45x
+      256    3.806   0.697   335.34   339.15   336.04  |  6.609   1.860  | 180.64x
+      1024     OOM   0.527      OOM      OOM      OOM  |    OOM   1.542  |    -
+      |g| 三路（cpu/gpu_d/gpu_c）逐 B 全同到 7 位（5.685936e3/1.377453e4/
+      2.967041e4；B=1024 gpu_c=5.895319e4）。
+      B=1024 的 dense/implCPU 格 OOM = 作业内相序问题（cuDSS 常驻+torch 缓存
+      未清就跑 29GiB 峰值的 dense；主线 ltm 实测 dense B=1024 单独跑可过） -
+      v2 脚本改相序+cudss_free 后由节点2 作业补测。
+[x] 集群节点2：作业 1465032@<node-08>（RTX 5090, gpu_5090，--exclude 换机，
+    v2 相序 + cudss_free；md5 与本机终版逐份同：solver 203d1365…/autodiff
+    70b4d799…）COMPLETED 0:0，Elapsed 13:58：
+    §1 同判定：backward factorize 增量=0、bwd_refactorize=0 PASS；
+      梯度对拍数值与节点1 **逐位同**（3.296e-15/3.159e-15/2.747e-16）。
+    §2 时间（ms/场景）：
+      B     fwd_d    fwd_c   implCPU  旧f+b_c | 新f+b_d 新f+b_c | 加速(旧c/新c)
+      8     23.205  10.775   485.48   496.26  | 50.606  20.922  |  23.72x
+      64     6.102   1.964   485.90   487.86  | 12.406   4.495  | 108.53x
+      256    3.930   1.017   487.38   488.40  |  6.813   2.745  | 177.94x
+      1024     OOM   0.762   488.39   489.15  |    OOM   2.309  | **211.89x**
+    两节点区间（本轮交付格）：L-TOWN f+b 端到端 ms/场景（cudss）
+      B=8    15.480~20.922（旧 355.72~496.26） 22.98~23.72x
+      B=64    3.155~ 4.495（旧 332.69~487.86）105.45~108.53x
+      B=256   1.860~ 2.745（旧 336.04~488.40）177.94~180.64x
+      B=1024  1.542~ 2.309（旧 ~489.15，节点2 实测；节点1 该格 OOM 见上）
+              211.89x（节点2 同节点全对照）
+    dense 新形态 B=1024 两节点 OOM：GGA 环峰值 ~29 GiB（主线 ltm）+ 伴随需
+    常驻终态 Cholesky 因子 ~4.9 GiB > 32.6 GiB - dense 通路的真实边界，
+    主线通路本就是 cudss（B=16384 仍 1.2 GiB 级）。
+    |g| 三路逐 B 全同（两节点同数）：5.685936e3/1.377453e4/2.967041e4/5.895319e4。
+[x] regression_all 终版前台：**53/53 PASS**（2026-08-24 16:35:31，总用时 338s；
+    ⑨ 正品 86/86 逐位对称 + 4/4 变异红；⑩⑪ PRV 项全绿）rc=0。
+[x] 影子包：git archive b68c4d0 vs 工作树，aud_shadow 全通路（含梯度张量
+    sha256）：**354 键 same=354 diff=0 PASS**（三缺省 mode='epanet'/
+    assemble='dense'/linear_solver='dense' 与 ImplicitGGASolve CPU 伴随
+    缺省行为逐位不变）。
+[x] 终版树复跑 check_adjoint_gpu.py：rc=0 总判定 PASS。
+
+【交付物】
+  dgga/autodiff.py：ImplicitGGASolveGPU + _adjgpu_*（cache/coeffs/matvec/
+    factor/primal_solve/residuals/polish/node_solve/_kf_*）+
+    implicit_solve(adjoint="cpu"|"gpu", status_machine, assemble,
+    linear_solver)；CPU 缺省逐位不变。
+  dgga/solver.py：仅新增 _cudss_factor（只分解不回代，计数入 factorize）。
+  scripts/adjoint_gpu/{probe_math.py, check_adjoint_gpu.py, adjgpu_gpu.py,
+    aj.sh}；data/gpu/ajg_{1464991,1465032}.out。
+【诚实边界】GPU 伴随不接：泵 θ（speed/h0/r）、D-W、CONST_HP 钳位支、级联/
+  共下游 PRV、create_graph 二阶、epanet 模式、f32 - 全部构造/运行期显式
+  raise，不静默。前向多花 polish_steps+1 次分解（缺省 3+1，L-TOWN B=8 实测
+  23 次 vs 纯前向 19 次）；换来的是抛光态梯度 1e-10 级对拍与 κ~1e11 下的
+  数值稳定（naive 复用旧态分解在 BWSN_1 上 γ>1 精化发散、批间不一致 rel=1.0，
+  均已实测坐实并以终态重分解根治）。

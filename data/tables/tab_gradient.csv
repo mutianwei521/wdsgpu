@@ -1,0 +1,10 @@
+Comparison,Network,Classes,Classes (expanded),Coordinates,Worst relative error,Threshold
+implicit adjoint vs central FD,City D,C D R H,"emitter coeff., nodal demand, pipe resistance, reservoir head",80,5.85e-8,1e-6
+unrolled autodiff vs central FD,City D,C D R H,"emitter coeff., nodal demand, pipe resistance, reservoir head",80,1.21e-6,1e-4
+implicit adjoint vs central FD,Synthetic-M9,C D R H,"emitter coeff., nodal demand, pipe resistance, reservoir head",80,2.03e-8,1e-6
+unrolled autodiff vs central FD,Synthetic-M9,C D R H,"emitter coeff., nodal demand, pipe resistance, reservoir head",80,2.03e-8,1e-4
+implicit adjoint vs central FD (D--W),balerma (turbulent),D R H,"nodal demand, pipe resistance, reservoir head",10,1.15e-8,1e-6
+implicit adjoint vs central FD (D--W),balerma (laminar/transitional),D R H,"nodal demand, pipe resistance, reservoir head",14,2.85e-6,1e-6
+analytic vs EPANET-DLL finite differences,City D (emitter),C D K H,"emitter coeff., nodal demand, pipe roughness, reservoir head",8,2.39e-5,1e-4
+"adversarial audit (22 items, own thresholds)",3 networks,$\ddagger$,degenerate / clamped / closed-link cases,22,0.57$\times$ threshold,1.00$\times$
+\texttt{torch.autograd.gradcheck},3 synthetic networks,C D R H,all four input classes,3,pass,"eps=1e-6, atol=1e-5, rtol=1e-3, f64"

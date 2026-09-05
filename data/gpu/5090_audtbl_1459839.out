@@ -1,0 +1,129 @@
+NVIDIA GeForce RTX 5090, 32607 MiB
+node: <node-22> | cpus: 8
+/data/run01/<user>/wdsgpu/hgaudit/dgga/solver.py:2016: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hgaudit/dgga/solver.py:2016: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+============================================================================================================
+AUDIT 3 - 全表抽查 / 计时公平性 / 分解复核 | node: <node-22>
+torch 2.11.0+cu128 | NVIDIA GeForce RTX 5090
+nvmath 1.0.0
+md5 dgga/solver.py 45b0b0eeb66ed4e15ef81c53809d229a
+md5 dgga/autodiff.py e4b8cfe49536f85b435e04e5ed5621d2
+============================================================================================================
+
+### ky4     Nj=959  nnz=3219  B=8     K=9  (dense 精化=2, cudss_refine=2, grad_refine=2, slots=1, cap=8)
+    迭代数 dense=[9] cudss=[9] 逐样本相等=True | max|dH|=6.166e-07 ft
+    fwd_d  min=13.57302 med=13.58419 ms/场景  n=5  计时区内plan=0
+    fwd_c  min=3.78625 med=3.78776 ms/场景  n=5  计时区内plan=0
+    fb_d   min=88.11685 med=88.16567 ms/场景  n=4  计时区内plan=0  |g|=5.1938625152e+03
+    fb_c   min=8.34102 med=8.35083 ms/场景  n=4  计时区内plan=0  |g|=5.1937506552e+03
+    分解(ms/轮) A=83.2318 Badj=12.2220 Badj_r2=15.9599 Badj_nc=12.1941 C=2.5591 | Badj/C=4.78x Badj_r2/C=6.24x Badj_nc/C=4.76x A/Badj=6.81x A/C=32.52x | 一致性 gA(B/A)=5.52e-10 (C/A)=1.21e-10
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+
+### ky4     Nj=959  nnz=3219  B=64    K=9  (dense 精化=2, cudss_refine=2, grad_refine=2, slots=1, cap=8)
+    迭代数 dense=[9] cudss=[9] 逐样本相等=True | max|dH|=7.610e-06 ft
+    fwd_d  min=4.28206 med=4.28576 ms/场景  n=5  计时区内plan=0
+    fwd_c  min=0.79745 med=0.79855 ms/场景  n=5  计时区内plan=0
+    fb_d   min=50.29442 med=50.29572 ms/场景  n=3  计时区内plan=0  |g|=1.4702310087e+04
+    fb_c   min=1.69057 med=1.69543 ms/场景  n=4  计时区内plan=0  |g|=1.4702428624e+04
+    分解(ms/轮) A=392.3951 Badj=31.9007 Badj_r2=40.7237 Badj_nc=31.2578 C=7.0272 | Badj/C=4.54x Badj_r2/C=5.80x Badj_nc/C=4.45x A/Badj=12.30x A/C=55.84x | 一致性 gA(B/A)=1.63e-09 (C/A)=1.63e-09
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+
+### ky4     Nj=959  nnz=3219  B=256   K=9  (dense 精化=2, cudss_refine=2, grad_refine=2, slots=1, cap=8)
+    迭代数 dense=[9] cudss=[9] 逐样本相等=True | max|dH|=1.775e-05 ft
+    fwd_d  min=2.95664 med=2.95736 ms/场景  n=5  计时区内plan=0
+    fwd_c  min=0.47939 med=0.47957 ms/场景  n=5  计时区内plan=0
+    fb_d   **OOM**
+    fb_c   min=0.97295 med=0.97499 ms/场景  n=4  计时区内plan=0  |g|=3.0586444555e+04
+    分解(ms/轮) A=1496.8724 Badj=85.4916 Badj_r2=103.7490 Badj_nc=83.1338 C=22.8169 | Badj/C=3.75x Badj_r2/C=4.55x Badj_nc/C=3.64x A/Badj=17.51x A/C=65.60x | 一致性 gA(B/A)=6.93e-10 (C/A)=4.82e-10
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+
+### Net3    Nj=92   nnz=320   B=8     K=5  (dense 精化=2, cudss_refine=2, grad_refine=2, slots=1, cap=8)
+    迭代数 dense=[5] cudss=[5] 逐样本相等=True | max|dH|=1.989e-06 ft
+    fwd_d  min=1.81372 med=1.81832 ms/场景  n=5  计时区内plan=0
+    fwd_c  min=2.11812 med=2.12305 ms/场景  n=5  计时区内plan=0
+    fb_d   min=4.35523 med=4.36309 ms/场景  n=4  计时区内plan=0  |g|=4.0837892738e+02
+    fb_c   min=4.36314 med=4.36984 ms/场景  n=4  计时区内plan=0  |g|=4.0828834876e+02
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+
+### Modena  Nj=268  nnz=894   B=8     K=5  (dense 精化=2, cudss_refine=2, grad_refine=2, slots=1, cap=8)
+    迭代数 dense=[4, 5] cudss=[4, 5] 逐样本相等=True | max|dH|=1.116e-10 ft
+    fwd_d  min=2.03704 med=2.04616 ms/场景  n=5  计时区内plan=0
+    fwd_c  min=1.65538 med=1.66077 ms/场景  n=5  计时区内plan=0
+    fb_d   min=6.97383 med=6.97636 ms/场景  n=4  计时区内plan=0  |g|=9.1627708583e+03
+    fb_c   min=3.63222 med=3.64211 ms/场景  n=4  计时区内plan=0  |g|=9.1627708581e+03
+    分解(ms/轮) A=10.8181 Badj=2.6143 Badj_r2=3.4940 Badj_nc=2.5902 C=2.5349 | Badj/C=1.03x Badj_r2/C=1.38x Badj_nc/C=1.02x A/Badj=4.14x A/C=4.27x | 一致性 gA(B/A)=1.34e-13 (C/A)=7.98e-14
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+
+### City_D  Nj=541  nnz=1645  B=512   K=5  (dense 精化=2, cudss_refine=2, grad_refine=2, slots=1, cap=8)
+    迭代数 dense=[4, 5] cudss=[4, 5] 逐样本相等=True | max|dH|=1.755e-05 ft
+    fwd_d  min=0.41090 med=0.41369 ms/场景  n=5  计时区内plan=0
+    fwd_c  min=0.22580 med=0.22640 ms/场景  n=5  计时区内plan=0
+    fb_d   min=4.94501 med=4.94624 ms/场景  n=3  计时区内plan=0  |g|=3.7545843037e+10
+    fb_c   min=0.45189 med=0.45256 ms/场景  n=4  计时区内plan=0  |g|=2.3494573968e+10
+    分解(ms/轮) A=611.4765 Badj=42.7605 Badj_r2=53.6013 Badj_nc=41.1042 C=43.1865 | Badj/C=0.99x Badj_r2/C=1.24x Badj_nc/C=0.95x A/Badj=14.30x A/C=14.16x | 一致性 gA(B/A)=4.00e-08 (C/A)=8.93e-09
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+
+### City_D  Nj=541  nnz=1645  B=1024  K=5  (dense 精化=2, cudss_refine=2, grad_refine=2, slots=1, cap=8)
+    迭代数 dense=[4, 5] cudss=[4, 5] 逐样本相等=True | max|dH|=2.570e-05 ft
+    fwd_d  min=0.38558 med=0.38713 ms/场景  n=5  计时区内plan=0
+    fwd_c  min=0.21240 med=0.21294 ms/场景  n=5  计时区内plan=0
+    fb_d   **OOM**
+    fb_c   min=0.42796 med=0.43018 ms/场景  n=4  计时区内plan=0  |g|=3.7167131558e+10
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+
+### Net1    Nj=9    nnz=31    B=1024  K=4  (dense 精化=2, cudss_refine=2, grad_refine=2, slots=1, cap=8)
+    迭代数 dense=[4] cudss=[4] 逐样本相等=True | max|dH|=1.478e-12 ft
+    fwd_d  min=0.01023 med=0.01029 ms/场景  n=5  计时区内plan=0
+    fwd_c  min=0.17613 med=0.17639 ms/场景  n=5  计时区内plan=0
+    fb_d   min=0.02246 med=0.02262 ms/场景  n=4  计时区内plan=0  |g|=1.7041669028e+03
+    fb_c   min=0.34632 med=0.34779 ms/场景  n=4  计时区内plan=0  |g|=1.7041669028e+03
+
+AUDIT-TBL-JSON [{"node": "<node-22>", "net": "ky4", "B": 8, "Nj": 959, "nnz": 3219, "K": 9, "cudss_refine": 2, "cudss_grad_refine": 2, "cudss_grad_slots": 1, "cudss_cache_max": 8, "dense_refine": 2, "iters_same": true, "iters_d": [9], "iters_c": [9], "maxdH": 6.165570312077762e-07, "fwd_d": [13.610709458589554, 13.584190513938665, 13.573017437011003, 13.574549462646246, 13.603229075670242], "fwd_d_plan": 0, "fwd_c": [3.8015139289200306, 3.78625001758337, 3.7877573631703854, 3.787257708609104, 3.796636126935482], "fwd_c_plan": 0, "fb_d": [88.13125034794211, 88.31321587786078, 88.20009278133512, 88.11684884130955], "fb_d_plan": 0, "fb_d_gnorm": 5193.862515246164, "fb_c": [8.350475691258907, 8.341019973158836, 8.35117930546403, 8.35375301539898], "fb_c_plan": 0, "fb_c_gnorm": 5193.750655249689, "dec": {"C": [2.559106796979904, 2.6174411177635193, 2.5786831974983215, 2.573631703853607], "A": [83.30430090427399, 83.29727873206139, 83.24750140309334, 83.23183283209801], "Badj": [12.261249125003815, 12.233477085828781, 12.225430458784103, 12.221958488225937], "Badj_r2": [15.959858894348145, 16.0847045481205, 16.037870198488235, 16.036011278629303], "Badj_nc": [12.24575936794281, 12.19480112195015, 12.19407469034195, 12.328103184700012], "r_ab": 5.517161339950011e-10, "r_ac": 1.2144927314357965e-10}}, {"node": "<node-22>", "net": "ky4", "B": 64, "Nj": 959, "nnz": 3219, "K": 9, "cudss_refine": 2, "cudss_grad_refine": 2, "cudss_grad_slots": 1, "cudss_cache_max": 8, "dense_refine": 2, "iters_same": true, "iters_d": [9], "iters_c": [9], "maxdH": 7.610065722474246e-06, "fwd_d": [4.28576284321025, 4.2866000439971685, 4.284834256395698, 4.288359952624887, 4.282061709091067], "fwd_d_plan": 0, "fwd_c": [0.8019121014513075, 0.7985478732734919, 0.7974483305588365, 0.7993685430847108, 0.7979382644407451], "fwd_c_plan": 0, "fb_d": [50.308986741583794, 50.29442085651681, 50.295715394895524], "fb_d_plan": 0, "fb_d_gnorm": 14702.310087425749, "fb_c": [1.6996792401187122, 1.6914805746637285, 1.6993717290461063, 1.690568693447858], "fb_c_plan": 0, "fb_c_gnorm": 14702.428624007262, "dec": {"C": [7.149264216423035, 7.1420930325984955, 7.027231156826019, 7.162708789110184], "A": [392.57507026195526, 392.4563005566597, 392.39512383937836, 392.40533486008644], "Badj": [31.90072625875473, 31.907007098197937, 31.983405351638794, 31.988266855478287], "Badj_r2": [40.76997563242912, 40.724318474531174, 40.85404425859451, 40.72372987866402], "Badj_nc": [31.257838010787964, 31.323544681072235, 31.275317072868347, 31.280308961868286], "r_ab": 1.6269052759292868e-09, "r_ac": 1.6348109961427494e-09}}, {"node": "<node-22>", "net": "ky4", "B": 256, "Nj": 959, "nnz": 3219, "K": 9, "cudss_refine": 2, "cudss_grad_refine": 2, "cudss_grad_slots": 1, "cudss_cache_max": 8, "dense_refine": 2, "iters_same": true, "iters_d": [9], "iters_c": [9], "maxdH": 1.7751901850715512e-05, "fwd_d": [2.957997770863585, 2.9573625361081213, 2.956643686047755, 2.957716496894136, 2.957227494334802], "fwd_d_plan": 0, "fwd_c": [0.4795710265170783, 0.47938546049408615, 0.48003983101807535, 0.47943527169991285, 0.4817548906430602], "fwd_c_plan": 0, "fb_d": "OOM", "fb_c": [0.9750266763148829, 0.9752638579811901, 0.972946232650429, 0.9749523742357269], "fb_c_plan": 0, "fb_c_gnorm": 30586.444554900663, "dec": {"C": [22.8598415851593, 135.60758903622627, 22.86246046423912, 22.816907614469528], "A": [1496.8723878264427, 1497.113186866045, 1497.0563538372517], "Badj": [85.58952808380127, 85.540272295475, 85.49155294895172, 85.61177551746368], "Badj_r2": [103.80857437849045, 103.76852005720139, 103.74895110726357, 103.84005308151245], "Badj_nc": [83.1604041159153, 83.26856791973114, 83.33563432097435, 83.13380554318428], "r_ab": 6.929954134169812e-10, "r_ac": 4.815266598794808e-10}}, {"node": "<node-22>", "net": "Net3", "B": 8, "Nj": 92, "nnz": 320, "K": 5, "cudss_refine": 2, "cudss_grad_refine": 2, "cudss_grad_slots": 1, "cudss_cache_max": 8, "dense_refine": 2, "iters_same": true, "iters_d": [5], "iters_c": [5], "maxdH": 1.98853769006746e-06, "fwd_d": [1.8181675113737583, 1.8220441415905952, 1.8183151260018349, 1.8137209117412567, 1.8185516819357872], "fwd_d_plan": 0, "fwd_c": [2.1230513229966164, 2.124554943293333, 2.1200021728873253, 2.124362625181675, 2.1181199699640274], "fwd_c_plan": 0, "fb_d": [4.365046508610249, 4.355225712060928, 4.361127503216267, 4.380107391625643], "fb_d_plan": 0, "fb_d_gnorm": 408.37892738429406, "fb_c": [4.369776230305433, 4.363140091300011, 4.369913134723902, 4.377719946205616], "fb_c_plan": 0, "fb_c_gnorm": 408.2883487583516}, {"node": "<node-22>", "net": "Modena", "B": 8, "Nj": 268, "nnz": 894, "K": 5, "cudss_refine": 2, "cudss_grad_refine": 2, "cudss_grad_slots": 1, "cudss_cache_max": 8, "dense_refine": 2, "iters_same": true, "iters_d": [4, 5], "iters_c": [4, 5], "maxdH": 1.1161205293319654e-10, "fwd_d": [2.037894446402788, 2.053328324109316, 2.0461580716073513, 2.0370399579405785, 2.0571588538587093], "fwd_d_plan": 0, "fwd_c": [1.6649030148983002, 1.660771667957306, 1.6674371436238289, 1.6553765162825584, 1.6602110117673874], "fwd_c_plan": 0, "fb_d": [6.97876513004303, 6.979001220315695, 6.973831914365292, 6.973953451961279], "fb_d_plan": 0, "fb_d_gnorm": 9162.77085826288, "fb_c": [3.6405008286237717, 3.644644282758236, 3.632219973951578, 3.6437255330383778], "fb_c_plan": 0, "fb_c_gnorm": 9162.77085812743, "dec": {"C": [2.6647374033927917, 2.5507621467113495, 2.5978684425354004, 2.534884959459305], "A": [10.855071246623993, 10.842014104127884, 10.820325464010239, 10.818146169185638], "Badj": [2.6471205055713654, 2.6269666850566864, 2.6143305003643036, 2.6409514248371124], "Badj_r2": [3.497965633869171, 3.4940019249916077, 3.497425466775894, 3.499183803796768], "Badj_nc": [2.5944262742996216, 2.6161111891269684, 2.59283185005188, 2.590235322713852], "r_ab": 1.3394206344624753e-13, "r_ac": 7.982453438168603e-14}}, {"node": "<node-22>", "net": "City_D", "B": 512, "Nj": 541, "nnz": 1645, "K": 5, "cudss_refine": 2, "cudss_grad_refine": 2, "cudss_grad_slots": 1, "cudss_cache_max": 8, "dense_refine": 2, "iters_same": true, "iters_d": [4, 5], "iters_c": [4, 5], "maxdH": 1.754634534734123e-05, "fwd_d": [0.4109003930352628, 0.4136899660807103, 0.41100875387201086, 0.4259930501575582, 0.4137226569582708], "fwd_d_plan": 0, "fwd_c": [0.22743086447007954, 0.22658216767013073, 0.22594836627831683, 0.22580346558243036, 0.22639934468315914], "fwd_c_plan": 0, "fb_d": [4.947184548655059, 4.946237102558371, 4.94501311914064], "fb_d_plan": 0, "fb_d_gnorm": 37545843036.84194, "fb_c": [0.4521982918959111, 0.4529126454144716, 0.45188832882558927, 0.45335213508224115], "fb_c_plan": 0, "fb_c_gnorm": 23494573968.3237, "dec": {"C": [43.252699077129364, 43.237145990133286, 45.90015485882759, 43.18647459149361], "A": [611.5812882781029, 616.6625842452049, 612.4084703624249, 611.4764995872974], "Badj": [42.760539799928665, 42.78184100985527, 43.127648532390594, 44.28265243768692], "Badj_r2": [53.891945630311966, 53.643591701984406, 53.60466241836548, 53.60132455825806], "Badj_nc": [41.10418260097504, 41.127342730760574, 41.18330031633377, 41.10615700483322], "r_ab": 3.999366889460091e-08, "r_ac": 8.931652470800227e-09}}, {"node": "<node-22>", "net": "City_D", "B": 1024, "Nj": 541, "nnz": 1645, "K": 5, "cudss_refine": 2, "cudss_grad_refine": 2, "cudss_grad_slots": 1, "cudss_cache_max": 8, "dense_refine": 2, "iters_same": true, "iters_d": [4, 5], "iters_c": [4, 5], "maxdH": 2.570342930141578e-05, "fwd_d": [0.38702944584656507, 0.3921112947864458, 0.3855804679915309, 0.3878837378579192, 0.3871339104080107], "fwd_d_plan": 0, "fwd_c": [0.2133591151505243, 0.21293514873832464, 0.2123962367477361, 0.2126443068846129, 0.2868263800337445], "fwd_c_plan": 0, "fb_d": "OOM", "fb_c": [0.43140179695910774, 0.49661501179798506, 0.42795887929969467, 0.42895508522633463], "fb_c_plan": 0, "fb_c_gnorm": 37167131557.81511}, {"node": "<node-22>", "net": "Net1", "B": 1024, "Nj": 9, "nnz": 31, "K": 4, "cudss_refine": 2, "cudss_grad_refine": 2, "cudss_grad_slots": 1, "cudss_cache_max": 8, "dense_refine": 2, "iters_same": true, "iters_d": [4], "iters_c": [4], "maxdH": 1.4779288903810084e-12, "fwd_d": [0.010286461474606767, 0.01024574157781899, 0.01030066778184846, 0.010232975910184905, 0.010323452443117276], "fwd_d_plan": 0, "fwd_c": [0.17627738634473644, 0.17649062647251412, 0.17638517601881176, 0.17676430434221402, 0.17613320233067498], "fwd_c_plan": 0, "fb_d": [0.022620970412390307, 0.022621647076448426, 0.022644679120276123, 0.022459971660282463], "fb_d_plan": 0, "fb_d_gnorm": 1704.1669027578214, "fb_c": [0.3480128616502043, 0.3475738085398916, 0.41577201409381814, 0.3463194298092276], "fb_c_plan": 0, "fb_c_gnorm": 1704.1669027578214}]
+============================================================================================================
+--- MEM SPOTCHECK (fresh process per config) ---
+AUDMEM ky4.inp B=64 dense ok K=9 ctx=588.19 peak=10586.44 resv=10642.00 nontorch=230.00 total=10872.00 gnorm=1.4702433386e+04
+/data/run01/<user>/wdsgpu/hgaudit/dgga/solver.py:2016: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hgaudit/dgga/solver.py:2016: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+AUDMEM ky4.inp B=64 cudss ok K=9 ctx=588.19 peak=182.80 resv=224.00 nontorch=100.00 total=324.00 gnorm=1.4702417585e+04
+AUDMEM ky4.inp B=256 dense OOM K=9 ctx=588.19
+/data/run01/<user>/wdsgpu/hgaudit/dgga/solver.py:2016: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hgaudit/dgga/solver.py:2016: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+AUDMEM ky4.inp B=256 cudss ok K=9 ctx=588.19 peak=753.41 resv=782.00 nontorch=228.00 total=1010.00 gnorm=3.0586054854e+04
+AUDMEM City_D.inp B=512 dense ok K=5 ctx=588.19 peak=17503.24 resv=18420.00 nontorch=230.00 total=18650.00 gnorm=2.6336454198e+10
+/data/run01/<user>/wdsgpu/hgaudit/dgga/solver.py:2016: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hgaudit/dgga/solver.py:2016: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+AUDMEM City_D.inp B=512 cudss ok K=5 ctx=588.19 peak=316.56 resv=348.00 nontorch=260.00 total=608.00 gnorm=2.1400802656e+10
+AUDMEM City_D.inp B=1024 dense OOM K=5 ctx=588.19
+/data/run01/<user>/wdsgpu/hgaudit/dgga/solver.py:2016: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hgaudit/dgga/solver.py:2016: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+AUDMEM City_D.inp B=1024 cudss ok K=5 ctx=588.19 peak=616.51 resv=712.00 nontorch=452.00 total=1164.00 gnorm=3.1927399250e+10
+AUDMEM Modena.inp B=64 dense ok K=5 ctx=588.19 peak=622.33 resv=628.00 nontorch=230.00 total=858.00 gnorm=2.2829358937e+04
+/data/run01/<user>/wdsgpu/hgaudit/dgga/solver.py:2016: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hgaudit/dgga/solver.py:2016: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+AUDMEM Modena.inp B=64 cudss ok K=5 ctx=588.19 peak=20.67 resv=24.00 nontorch=68.00 total=92.00 gnorm=2.2829358937e+04
+AUDMEM Net3.inp B=1024 dense ok K=5 ctx=588.19 peak=1200.37 resv=1294.00 nontorch=230.00 total=1524.00 gnorm=3.6093548418e+03
+/data/run01/<user>/wdsgpu/hgaudit/dgga/solver.py:2016: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hgaudit/dgga/solver.py:2016: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+AUDMEM Net3.inp B=1024 cudss ok K=5 ctx=588.19 peak=166.24 resv=206.00 nontorch=132.00 total=338.00 gnorm=3.6093286547e+03
+AUDTBL JOB DONE rc=0

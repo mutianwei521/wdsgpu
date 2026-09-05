@@ -1,0 +1,200 @@
+<node-17>
+NVIDIA GeForce RTX 5090, 32607 MiB
+########## RUN mv2_time_gpu.py ##########
+================================================================================================
+主线 v2 · L-TOWN f+b 三列全表（旧 dense+CPU 伴随 / 新 dense+GPU / 新 cudss+GPU）
+node: <node-17> | torch 2.11.0+cu128 | dev: cuda | NVIDIA GeForce RTX 5090
+cudss: True | B 列: [1, 8, 64, 256, 512, 1024] | ACC: 1e-06
+md5 dgga/solver.py 203d136573c658bc88e25bb98e94218f
+md5 dgga/autodiff.py 70b4d799fb58bd654fd8df35db288918
+sha256 INP 8e3009b8fd5e0b9d79e0c0d999cc6af9b2b4132d84d2cadc04e1bdf07086dc02
+
+### L-TOWN Nj=782 L=909 N=785 nnz=2592
+/data/run01/<user>/wdsgpu/hydrograd/mv2/dgga/solver.py:2813: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:213.)
+  return torch.as_tensor(np.asarray(x), dtype=dt, device=dev)
+/data/run01/<user>/wdsgpu/hydrograd/mv2/dgga/solver.py:2460: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/mv2/dgga/solver.py:2460: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+§1 快速正确性（B=8）：三路 demand 梯度对拍
+  dense vs CPU=3.296e-15  cudss vs CPU=3.159e-15  cudss vs dense=1.373e-16（状态组=1）门槛 <1e-6：PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+
+§2 时间全表（ms/场景）
+  B=1     fwd d  87.21361 c  58.11964 | implCPU  335.30074 (组1) | f+b(gpu) d 152.41477 c 109.03044 | |g| cpu=4.039813e+03 gpu_d=4.039813e+03 gpu_c=4.039813e+03
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=8     fwd d  20.92389 c   7.83961 | implCPU  328.58141 (组1) | f+b(gpu) d  47.07378 c  15.21972 | |g| cpu=5.685936e+03 gpu_d=5.685936e+03 gpu_c=5.685936e+03
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=64    fwd d   5.86461 c   1.40031 | implCPU  328.39432 (组1) | f+b(gpu) d  12.00906 c   3.20499 | |g| cpu=1.377453e+04 gpu_d=1.377453e+04 gpu_c=1.377453e+04
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=256   fwd d   3.79409 c   0.70357 | implCPU  329.10378 (组1) | f+b(gpu) d   6.64224 c   1.89516 | |g| cpu=2.967041e+04 gpu_d=2.967041e+04 gpu_c=2.967041e+04
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=512   fwd d   3.47223 c   0.58254 | implCPU  330.02212 (组1) | f+b(gpu) d   5.82371 c   1.67084 | |g| cpu=4.139653e+04 gpu_d=4.139653e+04 gpu_c=4.139653e+04
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=1024  fwd d       OOM c   0.52762 | implCPU  324.79422 (组1) | f+b(gpu) d       OOM c   1.61665 | |g| cpu=5.895319e+04 gpu_d=- gpu_c=5.895319e+04
+
+================================================================================================
+§T 三列汇总（ms/场景）node=<node-17>
+B     | 旧=dense+CPU伴随 | 新d=dense+GPU伴随 | 新c=cudss+GPU伴随 | F1=旧/新d  F2=新d/新c  总=旧/新c | 旧c/新c(上轮口径)
+1     |        422.51435 |         152.41477 |         109.03044 |    2.77x    1.40x    3.88x |    3.61x
+8     |        349.50530 |          47.07378 |          15.21972 |    7.42x    3.09x   22.96x |   22.10x
+64    |        334.25893 |          12.00906 |           3.20499 |   27.83x    3.75x  104.29x |  102.90x
+256   |        332.89787 |           6.64224 |           1.89516 |   50.12x    3.50x  175.66x |  174.03x
+512   |        333.49435 |           5.82371 |           1.67084 |   57.26x    3.49x  199.60x |  197.87x
+1024  |              OOM |               OOM |           1.61665 |        -        -        - |  201.23x
+MV2 TIME DONE rc=0
+########## mv2_time_gpu.py rc=0 ##########
+########## RUN mv2_big_gpu.py ##########
+================================================================================================
+主线 v2 · 大网 f+b 补格（ky4 / NW_Model；adjoint='gpu' vs CPU 伴随）
+node: <node-17> | torch 2.11.0+cu128 | dev: cuda | NVIDIA GeForce RTX 5090
+cudss: True | B2: 256 | ACC: 1e-06
+md5 dgga/solver.py 203d136573c658bc88e25bb98e94218f
+md5 dgga/autodiff.py 70b4d799fb58bd654fd8df35db288918
+
+================================================================================================
+[ky4] sha256 INP 0f776ada1c8fb17dad50d04b8035b4b96421de5c85ee7756697d6df28d4f2579
+  Nj=959 L=1158 N=964 nnz=3219 泵=2(CONST_HP 2) 水池=4
+/data/run01/<user>/wdsgpu/hydrograd/mv2/dgga/solver.py:2813: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:213.)
+  return torch.as_tensor(np.asarray(x), dtype=dt, device=dev)
+/data/run01/<user>/wdsgpu/hydrograd/mv2/dgga/solver.py:2460: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/mv2/dgga/solver.py:2460: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  §1 B=8 ±15% 梯度对拍：cudss vs CPU=1.544e-11  dense vs CPU=1.544e-11 门槛<1e-6（超限走 FD 仲裁）：PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  §2 B=256 ±15%：fwd_c=0.32460 ms/场景 conv=256/256 iters<=9
+  §2 结果（ms/场景，±15%）：implCPU=351.36091 | 旧(c 前向+CPU 伴随)=351.68550 | 新 f+b d=5.51040 c=0.63082 | |g| cpu=3.042512e+04 gpu_d=3.042512e+04 gpu_c=3.042512e+04
+  §2 倍数：旧/新c = 557.51x  旧/新d = 63.82x  新d/新c = 8.74x
+================================================================================================
+[NW_Model] sha256 INP f44353f963f6149b289fe806564e380838dc35826639e8a9312f7146c7dc31a6
+  Nj=8566 L=9982 N=8569 nnz=27760 泵=3(CONST_HP 0) 水池=0
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+    FD 仲裁@(b=3,coord=7285)：fd(h)=1.47508301e+01 fd(h/2)=1.47491595e+01 噪声=1.67e-03 | |gpu-fd|=6.69e-04 |cpu-fd|=2.08e-03 -> 双方均在 5x 噪声带内 PASS(FD)
+  §1 B=8 ±15% 梯度对拍：cudss vs CPU=6.369e-06(FD-PASS)  dense=FAIL(Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.) 门槛<1e-6（超限走 FD 仲裁）：PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  §2 B=256 ±15%：fwd_c=0.51210 ms/场景 conv=256/256 iters<=5
+  f+b(gpu,dense) B=256：OOM
+  §2 结果（ms/场景，±15%）：implCPU=3330.44763 | 旧(c 前向+CPU 伴随)=3330.95973 | 新 f+b d=OOM/- c=1.77357 | |g| cpu=5.932958e+04 gpu_d=- gpu_c=5.932958e+04
+  §2 倍数：旧/新c = 1878.11x
+
+MV2 BIG DONE rc=0
+########## mv2_big_gpu.py rc=0 ##########
+########## RUN mv2_train_gpu.py ##########
+================================================================================================
+主线 v2 · L-TOWN 训练形态压测（Adam 反演循环，adjoint='gpu'）
+node: <node-17> | torch 2.11.0+cu128 | dev: cuda | NVIDIA GeForce RTX 5090
+cudss: True | B: [256, 1024] | STEPS: 60 | ACC: 1e-06
+md5 dgga/solver.py 203d136573c658bc88e25bb98e94218f
+md5 dgga/autodiff.py 70b4d799fb58bd654fd8df35db288918
+sha256 INP 8e3009b8fd5e0b9d79e0c0d999cc6af9b2b4132d84d2cadc04e1bdf07086dc02
+
+### L-TOWN Nj=782 | qexp=2 qcf=101.94 pcf=0.3048 ucf_e=34093.7 | cudss_cache_max=8 cudss_grad_slots=1（缺省；规则：一步内不同批量数 1 x slots 1 <= cap 8 满足，不调参）
+### 候选 60 / 传感器 33 / 真值节点 [651, 137, 720]（C_true=1.50，Ke_int=1.5153e+04）
+/data/run01/<user>/wdsgpu/hydrograd/mv2/dgga/solver.py:2460: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/mv2/dgga/solver.py:2460: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+/data/run01/<user>/wdsgpu/hydrograd/mv2/mv2_train_gpu.py:205: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)
+  losses.append(float(loss))
+/data/run01/<user>/wdsgpu/hydrograd/mv2/dgga/solver.py:2813: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:213.)
+  return torch.as_tensor(np.asarray(x), dtype=dt, device=dev)
+================================================================================================
+§B=256
+  观测：conv=256/256 iters=19 状态组=1
+  Adam 60 步：首步 1178.9 ms | 稳态中位 470.23 ms/step (1.8368 ms/场景) | min/max 465.3/588.2 ms
+  损失：step1=2.438914e-01 -> step60=2.549019e-03（降 95.7x）
+  top-5 C：n720=0.168(真)  n752=0.128  n330=0.124  n308=0.124  n296=0.123
+  top-3 支撑 == 真值：False
+  cudss 计数（第 6..60 步均摊）：factorize=20.13 solve=48.38 bwd_solve=99.00 bwd_refactorize=0.00 /step | 缓存 state 数=1（键=(B,dtype,dev,mtype,slot)，稳态不再 plan）
+  显存 R5：ctx=589.19 torch_peak=776.24 torch_resv=818.00 nontorch=190.00 total=1008.00 MiB
+  旧形态（GPU 前向 + CPU 伴随）2 步：90723.4 90107.3 ms/step (351.98 ms/场景) | 加速（旧/新稳态）= 191.6x
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+================================================================================================
+§B=1024
+  观测：conv=1024/1024 iters=19 状态组=1
+  Adam 60 步：首步 1669.0 ms | 稳态中位 1643.08 ms/step (1.6046 ms/场景) | min/max 1551.6/1742.4 ms
+  损失：step1=2.439884e-01 -> step60=2.549802e-03（降 95.7x）
+  top-5 C：n720=0.168(真)  n752=0.128  n330=0.124  n308=0.124  n296=0.123
+  top-3 支撑 == 真值：False
+  cudss 计数（第 6..60 步均摊）：factorize=20.20 solve=48.60 bwd_solve=99.00 bwd_refactorize=0.00 /step | 缓存 state 数=2（键=(B,dtype,dev,mtype,slot)，稳态不再 plan）
+  显存 R5：ctx=589.19 torch_peak=3569.31 torch_resv=4086.00 nontorch=710.00 total=4796.00 MiB
+  旧形态（GPU 前向 + CPU 伴随）2 步：356923.7 358406.6 ms/step (348.56 ms/场景) | 加速（旧/新稳态）= 217.2x
+
+MV2 TRAIN DONE rc=0
+########## mv2_train_gpu.py rc=0 ##########
+########## RUN mv2_mem_gpu.py ##########
+====================================================================================================
+主线 v2 · L-TOWN 三列 f+b 显存全表（R5 口径，MiB，每配置全新进程） | node: <node-17>
+md5 dgga/solver.py 203d136573c658bc88e25bb98e94218f
+md5 dgga/autodiff.py 70b4d799fb58bd654fd8df35db288918
+sha256 INP 8e3009b8fd5e0b9d79e0c0d999cc6af9b2b4132d84d2cadc04e1bdf07086dc02
+B 列: [1, 8, 64, 256, 512, 1024] | oldd 抽查: [1, 64, 256] | 细扫 fbd: [640, 768, 896, 1024] fwdd: [1280, 1536] fbc: [1536, 2048, 3072, 4096, 6144, 8192, 12288, 16384]
+
+RESULT 1 fwdd ok ctx=589.19 torch_peak=23.93 torch_resv=42.00 nontorch=70.00 total=112.00 conv=1/1 iters=17
+RESULT 1 fwdc ok ctx=589.19 torch_peak=0.79 torch_resv=2.00 nontorch=44.00 total=46.00 conv=1/1 iters=17
+RESULT 1 fbd ok ctx=589.19 torch_peak=27.41 torch_resv=42.00 nontorch=152.00 total=194.00 gnorm=4.039813e+03
+RESULT 1 fbc ok ctx=589.19 torch_peak=16.95 torch_resv=22.00 nontorch=192.00 total=214.00 gnorm=4.039813e+03
+RESULT 8 fwdd ok ctx=589.19 torch_peak=200.55 torch_resv=214.00 nontorch=78.00 total=292.00 conv=8/8 iters=17
+RESULT 8 fwdc ok ctx=589.19 torch_peak=3.68 torch_resv=4.00 nontorch=44.00 total=48.00 conv=8/8 iters=17
+RESULT 8 fbd ok ctx=589.19 torch_peak=200.66 torch_resv=214.00 nontorch=86.00 total=300.00 gnorm=5.685936e+03
+RESULT 8 fbc ok ctx=589.19 torch_peak=19.05 torch_resv=26.00 nontorch=60.00 total=86.00 gnorm=5.685936e+03
+RESULT 64 fwdd ok ctx=589.19 torch_peak=1518.21 torch_resv=1548.00 nontorch=78.00 total=1626.00 conv=64/64 iters=17
+RESULT 64 fwdc ok ctx=589.19 torch_peak=27.34 torch_resv=48.00 nontorch=76.00 total=124.00 conv=64/64 iters=17
+RESULT 64 fbd ok ctx=589.19 torch_peak=1518.66 torch_resv=1548.00 nontorch=86.00 total=1634.00 gnorm=1.377453e+04
+RESULT 64 fbc ok ctx=589.19 torch_peak=35.96 torch_resv=68.00 nontorch=92.00 total=160.00 gnorm=1.377453e+04
+RESULT 256 fwdd ok ctx=589.19 torch_peak=6051.44 torch_resv=7260.00 nontorch=78.00 total=7338.00 conv=256/256 iters=17
+RESULT 256 fwdc ok ctx=589.19 torch_peak=112.36 torch_resv=124.00 nontorch=172.00 total=296.00 conv=256/256 iters=17
+RESULT 256 fbd ok ctx=589.19 torch_peak=6053.72 torch_resv=7260.00 nontorch=86.00 total=7346.00 gnorm=2.967041e+04
+RESULT 256 fbc ok ctx=589.19 torch_peak=122.64 torch_resv=144.00 nontorch=188.00 total=332.00 gnorm=2.967041e+04
+RESULT 512 fwdd ok ctx=589.19 torch_peak=12090.98 torch_resv=14486.00 nontorch=78.00 total=14564.00 conv=512/512 iters=17
+RESULT 512 fwdc ok ctx=589.19 torch_peak=218.97 torch_resv=258.00 nontorch=332.00 total=590.00 conv=512/512 iters=17
+RESULT 512 fbd ok ctx=589.19 torch_peak=12093.88 torch_resv=14486.00 nontorch=86.00 total=14572.00 gnorm=4.139653e+04
+RESULT 512 fbc ok ctx=589.19 torch_peak=225.81 torch_resv=278.00 nontorch=348.00 total=626.00 gnorm=4.139653e+04
+RESULT 1024 fwdd ok ctx=589.19 torch_peak=24177.42 torch_resv=28990.00 nontorch=78.00 total=29068.00 conv=1024/1024 iters=17
+RESULT 1024 fwdc ok ctx=589.19 torch_peak=436.10 torch_resv=592.00 nontorch=620.00 total=1212.00 conv=1024/1024 iters=17
+RESULT 1024 fbd ok ctx=589.19 torch_peak=24181.61 torch_resv=29010.00 nontorch=86.00 total=29096.00 gnorm=5.895319e+04
+RESULT 1024 fbc ok ctx=589.19 torch_peak=441.28 torch_resv=650.00 nontorch=636.00 total=1286.00 gnorm=5.895319e+04
+RESULT 1 oldd ok ctx=589.19 torch_peak=23.93 torch_resv=42.00 nontorch=70.00 total=112.00 gnorm=4.039813e+03 rss_hwm_delta=575.3MiB groups=1
+RESULT 64 oldd ok ctx=589.19 torch_peak=1518.21 torch_resv=1548.00 nontorch=78.00 total=1626.00 gnorm=1.377453e+04 rss_hwm_delta=575.4MiB groups=1
+RESULT 256 oldd ok ctx=589.19 torch_peak=6051.44 torch_resv=7260.00 nontorch=78.00 total=7338.00 gnorm=2.967041e+04 rss_hwm_delta=603.4MiB groups=1
+RESULT 640 fbd ok ctx=589.19 torch_peak=15117.07 torch_resv=18084.00 nontorch=86.00 total=18170.00 gnorm=4.616881e+04
+RESULT 768 fbd ok ctx=589.19 torch_peak=18143.47 torch_resv=21734.00 nontorch=86.00 total=21820.00 gnorm=5.113619e+04
+RESULT 896 fbd ok ctx=589.19 torch_peak=21155.36 torch_resv=25348.00 nontorch=86.00 total=25434.00 gnorm=5.498339e+04
+RESULT 1024 fbd ok ctx=589.19 torch_peak=24181.61 torch_resv=29010.00 nontorch=86.00 total=29096.00 gnorm=5.895319e+04
+RESULT 1280 fwdd OOM ctx=589.19
+RESULT 1536 fbc ok ctx=589.19 torch_peak=646.38 torch_resv=900.00 nontorch=924.00 total=1824.00 gnorm=7.159304e+04
+RESULT 2048 fbc ok ctx=589.19 torch_peak=860.43 torch_resv=1228.00 nontorch=1212.00 total=2440.00 gnorm=8.403764e+04
+RESULT 3072 fbc ok ctx=589.19 torch_peak=1314.35 torch_resv=1760.00 nontorch=1788.00 total=3548.00 gnorm=1.023432e+05
+RESULT 4096 fbc ok ctx=589.19 torch_peak=1724.60 torch_resv=2368.00 nontorch=2364.00 total=4732.00 gnorm=1.176237e+05
+RESULT 6144 fbc ok ctx=589.19 torch_peak=2582.39 torch_resv=3482.00 nontorch=3516.00 total=6998.00 gnorm=1.441252e+05
+RESULT 8192 fbc ok ctx=589.19 torch_peak=3442.60 torch_resv=4684.00 nontorch=4668.00 total=9352.00 gnorm=1.669551e+05
+RESULT 12288 fbc ok ctx=589.19 torch_peak=5190.03 torch_resv=6858.00 nontorch=6972.00 total=13830.00 gnorm=2.040121e+05
+RESULT 16384 fbc ok ctx=589.19 torch_peak=6893.04 torch_resv=9242.00 nontorch=9276.00 total=18518.00 gnorm=2.343921e+05
+
+====================================================================================================
+§M1 显存全表（R5 口径；三列 f+b + 纯前向对照）  node=<node-17>
+B     | fwdd total | fwdc total | fbd  peak      resv     非torch   total    | fbc  peak      resv     非torch   total    | fbd/fbc
+1     |     112.0 |      46.0 |      27.4      42.0    152.0     194.0 |      16.9      22.0    192.0     214.0 |   0.91x
+8     |     292.0 |      48.0 |     200.7     214.0     86.0     300.0 |      19.1      26.0     60.0      86.0 |   3.49x
+64    |    1626.0 |     124.0 |    1518.7    1548.0     86.0    1634.0 |      36.0      68.0     92.0     160.0 |  10.21x
+256   |    7338.0 |     296.0 |    6053.7    7260.0     86.0    7346.0 |     122.6     144.0    188.0     332.0 |  22.13x
+512   |   14564.0 |     590.0 |   12093.9   14486.0     86.0   14572.0 |     225.8     278.0    348.0     626.0 |  23.28x
+1024  |   29068.0 |    1212.0 |   24181.6   29010.0     86.0   29096.0 |     441.3     650.0    636.0    1286.0 |  22.63x
+
+§M2 oldd 抽查（旧形态完整训练步：dense 前向 + CPU 隐式伴随）  node=<node-17>
+B=1     ctx=589.19 torch_peak=23.93 torch_resv=42.00 nontorch=70.00 total=112.00 gnorm=4.039813e+03 rss_hwm_delta=575.3MiB groups=1
+B=64    ctx=589.19 torch_peak=1518.21 torch_resv=1548.00 nontorch=78.00 total=1626.00 gnorm=1.377453e+04 rss_hwm_delta=575.4MiB groups=1
+B=256   ctx=589.19 torch_peak=6051.44 torch_resv=7260.00 nontorch=78.00 total=7338.00 gnorm=2.967041e+04 rss_hwm_delta=603.4MiB groups=1
+
+§M3 OOM 边界（每候选 B 全新进程）  node=<node-17>
+fbd    最大跑通 B=1024  首个 OOM B=None
+fwdd   最大跑通 B=1024  首个 OOM B=1280
+fbc    最大跑通 B=16384  首个 OOM B=None
+MV2 MEM DONE
+########## mv2_mem_gpu.py rc=0 ##########
+MV2 JOB DONE rc=0

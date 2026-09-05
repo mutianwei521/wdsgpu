@@ -1,0 +1,49 @@
+NVIDIA GeForce RTX 5090
+cpus: 8
+/tmp/tmp7_gmehsl/cuda_utils.c:7:10: fatal error: Python.h: No such file or directory
+    7 | #include <Python.h>
+      |          ^~~~~~~~~~
+compilation terminated.
+/tmp/tmp7wrw5suu/cuda_utils.c:7:10: fatal error: Python.h: No such file or directory
+    7 | #include <Python.h>
+      |          ^~~~~~~~~~
+compilation terminated.
+/data/home/<user>/.local/lib/python3.10/site-packages/torch/_inductor/cpp_builder.py:1200: UserWarning: Can't find Python.h in /usr/include/python3.10
+  warnings.warn(f"Can't find Python.h in {str(include_dir)}")
+/data/home/<user>/.local/lib/python3.10/site-packages/torch/_inductor/cpp_builder.py:1200: UserWarning: Can't find Python.h in /usr/include/python3.10
+  warnings.warn(f"Can't find Python.h in {str(include_dir)}")
+/data/home/<user>/.local/lib/python3.10/site-packages/torch/_inductor/cpp_builder.py:1200: UserWarning: Can't find Python.h in /usr/include/python3.10
+  warnings.warn(f"Can't find Python.h in {str(include_dir)}")
+/data/home/<user>/.local/lib/python3.10/site-packages/torch/_inductor/cpp_builder.py:1200: UserWarning: Can't find Python.h in /usr/include/python3.10
+  warnings.warn(f"Can't find Python.h in {str(include_dir)}")
+/data/home/<user>/.local/lib/python3.10/site-packages/torch/_inductor/cpp_builder.py:1200: UserWarning: Can't find Python.h in /usr/include/python3.10
+  warnings.warn(f"Can't find Python.h in {str(include_dir)}")
+/data/home/<user>/.local/lib/python3.10/site-packages/torch/_inductor/cpp_builder.py:1200: UserWarning: Can't find Python.h in /usr/include/python3.10
+  warnings.warn(f"Can't find Python.h in {str(include_dir)}")
+/data/home/<user>/.local/lib/python3.10/site-packages/torch/_inductor/cpp_builder.py:1200: UserWarning: Can't find Python.h in /usr/include/python3.10
+  warnings.warn(f"Can't find Python.h in {str(include_dir)}")
+/data/home/<user>/.local/lib/python3.10/site-packages/torch/_inductor/cpp_builder.py:1200: UserWarning: Can't find Python.h in /usr/include/python3.10
+  warnings.warn(f"Can't find Python.h in {str(include_dir)}")
+/data/home/<user>/.local/lib/python3.10/site-packages/torch/_inductor/cpp_builder.py:1200: UserWarning: Can't find Python.h in /usr/include/python3.10
+  warnings.warn(f"Can't find Python.h in {str(include_dir)}")
+/data/home/<user>/.local/lib/python3.10/site-packages/torch/_inductor/cpp_builder.py:1200: UserWarning: Can't find Python.h in /usr/include/python3.10
+  warnings.warn(f"Can't find Python.h in {str(include_dir)}")
+/tmp/tmpq_i19v2v/cuda_utils.c:7:10: fatal error: Python.h: No such file or directory
+    7 | #include <Python.h>
+      |          ^~~~~~~~~~
+compilation terminated.
+/data/run01/<user>/wdsgpu/hydrograd/probe23.py:70: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  As = (Ad * mask).to_sparse_csr()
+============================================================================
+PROBE 2 -- B=1 latency: baseline vs torch.compile(reduce-overhead)
+net         Nj |   eager ms  compiled ms   speedup
+Modena     268 |      9.325       FAILED  CalledProcessError: Command '['/us
+City_D     541 |     14.142       FAILED  CalledProcessError: Command '['/us
+ky4        959 |     41.452       FAILED  CalledProcessError: Command '['/us
+
+============================================================================
+PROBE 3 -- one linear solve: batched dense vs sparse (per scenario)
+net         Nj |      B  dense ms/sc  sparse ms/sc     ratio
+Modena     268 |      1       0.8403        FAILED  Calling linear solver with spars
+City_D     541 |      1       1.5950        FAILED  Calling linear solver with spars
+ky4        959 |      1       2.7435        FAILED  Calling linear solver with spars

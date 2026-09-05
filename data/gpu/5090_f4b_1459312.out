@@ -1,0 +1,174 @@
+NVIDIA GeForce RTX 5090, 32607 MiB
+node: <node-20> | cpus: 8
+################ A 池语义（free 掉的字节去哪了）################
+
+------------------------------------------------------------------------------
+[pool cap=8 node=<node-20>] 起始 非torch = 588.2 MiB
+[pool cap=8 node=<node-20>] 释放-重建 20 轮（同一 B=256），看非torch 是否单调
+[pool cap=8 node=<node-20>]   轮 0 建后非torch=   816.2 释放后=   782.2 MiB
+[pool cap=8 node=<node-20>]   轮 4 建后非torch=   816.2 释放后=   782.2 MiB
+[pool cap=8 node=<node-20>]   轮 8 建后非torch=   816.2 释放后=   782.2 MiB
+[pool cap=8 node=<node-20>]   轮12 建后非torch=   816.2 释放后=   782.2 MiB
+[pool cap=8 node=<node-20>]   轮16 建后非torch=   816.2 释放后=   782.2 MiB
+[pool cap=8 node=<node-20>]   轮19 建后非torch=   816.2 释放后=   782.2 MiB
+[pool cap=8 node=<node-20>] 20 轮后非torch=782.2 MiB（起始 782.2）
+[pool cap=8 node=<node-20>] 跨 B 复用：建 B=256 → 816.2，free → 782.2，再建 B=1024 → 1328.2 MiB
+[pool cap=8 node=<node-20>] cudss_cache_info(): [(1024, torch.float64, 'cuda:0', 'None', 4480.156231671572, 512.0)]
+[pool cap=8 node=<node-20>] 收尾非torch=1294.2 MiB（free 计数 22）
+[pool cap=8 node=<node-20>] DONE
+################ B 轮转 B∈{1,8,64,256}：上限太小的代价 ################
+
+------------------------------------------------------------------------------
+[cycle cap=none node=<node-20>] 起始 非torch = 588.2 MiB
+[cycle cap=none node=<node-20>] 轮0 非torch=   944.2 torch=  174.0 plan累计=  4 本轮=   1476.3 ms
+[cycle cap=none node=<node-20>] 轮1 非torch=   944.2 torch=  194.0 plan累计=  4 本轮=    234.6 ms
+[cycle cap=none node=<node-20>] 轮2 非torch=   944.2 torch=  194.0 plan累计=  4 本轮=    233.3 ms
+[cycle cap=none node=<node-20>] 轮3 非torch=   944.2 torch=  194.0 plan累计=  4 本轮=    231.3 ms
+[cycle cap=none node=<node-20>] 轮4 非torch=   944.2 torch=  194.0 plan累计=  4 本轮=    231.4 ms
+[cycle cap=none node=<node-20>] 轮5 非torch=   944.2 torch=  194.0 plan累计=  4 本轮=    231.3 ms
+[cycle cap=none node=<node-20>] 汇总 中位轮=232.4 ms plan=4 free=0 末非torch=944.2 MiB
+[cycle cap=none node=<node-20>] DONE
+
+------------------------------------------------------------------------------
+[cycle cap=1 node=<node-20>] 起始 非torch = 588.2 MiB
+[cycle cap=1 node=<node-20>] 轮0 非torch=   848.2 torch=  174.0 plan累计=  4 本轮=   1476.8 ms
+[cycle cap=1 node=<node-20>] 轮1 非torch=   848.2 torch=  194.0 plan累计=  8 本轮=   1465.6 ms
+[cycle cap=1 node=<node-20>] 轮2 非torch=   848.2 torch=  194.0 plan累计= 12 本轮=   1465.8 ms
+[cycle cap=1 node=<node-20>] 轮3 非torch=   848.2 torch=  194.0 plan累计= 16 本轮=   1470.9 ms
+[cycle cap=1 node=<node-20>] 轮4 非torch=   848.2 torch=  194.0 plan累计= 20 本轮=   1460.2 ms
+[cycle cap=1 node=<node-20>] 轮5 非torch=   848.2 torch=  194.0 plan累计= 24 本轮=   1464.6 ms
+[cycle cap=1 node=<node-20>] 汇总 中位轮=1465.7 ms plan=24 free=23 末非torch=848.2 MiB
+[cycle cap=1 node=<node-20>] DONE
+
+------------------------------------------------------------------------------
+[cycle cap=2 node=<node-20>] 起始 非torch = 588.2 MiB
+[cycle cap=2 node=<node-20>] 轮0 非torch=   880.2 torch=  194.0 plan累计=  4 本轮=   1499.0 ms
+[cycle cap=2 node=<node-20>] 轮1 非torch=   880.2 torch=  194.0 plan累计=  8 本轮=   1465.2 ms
+[cycle cap=2 node=<node-20>] 轮2 非torch=   880.2 torch=  194.0 plan累计= 12 本轮=   1467.9 ms
+[cycle cap=2 node=<node-20>] 轮3 非torch=   880.2 torch=  194.0 plan累计= 16 本轮=   1470.3 ms
+[cycle cap=2 node=<node-20>] 轮4 非torch=   880.2 torch=  194.0 plan累计= 20 本轮=   1462.2 ms
+[cycle cap=2 node=<node-20>] 轮5 非torch=   880.2 torch=  194.0 plan累计= 24 本轮=   1474.4 ms
+[cycle cap=2 node=<node-20>] 汇总 中位轮=1469.1 ms plan=24 free=22 末非torch=880.2 MiB
+[cycle cap=2 node=<node-20>] DONE
+
+------------------------------------------------------------------------------
+[cycle cap=4 node=<node-20>] 起始 非torch = 588.2 MiB
+[cycle cap=4 node=<node-20>] 轮0 非torch=   944.2 torch=  174.0 plan累计=  4 本轮=   1477.3 ms
+[cycle cap=4 node=<node-20>] 轮1 非torch=   944.2 torch=  194.0 plan累计=  4 本轮=    232.1 ms
+[cycle cap=4 node=<node-20>] 轮2 非torch=   944.2 torch=  194.0 plan累计=  4 本轮=    233.7 ms
+[cycle cap=4 node=<node-20>] 轮3 非torch=   944.2 torch=  194.0 plan累计=  4 本轮=    231.4 ms
+[cycle cap=4 node=<node-20>] 轮4 非torch=   944.2 torch=  194.0 plan累计=  4 本轮=    231.4 ms
+[cycle cap=4 node=<node-20>] 轮5 非torch=   944.2 torch=  194.0 plan累计=  4 本轮=    232.0 ms
+[cycle cap=4 node=<node-20>] 汇总 中位轮=232.0 ms plan=4 free=0 末非torch=944.2 MiB
+[cycle cap=4 node=<node-20>] DONE
+
+------------------------------------------------------------------------------
+[cycle cap=8 node=<node-20>] 起始 非torch = 588.2 MiB
+[cycle cap=8 node=<node-20>] 轮0 非torch=   944.2 torch=  174.0 plan累计=  4 本轮=   1484.8 ms
+[cycle cap=8 node=<node-20>] 轮1 非torch=   944.2 torch=  194.0 plan累计=  4 本轮=    229.6 ms
+[cycle cap=8 node=<node-20>] 轮2 非torch=   944.2 torch=  194.0 plan累计=  4 本轮=    231.1 ms
+[cycle cap=8 node=<node-20>] 轮3 非torch=   944.2 torch=  194.0 plan累计=  4 本轮=    229.0 ms
+[cycle cap=8 node=<node-20>] 轮4 非torch=   944.2 torch=  194.0 plan累计=  4 本轮=    228.7 ms
+[cycle cap=8 node=<node-20>] 轮5 非torch=   944.2 torch=  194.0 plan累计=  4 本轮=    228.5 ms
+[cycle cap=8 node=<node-20>] 汇总 中位轮=229.3 ms plan=4 free=0 末非torch=944.2 MiB
+[cycle cap=8 node=<node-20>] DONE
+################ C 整批+尾批：定缺省的那一档 ################
+
+------------------------------------------------------------------------------
+[tail cap=none node=<node-20>] 起始 非torch = 588.2 MiB
+[tail cap=none node=<node-20>] 4 epoch 总耗时=3250.8 ms plan=2 free=0 末非torch=848.2 MiB
+[tail cap=none node=<node-20>] DONE
+
+------------------------------------------------------------------------------
+[tail cap=1 node=<node-20>] 起始 非torch = 588.2 MiB
+[tail cap=1 node=<node-20>] 4 epoch 总耗时=6644.4 ms plan=8 free=7 末非torch=848.2 MiB
+[tail cap=1 node=<node-20>] DONE
+
+------------------------------------------------------------------------------
+[tail cap=2 node=<node-20>] 起始 非torch = 588.2 MiB
+[tail cap=2 node=<node-20>] 4 epoch 总耗时=3239.2 ms plan=2 free=0 末非torch=848.2 MiB
+[tail cap=2 node=<node-20>] DONE
+
+------------------------------------------------------------------------------
+[tail cap=8 node=<node-20>] 起始 非torch = 588.2 MiB
+[tail cap=8 node=<node-20>] 4 epoch 总耗时=3258.0 ms plan=2 free=0 末非torch=848.2 MiB
+[tail cap=8 node=<node-20>] DONE
+################ D ragged 80 个批量：修复前爬升 vs 修复后持平 ################
+
+------------------------------------------------------------------------------
+[ragged cap=none node=<node-20>] 起始 非torch = 588.2 MiB
+[ragged cap=none node=<node-20>]   第i个      B     非torch     torch       设备已用  cache
+[ragged cap=none node=<node-20>]     0    177      752.2     104.0      856.2      1
+[ragged cap=none node=<node-20>]     8    185     1456.2     164.0     1620.2      9
+[ragged cap=none node=<node-20>]    16    193     2160.2     224.0     2384.2     17
+[ragged cap=none node=<node-20>]    24    201     2896.2     284.0     3180.2     25
+[ragged cap=none node=<node-20>]    32    209     3632.2     344.0     3976.2     33
+[ragged cap=none node=<node-20>]    40    217     4400.2     424.0     4824.2     41
+[ragged cap=none node=<node-20>]    48    225     5200.2     504.0     5704.2     49
+[ragged cap=none node=<node-20>]    56    233     6000.2     584.0     6584.2     57
+[ragged cap=none node=<node-20>]    64    241     6800.2     664.0     7464.2     65
+[ragged cap=none node=<node-20>]    72    249     7664.2     744.0     8408.2     73
+[ragged cap=none node=<node-20>]    79    256     8464.2     804.0     9268.2     80
+[ragged cap=none node=<node-20>] 全部 80 个批量跑完，末非torch=8464.2 MiB，cache 80 份，耗时 74.9 s
+[ragged cap=none node=<node-20>] 收尾 cudss_free() 释放 80 份 → 非torch=5902.2 MiB
+[ragged cap=none node=<node-20>] DONE
+
+------------------------------------------------------------------------------
+[ragged cap=8 node=<node-20>] 起始 非torch = 588.2 MiB
+[ragged cap=8 node=<node-20>]   第i个      B     非torch     torch       设备已用  cache
+[ragged cap=8 node=<node-20>]     0    177      752.2     104.0      856.2      1
+[ragged cap=8 node=<node-20>]     8    185     1424.2     164.0     1588.2      8
+[ragged cap=8 node=<node-20>]    16    193     1456.2     164.0     1620.2      8
+[ragged cap=8 node=<node-20>]    24    201     1520.2     184.0     1704.2      8
+[ragged cap=8 node=<node-20>]    32    209     1584.2     184.0     1768.2      8
+[ragged cap=8 node=<node-20>]    40    217     1648.2     184.0     1832.2      8
+[ragged cap=8 node=<node-20>]    48    225     1648.2     204.0     1852.2      8
+[ragged cap=8 node=<node-20>]    56    233     1648.2     204.0     1852.2      8
+[ragged cap=8 node=<node-20>]    64    241     1648.2     204.0     1852.2      8
+[ragged cap=8 node=<node-20>]    72    249     1648.2     224.0     1872.2      8
+[ragged cap=8 node=<node-20>]    79    256     1680.2     224.0     1904.2      8
+[ragged cap=8 node=<node-20>] 全部 80 个批量跑完，末非torch=1680.2 MiB，cache 8 份，耗时 75.4 s
+[ragged cap=8 node=<node-20>] 收尾 cudss_free() 释放 8 份 → 非torch=1422.2 MiB
+[ragged cap=8 node=<node-20>] DONE
+################ E 大批量 49 个：修复前的 OOM 边界 ################
+
+------------------------------------------------------------------------------
+[big cap=none node=<node-20>] 起始 非torch = 588.2 MiB
+[big cap=none node=<node-20>]   第i个      B     非torch     torch       设备已用  cache
+[big cap=none node=<node-20>]     0   1024     1328.2     656.0     1984.2      1
+[big cap=none node=<node-20>]     4   1028     2576.2     862.0     3438.2      5
+[big cap=none node=<node-20>]     8   1032     3824.2    1004.0     4828.2      9
+[big cap=none node=<node-20>]    12   1036     5072.2    1172.0     6244.2     13
+[big cap=none node=<node-20>]    16   1040     6320.2    1380.0     7700.2     17
+[big cap=none node=<node-20>]    20   1044     7568.2    1542.0     9110.2     21
+[big cap=none node=<node-20>]    24   1048     8816.2    1720.0    10536.2     25
+[big cap=none node=<node-20>]    28   1052    10096.2    1872.0    11968.2     29
+[big cap=none node=<node-20>]    32   1056    11376.2    2024.0    13400.2     33
+[big cap=none node=<node-20>]    36   1060    12624.2    2176.0    14800.2     37
+[big cap=none node=<node-20>]    40   1064    13904.2    2328.0    16232.2     41
+[big cap=none node=<node-20>]    44   1068    15184.2    2480.0    17664.2     45
+[big cap=none node=<node-20>]    48   1072    16464.2    2632.0    19096.2     49
+[big cap=none node=<node-20>] 全部 49 个批量跑完，末非torch=16464.2 MiB，cache 49 份，耗时 250.0 s
+[big cap=none node=<node-20>] 收尾 cudss_free() 释放 49 份 → 非torch=14894.2 MiB
+[big cap=none node=<node-20>] DONE
+
+------------------------------------------------------------------------------
+[big cap=8 node=<node-20>] 起始 非torch = 588.2 MiB
+[big cap=8 node=<node-20>]   第i个      B     非torch     torch       设备已用  cache
+[big cap=8 node=<node-20>]     0   1024     1328.2     656.0     1984.2      1
+[big cap=8 node=<node-20>]     4   1028     2576.2     862.0     3438.2      5
+[big cap=8 node=<node-20>]     8   1032     3792.2    1004.0     4796.2      8
+[big cap=8 node=<node-20>]    12   1036     3888.2    1004.0     4892.2      8
+[big cap=8 node=<node-20>]    16   1040     3920.2    1004.0     4924.2      8
+[big cap=8 node=<node-20>]    20   1044     3952.2    1004.0     4956.2      8
+[big cap=8 node=<node-20>]    24   1048     3952.2    1004.0     4956.2      8
+[big cap=8 node=<node-20>]    28   1052     4016.2    1004.0     5020.2      8
+[big cap=8 node=<node-20>]    32   1056     4016.2    1004.0     5020.2      8
+[big cap=8 node=<node-20>]    36   1060     4048.2    1070.0     5118.2      8
+[big cap=8 node=<node-20>]    40   1064     4048.2    1248.0     5296.2      8
+[big cap=8 node=<node-20>]    44   1068     4048.2    1304.0     5352.2      8
+[big cap=8 node=<node-20>]    48   1072     4048.2    1304.0     5352.2      8
+[big cap=8 node=<node-20>] 全部 49 个批量跑完，末非torch=4048.2 MiB，cache 8 份，耗时 250.8 s
+[big cap=8 node=<node-20>] 收尾 cudss_free() 释放 8 份 → 非torch=3790.2 MiB
+[big cap=8 node=<node-20>] DONE
+F4B JOB DONE

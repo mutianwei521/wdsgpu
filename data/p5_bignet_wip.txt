@@ -1,0 +1,692 @@
+################################################################################
+P5 - 大网准入普查 + NW_Model 主线证据
+日期 2026-08-22
+################################################################################
+
+【测的是哪一份 dgga - 先说清楚】
+  本轮另有一名研究员在并发改 `dgga/solver.py`（特性门第一轮：批量状态机 +
+  CVPIPE）。为免测到一棵动的树，开工第一件事把 HEAD 抠了一份**只读副本**：
+
+      git archive HEAD dgga | tar -x -C <scratch>/p5ro
+
+  **本轮所有数字都出自这一份只读副本**，commit =
+
+      524c3e83ed268bebff5b315a58a292ea7a82f14d
+      "Stop the job scripts from swallowing the exit code they report"
+      （分支 phase-e-release）
+
+  注：会话开始时 git status 快照里的 HEAD 是 7861613，等我开工时对方已经把
+  分支推进到 524c3e8，所以以 `git rev-parse HEAD` 的实测值为准。
+  只读副本 md5：solver.py 45b0b0eeb66ed4e15ef81c53809d229a
+                autodiff.py e4b8cfe49536f85b435e04e5ed5621d2
+  （集群作业 .out 抬头会打同样两行 md5，可逐份核对。）
+  工作树的 `dgga/` 全程未被本轮改动；本轮新增文件只在 `scripts/p5_bignet/`
+  与本文件。
+  **交付时的补记**：写完这份报告时，对方的工作已经落地为 55b79a9
+  "Give the dense path a batched status machine, and let check valves in"，
+  即 524c3e8 的**下一个** commit。所以本轮所有数字恰好是「批量状态机 + CVPIPE
+  进来之前」的基线 - §1.4 说 CVPIPE 是这批大网的头号拦路虎、§3.3(b) 说
+  ky2/ky8/ky13 的泵状态分歧属既有限制，这两条都应当拿 55b79a9 之后的树
+  重测一遍（尤其 PacificCity / ky12 / D-Town 那一批 CVPIPE 网的准入，
+  很可能已经变了）。§4 的性能与 §4.0 的 cholesky_solve 门槛不受影响：
+  前者只走 PIPE+PUMP 的网，后者是 torch 自身的限制。
+
+【回归（铁律三）】
+  scripts/regression_all.py 跑在**工作树**（含对方未提交的 dgga/solver.py 改动）
+  上，**51/51 PASS**，总判定 PASS。报告 data/regression_report.txt。
+  ⇒ 树是好的；而本轮的测量另走只读副本，两件事互不污染。
+
+================================================================================
+§1 任务一：134(实为 138) 个新 .inp 的准入普查
+================================================================================
+脚本：scripts/p5_bignet/survey_inp.py（普查）
+      scripts/p5_bignet/dedup_topo.py（去重）
+      scripts/p5_bignet/make_table.py（出表）
+产物：scripts/p5_bignet/{survey_inp.json, dedup_topo.json}
+
+1.0 文件数订正
+  工单说 134 个 .inp，`find networks/EXAMPLE -name '*.inp'` 实测 **138 个**。
+
+1.1 去重：两层，字节哈希不够用
+  · 字节哈希（sha256）：129 个唯一文件，只抓到 7 组完全相同的副本。
+  · **拓扑指纹**（sorted(node_id) ‖ sorted(link_id,端点id) ‖ N ‖ L）：
+    102 个可解析文件 → **82 个拓扑唯一网**，15 组同拓扑多副本。
+    再看水力属性指纹（diam/len/roughness/km/elev/需水基值）把两类分开：
+      - "字节不同但水力属性也相同"（纯排版/[TIMES]/坐标差异）：
+        Hanoi≡Extended Hanoi、Net1≡example1、Net2≡example2、Net3≡example3、
+        HAN≡hanoi-exeter、New York Tunnels≡Modified New York Tunnels、
+        As5Adsorb/example.inp 两份、Batch-NH2Cl 两份、test101≡test101-3
+      - "同拓扑但水力属性不同"（是不同设计解/工况，**不能当重复丢掉**）：
+        NET1 系列 5 份（NET1/NET1-3/NET1cv/NET1emit/NET1negemit）、
+        hanoi-3 vs HAN、fcv/fcv2/fcv-noflow、anytown-3 vs mod_anytown-3、
+        simpson_test vs _2-12、st-net3 vs st-net3-3、gestar1mod vs gestar1modHW
+  · 工单点名的几组，实测结论：
+      BWSN_2 - 只有 1 份（BWSN_Network_2.inp，Nj=12523），不是副本。
+      exnet - asce-tf-wdst/exnet/exnet.inp ≡ exeter-benchmarks/EXNET/
+                  exnet-exeter.inp（**字节完全相同**），但两份都 parse 失败；
+                  另有 exnet-3.inp / EXN.inp 同为 Nj=1891 却 **拓扑不同**
+                  （PIPE 2462 vs 3029），是设计变体，不是副本。
+      D-Town - Original_BWNII 下 14 份 + d-town.inp，Nj 在 398~401 之间，
+                  **拓扑各不相同**（各参赛队各自加管），一份都不能合并。
+      Wolf-Cordera - 4 份全部 parse 失败（见 §2.5），无从比拓扑。
+
+1.2 准入总表（按 Nj 降序，拓扑去重后每网一行）
+  完整表见下方"表 1"。汇总：
+      可解析文件 102 / 138，拓扑唯一网 82
+      mode="epanet" 可构造 : 82/82（全部）
+      mode="dense"  可构造 : 40 网
+      **mode="dense" 真的解出来（B=1 单帧，收敛）: 39 网**
+      最大 Nj = **8566**（NW_Model / NW_Model1）
+
+  ★ 一句话结论：**dense 路径可跑网数从 10 变成 39，最大的 Nj 从 959(ky4)
+    变成 8566(NW_Model)** - Nj 涨了 8.9 倍，n=1 的窘境解除。
+    （按文件数算是 51 个 .inp；去掉同拓扑副本后 39 个网。）
+
+1.3 "能构造 ≠ 能解出来" - 本轮踩的坑，记死
+  net.reservoir_head_ft_at(t) **只填 reservoir，tank 位留 nan**。单帧稳态里
+  tank 逐位等价于定水头节点（NodeHead[tank]=tank->H0，hydraul.c:110 inithyd），
+  必须把 tank_h0 一并塞进 res_head_ft，否则 solve() 直接报
+  "res_head_ft 在水库/水池位存在 nan" - ky4 这种已知能跑的网也会报。
+  修法封在 scripts/p5_bignet/p5lib.py 的 full_head()/base_case()。
+  40 网可构造里唯一解不出来的 1 网是 anytown-3（Nj=22）：水池 41 的
+  H0 恰在 Hmin 上，运行期守卫 _check_dense_tank_status 拦下（不是 nan 那个坑）。
+
+1.4 dense 进不去的门槛，分因（按**文件**计；82 个拓扑唯一网里 40 个能构造，42 个不能）
+      43 个文件 / **link_type 不支持**（头号原因） - dense 只收 PIPE/PUMP/TCV，
+         这批大量网带 CVPIPE(0) / PRV(3) / PSV(4) / FCV(6)。
+         点名几个大的：BWSN_Network_2(Nj=12523, CVPIPE+PSV+FCV)、
+         PacificCity(8715, CVPIPE+PRV)、ky12(2347, CVPIPE+PRV)、
+         wolf-3(1782, CVPIPE+PRV)、ky9(1242)、ky10(920)、ky11(802)、
+         Richmond_standard(865, CVPIPE21)、L-TOWN(782, PRV3)、
+         D-Town 全家(≈399, CVPIPE+PRV+TCV)。
+      6 个文件 / **D-W 水损**：dense 只做 H-W（D-W 仅 epanet 模式）。
+         exnet-3(1891)、EXN(1891)、Balerma(443)、RuralNetwork(379)、2fcvs、…
+      4 个文件 / **水池守卫**（H0 落在 Hmin/Hmax 边界）：关掉
+         dense_tank_bound_check=False 后 4/4 都能构造 - ky8(1325)、ky4(959)、
+         anytown-3、mod_anytown-3。
+  ⇒ **CVPIPE 与 PRV 是这批大网的头号拦路虎**，其中 CVPIPE 正是并发那位
+    研究员本轮在做的东西。等 CVPIPE 落地，PacificCity(8715) 仍卡 PRV，
+    但 BWSN_Network_2(12523) 只差 PSV+FCV，D-Town 全家只差 PRV+TCV。
+
+================================================================================
+§2 parse 失败的 36 个文件：失败原因，以及能不能安全修
+================================================================================
+（完整清单见下方"表 2"）
+
+2.1 57460.inp（Nj=28899，纯管，D-W） - **需要用户定夺，不要猜**
+  报错：ValueError: ('inpfile_units = "%s" is not a valid EPANET unit code', 'SI')
+  原文 [OPTIONS] 里写的是 `UNITS SI`。EPANET 的 Units 只接受流量单位码
+  CFS/GPM/MGD/IMGD/AFD/LPS/LPM/MLD/CMH/CMD 十个之一，**"SI" 不是合法码**。
+  · 这不是解析器的 bug，是这份 INP 本身不合规（EPANET 官方 DLL 也开不了：
+    EN_open 返回 Error 200）。
+  · **猜单位就是编数据**：LPS/CMH/LPM 差 3600 倍，猜错了整张表的流量、
+    水头、r_hw 全错，而且错得"看起来很合理"，事后查不出来。
+  · 已在这批 collection 里找过有没有已修正的变体：**没有**。57460.inp
+    只在 epanet-example-networks/epanet-tests/large/ 下有这一份，
+    没有第二份、没有 -3/-fixed 之类的兄弟文件。
+  ⇒ 结论：**需要用户定夺**（要么用户给出权威单位、要么从上游仓库找原始版本、
+    要么放弃）。在拿到权威依据之前不改，也不写进主线。
+  ⇒ 【2026-08-25 已定夺】用户决定**放弃** 57460.inp：UNITS SI 非法码，
+    上游 collection 无修正变体，不猜单位、不进主线。
+
+2.2 与 57460 同病的还有 3 个（一并归入"需用户定夺"）
+  同样是 [OPTIONS] 里写非法单位码，实测 4 个文件：
+      epanet-example-networks/epanet-tests/large/57460.inp        "UNITS SI"
+      epanet-example-networks/epanet-tests/small/JEP5-13.inp      "UNITS  SI"
+      exeter-benchmarks/DesignResiliance/BAK.inp                  "units si"
+      exeter-benchmarks/DesignResiliance/GOY.inp                  "units si"
+  四份都不合规，一律不猜。其中只有 57460 是大网（Nj=28899），另外三个是小网。
+
+2.3 exnet（两份，字节完全相同） - Error 200，**不是** [COORDS] 那种小毛病
+  asce-tf-wdst/exnet/exnet.inp ≡ exeter-benchmarks/EXNET/exnet-exeter.inp
+  报 EpanetException (Error 200) "one or more errors in input file"：
+  EPANET 自己也开不了，且它只给"文件里有错"这一句，不指行号 ⇒ 要修得逐段
+  人工核对原文。**不能安全修**（不知道错在哪，改哪儿都是猜）。
+  注意：同批里 exnet-3.inp 与 EXN.inp 能 parse（都是 Nj=1891），但它们与
+  exnet.inp **是不是同一个网无从判定**（exnet.inp 根本 parse 不出来，
+  没法比拓扑指纹），所以不写"已有可用替代"这种话。
+  且这两个能 parse 的也进不了 dense（D-W 水损 + PRV），修与不修都不进主线。
+
+2.4 MICROPOLIS（asce-tf-wdst/Micropolis_v1/MICROPOLIS_v1.inp）
+  ValueError: could not convert string to float: '6 AM'
+  [TIMES] 里用了 `6 AM` 这种带空格的时刻写法。**能安全修**（时刻字段不参与
+  单帧稳态的任何数值），但改了也只是多一个网能 parse，仍要过 dense 的
+  link_type 关，本轮不动。
+
+2.5 其余按报错归类（逐条见表 2；均不影响主线）
+  · EpanetException (Error 200)，11 个：BWSN_Network_1、foss_poly_1、
+    exnet ×2、2PRVs-aquis、anytown-exeter、BLA、FOS、Wolf-Cordera 的
+    bocika-output / wolf-modified-fig / wolf-output-fig。
+    EPANET 只报"文件里有错"不指位置 ⇒ 一律**不能安全修**。
+  · "Statistic must be one of AVERAGED/MINIMUM/MAXIMUM/RANGE/NONE"，5 个：
+    Net3_trace、net3-bio ×2、Net3-NH2CL ×2。[REPORT] 段的 Statistic 值非法。
+    **能安全修**（[REPORT] 不进水力计算），但都是 Net3（Nj=92）的水质变体，
+    Net3 本体已在表里且 dense 能跑，修了没有新增信息。
+  · "%s is not a valid member of WaterNetworkModel"，4 个：net2-cl2 ×2、
+    5fcvs、wolf-initial-fig。
+  · UnicodeDecodeError（非 UTF-8 字节），2 个：9_Iglesias-Rey.inp、BIN.inp。
+    **能安全修**（按 latin-1 读），但 9_Iglesias-Rey 是 D-Town 变体
+    （CVPIPE+PRV 进不了 dense）、BIN 是小网，本轮不修。
+  · ENSyntaxError (Error 201) at line 2337 `[COORDS]`，1 个：13_Morley.inp。
+    段名该写 `[COORDINATES]`。**能安全修**（段名与水力数据无关），
+    但它是 D-Town 变体，dense 进不去，本轮不修。
+  · AttributeError 'NoneType'.factor，2 个：FFCL-1.INP、OBCL-1.INP
+    （引用了不存在的 pattern）。
+  · AttributeError 'NoneType'.is_traditional，1 个：NPCL-1.INP。
+  · KeyError 'VALVE-173'（BWSN_Network_2_temp.inp）、'10'（simplenet.inp）、
+    '79'（PES.inp）：引用了不存在的曲线/模式/节点 ID，属数据缺陷，
+    **不能靠猜补**。
+  · ValueError '16.367 "'（4_Alvisi.inp）：数值字段里混进了英寸符号。
+  · RuntimeError（Net1_broken.inp）：文件名就叫 broken，是故意的坏样本，
+    我们的 parse 正确地拒收了它 - 这条**不算失败**。
+
+================================================================================
+§3 任务二·1：NW_Model 正确性对拍（**这步不过，后面的性能数字一文不值**）
+================================================================================
+脚本：scripts/p5_bignet/nw_correct.py、scripts/p5_bignet/deadmask_diag.py
+本机 CPU、float64、B=1、t=0 名义工况。NW_Model：N=8569 Nj=8566 L=9982
+（PIPE 9979 + PUMP 3 + 水库 3、**零水池零阀门**）、H-W、GPM、nnz=27760、
+Nj²/nnz=2643（ky4 是 286）。INP 自带 [OPTIONS] ACCURACY=0.01、TRIALS=40。
+
+3.1 按 INP 自带精度（ACCURACY=0.01，三方迭代数全等 = 5）
+    通路                       iters   relerr      max|ΔH|
+    mode="dense"（主线）          5    6.877e-03 -
+    assemble="csr"+dense 求解     5    6.877e-03   与 dense **逐位相同 0.0**
+    mode="epanet"（逐位复刻）      5    6.878e-03   与 DLL **逐位相同 0.0**
+    EPANET DLL                    5    6.878e-03 -
+
+    dense ~ epanet   : **7.276965e-06 ft**
+    dense ~ DLL      : **7.276965e-06 ft**
+    epanet ~ DLL     : **0.000000e+00 ft（逐位）**
+    csr装配 ~ dense装配: **0.000000e+00 ft（逐位）**
+    max|ΔQ| dense~epanet = 1.252455e-05 cfs（|Q|max = 18.1842）
+    H 范围 [173.880, 239.958] ft ⇒ 7.28e-6 ft 是 3e-8 的相对量级。
+    链路状态：我们的 init_status 与 DLL 解完后的 EN_STATUS **9982/9982 全一致**，
+    DLL 无警告。⇒ NW_Model 上没有状态机分歧，是干净的对拍。
+
+3.2 强行拧紧到 ACCURACY=1e-8（TRIALS=60） - 这个网**收不到 1e-8**
+    dense iters=60 relerr=3.565e-07 / epanet 61, 3.142e-07 / DLL 71, 3.212e-07
+    （DLL 的 71 = 60 trials + [OPTIONS] `Unbalanced Continue 10` 的 10 次续跑 +1）
+    三方都停在 relerr≈3e-7 不再下降 ⇒ **是这个网自身停滞，不是求解器的事**
+    （DLL 一样停）。此时 dense~epanet=1.196e-05、dense~DLL=1.080e-05、
+    epanet~DLL=4.566e-06 ft。
+    ⇒ 诚实说法：三条通路的差都比各自的收敛余量小，属同一解的舍入分叉。
+       正文引用 §3.1 那组（INP 自带精度、三方迭代数相同）。
+
+3.3 顺带把中型网也对了，并揪出两件必须写清楚的事
+    脚本 deadmask_diag.py：用 dgga.calib.dead_branch_mask 把"流量被连续性钉死
+    为 0 的死支"掩掉后重报。单位 ft。
+
+    网      Nj    死节点 | 活 junction 上的 max|ΔH|                | 全 junction
+                        | dense~epanet  dense~DLL   epanet~DLL   | dense~epanet
+    NW_Model 8566  248  |   7.277e-06   7.277e-06   0.000e+00    |  7.277e-06
+    KL        935    1  |   2.664e-05   2.664e-05   0.000e+00    |  2.664e-05
+    ky1       856   16  |   1.634e-05   1.634e-05   0.000e+00    |  1.634e-05
+    ky4       959    2  |   5.295e-08   5.295e-08   0.000e+00    |  5.295e-08
+    ky2       811    1  |   4.655e-06   1.969e+01   1.969e+01    |  4.655e-06
+    ky13      778    3  |   1.738e-07   3.624e+01   3.624e+01    |  1.528e+00
+    ky8      1325    0  |   8.839e-08   7.354e+01   7.354e+01    |  8.839e-08
+
+    (a) **死支上的水头没有定义**，别当成对拍失败。ky13 全 junction 的
+        max|ΔH| 是 1.53 ft，掩掉 3 个死节点后降到 **1.738e-07 ft**；
+        差的那个点是 O-Pump-4（泵出口悬空节点），流量恒 0、矩阵行奇异，
+        两种线性求解器落在零空间的不同点上。max|ΔQ| 只有 1.2e-7 cfs
+ - 流量一致而水头不一致，正是死支的指纹。
+        NW_Model 的 248 个死节点**不影响结论**：活 junction 上的
+        max|ΔH| 与全 junction 相同（7.277e-06），因为最差点 245 号是活的。
+    (b) **ky2 / ky8 / ky13 与 DLL 差 20~74 ft，是泵状态机，不是通路错**。
+        逐条比对 EN_STATUS 与我们的 init_status：
+            ky8  1618 条里 2 条不一致：~@Pump-2、~@Pump-4，DLL=CLOSED 我们=OPEN
+            ky2  1125 条里 1 条：~@Pump-1，DLL=CLOSED 我们=OPEN
+            ky13  944 条里 1 条：~@Pump-2，DLL=CLOSED 我们=OPEN
+            ky1 / ky4 / NW_Model：**0 条不一致**（所以它们 epanet≡DLL 逐位）
+        EPANET 的 pumpstatus 把这些泵关了，我们单帧不跑状态机所以留着开。
+        开 status_machine=True 也不解决（ky2/ky13 实测 ΔH 一字不变、迭代数
+        8/8/8 与 10/10/9），说明这一支不在现有状态机覆盖内。
+        ⇒ 这是**已知的既有限制**（dense 无状态机），正是并发那位研究员本轮
+          在补的东西，不属本轮范围；但主线网 NW_Model **不受影响**。
+
+    ⇒ §3 判定：**NW_Model 正确性通过**。epanet 通路与官方 DLL 逐位相同，
+      CSR 装配与稠密装配逐位相同，主线 dense 通路与 DLL 差 7.28e-6 ft
+      （相对 3e-8），迭代数三方全等。后面的性能数字站得住。
+
+================================================================================
+§4 任务二·2：集群实测（RTX 5090，两节点，gpu_5090 队列）
+================================================================================
+脚本：scripts/p5_bignet/{p5_time_gpu.py, p5_mem_gpu.py, p5_oom_gpu.py,
+      p5_diag_gpu.py, p5_d1_isolate.py, p5_thresh.py} + 同名 .sh
+口径：**逐字沿用 P4**（scripts/p4_remeasure/p4r_{time,mem}_gpu.py 只换网表），
+      好让新旧数字直接可比。作业 .out 抬头都打 dgga md5，与只读副本一致。
+环境：torch 2.11.0+cu128 / nvmath 1.0.0 / RTX 5090 32607 MiB / 8 cores。
+rc 传递：p5{t,m,o,d,i,th}.sh 六个脚本用 check_rc_local.sh 的同款判据自查，
+      6/6 OK（含 python 退 3/5/9 时脚本确实退 3/5/9）。
+
+作业清单（**每个倍数都连节点一起引用**）：
+  1460472  p5time   <node-10>   COMPLETED 0:0  09:36   <- 干净节点 (1)
+  1460494  p5time   <node-18>   COMPLETED 0:0  11:07   <- 干净节点 (2)
+  1460475  p5time   <node-09>   COMPLETED 0:0  11:48   <- **与显存作业同节点，
+           绝对值偏悲观，只用来看趋势，不进正文倍数**
+  1460474  p5mem    <node-09>   COMPLETED 0:0  28:00
+  1460473  p5oom    <node-15>   （OOM 边界细扫）
+  1460483  p5diag   <node-10>   COMPLETED 0:0  06:04
+  1460491  p5iso    <node-10>   COMPLETED 0:0          （5090）
+  1460492  p5iso    <node-03>   COMPLETED 0:0          （**4090**，交叉验证）
+  1460497  p5th     <node-17>   COMPLETED 0:0  03:05
+  1460460  p5smoke  <node-10>   COMPLETED 0:0  00:24   （环境冒烟）
+
+  原始 .out 全部落盘在 data/gpu/（沿用 P2/P4 的 <卡>_<脚本>_<jobid>.out 命名）：
+      5090_p5t_1460472.out   5090_p5t_1460494.out   5090_p5t_1460475.out
+      5090_p5m_1460474.out   5090_p5d_1460483.out   5090_p5th_1460497.out
+      5090_p5i_1460491.out   **4090_p5i_1460492.out**  5090_p5s_1460460.out
+      5090_p5o_1460473.out  <- **交付时该作业仍在跑，这份是部分快照**
+         （NW_Model 的四条边界已扫完并入 §4.6；后面 ky8/ky4/KL 的边界
+           已由 §4.1/§4.2/§4.4 覆盖，不影响结论）
+
+--------------------------------------------------------------------------------
+4.0 ★ 本轮最重要的一条订正：**NW_Model 上稠密撞的不是显存墙**
+--------------------------------------------------------------------------------
+工单的预期是"B=256 时稠密 A 要 140 GB，物理上不可能"。理论算术没错
+（见 4.4），但**实测里稠密根本活不到那里**：
+
+  NW_Model（Nj=8566）稠密通路 **B=1 能跑，B=2 就挂**，报的是
+      torch.AcceleratorError: CUDA error: invalid argument (cudaErrorInvalidValue)
+  而当时**卡上空闲 31517 MiB，B=2 的稠密 A 只要 1120 MiB** - 不是显存不够。
+
+  逐层隔离（scripts/p5_bignet/p5_d1_isolate.py，**全程裸 torch，不经 dgga**，
+  每个候选全新进程 + CUDA_LAUNCH_BLOCKING=1）：
+      T1 分配 [B, Nj^2] f64        Nj=8566 B=1/2  两个都 OK
+      T2 scatter_add_ 到 [B, Nj^2] Nj=8566 B=1/2  两个都 OK
+      T3 torch.linalg.cholesky     Nj=8566 B=1/2  两个都 OK
+      T4 torch.cholesky_solve      Nj=8566 B=1 OK，**B=2 FAIL**
+  => 单一责任人是 **torch.cholesky_solve 的批量分支**，与 dgga 无关。
+
+  门槛二分（作业 1460497，节点 <node-17>）：
+      batch=2: 最大可用 Nj = **6016**，**Nj = 6017 起失败**
+      batch=4: 最大可用 Nj = **6016**，**Nj = 6017 起失败**
+  => 门槛**与批量大小无关**，只由单矩阵阶数 Nj 决定 => 是批量三角回代那条
+    kernel 自身的限制，不是总量/显存问题。B=1 走非批量分支，没有这个限制
+    （Nj=8566 B=1 实测 OK）。
+
+  跨卡复现（铁律四只用 gpu_5090/gpu_4090）：
+      RTX 5090（1460491，<node-10>）Nj=8566 B=2 FAIL；Nj=6000/4096 B=2 OK
+      RTX 4090（1460492，<node-03>）Nj=8566 B=2 FAIL；Nj=8192 B=2 FAIL；
+                                        Nj=6000 B=2 OK；Nj=4096 B=2 OK
+  => 两代卡、同一个 torch 2.11.0+cu128 上都复现，不是单机偶发。
+
+  ★ 主线那句话要改成（这是实测支撑的版本）：
+    **"在 NW_Model 上稠密通路连 B=2 都跑不了 - 而且不是显存不够
+      （只要 1.1 GiB，卡上有 31.5 GiB），是 torch 的批量 cholesky_solve 在
+      Nj>6016 时直接报 CUDA invalid argument；而 cudss 一路到 B=1024
+      （细扫到 B>=2048 仍未触边界）都稳定出解。"**
+    显存那条对比（4.4）仍然成立、仍然该写，但它**不是先撞上的那堵墙**。
+    => 附带结论：这也是 dgga 稠密通路在 Nj>6016 的网上的一个**真实可用性缺口**
+      （不是本轮引入的，本轮只是第一次有这么大的网把它照出来）。
+
+--------------------------------------------------------------------------------
+4.1 纯前向（ms/场景，best-of；倍数 = dense/cudss）
+--------------------------------------------------------------------------------
+  节点(1)=<node-10>   节点(2)=<node-18>
+  net      Nj    B    | dense (1)/(2)      | cudss (1)/(2)    | 倍数 (1)/(2)
+  NW_Model 8566  1    | 722.18 / 717.92    | 12.54 / 16.90    | 57.59x / 42.48x
+  NW_Model 8566  8    | **FAIL(非OOM)**    |  1.818/  2.418   |   -
+  NW_Model 8566  64   | **FAIL(非OOM)**    |  0.534/  0.595   |   -
+  NW_Model 8566  256  | **FAIL(非OOM)**    |  0.516/  0.517   |   -
+  NW_Model 8566  512  | **FAIL(非OOM)**    |  0.544/  0.543   |   -
+  NW_Model 8566  1024 | **FAIL(非OOM)**    |  0.568/  0.566   |   -
+  ky8      1325  256  |   6.697/  6.672    |  0.327/  0.474   | 20.49x / 14.07x
+  ky8      1325  1024 |   OOM（真-显存）   |  0.272/  0.397   |   -
+  ky4      959   256  |   2.956/  2.959    |  0.321/  0.473   |  9.21x /  6.26x
+  ky4      959   1024 |   2.719/  2.699    |  0.265/  0.389   | 10.26x /  6.94x
+  （KL/ky1/ky2/ky13 的 B=256 一格见 §5）
+
+  · NW_Model 的 dense 那一列，时间脚本打的是 "OOM" - **那是标签不准**，
+    真实异常见 §4.0（AcceleratorError）。显存脚本 p5_mem_gpu.py 把它
+    正确地分成了 CRASH 而不是 OOM（B=8 那格），两边可互相印证。
+  · cudss 在 B=1 的两节点差 12.54 vs 16.90 ms（35%）：B=1 时 cuDSS 的
+    plan/factorize 由 CPU 侧主导，节点 CPU 差异直接体现，所以按区间报。
+    B>=64 起两节点几乎重合（0.52~0.60），说明大批量下才是 GPU 主导。
+
+--------------------------------------------------------------------------------
+4.2 前向+反向（solve_unrolled(K)+backward，ms/场景）
+--------------------------------------------------------------------------------
+  net      Nj    B   | dense (1)/(2)        | cudss (1)/(2)  | 倍数 (1)/(2)
+  NW_Model 8566  1   | 16051.86 / 15871.87  | 26.17 / 34.88  | 613.36x / 454.99x
+  NW_Model 8566  >=8 | **FAIL(非OOM)**      |  1.28~5.15     |   -
+  ky8      1325  64  |   113.14 /  112.25   |  1.050/ 1.504  | 107.79x / 74.64x
+  ky4      959   64  |    50.60 /   50.35   |  1.178/ 1.684  |  42.96x / 29.90x
+  KL       935   64  |    31.14 /   31.65   |  0.683/ 0.993  |  45.61x / 31.87x
+
+  ⚠ **这一行的数字只是"算一次要多久"，不是"算出来的梯度能用"** - 见 §4.5。
+
+--------------------------------------------------------------------------------
+4.3 倍数拆成两个因子（P4 §11.2 的口径，**不许只给端到端那个数**）
+--------------------------------------------------------------------------------
+  一轮线性代数的前向+反向（ms/轮，整批）：
+    A    稠密 + torch 通用 autograd（穿 linalg.cholesky）= 仓库现状
+    Badj 稠密 + 手写伴随（复用同一个因子）= 测量脚本内的对照，未进 dgga
+    C    cudss + _CudssSolveFn（grad_refine=2）= 仓库现状
+
+  net      Nj    B    |    A     |  Badj  |   C    | Badj/C     | A/Badj      | A/C
+                      |          |        |        | 稀疏vs稠密 | 通用autograd | 端到端
+                      |          |        |        | **本身**   | **的欠账**   |
+  NW_Model 8566  1 (1)| 3969.46  | 146.21 | 2.181  | **67.04x** | 27.15x      | 1820.08x
+  NW_Model 8566  1 (2)| 3924.01  | 144.54 | 1.976  | **73.16x** | 27.15x      | 1986.12x
+  ky8      1325  1 (1)|   26.25  |   5.29 | 2.091  |   2.53x    |  4.96x      |   12.56x
+  ky8      1325  8 (1)|  186.03  |  27.95 | 2.500  |  11.18x    |  6.66x      |   74.41x
+  ky8      1325 64 (1)| 1017.04  |  66.08 | 5.453  |  12.12x    | 15.39x      |  186.50x
+  ky8      1325 64 (2)| 1010.53  |  65.54 | 7.202  |   9.10x    | 15.42x      |  140.32x
+  ky4      959   1 (1)|   13.36  |   3.84 | 2.050  |   1.88x    |  3.47x      |    6.52x
+  ky4      959   1 (2)|   13.14  |   3.72 | 1.836  |   2.03x    |  3.53x      |    7.15x
+  KL       935   1    |   13.14  |   3.79 | 2.140  |   1.77x    |  3.46x      |    6.14x
+                        （KL 这行取自冒烟作业 1460460，节点 <node-10>）
+
+  梯度一致性（同一次运行内，gA 的相对最差）：
+      NW_Model B=1: (Badj/A) 2.19e-08、(C/A) **1.56e-08**
+      ky8 B=1: 1.61e-11 / 6.73e-12       KL B=1: 1.84e-09 / 1.46e-09
+  => **线性代数这一层，三条通路的梯度是对上的**，倍数拆解站得住。
+
+  ★ 读法（与 P4 §11.2 同）：NW_Model 上端到端那个 1820x/1986x 里，
+    **只有 67~73 倍是"稀疏真的比稠密快"**，另外 27.15 倍是
+    **"稠密的反向走通用 autograd 写得太贵"**。这两件事必须分开说。
+    对比 P4 在 ky4 上的结论（稀疏本身只有 3.5~4.8x；本轮 ky4 B=1 复测
+    1.88~2.03x，同格），**Nj 从 959 涨到 8566 以后，稀疏本身的优势
+    从个位数涨到 ~70 倍** - 这才是换大网的真正意义。
+    口径提醒（沿用 P4 收尾 P2-a）：Badj 的反向只做 1 次回代，C 那侧是 1+2 次，
+    所以 Badj/C 这一列是**稀疏赢多少的下界**。
+
+--------------------------------------------------------------------------------
+4.4 显存（R5 口径，MiB，每配置全新进程；ctx 实测 588.19 MiB）
+--------------------------------------------------------------------------------
+  作业 1460474，节点 <node-09>。total = torch_resv + nontorch。
+  net      B    | dense peak   resv    非torch  total   | cudss peak  resv   非torch total | 倍数
+  NW_Model 1    |  8450.1    8488.0   360.0   8848.0 |    20.4    22.0    68.0    90.0 | **98.31x**
+  NW_Model 8    |  **CRASH**（= §4.0 那个 CUDA 错，不是 OOM）|  121.2  138.0 100.0  238.0 | -
+  NW_Model 64   |  OOM                                |   945.3  1002.0  452.0  1454.0 | -
+  NW_Model 256  |  OOM                                |  3752.7  3972.0 1604.0  5576.0 | -
+  NW_Model 1024 |  OOM                                | 14728.6 15788.0 6308.0 22096.0 | -
+  ky8      64   | 18293.5   18372.0   230.0  18602.0 |   230.7   282.0  100.0   382.0 | 48.70x
+  ky4      64   | 10586.4   10642.0   230.0  10872.0 |   182.8   224.0  100.0   324.0 | 33.56x
+  KL       256  | 29448.2   30862.0   230.0  31092.0 |   388.5   428.0  228.0   656.0 | 47.40x
+  ky2      256  | 30270.7   31016.0   230.0  31246.0 |   713.0   740.0  196.0   936.0 | 33.38x
+
+  稠密 A 的**理论**需求 B*Nj^2*8 vs CSR 值 B*nnz*8
+  （NW_Model：Nj=8566, nnz=27760, Nj^2/nnz=2643；ky4 是 286）：
+      B=1      0.55 GiB   /    0.21 MiB
+      B=8      4.37 GiB   /    1.69 MiB
+      B=64    34.98 GiB   /   13.56 MiB
+      B=256 **139.90 GiB**/ **54.25 MiB**   <- 工单说的 140 GB / 57 MB，对上
+      B=1024 559.62 GiB   /  217.00 MiB
+  => 理论上 B=256 的稠密 A 要 139.90 GiB（32 GiB 卡上物理不可能），
+    CSR 值只要 54.25 MiB - **2640 倍**。cudss 在 B=256 的**实测** total
+    是 5576 MiB（含反向全图与 cuDSS 自己的非 torch 缓冲），
+    B=1024 是 22096 MiB，仍在 32 GiB 卡内。
+
+--------------------------------------------------------------------------------
+4.5 ⚠ 必须写进正文的一条限制：NW_Model 上**展开路径的梯度不可用**
+--------------------------------------------------------------------------------
+  显存表里 NW_Model B=1 的 gnorm，dense=8.85e+03 而 cudss=2.98e+04（差 3.4 倍），
+  可同一次运行里"一轮线性代数"的梯度一致性却是 1.56e-08。追下去（作业
+  1460483）发现问题不在 cudss 反向，而在 **solve_unrolled 截断 K 步的梯度
+  本身在这个网上发散**：
+
+    NW_Model（K=5）  K=5  |g|dense=2.41e+03   |g|cudss=2.07e+05
+                     K=10 |g|dense=7.47e+05   |g|cudss=2.83e+03
+                     K=15 |g|dense=1.85e+17   |g|cudss=2.40e+03
+                     K=25 |g|dense=7.49e+07   |g|cudss=7.00e+06
+                     autodiff.unrolled_grad_health: verdict=**不建议**
+                                                    rel_K=1.000e+00  gmax=5.04e+20
+    ky4（K=9）       两通路逐坐标 rel=7.2e-05~3.2e-04，|g| 稳在 1.776e+03
+                     verdict=不建议  rel_K=5.349e-04  （与 P4 记的 1.08e-03 同格）
+    KL（K=6）        两通路 rel=6.5e-08~5.8e-05，|g| 稳在 2.0796e+04
+                     verdict=**有条件**  rel_K=2.201e-07
+
+  => 这是**展开路径自身**的性质（P4/审计 R4 早有结论：按 kappa(A) 和网规模
+    都判不出来，只能现测），不是 cudss 反向错、也不是本轮引入的。
+    · §4.2 的"前向+反向"时间**仍然是有效的成本测量**（两条通路做的是同样的
+      K 步展开，FLOPs 口径一致），但**不能当成"这个梯度能用"的证据**。
+    · NW_Model 上要拿可用梯度，得走 **ImplicitGGASolve**（不动点梯度），
+      不能用 solve_unrolled。正文写 NW_Model 的反向时必须带这句。
+    · §4.3 的分解表量的是**一轮线性代数**的 f+b，梯度一致到 1.56e-08，
+      **不受这条限制影响** - 这也是为什么倍数拆解必须以 §4.3 为准。
+
+--------------------------------------------------------------------------------
+4.6 OOM 边界细扫（作业 1460473，节点 <node-15>；每个候选 B 全新进程，
+    倍增 + 二分） - 主线那句话的**直接**证据
+--------------------------------------------------------------------------------
+  NW_Model（Nj=8566, nnz=27760）：
+      通路        最大可跑 B      首个失败的 B    失败性质
+      fwd_dense   **1**           2               **CUDA invalid argument（非 OOM）**
+      fb_dense    **1**           2               **CUDA invalid argument（非 OOM）**
+      fwd_cudss   **>= 2048**     （2048 内未触边界）
+      fb_cudss    **1832**        1833            真-显存 OOM
+
+  ky8（Nj=1325, nnz=4523） - 作为对照，这个网撞的**才是真显存墙**：
+      fwd_dense   最大可跑 B = **464**，B = 465 起 OOM（真 OOM）
+      fwd_cudss   最大可跑 B >= 2048（2048 内未触边界）
+    464 x 1325^2 x 8 = 6.52 GiB 的 A，加上 Cholesky 因子与中间量正好把
+    32 GiB 吃满 - 与 §4.4 里 ky8 B=64 已用 18602 MiB 自洽。
+    ⇒ 同一套代码，Nj=1325 时是显存墙、Nj=8566 时是 torch 的 kernel 门槛，
+      两种墙必须分开写。
+
+  ⚠ 脚本汇总行把 dense 那两格印成"B = 2 起 OOM"，**那个词是错的**：
+    p5_oom_gpu.py 把非 OOM 异常归成 ERR，逐行 probe 打的确实是 "-> ERR"，
+    只是汇总行的模板统一写了 OOM。真实性质见 §4.0（已用裸 torch 定位到
+    torch.cholesky_solve，且 5090/4090 双卡复现、门槛 Nj=6016/6017）。
+
+  ★ 一句话：**在 NW_Model 上，稠密最多 B=1，cuDSS 纯前向到 B>=2048、
+    前向+反向到 B=1832 - 批量能力差了三个数量级。**
+    （fb_cudss 在 B=1832 撞的才是真显存：§4.4 实测 B=1024 已用 22096 MiB，
+      线性外推到 B=1832 约 39 GiB > 32 GiB 卡，与 1833 起 OOM 自洽。）
+
+  注：该作业随后继续扫 ky8/ky4/KL，本文交付时仍在跑；这三个网的边界
+  已由 §4.1/§4.2/§4.4 三张表覆盖（ky8/ky4 fwd 稠密到 B=512、fwd+bwd 到 B=64；
+  KL fwd 稠密到 B=1024、fwd+bwd 到 B=64），不影响任何结论。
+
+================================================================================
+§5 任务二·4：交叉点补点（B=256 纯前向）
+================================================================================
+  net       Nj    | fwd dense | fwd cudss | 倍数     （节点(1)=<node-10>）
+  NW_Model  8566  |  FAIL     |   0.516   |  -（稠密在 B>=2 就挂，见 §4.0）
+  ky8       1325  |  6.697    |   0.327   | 20.49x
+  ky4        959  |  2.956    |   0.321   |  9.21x
+  KL         935  |  1.920    |   0.203   |  9.48x
+  ky1        856  |  3.035    |   0.423   |  7.18x
+  ky2        811  |  2.069    |   0.319   |  6.49x
+  ky13       778  |  2.530    |   0.422   |  5.99x
+  节点(2)=<node-18> 同格：ky8 14.07x / ky4 6.26x / KL 6.43x / ky1 4.88x /
+              ky2 4.39x / ky13 4.04x（节点(2) CPU 较慢，cudss 侧吃亏，是保守端）
+
+  => 交叉点结论多了 6 个点支撑：**纯前向 B=256 上，Nj 从 778 到 1325 的倍数是
+    5.99x~20.49x（节点1）/ 4.04x~14.07x（节点2），且随 Nj 单调上升**
+    （778->5.99x, 811->6.49x, 856->7.18x, 935->9.48x, 959->9.21x, 1325->20.49x）。
+    与既有"纯前向交叉点 Nj≈300"一致 - 这批点全在交叉点右侧，无一例外。
+    NW_Model 给不出这一格的倍数（稠密跑不了），它给的是 B=1 的 57.59x/42.48x。
+
+################################################################################
+================================================================================================================================
+表 1  networks/EXAMPLE 准入总表（按 Nj 降序；拓扑去重后每网一行）
+================================================================================================================================
+    Nj      L   水池   水库   水损   epanet构造   dense构造   守卫       解出 iter       ms  链路构成 / 网名
+--------------------------------------------------------------------------------------------------------------------------------
+ 12523  14831    2    2  H-W         ok         -    -      n/a   -1      nan  CVPIPE2+PIPE14820+PUMP4+PSV1+FCV4 / BWSN_Network_2.inp
+  8715   9660    0    9  H-W         ok         -    -      n/a   -1      nan  CVPIPE2+PIPE6942+PRV25+TCV2691 / PacificCity.inp
+  8566   9982    0    3  H-W         ok        ok    开       ok    5   4402.9  PIPE9979+PUMP3 / NW_Model.inp
+  8566   9981    0    3  H-W         ok        ok    开       ok    5   4447.0  PIPE9978+PUMP3 / NW_Model1.inp
+  2347   2463    7    1  H-W         ok         -    -      n/a   -1      nan  CVPIPE3+PIPE2423+PUMP15+PRV22 / ky12.inp
+  1891   2467    0    2  D-W         ok         -    -      n/a   -1      nan  CVPIPE3+PIPE2462+PRV1+TCV1 / exnet-3.inp
+  1891   3034    0    2  D-W         ok         -    -      n/a   -1      nan  CVPIPE3+PIPE3029+PRV1+TCV1 / EXN.inp
+  1782   1995    0    4  H-W         ok         -    -      n/a   -1      nan  CVPIPE1+PIPE1984+PUMP6+PRV4 / wolf-3.inp
+  1325   1618    5    2  H-W         ok       ok*    关       ok    8     78.4  PIPE1614+PUMP4 / ky8.inp
+  1242   1343   15    4  H-W         ok         -    -      n/a   -1      nan  CVPIPE2+PIPE1268+PUMP17+PRV56 / ky9.inp
+   959   1158    4    1  H-W         ok       ok*    关       ok    9     53.4  PIPE1156+PUMP2 / ky4.inp
+   935   1274    0    1  H-W         ok        ok    开       ok    6     32.1  PIPE1274 / KL.inp
+   920   1061   13    2  H-W         ok         -    -      n/a   -1      nan  CVPIPE1+PIPE1042+PUMP13+PRV5 / ky10.inp
+   865    957    6    1  H-W         ok         -    -      n/a   -1      nan  CVPIPE21+PIPE928+PUMP7+PRV1 / Richmond_standard.inp
+   856    985    2    1  H-W         ok        ok    开       ok    9     43.9  PIPE984+PUMP1 / ky1.inp
+   811   1125    3    1  H-W         ok        ok    开       ok    8     46.8  PIPE1124+PUMP1 / ky2.inp
+   802    882   28    1  H-W         ok         -    -      n/a   -1      nan  CVPIPE2+PIPE844+PUMP21+PRV15 / ky11.inp
+   782    909    1    2  H-W         ok         -    -      n/a   -1      nan  PIPE905+PUMP1+PRV3 / L-TOWN.inp
+   778    944    5    2  H-W         ok        ok    开       ok   10     48.3  PIPE940+PUMP4 / ky13.inp
+   659    703    8    2  H-W         ok         -    -      n/a   -1      nan  PIPE662+PUMP13+PRV25+PSV3 / ky15.inp
+   543    647    3    2  H-W         ok         -    -      n/a   -1      nan  PIPE644+PUMP2+PRV1 / ky6.inp
+   481    604    3    1  H-W         ok        ok    开       ok    7     18.9  PIPE603+PUMP1 / ky7.inp
+   443    454    0    4  D-W         ok         -    -      n/a   -1      nan  PIPE454 / Balerma.inp
+   420    505    3    4  H-W         ok        ok    开       ok    9     29.0  PIPE496+PUMP9 / ky5.inp
+   401    474    7    1  H-W         ok         -    -      n/a   -1      nan  CVPIPE1+PIPE456+PUMP12+PRV4+TCV1 / 2_Walski.inp
+   399    893    7    1  H-W         ok         -    -      n/a   -1      nan  CVPIPE2+PIPE870+PUMP16+PRV4+TCV1 / 10_Guidolin.inp
+   399    889    7    1  H-W         ok         -    -      n/a   -1      nan  CVPIPE1+PIPE871+PUMP12+PRV4+TCV1 / 11_Wang.inp
+   399    489    7    1  H-W         ok         -    -      n/a   -1      nan  CVPIPE1+PIPE470+PUMP13+PRV4+TCV1 / 12_Kandiah.inp
+   399    890    7    1  H-W         ok         -    -      n/a   -1      nan  PIPE872+PUMP13+PRV4+TCV1 / 3_Stokes.inp
+   399    459    7    1  H-W         ok         -    -      n/a   -1      nan  CVPIPE1+PIPE442+PUMP12+PRV3+TCV1 / 6_Bent.inp
+   399    597    7    1  H-W         ok         -    -      n/a   -1      nan  CVPIPE1+PIPE573+PUMP18+PRV4+TCV1 / 7_Matos.inp
+   399    768    7    1  H-W         ok         -    -      n/a   -1      nan  CVPIPE1+PIPE747+PUMP15+PRV4+TCV1 / 8_Yoo.inp
+   399    459    7    1  H-W         ok         -    -      n/a   -1      nan  CVPIPE1+PIPE442+PUMP11+PRV4+TCV1 / d-town.inp
+   398    886    7    1  H-W         ok         -    -      n/a   -1      nan  CVPIPE2+PIPE869+PUMP11+PRV3+TCV1 / 14_Tolson.inp
+   398    475    7    1  H-W         ok         -    -      n/a   -1      nan  CVPIPE1+PIPE457+PUMP13+PRV3+TCV1 / 1_Wu.inp
+   398    458    7    1  H-W         ok         -    -      n/a   -1      nan  CVPIPE1+PIPE442+PUMP11+PRV3+TCV1 / 5_Saldarriaga.inp
+   388    444    7    1  H-W         ok         -    -      n/a   -1      nan  CVPIPE1+PIPE428+PUMP11+PRV3+TCV1 / Battle of the Calibration Networks System.inp
+   379    476    0    2  D-W         ok         -    -      n/a   -1      nan  PIPE476 / RuralNetwork.inp
+   377    553    3    4  H-W         ok         -    -      n/a   -1      nan  CVPIPE5+PIPE543+PUMP5 / ky14.inp
+   269    371    3    3  H-W         ok        ok    开       ok    8     24.0  PIPE366+PUMP5 / ky3.inp
+   268    317    0    4  H-W         ok        ok    开       ok    5     11.7  PIPE317 / MOD.inp
+   121    169    2    0  H-W         ok        ok    开       ok    6     10.8  PIPE168+TCV1 / BELL_CL1.INP
+   113    164    0    1  H-W         ok        ok    开       ok    5      9.0  PIPE164 / ZJ.inp
+    92    119    3    2  H-W         ok        ok    开       ok    5     11.5  PIPE117+PUMP2 / Net3.inp   [同网副本 2 份: example3.inp]
+    69    104    0    1  H-W         ok        ok    开       ok    5    121.5  PIPE104 / 6848-68nodes.inp
+    41     51    6    1  H-W         ok         -    -      n/a   -1      nan  CVPIPE8+PIPE36+PUMP7 / Richmond_skeleton.inp
+    35     40    1    0  H-W         ok        ok    开       ok    5      8.0  PIPE40 / Net2.inp   [同网副本 2 份: example2.inp]
+    31     34    0    1  H-W         ok        ok    开       ok    4      6.7  PIPE34 / Extended Hanoi.inp   [同网副本 2 份: Hanoi.inp]
+    31     34    0    1  H-W         ok        ok    开       ok    3      7.4  PIPE34 / hanoi-3.inp   [同网副本 3 份: HAN.inp, hanoi-exeter.inp]
+    27     34    0    1  H-W         ok        ok    开       ok    4      6.2  PIPE34 / Jilin including water quality.inp
+    22     46    2    1  H-W         ok       ok*    关     FAIL   -1      nan  PIPE43+PUMP3 / anytown-3.inp   [同网副本 2 份: mod_anytown-3.inp]
+    22     46    2    1  H-W         ok         -    -      n/a   -1      nan  CVPIPE2+PIPE41+PUMP3 / mod_anytown-3a.inp
+    19     41    0    3  H-W         ok        ok    开       ok    6     20.7  PIPE40+PUMP1 / Anytown.inp
+    19     42    0    1  H-W         ok        ok    开       ok    7     10.9  PIPE42 / Modified New York Tunnels including water quality.inp   [同网副本 2 份: New York Tunnels including water quality.inp]
+    19     20    0    2  D-W         ok         -    -      n/a   -1      nan  PIPE16+PUMP2+FCV2 / 2fcvs.inp
+    19     42    0    1  H-W         ok        ok    开       ok    3      4.7  PIPE42 / NYT.inp
+    19     21    0    1  H-W         ok        ok    开       ok    3      4.6  PIPE21 / nytun.inp
+    19     42    0    1  H-W         ok        ok    开       ok    3      4.9  PIPE42 / NYT.inp
+    15     16    0    2  D-W         ok         -    -      n/a   -1      nan  PIPE16 / test101-3.inp   [同网副本 2 份: test101.inp]
+    11     14    0    1  H-W         ok         -    -      n/a   -1      nan  PIPE11+PRV3 / GES4-9.inp
+    10     17    0    2  H-W         ok        ok    开       ok    4      6.2  PIPE17 / TRN.inp
+    10     14    0    2  H-W         ok        ok    开       ok    4      6.2  PIPE14 / gessler1985.inp
+     9     13    1    1  H-W         ok        ok    开       ok    4     13.6  PIPE12+PUMP1 / Net1.inp   [同网副本 2 份: example1.inp]
+     9     13    1    1  H-W         ok        ok    开       ok    4      8.5  PIPE12+PUMP1 / NET1-3.inp   [同网副本 5 份: NET1.inp, NET1cv.inp, NET1emit.inp, NET1negemit.inp]
+     9     13    1    1  H-W       FAIL         -    -      n/a   -1      nan  PIPE11+PUMP1+PBV1 / NET1-PBV.inp
+     9     14    1    1  H-W         ok        ok    开       ok    4      9.2  PIPE13+PUMP1 / NET1para.inp
+     9     12    0    2  H-W         ok         -    -      n/a   -1      nan  PIPE9+PUMP2+PRV1 / st-net3-3.inp   [同网副本 2 份: st-net3.inp]
+     8     12    1    1  H-W         ok        ok    开       ok    6      8.9  PIPE12 / NET1np.inp
+     7     11    0    1  H-W         ok        ok    开       ok    4      6.2  PIPE11 / Elhay-ZeroFlow.inp
+     6      7    1    1  H-W         ok         -    -      n/a   -1      nan  CVPIPE1+PIPE6 / sampletown.inp
+     6      8    0    1  H-W         ok        ok    开       ok    4      6.3  PIPE8 / TLN.inp
+     5      6    0    1  H-W         ok         -    -      n/a   -1      nan  PIPE4+PRV2 / 2PRVs-a.inp
+     4      5    0    1  H-W         ok        ok    开       ok    5      7.3  PIPE5 / example.inp   [同网副本 2 份: example.inp]
+     4      5    0    2  H-W         ok         -    -      n/a   -1      nan  PIPE3+PRV1+FCV1 / simpson_test.inp   [同网副本 2 份: simpson_test_2-12.inp]
+     4      7    0    1  H-W         ok        ok    开       ok    5      7.6  PIPE7 / todinitest.inp
+     4      5    0    1  H-W         ok         -    -      n/a   -1      nan  PIPE3+PRV2 / 2PRVs.inp
+     2      3    0    2  H-W         ok        ok    开       ok    6      9.1  PIPE3 / noflow.inp
+     2      4    0    2  D-W         ok         -    -      n/a   -1      nan  PIPE4 / gestar1.inp
+     2      3    0    2  H-W         ok         -    -      n/a   -1      nan  PIPE2+FCV1 / fcv-noflow.inp   [同网副本 3 份: fcv.inp, fcv2.inp]
+     1      1    1    0  H-W         ok        ok    开       ok    2      3.3  PIPE1 / batch-nh2cl.inp   [同网副本 2 份: batch-nh2cl.inp]
+     1      2    0    2  H-W         ok        ok    开       ok    4      6.1  PIPE2 / 2Tanks.inp
+     1      2    0    2  H-W         ok        ok    开       ok    9     12.3  PIPE2 / gestar1modHW.inp   [同网副本 2 份: gestar1mod.inp]
+--------------------------------------------------------------------------------------------------------------------------------
+拓扑唯一网 82 个（可解析文件 102 / 全部 138）；dense 可构造 40 网，**dense 真的解出来 39 网**
+注：dense 列 'ok*' = 必须 dense_tank_bound_check=False；守卫列'关'即该网需关水池守卫。
+    'iter'/'ms' 是本机 CPU 单帧 B=1 的实测（GGASolver dense，float64）。
+
+================================================================================================================================
+表 2  parse 失败的文件（36 个） - 分因
+================================================================================================================================
+
+--- ValueError（15 个）
+    networks/EXAMPLE/asce-tf-wdst/Micropolis_v1/MICROPOLIS_v1.inp
+        ValueError: could not convert string to float: '6 AM'
+    networks/EXAMPLE/epanet-desktop/Net3/Net3_trace.inp
+        ValueError: Statistic must be one of AVERAGED, MINIMUM, MAXIMUM, RANGE or NONE
+    networks/EXAMPLE/epanet-example-networks/Net2-CL2/net2-cl2.inp
+        ValueError: %s is not a valid member of WaterNetworkModel
+    networks/EXAMPLE/epanet-example-networks/Net3-Bio/net3-bio.inp
+        ValueError: Statistic must be one of AVERAGED, MINIMUM, MAXIMUM, RANGE or NONE
+    networks/EXAMPLE/epanet-example-networks/Net3-NH2Cl/Net3-NH2CL.inp
+        ValueError: Statistic must be one of AVERAGED, MINIMUM, MAXIMUM, RANGE or NONE
+    networks/EXAMPLE/epanet-example-networks/epanet-tests/large/57460.inp
+        ValueError: ('inpfile_units = "%s" is not a valid EPANET unit code', 'SI')
+    networks/EXAMPLE/epanet-example-networks/epanet-tests/small/JEP5-13.inp
+        ValueError: ('inpfile_units = "%s" is not a valid EPANET unit code', 'SI')
+    networks/EXAMPLE/epanet-example-networks/epanet-tests/valves/5fcvs.inp
+        ValueError: %s is not a valid member of WaterNetworkModel
+    networks/EXAMPLE/epanet-example-networks/msx-examples/Net2-CL2/net2-cl2.inp
+        ValueError: %s is not a valid member of WaterNetworkModel
+    networks/EXAMPLE/epanet-example-networks/msx-examples/Net3-Bio/net3-bio.inp
+        ValueError: Statistic must be one of AVERAGED, MINIMUM, MAXIMUM, RANGE or NONE
+    networks/EXAMPLE/epanet-example-networks/msx-examples/Net3-NH2Cl/Net3-NH2CL.inp
+        ValueError: Statistic must be one of AVERAGED, MINIMUM, MAXIMUM, RANGE or NONE
+    networks/EXAMPLE/exeter-benchmarks/D-Town Water Distribution Network BWN-II/Original_BWNII/4_Alvisi.inp
+        ValueError: could not convert string to float: '16.367 "'
+    networks/EXAMPLE/exeter-benchmarks/DesignResiliance/BAK.inp
+        ValueError: ('inpfile_units = "%s" is not a valid EPANET unit code', 'SI')
+    networks/EXAMPLE/exeter-benchmarks/DesignResiliance/GOY.inp
+        ValueError: ('inpfile_units = "%s" is not a valid EPANET unit code', 'SI')
+    networks/EXAMPLE/exeter-benchmarks/Expansion/Wolf-Cordera Ranch/wolf-initial-fig.inp
+        ValueError: %s is not a valid member of WaterNetworkModel
+
+--- EpanetException（11 个）
+    networks/EXAMPLE/asce-tf-wdst/Battle of the Water Sensor Networks/BWSN_Network_1.inp
+        EpanetException: (Error 200) one or more errors in input file '<repo>\\networks\\EXAMPLE\\asce-tf-wdst\\Battle of the Water Sensor Networks\\BWSN_Networ
+    networks/EXAMPLE/asce-tf-wdst/Fosspoly1/foss_poly_1.inp
+        EpanetException: (Error 200) one or more errors in input file '<repo>\\networks\\EXAMPLE\\asce-tf-wdst\\Fosspoly1\\foss_poly_1.inp'
+    networks/EXAMPLE/asce-tf-wdst/exnet/exnet.inp
+        EpanetException: (Error 200) one or more errors in input file '<repo>\\networks\\EXAMPLE\\asce-tf-wdst\\exnet\\exnet.inp'
+    networks/EXAMPLE/epanet-example-networks/epanet-tests/valves/2PRVs-aquis.inp
+        EpanetException: (Error 200) one or more errors in input file '<repo>\\networks\\EXAMPLE\\epanet-example-networks\\epanet-tests\\valves\\2PRVs-aquis.inp
+    networks/EXAMPLE/exeter-benchmarks/Anytown Water Distribution Network/anytown-exeter.inp
+        EpanetException: (Error 200) one or more errors in input file '<repo>\\networks\\EXAMPLE\\exeter-benchmarks\\Anytown Water Distribution Network\\anytown
+    networks/EXAMPLE/exeter-benchmarks/DesignResiliance/BLA.inp
+        EpanetException: (Error 200) one or more errors in input file '<repo>\\networks\\EXAMPLE\\exeter-benchmarks\\DesignResiliance\\BLA.inp'
+    networks/EXAMPLE/exeter-benchmarks/DesignResiliance/FOS.inp
+        EpanetException: (Error 200) one or more errors in input file '<repo>\\networks\\EXAMPLE\\exeter-benchmarks\\DesignResiliance\\FOS.inp'
+    networks/EXAMPLE/exeter-benchmarks/EXNET/exnet-exeter.inp
+        EpanetException: (Error 200) one or more errors in input file '<repo>\\networks\\EXAMPLE\\exeter-benchmarks\\EXNET\\exnet-exeter.inp'
+    networks/EXAMPLE/exeter-benchmarks/Expansion/Wolf-Cordera Ranch/bocika-output.inp
+        EpanetException: (Error 200) one or more errors in input file '<repo>\\networks\\EXAMPLE\\exeter-benchmarks\\Expansion\\Wolf-Cordera Ranch\\bocika-outpu
+    networks/EXAMPLE/exeter-benchmarks/Expansion/Wolf-Cordera Ranch/wolf-modified-fig.inp
+        EpanetException: (Error 200) one or more errors in input file '<repo>\\networks\\EXAMPLE\\exeter-benchmarks\\Expansion\\Wolf-Cordera Ranch\\wolf-modifie
+    networks/EXAMPLE/exeter-benchmarks/Expansion/Wolf-Cordera Ranch/wolf-output-fig.inp
+        EpanetException: (Error 200) one or more errors in input file '<repo>\\networks\\EXAMPLE\\exeter-benchmarks\\Expansion\\Wolf-Cordera Ranch\\wolf-output-
+
+--- KeyError（3 个）
+    networks/EXAMPLE/asce-tf-wdst/Battle of the Water Sensor Networks/BWSN_Network_2_temp.inp
+        KeyError: 'VALVE-173'
+    networks/EXAMPLE/epanet-example-networks/epanet-tests/small/simplenet.inp
+        KeyError: '10'
+    networks/EXAMPLE/exeter-benchmarks/DesignResiliance/PES.inp
+        KeyError: '79'
+
+--- AttributeError（3 个）
+    networks/EXAMPLE/asce-tf-wdst/Fairfield/FFCL-1.INP
+        AttributeError: 'NoneType' object has no attribute 'factor'
+    networks/EXAMPLE/asce-tf-wdst/North Penn Water Authority System/NPCL-1.INP
+        AttributeError: 'NoneType' object has no attribute 'is_traditional'
+    networks/EXAMPLE/asce-tf-wdst/Oberlin/OBCL-1.INP
+        AttributeError: 'NoneType' object has no attribute 'factor'
+
+--- UnicodeDecodeError（2 个）
+    networks/EXAMPLE/exeter-benchmarks/D-Town Water Distribution Network BWN-II/Original_BWNII/9_Iglesias-Rey.inp
+        UnicodeDecodeError: 'utf-8' codec can't decode byte 0xf3 in position 40: invalid continuation byte
+    networks/EXAMPLE/exeter-benchmarks/DesignResiliance/BIN.inp
+        UnicodeDecodeError: 'utf-8' codec can't decode byte 0xa1 in position 88: invalid start byte
+
+--- RuntimeError（1 个）
+    networks/EXAMPLE/epanet-desktop/Net1/Net1_broken.inp
+        RuntimeError: <repo>\networks\EXAMPLE\epanet-desktop\Net1\Net1_broken.inp: INP 文本节点序抽取与 wntr 不一致 (12 vs 11)
+
+--- ENSyntaxError（1 个）
+    networks/EXAMPLE/exeter-benchmarks/D-Town Water Distribution Network BWN-II/Original_BWNII/13_Morley.inp
+        ENSyntaxError: (Error 201) syntax error (%s), at line 2337:    [COORDS]
+
+################################################################################
+本文件由 scripts/p5_bignet/ 下的脚本产出；表 1/表 2 可用
+    python -X utf8 scripts/p5_bignet/make_table.py
+重新生成（读 survey_inp.json + dedup_topo.json）。
+################################################################################

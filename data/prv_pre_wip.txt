@@ -1,0 +1,140 @@
+================================================================
+PRV 之前必须落的四件（对称装配 / F2 调度验收 / F1·F3·F4 / 参考解收紧）
+日期 2026-08-24   全部数值为本机前台实测   基线 = fb5c6be（影子包 git archive）
+本轮提交：e95a540（对称装配 + check_symmetry 扩表）+ 本文件所在提交（其余三件）
+================================================================
+
+----------------------------------------------------------------
+一、对称装配修复（dgga/solver.py __init__ 装配索引预计算，外科手术式）
+----------------------------------------------------------------
+病根（p5 审计 §1.2 / a78c185）：idx_off1=j1*Nj+j2、idx_off2=j2*Nj+j1 两段携带
+同一段值 -Pm[:,lk_both]，"同一无序节点对 ≥3 条链路且方向不全同"时 (i,j)/(j,i)
+两槽吃到同一组加数的不同交错次序（正向链路先进 (i,j)、反向先进 (j,i)）⇒ 差 ~1 ULP。
+
+修法：**只对触发形态的节点对**（cnt>=3 且方向混合，np.unique 分组一次预计算）
+把两个槽都改按 (min,max) 定序 - 两个三角对该对的链路按同一链路次序累加，
+A 按构造逐位对称；其余链路 A_idx **逐字节不变**。CSR 位型不变（槽集合相同），
+A_csr_scatter 随 a_flat 一致更新，_CudssSolveFn docstring 同步改口
+（CPU 串行归约逐位对称；CUDA 原子序不定，对称到 ~1 ULP）。
+
+★ 第一版教训（已回退，记录在案）：全局换 (min,max) 时**前向逐位不变**但
+  unrolled 反向在 Hanoi/Net3/ky4/city_d 差 rel 3.3e-14~4.4e-14 - scatter_add
+  的 gather 反向按槽取 gA，gA 不逐位对称，j1>j2 链路换槽后两笔梯度贡献落进
+  "已含其他项的累加器"的次序变了（(s+x)+y ≠ (s+y)+x）。故修复必须按触发形态
+  限域，这也是"现有回归网逐位不变"能成立的原因。
+
+验收①（影子包对拍，battery 26 网）：
+  网表 = 门 B1 全部 11 网（Richmond_skeleton/Anytown_wntr/Net3/Net1/Net2/
+  Anytown/Hanoi/Modena/Fossolo_poly1/Pescara/ky4）+ EXA4/EXA5/EXA6/city_h/
+  ky3/ky5/city_d/city_d_emit/sym_torture/fcv_smoke/rand_main_0009/0014/
+  rand_small_0000/L-TOWN/Balerma；
+  通路 = epanet run_gga(SM开/关)×2场景、缺省 dense、dense+批量状态机
+  (assemble=dense/csr)、dense冻结(+csr)、unrolled 梯度(gd/gk/gr)、
+  implicit 伴随梯度(gd/gk/gr)、solve_polished、全部构造/求解 RAISE 行为。
+  **sha256 键 1540/1540 完全相同**（对称修复单独验一次 1540/1540；
+  F1/F2/F3 落地后再验一次仍 1540/1540）。同包重跑自校 0 漂移。
+
+验收②（最小复现网 + NW_Model，修前 worst|A-A^T| → 修后；解差 vs 修前）：
+  case                修前          修后       iters  max|dH|(ft)    max|dQ|(cfs)
+  P2_两条并联          0.0          0.0        5/5    0（逐位同）     0
+  P3_2正1反           1.7764e-15   **0.0**    9/9    8.527e-14(3ULP) 2.593e-13
+  P3_全同向            0.0          0.0        6/6    0（逐位同）     0
+  P4_2正2反           7.1054e-15   **0.0**    9/9    1.990e-13(7ULP) 5.279e-13
+  NW_Model 逐轮       4.44e-16..2.8422e-14 → **全 5 轮 0.0**（逐位）
+  NW_Model 解 vs 修前  max|dH|=7.822e-06 ft、max|dQ|=3.045e-06 cfs
+ - A 只动 1 ULP，解差由 κ2≈7.3e10 放大，量级 = 既有稠密线代噪声；
+  NW_Model 修后 dense vs epanet(==DLL 逐位)：iters 5/5、状态逐元素同，
+    max|dH|=8.472e-06 ft（修前审计口径 8.124e-06，同量级 ⇒ 解质量不变）。
+
+拷问网入表：scripts/check_symmetry.py 新增内嵌合成网 sym_mixed3
+（J1-J2 三条 2正1反 + J3-J4 四条 2正2反 + emitter），2 个配置 × 4 通路 = 8 行；
+在影子包（修复前 dgga）上 **8/8 全红**（max|A-A^T| 8.88e-16 / 6.94e-18，
+逐位判据检出）⇒ regression ⑨ 从此结构上测得到这类破缺。
+修后全表 **80/80 PASS**（原 72 行 + 新 8 行），4/4 变异体如期变红；
+regression_all ⑨ 行名改为"20网x4通路"。
+
+----------------------------------------------------------------
+二、F2：调度级验收（scripts/check_schedule.py + 记录开关）
+----------------------------------------------------------------
+记录仪（缺省关，开关不进缺省路径；影子对拍 1540/1540 证零扰动）：
+· run_gga(..., record_schedule=True) → out["schedule"] = [(it, kind, changed)]，
+  kind ∈ {valve(:156), ls_conv(:173), pswitch(:174), ls_per(:185)}，changed =
+  与调用前快照逐元素比的链路号表（含 setting 变化）。
+· solve(..., status_machine=True, record_schedule=True)（dense 批量）→
+  [{it, conv[B], per[B], chg[B,L]}]（收敛支/周期支掩码 + change 位图）。
+
+对拍器 scripts/check_schedule.py：
+  硬判据 = 逐场景 (迭代号, change 集合) 序列逐项相等 + 终态逐元素相等 +
+  iters 相等 + 串行独有 valve/pswitch 非空事件数=0；
+  软报告 = 收敛支/周期支标签翻转（relerr 恰在 Hacc 边界、两条路线性求解舍入
+  不同所致；审计 [1] Net2 116/128、ky4 47/48 同现象） - 只报不判。
+§A 真品（6 网 × B=64 极端场景，gate_b1 配方）：
+  调度(硬) 384/384、终态 384/384、iters 384/384、串行独有非空事件 0；
+  仅标签翻转 9（全在 Richmond_skeleton，例：b=7 dense (4,'per',{19,26}) vs
+  serial (4,'conv',{19,26})，后续轨迹/终态/iters 全同）。
+§B 检出力自证（M1 = `done_now = active & conv` 收敛即退出，源码级注入子进程）：
+  **调度判据检出 13/64 场景（硬）+2 仅标签**（Richmond_skeleton），
+  **终态判据 0/64 检出** - 复现门 B1 审计 §3b 的结论：M1 终态逐位相同、
+  只有调度抓得住。总判定 PASS（§A 一致 + §B 检出）。
+
+----------------------------------------------------------------
+三、F1 / F3 / F4
+----------------------------------------------------------------
+F1：pswitch 守卫从 _build_dense_sm_data 下沉为 _check_dense_pswitch()，
+  __init__ 对一切 mode='dense'（含缺省、无状态机）构造期调用。实测（审计配方
+  Net1 注入 "LINK 11 CLOSED IF NODE 12 ABOVE 1"）：缺省 dense 与 dense+SM
+  构造均 NotImplementedError（修前缺省 dense 不 raise、静默错 80.27 ft）；
+  mode='epanet' 照常可解（iters=8 converged=True）；干净 Net1 缺省构造不变。
+  21 公开网该类控制数 = 0 ⇒ 缺省网表零行为变化（regression + battery 双证）。
+F3：dense 未收敛 iters 统一为 maxtrials+1（与 run_gga/EPANET hydsolver.c:109/
+  189/206 同口径；修前 dense 报 maxtrials）。实测：Hanoi max_iter=3 →
+  dense 4 / epanet 4；Richmond SM max_iter=2 → dense 3 / epanet 3，
+  converged 均 False。收敛场景逐位不变（torch.where 只碰 active）。
+F4：solve() docstring 写死契约 - iters 口径（含 F3）+ 批量状态机分支不因
+  个别场景不收敛而 raise（孤岛化场景 converged[b]=False，调用方必须逐场景查
+  converged）；旧缺省 dense 事后守卫命中即 raise 的行为不变。
+
+----------------------------------------------------------------
+四、参考解收紧（dgga/reference.py 公共 helper）
+----------------------------------------------------------------
+energy_residual_ft(solver, head, flow, status, setting)：开管（PIPE/CVPIPE，
+  S>CLOSED）能量失衡 max|h_l−ΔH| ft，h_l=Y/P（hydcoeffs 系数还原，剔关闭管）。
+tight_reference(solver, d, rh, ..., tol_energy=1e-8)：run_gga 基解（带状态机）
+  → 冻结状态热启动追加 K 步 Newton（hacc=0 跑满），K 按 (10,20,40,80,160,320)
+  递增到 ≤1e-8，未达标如实 met=False。**后续验收/对拍脚本凡当参考的解一律
+  过此 helper。**
+16 网实测（t=0 名义需水、水池取中位；iters0=基解迭代数，K需=追加步数）：
+  net                iters0 hacc  base能量ft   K需  终能量ft    达标
+  Richmond_skeleton  6    1e-3   6.451e-06   10   6.566e-13   是
+  Anytown_wntr       5    1e-3   1.553e+14 - 1.288e+10   否（见注）
+  Net3               5    1e-3   2.592e-06   10   2.842e-14   是
+  Net1               4    1e-3   8.792e-09   0    8.792e-09   是
+  Net2               5    1e-3   1.907e-04   10   8.882e-16   是
+  Anytown            6    1e-3   3.151e-06   10   1.421e-14   是
+  Hanoi              4    1e-5   3.793e-08   10   1.066e-14   是
+  Modena             5    1e-3   7.136e-07   10   7.105e-15   是
+  Fossolo_poly1      5    1e-3   7.769e-01   10   7.105e-15   是
+  Pescara            5    1e-3   2.418e-04   10   2.946e-14   是
+  ky4                9    1e-4   1.092e-05   10   1.096e-13   是
+  L-TOWN             17   1e-2   7.791e-05   10   3.673e-13   是
+  city_d             5    1e-3   5.608e-06   10   3.572e-12   是
+  city_h            6    1e-3   7.031e-04   10   1.099e-14   是
+  EXA6               5    1e-3   5.419e-08   10   3.424e-13   是
+  NW_Model           5    1e-2   **3.258e-02** 10 **7.977e-09** 是
+  注1：NW_Model base=3.258e-2 与审计 §1.3 的 3.2578e-2 对上（口径略异：
+    审计独立重算 H-W、本 helper 用 Y/P 还原）；K=10 已到 7.98e-9 ≤ 1e-8。
+  注2：Anytown_wntr 的 INP 自带阻力极端管（审计 (a)：H≈2.2e26 ft），绝对
+    能量口径对它无意义（K=320 仍 1.3e10 ft，相对量 ~1e-16），met=False 如实报；
+    该网当参考须换相对口径或剔病态管，不放宽 helper 的缺省门槛。
+  注3：L-TOWN（3 PRV）走 epanet 状态机路径正常收紧 ⇒ PRV 轮次可直接用。
+
+----------------------------------------------------------------
+回归与提交
+----------------------------------------------------------------
+regression_all 前台 **51/51 PASS**（4m06s；⑨ 扩表后正品 80/80 逐位对称、
+4/4 变异变红，行名"20网x4通路"）。check_symmetry 单跑 80/80；
+check_schedule 单跑 PASS。影子包（fb5c6be）对拍 1540/1540 sha256 全同。
+提交：e95a540 对称装配 + sym_mixed3 入表；本文件随 F1-F4/参考解 helper 提交。
+遗留给 PRV 轮次：① 对拍器已带 valve 事件槽（valvestatus 每迭代节律）；
+② tight_reference 对含 ACTIVE PRV 网已验（L-TOWN）；③ 支标签翻转是
+线代舍入固有现象，PRV 验收判据沿用"硬=(it,chg)序列，软=标签"。

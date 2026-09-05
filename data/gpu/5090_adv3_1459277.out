@@ -1,0 +1,66 @@
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/dgga/solver.py:1896: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+NVIDIA GeForce RTX 5090 | torch 2.11.0+cu128 | deterministic=True
+
+net          B |    dense自重跑    cudss自重跑    cudss换实例 | |cudss-dense|   |c-d|/自抖动 | 判定
+Net1        64 |   0.000e+00   1.478e-12   1.137e-12 |   1.364e-12 |        0.92 | 差 ≈ cuDSS 自抖动
+Net1       256 |   0.000e+00   4.661e-12   6.139e-12 |   3.865e-12 |        0.83 | 差 ≈ cuDSS 自抖动
+Net2        64 |   0.000e+00   6.720e-10   9.153e-10 |   8.052e-10 |        1.20 | 差 ≈ cuDSS 自抖动
+Net2       256 |   0.000e+00   4.558e-10   5.394e-10 |   9.544e-10 |        2.09 | 差 ≈ cuDSS 自抖动
+Net3        64 |   0.000e+00   3.404e-06   3.846e-06 |   3.781e-06 |        1.11 | 差 ≈ cuDSS 自抖动
+Net3       256 |   0.000e+00   5.056e-06   4.224e-06 |   5.032e-06 |        1.00 | 差 ≈ cuDSS 自抖动
+Pescara     64 |   0.000e+00   1.639e-05   1.359e-05 |   1.354e-05 |        0.83 | 差 ≈ cuDSS 自抖动
+Pescara    256 |   0.000e+00   1.567e-05   1.501e-05 |   1.755e-05 |        1.12 | 差 ≈ cuDSS 自抖动
+Modena      64 |   0.000e+00   2.305e-11   5.255e-11 |   2.979e-11 |        1.29 | 差 ≈ cuDSS 自抖动
+Modena     256 |   0.000e+00   1.157e-10   9.535e-11 |   7.367e-11 |        0.64 | 差 ≈ cuDSS 自抖动
+City_D      64 |   0.000e+00   1.059e-05   2.006e-05 |   1.295e-05 |        1.22 | 差 ≈ cuDSS 自抖动
+City_D     256 |   0.000e+00   1.992e-05   1.581e-05 |   1.434e-05 |        0.72 | 差 ≈ cuDSS 自抖动
+ky4         64 |   0.000e+00   7.633e-07   6.634e-07 |   9.394e-07 |        1.23 | 差 ≈ cuDSS 自抖动
+ky4        256 |   0.000e+00   5.742e-06   5.571e-06 |   8.891e-06 |        1.55 | 差 ≈ cuDSS 自抖动
+
+[R] 谁真的解得更准：末轮线性系统残差 ||A x - b||_inf / ||b||_inf
+    做法：用 CPU f64 解同一批场景得参考头 Href，比较两条 GPU 通路的 |H-Href|；
+    再看整解收敛后的 relerr（EPANET 口径）
+net          B | |gpuDen-cpu| |cudss-cpu| |  relerr den  relerr cud
+Net3        64 |   6.117e-06   4.507e-06 |   8.453e-04   8.453e-04
+Pescara     64 |   1.493e-05   1.063e-05 |   9.084e-04   9.084e-04
+Modena      64 |   4.434e-11   9.899e-11 |   9.986e-04   9.986e-04
+City_D      64 |   1.656e-05   1.374e-05 |   9.884e-04   9.885e-04
+ky4         64 |   2.801e-06   1.934e-06 |   6.905e-05   6.905e-05
+ADV3 DONE
+ADV3 JOB DONE

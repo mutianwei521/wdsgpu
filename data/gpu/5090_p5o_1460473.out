@@ -1,0 +1,85 @@
+<node-15>
+NVIDIA GeForce RTX 5090, 32607 MiB
+cpus: 8
+============================================================================================
+P5 大网 · OOM 边界细扫（每个候选 B 全新进程） | node: <node-15>
+md5 dgga/solver.py 45b0b0eeb66ed4e15ef81c53809d229a
+md5 dgga/autodiff.py e4b8cfe49536f85b435e04e5ed5621d2
+
+  probe NW_Model  fwd_dense B=1     -> OK
+  probe NW_Model  fwd_dense B=2     -> ERR
+  == NW_Model  fwd_dense 最大可跑 B = 1，B = 2 起 OOM
+  probe NW_Model  fwd_cudss B=1     -> OK
+  probe NW_Model  fwd_cudss B=2     -> OK
+  probe NW_Model  fwd_cudss B=4     -> OK
+  probe NW_Model  fwd_cudss B=8     -> OK
+  probe NW_Model  fwd_cudss B=16    -> OK
+  probe NW_Model  fwd_cudss B=32    -> OK
+  probe NW_Model  fwd_cudss B=64    -> OK
+  probe NW_Model  fwd_cudss B=128   -> OK
+  probe NW_Model  fwd_cudss B=256   -> OK
+  probe NW_Model  fwd_cudss B=512   -> OK
+  probe NW_Model  fwd_cudss B=1024  -> OK
+  probe NW_Model  fwd_cudss B=2048  -> OK
+  == NW_Model  fwd_cudss 最大可跑 B >= 2048（未在 2048 内触到边界）
+  probe NW_Model  fb_dense  B=1     -> OK
+  probe NW_Model  fb_dense  B=2     -> ERR
+  == NW_Model  fb_dense  最大可跑 B = 1，B = 2 起 OOM
+  probe NW_Model  fb_cudss  B=1     -> OK
+  probe NW_Model  fb_cudss  B=2     -> OK
+  probe NW_Model  fb_cudss  B=4     -> OK
+  probe NW_Model  fb_cudss  B=8     -> OK
+  probe NW_Model  fb_cudss  B=16    -> OK
+  probe NW_Model  fb_cudss  B=32    -> OK
+  probe NW_Model  fb_cudss  B=64    -> OK
+  probe NW_Model  fb_cudss  B=128   -> OK
+  probe NW_Model  fb_cudss  B=256   -> OK
+  probe NW_Model  fb_cudss  B=512   -> OK
+  probe NW_Model  fb_cudss  B=1024  -> OK
+  probe NW_Model  fb_cudss  B=2048  -> OOM
+    bisect NW_Model  fb_cudss  B=1536  -> OK
+    bisect NW_Model  fb_cudss  B=1792  -> OK
+    bisect NW_Model  fb_cudss  B=1920  -> OOM
+    bisect NW_Model  fb_cudss  B=1856  -> OOM
+    bisect NW_Model  fb_cudss  B=1824  -> OK
+    bisect NW_Model  fb_cudss  B=1840  -> OOM
+    bisect NW_Model  fb_cudss  B=1832  -> OK
+    bisect NW_Model  fb_cudss  B=1836  -> OOM
+    bisect NW_Model  fb_cudss  B=1834  -> OOM
+    bisect NW_Model  fb_cudss  B=1833  -> OOM
+  == NW_Model  fb_cudss  最大可跑 B = 1832，B = 1833 起 OOM
+  probe ky8       fwd_dense B=1     -> OK
+  probe ky8       fwd_dense B=2     -> OK
+  probe ky8       fwd_dense B=4     -> OK
+  probe ky8       fwd_dense B=8     -> OK
+  probe ky8       fwd_dense B=16    -> OK
+  probe ky8       fwd_dense B=32    -> OK
+  probe ky8       fwd_dense B=64    -> OK
+  probe ky8       fwd_dense B=128   -> OK
+  probe ky8       fwd_dense B=256   -> OK
+  probe ky8       fwd_dense B=512   -> OOM
+    bisect ky8       fwd_dense B=384   -> OK
+    bisect ky8       fwd_dense B=448   -> OK
+    bisect ky8       fwd_dense B=480   -> OOM
+    bisect ky8       fwd_dense B=464   -> OK
+    bisect ky8       fwd_dense B=472   -> OOM
+    bisect ky8       fwd_dense B=468   -> OOM
+    bisect ky8       fwd_dense B=466   -> OOM
+    bisect ky8       fwd_dense B=465   -> OOM
+  == ky8       fwd_dense 最大可跑 B = 464，B = 465 起 OOM
+  probe ky8       fwd_cudss B=1     -> OK
+  probe ky8       fwd_cudss B=2     -> OK
+  probe ky8       fwd_cudss B=4     -> OK
+  probe ky8       fwd_cudss B=8     -> OK
+  probe ky8       fwd_cudss B=16    -> OK
+  probe ky8       fwd_cudss B=32    -> OK
+  probe ky8       fwd_cudss B=64    -> OK
+  probe ky8       fwd_cudss B=128   -> OK
+  probe ky8       fwd_cudss B=256   -> OK
+  probe ky8       fwd_cudss B=512   -> OK
+  probe ky8       fwd_cudss B=1024  -> OK
+  probe ky8       fwd_cudss B=2048  -> OK
+  == ky8       fwd_cudss 最大可跑 B >= 2048（未在 2048 内触到边界）
+  probe ky8       fb_dense  B=1     -> OK
+--- STATE ---
+   RUNNING   01:11:28 

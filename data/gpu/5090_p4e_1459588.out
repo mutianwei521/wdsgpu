@@ -1,0 +1,23 @@
+NVIDIA GeForce RTX 5090, 32607 MiB
+node: <node-20> | cpus: 8
+node: <node-20> | torch 2.11.0+cu128
+solver.py md5: 45b0b0eeb66ed4e15ef81c53809d229a
+==============================================================================
+H1  does the cap cost anything when no batch size ever repeats?  (ky4, pure forward, FRESH PROCESS per cell, node <node-20>)
+    kind=uniq: B = 177..256, each once      (F4's exact loop)
+    kind=rep : B ~ U[177,257) with replacement
+    RESULT kind=uniq cap=none rep=1 nB=80 distinct=80 elapsed=73.90 base=686.2 states=81 final=9254.2
+    RESULT kind=uniq cap=none rep=2 nB=80 distinct=80 elapsed=73.73 base=686.2 states=81 final=9254.2
+    RESULT kind=uniq cap=8 rep=1 nB=80 distinct=80 elapsed=74.06 base=686.2 states=8 final=1942.2
+    RESULT kind=uniq cap=8 rep=2 nB=80 distinct=80 elapsed=73.81 base=686.2 states=8 final=1942.2
+    RESULT kind=rep cap=none rep=1 nB=80 distinct=49 elapsed=49.11 base=686.2 states=50 final=5986.2
+    RESULT kind=rep cap=none rep=2 nB=80 distinct=49 elapsed=49.07 base=686.2 states=50 final=5986.2
+    RESULT kind=rep cap=8 rep=1 nB=80 distinct=49 elapsed=69.29 base=686.2 states=8 final=1910.2
+    RESULT kind=rep cap=8 rep=2 nB=80 distinct=49 elapsed=69.56 base=686.2 states=8 final=1910.2
+
+    summary
+      kind=uniq none: 73.90 / 73.73 s   cap8: 74.06 / 73.81 s  -> cap8 costs +0.2% / +0.1%  (own rerun noise none -0.2%, cap8 -0.3%)
+      kind=rep  none: 49.11 / 49.07 s   cap8: 69.29 / 69.56 s  -> cap8 costs +41.1% / +41.8%  (own rerun noise none -0.1%, cap8 +0.4%)
+
+P4E DONE
+P4 JOB DONE

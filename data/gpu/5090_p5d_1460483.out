@@ -1,0 +1,93 @@
+<node-10>
+NVIDIA GeForce RTX 5090, 32607 MiB
+============================================================================================
+P5 诊断 | node: <node-10> | torch 2.11.0+cu128
+md5 dgga/solver.py 45b0b0eeb66ed4e15ef81c53809d229a
+md5 dgga/autodiff.py e4b8cfe49536f85b435e04e5ed5621d2
+
+############################################################################################
+D1  稠密通路在 NW_Model 上到底是怎么挂的（每个 B 全新进程）
+############################################################################################
+
+===== B=1  (rc=0) =====
+D1 NW_Model.inp B=1 Nj=8566  卡上空闲 31517 MiB / 共 32109 MiB；稠密A理论 560 MiB
+D1 RESULT OK
+
+===== B=2  (rc=0) =====
+D1 NW_Model.inp B=2 Nj=8566  卡上空闲 31517 MiB / 共 32109 MiB；稠密A理论 1120 MiB
+D1 RESULT AcceleratorError（**不是** torch 分配器 OOM）
+---- 完整异常 ----
+---- 异常文本 ----
+CUDA error: invalid argument
+Search for `cudaErrorInvalidValue' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+===== B=3  (rc=0) =====
+D1 NW_Model.inp B=3 Nj=8566  卡上空闲 31517 MiB / 共 32109 MiB；稠密A理论 1679 MiB
+D1 RESULT AcceleratorError（**不是** torch 分配器 OOM）
+---- 完整异常 ----
+---- 异常文本 ----
+CUDA error: invalid argument
+Search for `cudaErrorInvalidValue' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+===== B=4  (rc=0) =====
+D1 NW_Model.inp B=4 Nj=8566  卡上空闲 31517 MiB / 共 32109 MiB；稠密A理论 2239 MiB
+D1 RESULT AcceleratorError（**不是** torch 分配器 OOM）
+---- 完整异常 ----
+---- 异常文本 ----
+CUDA error: invalid argument
+Search for `cudaErrorInvalidValue' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+===== B=8  (rc=0) =====
+D1 NW_Model.inp B=8 Nj=8566  卡上空闲 31515 MiB / 共 32109 MiB；稠密A理论 4479 MiB
+D1 RESULT AcceleratorError（**不是** torch 分配器 OOM）
+---- 完整异常 ----
+---- 异常文本 ----
+CUDA error: invalid argument
+Search for `cudaErrorInvalidValue' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+/data/run01/<user>/wdsgpu/hydrograd/p5/dgga/solver.py:2016: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/p5/dgga/solver.py:2016: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+
+############################################################################################
+D2  展开梯度：dense vs cudss，以及展开梯度本身可不可用
+############################################################################################
+
+### NW_Model  Nj=8566  K(实测收敛迭代数)=5
+   K=5    |g|dense=2.411744e+03  |g|cudss=2.068245e+05   逐坐标 rel(dense~cudss)=1.000e+00
+   K=10   |g|dense=7.474708e+05  |g|cudss=2.827741e+03   逐坐标 rel(dense~cudss)=1.000e+00
+   K=15   |g|dense=1.853866e+17  |g|cudss=2.402775e+03   逐坐标 rel(dense~cudss)=1.000e+00
+   K=25   |g|dense=7.493698e+07  |g|cudss=7.004785e+06   逐坐标 rel(dense~cudss)=1.000e+00
+   unrolled_grad_health(param=demand): verdict=不建议  rel_K=1.000e+00  gmax=5.036e+20
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+
+### ky4       Nj=959   K(实测收敛迭代数)=9
+   K=9    |g|dense=1.776057e+03  |g|cudss=1.776056e+03   逐坐标 rel(dense~cudss)=1.583e-04
+   K=14   |g|dense=1.776057e+03  |g|cudss=1.776058e+03   逐坐标 rel(dense~cudss)=3.158e-04
+   K=19   |g|dense=1.776057e+03  |g|cudss=1.776056e+03   逐坐标 rel(dense~cudss)=3.156e-04
+   K=29   |g|dense=1.776059e+03  |g|cudss=1.776057e+03   逐坐标 rel(dense~cudss)=7.229e-05
+   unrolled_grad_health(param=demand): verdict=不建议  rel_K=5.349e-04  gmax=2.779e+02
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+
+### KL        Nj=935   K(实测收敛迭代数)=6
+   K=6    |g|dense=2.079641e+04  |g|cudss=2.079641e+04   逐坐标 rel(dense~cudss)=6.450e-08
+   K=11   |g|dense=2.079641e+04  |g|cudss=2.079641e+04   逐坐标 rel(dense~cudss)=5.779e-05
+   K=16   |g|dense=2.079641e+04  |g|cudss=2.079641e+04   逐坐标 rel(dense~cudss)=1.064e-07
+   K=26   |g|dense=2.079641e+04  |g|cudss=2.079641e+04   逐坐标 rel(dense~cudss)=2.197e-07
+   unrolled_grad_health(param=demand): verdict=有条件  rel_K=2.201e-07  gmax=3.446e+02
+
+P5 DIAG END
+P5 DIAG JOB DONE rc=0

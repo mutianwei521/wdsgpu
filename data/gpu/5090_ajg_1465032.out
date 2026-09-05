@@ -1,0 +1,42 @@
+<node-08>
+NVIDIA GeForce RTX 5090, 32607 MiB
+================================================================================================
+隐式伴随 GPU 批量化 · 集群验收 + L-TOWN f+b 端到端全表
+node: <node-08> | torch 2.11.0+cu128 | NVIDIA GeForce RTX 5090
+nvmath 1.0.0 | B 列: [8, 64, 256, 1024] | ACC: 1e-06
+md5 dgga/solver.py 203d136573c658bc88e25bb98e94218f
+md5 dgga/autodiff.py 70b4d799fb58bd654fd8df35db288918
+sha256 INP 8e3009b8fd5e0b9d79e0c0d999cc6af9b2b4132d84d2cadc04e1bdf07086dc02
+
+### L-TOWN Nj=782 L=909 N=785 nnz=2592
+/data/run01/<user>/wdsgpu/hydrograd/adjgpu/dgga/solver.py:2460: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/adjgpu/dgga/solver.py:2460: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+/data/run01/<user>/wdsgpu/hydrograd/adjgpu/dgga/solver.py:2813: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:213.)
+  return torch.as_tensor(np.asarray(x), dtype=dt, device=dev)
+§1 正确性（B=8，torch.use_deterministic_algorithms(True)）
+  cudss 计数：前向 factorize=23 solve=57 | backward 增量 factorize=0（须 0） bwd_solve=99 bwd_reuse=1 bwd_refactorize=0
+  伴随零新增 factorize：PASS
+  梯度对拍（demand，B=8，状态组=1）：cudss vs CPU=3.296e-15  dense vs CPU=3.159e-15  cudss vs dense=2.747e-16
+  门槛 <1e-6：PASS
+
+§2 时间全表（ms/场景）
+  B=8     fwd d  23.20503 c  10.77516 | implCPU  485.48099 (组1) | f+b(gpu) d  50.60564 c  20.92243 | |g| cpu=5.685936e+03 gpu_d=5.685936e+03 gpu_c=5.685936e+03
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=64    fwd d   6.10205 c   1.96365 | implCPU  485.89766 (组1) | f+b(gpu) d  12.40551 c   4.49505 | |g| cpu=1.377453e+04 gpu_d=1.377453e+04 gpu_c=1.377453e+04
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=256   fwd d   3.93007 c   1.01737 | implCPU  487.37891 (组1) | f+b(gpu) d   6.81272 c   2.74476 | |g| cpu=2.967041e+04 gpu_d=2.967041e+04 gpu_c=2.967041e+04
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=1024  fwd d       OOM c   0.76228 | implCPU  488.39183 (组1) | f+b(gpu) d       OOM c   2.30853 | |g| cpu=5.895319e+04 gpu_d=- gpu_c=5.895319e+04
+
+================================================================================================
+§T 汇总（ms/场景）node=<node-08>
+B     | fwd_d     fwd_c    | implCPU     | 旧f+b_d   旧f+b_c  | 新f+b_d   新f+b_c  | 加速(旧d/新d) 加速(旧c/新c) 加速(旧c/新c最优)
+8     |  23.20503  10.77516 |   485.48099 | 508.68602 496.25615 |  50.60564  20.92243 |   10.05x   23.72x   23.72x
+64    |   6.10205   1.96365 |   485.89766 | 491.99972 487.86131 |  12.40551   4.49505 |   39.66x  108.53x  108.53x
+256   |   3.93007   1.01737 |   487.37891 | 491.30898 488.39628 |   6.81272   2.74476 |   72.12x  177.94x  177.94x
+1024  |       OOM   0.76228 |   488.39183 |       OOM 489.15411 |       OOM   2.30853 |        -  211.89x  211.89x
+ADJGPU DONE rc=0
+ADJGPU JOB DONE rc=0

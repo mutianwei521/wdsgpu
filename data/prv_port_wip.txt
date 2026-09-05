@@ -1,0 +1,116 @@
+================================================================
+PRV → dense 批量可微路径（dense_gap_plan §2 "高"项）
+日期 2026-08-24   全部数值为本机前台实测   基线 = 6a43373
+================================================================
+
+【里程碑（滚动记录）】
+M1 实现落地：dense_status_machine=True 放行 PRV（新准入）：
+  · 系数侧 _prvcoeffs_batch（prvcoeff hydcoeffs.c:942-992 批量化；nodecoeffs 后
+    装配；ACTIVE 只写对角 CBIG，A 逐位对称；三支全算+掩码，不分桶；
+    O(Nvalves) 循环留给 FCV，循环体内对 B 全向量）
+  · 状态侧 _prvstatus_batch（prvstatus hydstatus.c:242-299 四 case one-hot；
+    valvestatus 每轮迭代跑 hydsolver.c:156/:161，linkstatus 收敛/CheckFreq 周期
+ - 双节律照 hydsolve）
+  · 守卫：plain dense 拒 PRV（原样）；dense+SM 无 status_machine=True 拒；
+    f32+pcv PRV 构造期拒；PRV 端点为定水头节点拒；PSV/FCV 仍拒
+  · badvalve 批量替代：cholesky_ex 显式捕获+报样本号（不静默重试）
+  · dense_refine 可调（缺省 2 逐位不变）；diag_ratio κ 代理逐场景输出
+M2 名义工况 6 网冒烟（B=1，t=0，水池取中位）dense(SM) vs epanet 串行：
+  L-TOWN      iters 17/17 状态 909/909 同 调度逐项同 max|dH|=4.43e-06 ft diag_ratio=3.0e8
+  L-TOWN_Real iters 17/17 状态全同 max|dH|=9.93e-07
+  BWSN_1      iters 8/8  状态全同 调度逐项同 max|dH|=2.45e-04 ft diag_ratio=4.1e9
+  D-Town      iters 5/5  状态全同 max|dH|=1.97e-06 diag_ratio=1.5e10
+  Richmond_standard iters 7/7 状态 1 链路不同（CVPIPE#755）
+  ky10        iters 7/9  状态 1 链路不同（PRV ~@RV-4 OP vs AC）
+  两处不同已归因（刀刃分岔，非实现错误）：
+  · ky10：CONST_HP 泵 ~@Pump-11 在 it=1 的半步保护（hydsolver.c:437-443）
+    dq>q 判据两路差 3.3e-14（dq_dense=1-3.3e-14, dq_serial>1），死支泵流
+    穿零点上的 1 ULP 分岔；两路各自收敛到自洽定点（h2=hset AC vs h<hset OP）
+  · Richmond：CVPIPE#755 死支（dh≈2e-10 ft 属线代噪声，RQtol 钳位 P=1e7
+    放大成 q=±2.3e-3 cfs，跨 -qtol=-1e-4 阈值），符号相反 → cvstatus 翻转
+M3 影子包对拍（git archive 6a43373 dgga vs 工作树，30 网 battery，
+  epanet SM开/关全量输出 + 缺省 dense + dense±SM(dense/csr) + 冻结 csr +
+  unrolled 前向/gd/gR/gK + implicit 前向/三梯度 + solve_polished +
+  RAISE 行为；PRV 网只进 epanet+plain-dense-RAISE 比对 - dense+SM 属新准入）：
+  **sha256 键 1078/1078 完全相同 PASS**（scripts/prv_port/shadow_battery.py）
+
+M4 验收①（scripts/prv_port/check_prv_batch.py，5 网 × B=128+逼阀，前台实测）：
+  网               调度相同   终态相同   iters同   分岔(刀刃/漂移/BUG) badvalve剔  双收敛头差(状态同)     三态
+  L-TOWN           132/134   134/134   132/134   2(0/2/0)            0          1.45e-05→6.15e-03 ft   3阀全出
+  BWSN_Network_1    75/143   143/143    95/143  68(10/30/0)          1          3.45e+00 ft(136场景)   1阀缺AC
+  D-Town           132/136   136/136   133/136   4(0/4/0)            0          2.79e+02 ft            4阀全出
+  Richmond_std      55/109    85/109    85/109  54(29/11/0)         21          1.51e+04 ft(53场景)    全出
+  ky10              51/138    69/138    79/138  87(36/4/0)           0          2.10e+03 ft(65场景)    全出
+  总 调度 445/660 终态 567/660；**归因（逐场景快照级，每网≤40）BUG 类 = 0**：
+  · knife = 判定边际 |·| ≤ 1e-2（死支/钳位放大线代噪声：CV 死支 dh~2e-10 ft ×
+    RQtol P=1e7 → q=±2.3e-3 cfs 跨 -qtol；CONST_HP 半步 dq-q 差 3.3e-14 等）
+  · drift = 判据数值已分开（此前 CBIG 退化支头漂移 O(1e2..1e8 ft)，两路各是
+    各的舍入渣；终态仍常一致 - BWSN 143/143、D-Town 136/136 全同）
+  · BUG（两路判据逐分量一致仍转移不同）= 0/全部归因样本 - 转移函数等价
+  badvalve 批量对策实测：Richmond 极端批 21 样本 Cholesky 非正定 → solver
+  显式 raise 报样本号，脚本剔除重跑（epanet 侧这 21 样本 XPRESSURE=0，
+  即 DLL 的稀疏消元没碰上 0 主元 - 顺序不同）
+  κ：L-TOWN 名义收敛帧真 cond2(A) = 1.644e+11（diag_ratio 代理 3.02e+08；
+  ACTIVE PRV=3）；批内 diag_ratio 中位 2.4e8(L-TOWN)~2.9e11(Richmond)，
+  极端场景最大 1e16（CBIG 1e8 对角 与 1/CBIG=1e-8 关闭支对角同场）
+  精化步数 dense_refine 可调实测（BWSN 名义帧 dense vs epanet）：
+  refine 0/1/2/4/8 → max|dH| 2.18/2.43/2.45/2.43/4.09e-04 ft（κ≈4e9 的
+  噪声地板，精化步数不再改善 - 地板来自两路消元次序差，非残差未压干净）
+
+M5 验收②（scripts/prv_port/check_prv_dll.py，帧0 vs 双精度 DLL）：
+  L-TOWN  epanet 位级 PASS：max|dH|=2.842e-14 ft max|dQ|=1.11e-16 iters 17/17
+          状态全同；dense 同帧 max|dH|=1.366e-06 ft（量级口径）
+  BWSN    轨迹级：状态/iters 全同，conn |dH|=4.02e-04 ft - κ×1ULP 地板：
+          wntr 阀设定往返 1ULP（INP 原文 "70.000000" → wntr 69.99999999999999、
+          "29.762"→29.761999999999997），parse 层既有问题、非本轮引入
+  Richmond 轨迹级：状态/iters 全同 conn 4.49e-04 ft（raw 59.3 ft 全在关闭链
+          切出的孤岛，掩码外）
+  D-Town/ky10：帧0 含 [CONTROLS] 水池水位控制（t=0 生效，EPS 层语义，run_gga
+          单帧无对应物） - 状态差链路 100% 是受控泵/TCV（D-Town PU1/4/7/8/10+V2、
+          ky10 ~@Pump-9），按"controls"级判 PASS（只验受控归属，头差只报）
+  dense 侧同帧量级：BWSN 2.5e-04 / Richmond 1.4e+02(raw, 孤岛) / ky10 3.6e+02(控制差所致)
+
+M6 验收③（scripts/prv_port/check_prv_grad.py，L-TOWN 冻结状态梯度）：
+  ImplicitGGASolve vs 中央差分（solve_polished 抛光基线，每 ±h 点重跑状态机
+  确认终态==S*，弃用切换点坐标 0 个）：
+  θ=demand（6 坐标，含 3 个 PRV 下游节点）最差 rel=7.259e-07
+  θ=res_head（3）5.586e-11  θ=ke（3）1.153e-08  θ=r_hw（4）1.488e-08
+  全部 < 1e-6 门槛 PASS；solve_unrolled 对 PRV 维持 raise（断言 PASS）
+
+M7 验收④（scripts/prv_port/count_unlock.py）：
+  A. _cleaned 口径 21 公开网：dense 可构造且真解出 **11 → 18（+7）**
+     新解锁：L-TOWN、L-TOWN_Real、BWSN_Network_1、C-Town_BATADAL、D-Town、
+     Richmond_standard、ky10（与 dense_gap_plan §3 预测的 18/21 一致）
+  B. EXAMPLE 82 拓扑唯一网（p5 dedup_topo 口径）：**43 → 68（+25）**
+     含 PacificCity(Nj=8715, PRV25)、ky12(2347)、wolf-3(1782)、ky9、ky11 等
+     全部 solve=ok；仍进不去：D-W 网、PSV/FCV/PBV 网、Nj>12000
+
+M8 regression_all 前台 **51/51 PASS**（data/regression_report.txt）：
+  第 ⑨ 项扩为"20网x4通路+PRV3配置x2"= 正品 **86/86 逐位对称**（新增
+  BWSN_1 sm ×2 状态 + L-TOWN sm，ACTIVE PRV 的 CBIG 罚函数行在场，
+  max|A-A^T| == 0.0 逐位；判据未放宽），4/4 变异体如期变红
+  （M2 正是"PRV 罚函数行只写单侧"的形态，worstDense=1e+06 被抓）
+
+M9 GPU cudss 验收（集群作业 1464112 节点 <node-18>/RTX5090 +
+  1464115 节点 <node-04>/RTX4090，scripts/prv_port/prv_cudss_gpu.py，
+  两节点独立复测，rc 均 0，torch.use_deterministic_algorithms(True)）：
+  CSR 位型不变（PRV 槽 = 既有链路两端槽 + 全对角，构造期 searchsorted 断言）；
+  ACTIVE 只写对角 CBIG ⇒ 对称正定保持，cuDSS（缺省 GENERAL LU）全程无失败。
+  名义帧 B=1（cudss vs GPU dense）：
+    net        5090: iters/状态/max|dH|          4090: iters/状态/max|dH|
+    L-TOWN     17/17 同 4.392e-07 ft             17/17 同 9.565e-09 ft
+    BWSN_1      8/8  同 4.525e-04                 8/8  同 3.367e-04
+    D-Town      5/5  同 8.637e-06                 5/5  同 1.571e-05
+    ky10        7/7  同 9.277e-05                 8/9  **不同** 3.5e+02
+ - ky10 的 CONST_HP 泵刀刃（本文 M2 已归因）在 4090 上翻到另一侧，
+         与 CPU dense-vs-epanet 同机制；5090 与 CPU dense 同侧。
+  极端批（B=32+逼阀，共 168 样本/节点）：
+    iters 逐样本相等 143/168（5090）/ 143/168（4090）；
+    终态相等 153/168 / 152/168（L-TOWN 38/38、BWSN 48/48、D-Town 40/40 全同，
+    差集中在 ky10 27/42、26/42 - 与 CPU 侧同一批刀刃/漂移场景）；
+    badvalve 类剔除 0；耗时（dense/cudss）L-TOWN 2.4/6.2s（5090）。
+    注：GPU 脚本报的"双收敛且状态同 max|dH|"未做连通掩码，逼 CLOSED 场景
+    的孤岛渣（1e6~6e7 ft）计入其中 - 掩码口径见 M4 的 CPU 表（同机制）。
+
+M10 影子包对拍复跑（solver.py 模块头 docstring 更新后）：1078/1078 全同 PASS；
+  check_schedule.py（F2 工具，6 网×64）复跑 PASS（§A 全一致 + M1 检出 13/64）。

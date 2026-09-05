@@ -1,0 +1,66 @@
+Attribution of the regression_all misses on the V100 server (Linux), 2026-09-03
+================================================================================
+Host: <v100-host> (Ubuntu 22.04.5, glibc 2.35), env hydrograd
+(python 3.11, torch 2.14.0+cu126, numpy 2.4.6, scipy 1.17.1, wntr 1.5.0).
+Reference tree data/reference/ was synced from the Windows workstation, where
+every *_ref.npz was produced by wntr's Windows epanet22.dll.
+
+Report: data/gpu/v100_regression_all_20260903.txt -> 42/54 PASS (468 s).
+The same commit on the Windows workstation the same morning:
+data/regression_report.local.txt -> 53/54 PASS, the one FAIL being the
+anonymisation guard (item 12, 11 hits inside the frozen submission/nature_water
+tree) which fails identically on both machines and is not a numerical item.
+
+The 11 numerical misses on Linux (gate H<1e-6 ft, Q<1e-6 cfs):
+  align city_d            H=1.217e-05  Q=2.274e-06
+  align city_d_emit       H=1.387e-05  Q=1.947e-06
+  replay EXA6             H=4.692e-07  Q=1.403e-07  Td=1.538e-06 (tank inflow)
+  replay city_h           H=7.029e-07  Q=3.710e-07  (frame-level gate)
+  replay ky5              H=1.842e-08  Q=3.059e-09  Td=6.122e+00 (pump-stall frames)
+  EPS EXA5                H=7.071e-07  Q=2.274e-07
+  EPS EXA6                H=1.000e-06  Q=5.684e-07
+  EPS city_h              H=7.029e-07  Q=3.710e-07
+  EPS ky5                 event-time sequence differs at 4 of 31 frames
+                          (ours 49189/60927/75716 s vs ref 49199/60731/85103 s)
+  check_taskd item 2      L-TOWN frame 0: H=1.806e-06  Q=7.104e-07, iters 17/17, status equal
+  check_prv_release       L-TOWN user-unit egress: head 5/785, flow 18/909 not bit-equal
+Iteration counts and link statuses agree in every one of them; only the values
+drift at the 1e-7 .. 1e-5 ft level.
+
+Why: dgga/solver.py deliberately calls msvcrt.dll pow/log through ctypes
+(module-level _pow_crt/_log_crt) so that r_hw, the emitter coefficients and the
+per-iteration head-loss powers are rounded exactly like the Windows EPANET DLL.
+On Linux the except-branch falls back to math.pow/math.log (glibc).
+
+1. pow/log probe (scratch pow_probe.py, 25000 bases in [1e-8, 1e4], exponents as
+   used by the solver), Windows msvcrt vs Linux glibc, same inputs:
+     pow_1.852000     mismatched     56/25000  max_ulp=1
+     pow_0.852000     mismatched     46/25000  max_ulp=1
+     pow_4.871000     mismatched     54/25000  max_ulp=1
+     pow_-1.333000    mismatched     60/25000  max_ulp=1
+     pow_0.900000     mismatched     51/25000  max_ulp=1
+     pow_0.148000     mismatched     63/25000  max_ulp=1
+     pow_0.539957     mismatched     39/25000  max_ulp=1
+     log              mismatched      7/25000  max_ulp=1
+   i.e. 0.03-0.25 % of the calls differ by exactly one ULP.
+
+2. EPANET itself is not bit-portable either. Rebuilding two references with the
+   Linux libepanet22.so shipped in the same wntr 1.5.0 (scratch libm_attrib.py):
+     city_d      Windows-DLL vs Linux-DLL: 25 frames,   max|dH|=8.410e-06 ft, bit-equal heads 0.18 %, iterations equal
+     pub_l_town  Windows-DLL vs Linux-DLL: 2031 frames, max|dH|=7.142e-06 ft, bit-equal heads 0.52 %, iterations equal
+
+3. dgga on Linux against the Linux-DLL references:
+     city_d      align.py (25 frames): max|dH|=2.109e-05 ft, max|dQ|=2.667e-06 cfs (FAIL at the 1e-6 gate)
+     pub_l_town  frame 0 with status machine: max|dH|=7.926e-07 ft, max|dQ|=2.020e-07 cfs, iters 17/17, status equal (PASS)
+   So the Linux .so does not match glibc-pow dgga any better than the Windows
+   DLL does; the two EPANET builds themselves differ at the same magnitude.
+
+Conclusion: the 1e-6 ft / 1e-6 cfs gates of regression_all encode a
+same-CRT (msvcrt) comparison and are below the cross-platform scatter of
+EPANET itself. On Linux the bit-level regression is not reproducible and the
+Windows workstation stays the authority for regression_all; the Linux drift is
+<= 2.1e-5 ft in head with identical Newton trajectories (iterations, statuses,
+event sequence apart from the ky5 threshold crossings), which is irrelevant for
+the GPU experiments (placement, calibration, leak inversion) that this server
+is used for. The cuDSS path is validated on this server independently
+(data/gpu/v100_regression_gpu_20260903.out, 54/54).

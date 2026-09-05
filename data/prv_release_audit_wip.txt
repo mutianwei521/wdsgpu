@@ -1,0 +1,96 @@
+################################################################################
+PRV/主线 发布前敌意审计（六项，全部自写脚本 scripts/aud_release/，不复用上游测试）
+日期 2026-08-24   基线 = HEAD 40b83fd（零 dgga 改动；变异体只活在临时副本）
+本机 wm-course；集群作业 1464272(ag5090)@<node-09> RTX5090、
+1464273(ag4090)@<node-04> RTX4090，rc 均 0（原始输出 data/gpu/relaud_*.out）
+################################################################################
+
+【① 调度级对拍有牙吗 - 自造 6 变异体 × 4 道守卫（aud_mutate.py，锚点均恰中 1 次）】
+ 变异体（移植时真会犯的形态）           ⑨check_symmetry  check_schedule   check_prv_batch      aud_prv_states(本轮新)
+ MA 收敛即退出(M1类)                    绿 86/86         红 §A 16处不一致  绿(=基线16/18)        绿(L-TOWN未触发)
+ MB valvestatus 降频(偶数轮才跑)        绿               绿(网表无PRV)     调度0/18 但判定PASS   红 transfer_diff=30/30
+ MC linkstatus 周期支每轮都跑           绿               红 §A 159处       调度0/18 但判定PASS   红 30/30
+ MD prvstatus OPEN case 丢AC转移        绿               绿(网表无PRV)     终态6/18 但判定PASS   红 end=6/30
+ ME ACTIVE 的 Y 读 nodecoeffs 前 Xflow  绿               绿                终态7/18 但判定PASS   红 end=7/30
+ MF ACTIVE 单侧写 CBIG 非对角           红 80/86(6行PRV) 绿                rc=1(Cholesky崩)      红(A非对称1e8/非正定)
+ GPU：上游 regression_gpu T4 对 MF 基线/变异都 50/50 PASS rc=0（relaud_rg_{base,mf}.out）
+ - **T4 网表(Hanoi/Net3/Modena/City_D/ky4)无 PRV 网、不走状态机，ACTIVE 罚函数行
+   的非对称在 cuDSS 实收数据上测不到**；自写 aud_t4probe.py（L-TOWN/BWSN sm，
+   ACTIVE PRV 在场）正品 max|A-A^T|==0.0 PASS / MF 1.000e+08 红（同一节点上跑）。
+ ▶ 上游判定级全绿逃逸（要补的洞）：**MB / MD / ME** -
+   洞A check_prv_batch.py 退出码只看归因 BUG 类；调度/终态计数不进判定
+      （MD 终态 6/18 仍"总判定 PASSrc=0"，归因把真实现错误归成 drift）。
+   洞B regression_gpu T4 缺 PRV 网 + status_machine 行。
+   洞C check_schedule.py 网表无 PRV（valvestatus 节律类变异体测不到）。
+   本轮新增 aud_prv_states.py（转移判定子序列硬判据）把 MB/MD/ME 全抓红，
+   已入库作临时牙；洞 A/B/C 的上游修复列入下轮清单（本轮零上游改动）。
+
+【② PRV 三态覆盖 + 独立终态/调度复测（aud_prv_states.py --B 128 --kappa，自配配方 seed=909）】
+ L-TOWN B=134（128 极端 + 每阀逼 OPEN/CLOSED 各 1）dense(SM) vs epanet 串行：
+   PRV906: CL=3 OP=2 AC=129 / PRV907: CL=3 OP=2 AC=129 / PRV908: CL=1 OP=7 AC=126
+ - 三阀三态全出。终态 134/134 逐元素同；调度硬同 131/134，3 个分岔全部
+   "仅停时"（非空 change 转移子序列逐项相同，serial 在 it=7 判收敛、dense 多走
+   1 轮；transfer_diff=0）；iters 131/134；调度同+双收敛 131 场景连通域
+   max|dH|=9.781e-05 ft（门 0.5）。名义帧 iters=17、ACTIVE 3/3。
+
+【③ 对称修复独立复测（aud_sym.py：cholesky 入口拦截逐轮抓 A，最小网 INP 自写）】
+ 修后（工作树）：mixA(2正1反)/mixB(2正2反)/NW_Model/L-TOWN(SM,B=4 含逼阀)/
+   BWSN(SM,B=4) × dense/csr 装配 = 10 行全部 **max|A-A^T|==0.0 逐位**；
+   L-TOWN 批含 PRV 终态 CL=2/OP=2/AC=8、BWSN CL=14/OP=6/AC=12 -
+   **ACTIVE/CLOSED CBIG 行在场逐轮逐位对称**；GPU 侧 cuDSS 实收 csr_data
+   同判据 PASS（aud_t4probe，L-TOWN 17 轮/BWSN 8 轮，5090 节点实测）。
+ 修前（git archive fb5c6be）：mixA/mixB 8.882e-16、NW_Model 2.842e-14 全红
+ - 自建网独立复现了破缺与修复。
+ 影子包（aud_shadow.py，13 网×通路含 unrolled gd/gr 与 implicit gd 梯度张量）：
+   fb5c6be vs 工作树 **334 键 sha256 全同、diff=0**；24 键差全部=
+   L-TOWN/BWSN 的 dense_sm/dense_sm_csr（旧 RAISE→新解出，预期新准入）；
+   8 个 RAISE 键（plain dense 拒 PRV、Balerma D-W 拒等）逐字同。
+   顺带证得 PRV 网 csr 与 dense 装配终态 hash 逐位同。
+
+【④ GPU 抽 6 格独立重测（aud_gpu.py 自写计时；两节点两分区）】
+ 5090@<node-09>（B=8/256/1024）与 4090@<node-04>（B=8/256/512），
+ 自配名义盆地场景（两节点同批）；ms/场景（min of 4 reps）：
+   node        B=8 d/c(倍)          B=256 d/c(倍)        B=1024|512 d/c(倍)
+   5090        22.989/10.809 2.13x  3.851/1.030 3.74x    3.349/0.778 4.31x
+   4090        24.745/13.538 1.83x  5.845/1.171 4.99x    5.623/0.969 5.80x(B=512)
+ 对上游表（区间 B=8 2.13~2.67x / B=256 3.75~5.48x / B=1024 4.36~6.42x）：
+   B=8/256 落在区间内缘；B=1024 4.31x 略低于区间下缘 4.36x（cudss 0.778 vs
+   区间上缘 0.77，≈1% 内，属节点噪声 - 如实记）。方向与量级全部复现。
+ 公平性老三样当场验：warmup（含 cuDSS plan）单独计时不入计时区、4 次重复
+   spread <2%；sync 前后夹；dense_refine==cudss_refine==2 断言过；
+   **逐场景 iters 同 B/B、状态同 B/B、双收敛 B/B**，两路 max|dH|≤8.3e-6 ft。
+ 显存旁证（同进程 torch peak_alloc）：B=1024 dense 24204 vs cudss 493 MiB。
+ κ/精度在 ACTIVE PRV 帧独立复测（本机）：名义收敛帧 cond2(A)=1.6439e+11
+   （上游 1.644e+11）、ACTIVE 3/3；dense vs 串行连通域 9.78e-05 ft（②）。
+
+【⑤ 缺省逐字节】regression_all 前台 **51/51 PASS**（⑨ 正品 86/86 逐位 +
+ 4/4 内嵌变异红）；三个缺省 vs fb5c6be = ③ 影子包 334 键全同（epanet 串行、
+ assemble=dense、linear_solver=dense 的头/流/状态/iters/梯度张量 sha256）。
+
+【梯度独立抽查（aud_grad_spot.py，自写协议）】冻结 S*（ACTIVE 3/3）隐式伴随
+ vs 中央差分（solve_polished 冻结 S*，±h 状态机复跑终态==S* 才采信；
+ h=1e-3|d_j|，J~1e5 ft 时 h=1e-6|d_j| 会被抛光残差噪声淹没 - 先踩过再改）：
+ 4 坐标（3 个 PRV 下游 + 最大需水）worst rel=1.671e-07，0 弃点 PASS。
+
+【⑥ 主线判定（L-TOWN 作论文主线网）】
+ · 正确性：dense(SM) 批量与 epanet 串行在 134 极端场景终态逐元素相同、转移
+   子序列逐项相同，全部分岔仅停时级；A 逐位对称含 ACTIVE PRV 帧（CPU+GPU）。
+ - 立住（DLL 位级一致那半句依赖上游 correct_ltown 实测，本轮未重跑 DLL）。
+ · 梯度：ImplicitGGASolve 在冻结 ACTIVE-PRV 状态上与 FD 一致到 1.7e-07
+   （独立协议）；unrolled 对 PRV 构造期 raise，不会静默给错数。 - 立住。
+ · 性能：前向稀疏 1.8~5.8x（4090）/2.1~4.3x（5090，抽格）随 B 单调，显存
+   ~24x 与准入差为主线故事；f+b 端到端 1.01~1.07x（CPU 伴随主导）必须如实
+   写进论文（勿只引前向倍数）。 - 立住但要按诚实口径写。
+ · 出处：BattLeDIM 2020 / Zenodo 4017659 / CC-BY-4.0 + 双 sha256 已钉。 - 立住。
+ · 进 paper 前欠账（不动 paper/）：
+   a) 补洞 A/B/C（上游三道守卫的判定级牙，见①）；
+   b) ImplicitGGASolve 伴随批量化/上 GPU（f+b 1.01x 的根因，mainline §3.4 已列）；
+   c) DLL 位级一致的复跑纳入 regression（当前只在 correct_ltown 一次性脚本）；
+   d) BWSN/Richmond 的 wntr 阀设定 1ULP 往返（parse 层既有）要么修要么在
+      论文口径里说明；
+   e) L-TOWN f32 路线（含 PRV 构造期拒）如需混精度训练需另立准入。
+
+【交付物】scripts/aud_release/{aud_mutate,aud_prv_states,aud_sym,aud_shadow,
+ aud_grad_spot,aud_gpu,aud_t4probe}.py + ag{5090,4090}.sh；
+ data/gpu/relaud_*.out；本文件。
+################################################################################

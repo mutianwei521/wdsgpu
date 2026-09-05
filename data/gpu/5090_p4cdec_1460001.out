@@ -1,0 +1,40 @@
+NVIDIA GeForce RTX 5090, 32607 MiB
+node: <node-25> | cpus: 8
+/data/run01/<user>/wdsgpu/hgclosedec/dgga/solver.py:2016: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hgclosedec/dgga/solver.py:2016: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+========================================================================================================
+P4 收尾 · 分解表等工作量口径 | node: <node-25> | torch 2.11.0+cu128 | NVIDIA GeForce RTX 5090
+nvmath 1.0.0
+md5 dgga/solver.py 45b0b0eeb66ed4e15ef81c53809d229a
+========================================================================================================
+  Net3    Nj=92   B=256   | Badj(rb=0)   1.3826  Badj_r2(rb=2)   1.7913  C  23.0615 ms/轮 | Badj/C  0.06x  Badj_r2/C  0.08x  (等工作量高 +29.6%) | 一致性 rb0-vs-rb2 4.70e-10  C-vs-rb2 1.99e-09
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  Modena  Nj=268  B=256   | Badj(rb=0)   6.1053  Badj_r2(rb=2)   7.9934  C  23.6297 ms/轮 | Badj/C  0.26x  Badj_r2/C  0.34x  (等工作量高 +30.9%) | 一致性 rb0-vs-rb2 3.34e-13  C-vs-rb2 4.77e-13
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  Modena  Nj=268  B=1024  | Badj(rb=0)  18.4278  Badj_r2(rb=2)  23.8888  C  86.2302 ms/轮 | Badj/C  0.21x  Badj_r2/C  0.28x  (等工作量高 +29.6%) | 一致性 rb0-vs-rb2 8.02e-13  C-vs-rb2 1.27e-12
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  City_D  Nj=541  B=64    | Badj(rb=0)  10.4656  Badj_r2(rb=2)  13.8878  C   7.3525 ms/轮 | Badj/C  1.42x  Badj_r2/C  1.89x  (等工作量高 +32.7%) | 一致性 rb0-vs-rb2 7.15e-14  C-vs-rb2 5.61e-09
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  City_D  Nj=541  B=256   | Badj(rb=0)  23.9342  Badj_r2(rb=2)  30.4716  C  23.6346 ms/轮 | Badj/C  1.01x  Badj_r2/C  1.29x  (等工作量高 +27.3%) | 一致性 rb0-vs-rb2 3.32e-14  C-vs-rb2 7.87e-09
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  City_D  Nj=541  B=1024  | Badj(rb=0)  79.9766  Badj_r2(rb=2)  99.8962  C  86.6351 ms/轮 | Badj/C  0.92x  Badj_r2/C  1.15x  (等工作量高 +24.9%) | 一致性 rb0-vs-rb2 8.16e-14  C-vs-rb2 5.97e-09
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  ky4     Nj=959  B=64    | Badj(rb=0)  31.7643  Badj_r2(rb=2)  40.6438  C   7.3425 ms/轮 | Badj/C  4.33x  Badj_r2/C  5.54x  (等工作量高 +28.0%) | 一致性 rb0-vs-rb2 2.04e-10  C-vs-rb2 4.70e-10
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  ky4     Nj=959  B=256   | Badj(rb=0)  85.3762  Badj_r2(rb=2) 103.7853  C  23.7155 ms/轮 | Badj/C  3.60x  Badj_r2/C  4.38x  (等工作量高 +21.6%) | 一致性 rb0-vs-rb2 8.64e-10  C-vs-rb2 2.86e-10
+
+========================================================================================================
+net      Nj    B     | Badj/C (README 现印口径) | Badj_r2/C (等工作量)
+  Net3    92    256   |         0.06x           |      0.08x
+  Modena  268   256   |         0.26x           |      0.34x
+  Modena  268   1024  |         0.21x           |      0.28x
+  City_D  541   64    |         1.42x           |      1.89x
+  City_D  541   256   |         1.01x           |      1.29x
+  City_D  541   1024  |         0.92x           |      1.15x
+  ky4     959   64    |         4.33x           |      5.54x
+  ky4     959   256   |         3.60x           |      4.38x
+========================================================================================================
+P4CDEC JOB DONE rc=0

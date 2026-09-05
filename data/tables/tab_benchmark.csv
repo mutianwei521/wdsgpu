@@ -1,0 +1,19 @@
+Network,Source,Source file,$N$,$L$,Head loss,Units,Features,Frames,max$|\Delta H|$ (ft),max$|\Delta Q|$ (cfs),Iter.,Verdict
+EXA4,Example,--,396,444,H-W,LPS,pump11(3-pt) PRV3 TCV1 tank7 ctrl22,1,5.684e-14,8.882e-16,=,pass
+EXA5,Example,--,193,273,H-W,LPS,pump2(3-pt) PRV3 tank1 ctrl4 rule1,52,5.684e-14,8.882e-16,=,pass
+l\_town,Public,L-TOWN.inp,785,909,H-W,CMH,pump1(3-pt) PRV3 tank1 ctrl2,2031,2.842e-14,1.110e-16,=,pass
+bwsn\_network\_1,Public,BWSN\_Network\_1.inp,129,178,H-W,GPM,pump2(3-pt) PRV8 tank2 ctrl1 rule4,207,6.086e-6,7.046e-6,=,exempt$^{\dagger}$
+bwsn\_network\_2,Public,BWSN\_Network\_2.inp,12527,14831,H-W,GPM,pump4(3-pt/CUSTOM) PSV1 FCV4 tank2 ctrl1067,32,6.836e+0,1.406e-5,=,exempt$^{\dagger}$
+c\_town\_batadal,Public,C-Town\_BATADAL.inp,396,444,H-W,LPS,pump11(3-pt) PRV3 FCV1 tank7 ctrl20,850,5.684e-14,8.882e-16,=,pass
+d\_town,Public,D-Town.inp,407,459,H-W,LPS,pump11(3-pt) PRV4 TCV1 tank7 ctrl24,819,5.684e-14,1.776e-15,=,pass
+richmond\_standard,Public,Richmond\_standard.inp,872,957,H-W,LPS,pump7(CUSTOM) PRV1 tank6 ctrl16,55,1.137e-13,2.220e-16,=,pass
+balerma,Public,Balerma.inp,447,454,D-W,LPS,pipes only,1,2.842e-14,8.882e-16,=,pass
+hanoi,Public,Hanoi.inp,32,34,H-W,LPS,pipes only,1,1.421e-14,1.421e-14,=,pass
+net3,Public,Net3.inp,97,119,H-W,GPM,pump2(3-pt) tank3 ctrl18,183,2.146e-6,5.684e-7,=,exempt$^{\dagger}$
+net6,Public,Net6.inp,3356,3892,H-W,GPM,pump61(const-HP/3-pt) PRV2 tank32 ctrl124,70/609,1.525e-5,4.739e-6,=,exempt$^{\dagger}$
+anytown,Public,Anytown.inp,22,41,H-W,GPM,pump1(CUSTOM),9,6.082e-12,4.750e-12,=,pass
+ky5,Public,KY dataset,430,507,H-W,GPM,pump11(const-HP) tank3 ctrl8,31,0.000e+0,3.553e-15,=,pass
+City D,Real,--,542,554,H-W,LPS,TCV79,25,1.421e-14,1.776e-15,=,pass
+City D (emitter),Real,--,542,554,H-W,LPS,TCV79 emit5,25,1.421e-14,3.553e-15,=,pass
+City H,Real,--,921,1038,H-W,LPS,pump6(3-pt),25,1.421e-14,7.105e-15,=,pass
+Synthetic-M18,Synthetic,--,117,235,H-W,LPS,pipes only,1,0.000e+0,5.551e-17,=,pass

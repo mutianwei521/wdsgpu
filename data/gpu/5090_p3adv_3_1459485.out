@@ -1,0 +1,53 @@
+NVIDIA GeForce RTX 5090, 32607 MiB
+node: <node-21> | cpus: 8
+node: <node-21> | torch 2.11.0+cu128 | dev NVIDIA GeForce RTX 5090 | nvmath 1.0.0
+solver.py md5: 45b0b0eeb66ed4e15ef81c53809d229a
+
+==============================================================================
+M1  forward+backward peak memory, FRESH PROCESS per config (node <node-21>)
+   torchpeak  = torch.cuda.max_memory_allocated
+   nontorch   = device-resident bytes NOT in torch's allocator
+                (cuDSS factor/work buffers live here)
+   net    Nj   B    K | dense torchpeak | cudss torchpeak  nontorch  cudss total | ratio(torch) ratio(total)
+   Net3   92   64   7 |        155.77 |     14.47    656.19    670.66 |  10.77   0.23
+   Net3   92   128  7 |        247.42 |     28.82    656.19    685.01 |   8.59   0.36
+   Net3   92   256  7 |        430.74 |     57.54    656.19    713.73 |   7.49   0.60
+   Net3   92   512  7 |        815.16 |    115.17    688.19    803.36 |   7.08   1.01
+   Modena 268  64   7 |        774.30 |     28.21    656.19    684.40 |  27.45   1.13
+   Modena 268  128  7 |       1449.13 |     56.29    656.19    712.48 |  25.74   2.03
+   Modena 268  256  7 |       2834.11 |    112.75    688.19    800.94 |  25.14   3.54
+   Modena 268  512  7 |       5620.59 |    239.94    752.19    992.13 |  23.42   5.67
+   City_D 541  64   7 |       2828.77 |     52.29    656.19    708.48 |  54.10   3.99
+   City_D 541  128  7 |       5596.69 |    104.37    688.19    792.56 |  53.62   7.06
+   City_D 541  256  7 |      11131.86 |    215.80    752.19    967.99 |  51.58  11.50
+   City_D 541  512  7 |      22199.40 |    431.88    848.19   1280.07 |  51.40  17.34
+   ky4    959  64   8 |       9665.96 |    163.09    688.19    851.28 |  59.27  11.35
+   ky4    959  128  8 |      19239.64 |    327.81    720.19   1048.00 |  58.69  18.36
+   ky4    959  256  8 |      OOM      |    671.11    816.19   1487.30 |    -      -  
+   ky4    959  512  8 |      OOM      |   1312.38    976.19   2288.57 |    -      -  
+/data/run01/<user>/wdsgpu/hgaudit/dgga/solver.py:2016: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hgaudit/dgga/solver.py:2016: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+
+==============================================================================
+M2  ragged batch sizes: bounded LRU vs unbounded (node <node-21>)
+   cache_max=None  base=610.2 MiB  elapsed=98.3 s  states=74
+      device used MiB after n batches: 8:2484 16:3446 24:4700 32:5892 40:6218 48:7412 56:8512 64:9152 72:9984 80:11046
+      max=11046.2  final=11046.2  growth over run=8562.0 MiB
+   cache_max=8     base=7088.2 MiB  elapsed=108.5 s  states=8
+      device used MiB after n batches: 8:8032 16:8218 24:8262 32:8308 40:8310 48:8310 56:8380 64:8380 72:8380 80:8380
+      max=8380.2  final=8380.2  growth over run=348.0 MiB
+
+==============================================================================
+M3  does cudss_free() hand device memory back? (node <node-21>)
+   ky4 B=256: before=7074.2  after 1 solve=7128.2  after cudss_free(1)=7094.2  after empty_cache=6942.2 MiB
+   -> one state costs 54.0 MiB device; free() returned 34.0 MiB to the driver, 20.0 MiB stayed in a reusable pool
+   rebuild=7120.2 ; torch.cuda.empty_cache() alone -> 7016.2 MiB (recovered 104.0)
+   20 x (build ky4 B=256 -> free): device used at each build:
+      7120 7120 7120 7120 7120 7120 7120 7120 7120 7120 7120 7120 7120 7120 7120 7120 7120 7120 7120 7120
+      monotone increasing? True ; first=7120.2 last=7120.2 max=7120.2
+   after free(B=64) build B=256 -> 7144.2 MiB (B=64 build was 7144.2)
+
+AUD3 DONE
+AUD JOB DONE

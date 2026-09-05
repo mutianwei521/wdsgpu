@@ -1,0 +1,38 @@
+<node-10>
+NVIDIA GeForce RTX 5090, 32607 MiB
+/usr/bin/python3
+2.11.0+cu128 1.0.0 NVIDIA GeForce RTX 5090
+================================================================================================
+P5 大网 · 时间全表（P4 同口径） | node: <node-10> | torch 2.11.0+cu128 | NVIDIA GeForce RTX 5090
+nvmath 1.0.0 | B 列: [1, 8]
+md5 dgga/solver.py 45b0b0eeb66ed4e15ef81c53809d229a
+md5 dgga/autodiff.py e4b8cfe49536f85b435e04e5ed5621d2
+
+### KL       Nj=935  L=1274  N=936   nnz=3471   K=6
+/data/run01/<user>/wdsgpu/hydrograd/p5/dgga/solver.py:2016: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/p5/dgga/solver.py:2016: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=1     fwd  dense 24.82080  cudss 10.15318  |  fwd+bwd  dense  75.68784  cudss  23.20280
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd   13.1378 | Badj稠密+手写伴随    3.7927 | C cudss    2.1404 | A/C   6.14x  Badj/C   1.77x  A/Badj   3.46x | 一致性 gA(B/A) 1.84e-09 (C/A) 1.46e-09
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=8     fwd  dense  7.97666  cudss  1.40903  |  fwd+bwd  dense  54.21348  cudss   3.21234
+     分解 一轮线代 f+b(ms/轮): A稠密+autograd   81.9993 | Badj稠密+手写伴随   11.9776 | C cudss    2.5370 | A/C  32.32x  Badj/C   4.72x  A/Badj   6.85x | 一致性 gA(B/A) 8.01e-09 (C/A) 3.69e-09
+
+================================================================================================
+§T1 汇总（ms/场景；倍数 = dense/cudss）  node=<node-10>
+net      Nj    B     K  | fwd dense  fwd cudss  倍数   | f+b dense  f+b cudss  倍数
+KL       935   1     6  |  24.82080   10.15318   2.44x |  75.68784   23.20280   3.26x
+KL       935   8     6  |   7.97666    1.40903   5.66x |  54.21348    3.21234  16.88x
+
+§T2 倍数分解（一轮线性代数 f+b，ms/轮，整批）  node=<node-10>
+net      Nj    B     | A 稠密+autograd | Badj 稠密+手写伴随 | C cudss(gr=2) | Badj/C(稀疏赢)  A/Badj(通用autograd欠账)  A/C(仓库现状)
+KL       935   1     |         13.1378 |             3.7927 |        2.1404 |          1.77x                   3.46x          6.14x
+KL       935   8     |         81.9993 |            11.9776 |        2.5370 |          4.72x                   6.85x         32.32x
+
+§T3 OOM 边界（每条通路最大跑通的 B / 最小 OOM 的 B）  node=<node-10>
+net      Nj    | fwd dense      | fwd cudss      | f+b dense      | f+b cudss
+KL       935   | max ok 8     OOM -     | max ok 8     OOM -     | max ok 8     OOM -     | max ok 8     OOM -    
+P4R TIME DONE
+P5 SMOKE JOB DONE rc=0

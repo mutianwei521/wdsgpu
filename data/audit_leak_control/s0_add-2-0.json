@@ -1,0 +1,99 @@
+{
+ "spec": "s0;add:2:0",
+ "modifiers": [
+  {
+   "mod": "add:2:0",
+   "added": 1
+  }
+ ],
+ "n_sensors": 41,
+ "n_added": 1,
+ "n_in_s0": 40,
+ "proximity": {
+  "T1": {
+   "hop_to_nearest_sensor": 5,
+   "hop_to_nearest_added": 24,
+   "n_added_within_1hop": 0,
+   "n_added_within_2hops": 0,
+   "leak_node_is_sensor": false
+  },
+  "T2": {
+   "hop_to_nearest_sensor": 0,
+   "hop_to_nearest_added": 0,
+   "n_added_within_1hop": 1,
+   "n_added_within_2hops": 1,
+   "leak_node_is_sensor": true
+  },
+  "T3": {
+   "hop_to_nearest_sensor": 3,
+   "hop_to_nearest_added": 46,
+   "n_added_within_1hop": 0,
+   "n_added_within_2hops": 0,
+   "leak_node_is_sensor": false
+  }
+ },
+ "mse0": 0.024399509561632712,
+ "coherence": {
+  "n_pairs": 1176,
+  "n_orthogonal_pairs": 0,
+  "max_offdiag": 0.9999999938923974,
+  "median_all": 0.9276038507714512,
+  "median_within": 0.9276038507714512,
+  "n_pairs_gt_0999": 44,
+  "true_node_max_rival_coh": {
+   "T1": 0.9503158960569016,
+   "T2": 0.9990525620911366,
+   "T3": 0.9993939804854434
+  }
+ },
+ "stage1": {
+  "mse": 0.01038620002059829,
+  "top3_hits": 2,
+  "top3_kinds": [
+   "T2",
+   "nontrue",
+   "T3"
+  ]
+ },
+ "support_size": 2,
+ "support": [
+  {
+   "kind": "T2",
+   "leak_lps": 1.4494455798698196
+  },
+  {
+   "kind": "nontrue",
+   "closest_true": "T3",
+   "coh": 0.9992552806007697,
+   "leak_lps": 2.264584128905466
+  }
+ ],
+ "top1_hit": false,
+ "top3_hits": 1,
+ "top3_exact": false,
+ "flow_err": {
+  "T1": {
+   "true_lps": 2.995752793382048,
+   "est_lps": 0.0,
+   "rel_err": 1.0
+  },
+  "T2": {
+   "true_lps": 1.4942353662262833,
+   "est_lps": 1.4494455798698196,
+   "rel_err": 0.02997505437820084
+  },
+  "T3": {
+   "true_lps": 2.1960677608816583,
+   "est_lps": 0.0,
+   "rel_err": 1.0
+  }
+ },
+ "final_mse_ft2": 0.010357762975073119,
+ "time_sec": 3669.688965320587,
+ "n_forward_solves": 819,
+ "host": "<v100-host>",
+ "threads": 3,
+ "noise_ft": 0.1,
+ "seed_noise": 909,
+ "lam": 0.0001
+}

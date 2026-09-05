@@ -1,0 +1,27 @@
+==============================================================
+partition : gpu_5090
+node      : <node-08>
+cpus      : 8
+NVIDIA GeForce RTX 5090, 32607 MiB, 0 %
+==============================================================
+========================================================================
+host <node-08> | torch 2.11.0+cu128 cu12.8 | 8 CPU threads
+GPU  NVIDIA GeForce RTX 5090 x1 (sm_12.0)
+net  city_d.inp  N=542 Nj=541 L=554
+========================================================================
+[CPU float64] B=1: 13.141 ms/scen  B=64: 17.689 ms/scen  B=256: 17.296 ms/scen   iters 4-5
+[GPU float64] B=1: 15.303 ms/scen  B=64: 0.799 ms/scen  B=256: 0.461 ms/scen   iters 4-5
+  GPU f64 vs CPU f64 (B=64): max|dH| = 2.162e-05 ft   <- reduction order
+[GPU float32] B=1: 35.364 ms/scen  B=64: 3.758 ms/scen  B=256: 1.764 ms/scen   iters 14-25
+  GPU f32 vs CPU f64 (B=64): max|dH| = 1.266e+02 ft
+  speedup GPU/CPU at B=1   : 0.86x
+  speedup GPU/CPU at B=64  : 22.13x
+  speedup GPU/CPU at B=256 : 37.55x
+-> gpu_bench.json
+
+library : libepanet22.so
+network : N=542  L=554
+EPANET solve_only          0.430 ms/scenario
+EPANET set_demands         0.588 ms/scenario
+EPANET read_heads          0.541 ms/scenario
+EPANET end_to_end          1.586 ms/scenario

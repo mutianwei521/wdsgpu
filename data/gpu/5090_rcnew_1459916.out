@@ -1,0 +1,4 @@
+NVIDIA GeForce RTX 5090, 32607 MiB
+node: <node-13> | cpus: 8
+STUB regression_gpu.py: 故意退 3（模拟 FAIL）
+REGRESSION_GPU JOB DONE rc=3

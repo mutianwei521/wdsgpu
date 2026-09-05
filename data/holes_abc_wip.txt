@@ -1,0 +1,97 @@
+################################################################################
+洞 A/B/C + 审计清单收尾（data/prv_release_audit_wip.txt ①/⑥ 欠账 a,c,d,e）
+日期 2026-08-24   基线 = HEAD b68c4d0   全部数值为前台实测
+本机 wm-course；集群作业 1464737(holesb)@<node-12> RTX5090 gpu_5090，
+sacct COMPLETED 0:0，rc 存-echo-exit 三段式（HOLESB DONE rc=0 r1=0 r2=1）
+################################################################################
+
+【洞 A：check_prv_batch.py 判定级收紧（scripts/prv_port/）】
+ 旧病根：退出码只看"BUG 类"且只归因前 40 个；BUG 定义要求两路判据差 ≤1e-9，
+ MD/ME 的判据差 ~1e-5..1e2 全被归成 drift 放行（MD 终态 6/18 仍 rc=0）。
+ 新判定（判据全部印进输出，可审计）：
+  · 不一致场景**全部**归因（不抽样不设上限），任一 BUG 即 rc=1；
+  · BUG(节律)：两路 valve 检查时刻（迭代号序列）前缀不一致（正品每轮迭代
+    都跑 valvestatus，hydsolver.c:161） - MB 类降频在此必红，含无转移场景；
+  · stoptime：非空 change 转移子序列逐项同 + 终态逐元素同（仅停时，Hacc 刀刃）；
+  · knife：首分岔差异链路任一路 |边际|min ≤ 1e-2（死支/钳位放大线代噪声）；
+  · drift：m_min>1e-2 且 diff_c=max|边际_s−边际_d| ≥ m_min（数值分开才解释
+    得了翻转）**且头场作证** 事件处 max|ΔH| ≥ diff_c/100（判据是 H/q 的函数，
+    判据分开而头场没分开=判据计算被改=BUG）。真漂移实测余量：BWSN diff_c~1e2
+    时事件处 |ΔH|~1e8（CBIG 瞬态）；
+  · 其余（同调度不同终态 / 判据一致仍转移不同 / 边际不可比 / 头场作证不了）
+    一律 BUG；
+  · HARD_NETS={L-TOWN 主线}一票否决：终态逐元素全同 + 分岔全为停时 + 三态
+    全出 + 状态同双收敛连通域头差 ≤0.5 ft - 主线上不给 drift 通道（ME 必红）。
+ 正品全量（5 网 × B=128+逼阀 = 660 场景，4m15s）rc=0 PASS：
+  L-TOWN   调度132/134 终态134/134 分岔2(停时2) 头差6.15e-03 ft 三态全出
+  BWSN     调度 75/143 终态143/143 分岔68(停22/刀19/漂27/BUG0) badvalve剔1
+  D-Town   调度132/136 终态136/136 分岔4(停3/漂1)
+  Richmond 调度 55/109 终态 85/109 分岔54(停11/刀41/漂2) badvalve剔21
+  ky10     调度 51/138 终态 69/138 分岔87(停2/刀79/漂6) - BUG 全网 0
+ 变异体自证（--pkg 新开关，L-TOWN --B 12=18 场景）：
+  MB_valve_freq  rc=1（BUG(节律)18/18 + 硬判网否决）
+  MD_open_case   rc=1（BUG 7：diff_c~1e-5..1e-6 < m_min 判据一致仍转移不同；
+                  终态 6/18 硬判网否决）
+  ME_y_predemand rc=1（终态 7/18 + 分岔非停时 → 硬判网一票否决；
+                  病态判据差被头场作证归 drift 的 4 个场景挡不住否决）
+  正品同参数 rc=0（终态 18/18、分岔 2 全停时）。
+
+【洞 B：regression_gpu.py T1~T4 网表加 PRV 网（集群自证）】
+ NETS_PRV=[L-TOWN]（dense_status_machine）：T1 加"终态逐元素相等"判据；
+ T4 加"批内 ACTIVE-PRV 槽 >0 否则 FAIL"（罚函数行没被测到不算过）；
+ T2/T3 打印跳过原因（solve_unrolled 对 PRV 构造期 raise，由 regression_all
+ ⑪ 把守）；preflight 缺 L-TOWN.inp 显式 SKIP。网表目录支持 _cleaned/ 优先。
+ 集群实测（1464737@<node-12> RTX5090, torch 2.11.0+cu128, nvmath 1.0.0）：
+  正品 **54/54 PASS rc=0**（50 旧项逐项不变 + 4 新项）：
+   T1 L-TOWN B=8/64：迭代 17/17 逐项相等、终态逐元素相等，
+     max|dH|=3.799e-06 / 5.263e-06 ft（报告值）
+   T4 L-TOWN B=8/64：装配 17 轮全过 _cudss_load 探针，max|A−A^T|=0.000e+00
+     逐位，ACTIVE-PRV 槽=24 / 192
+  MF_oneside 变异体（ACTIVE 单侧写 CBIG 非对角）**50/54 FAIL rc=1**：
+   T4 L-TOWN B=8/64 红（max|A−A^T|=1.000e+08，非对称轮 4/4）；
+   T1 L-TOWN B=8/64 红（dense 批 Cholesky 非正定显式 raise）
+ - 审计 ① 里"上游 regression_gpu 对 MF 50/50 全绿"的洞已闭合。
+
+【洞 C：check_schedule.py 加 PRV 网 + 转移子序列判据并进 regression_all】
+ 新 §C（PRV_NETS=[L-TOWN]，aud_prv_states 同配方 seed=909，B=48+每阀逼
+ OPEN/CLOSED）：终态逐元素 + 转移子序列（非空 change 事件 (it,支,集) 序列）
+ 逐项 + 每阀三态覆盖 + 调度同双收敛连通域 dH≤0.5 ft；badvalve 剔除如实报。
+ 新 §D：MB/MD/ME 源码级变异体（锚点与 aud_mutate.py 逐字同）子进程自证，
+ 三个必须全红，绿即 FAIL（判据没长牙）。
+ 实测（46.6s，全脚本 rc=0）：
+  §A 6 无阀网 B=64 全一致；§B M1 sched_bad=13 检出、终态判据仍零检出；
+  §C L-TOWN B=54：终态 54/54，转移分岔 0，停时 3，三态全出
+    （906:CL3/OP2/AC49 907:CL3/OP2/AC49 908:CL1/OP3/AC50），dH=9.781e-05 ft；
+  §D MB transfer=30/30 红、MD end_bad=24 红、ME end_bad=23 红（3/3）。
+ check_schedule 作为第 ⑩ 项进 regression_all（SCHED_SUMMARY 机器行解析）。
+
+【收尾三件】
+ c) DLL 位级对拍进回归：新 scripts/check_prv_release.py ① - L-TOWN epanet
+    vs DLL **用户单位出口逐位**（head×MperFT 785/785、flow×CMH-Ucf 909/909
+    逐位相等 + 状态一致 + iters 17/17；内部 ft ULP 距离 max=1.00，判据不在
+    内部 ft 上）。作为 regression_all 第 ⑪ 项。
+ e) f32+PRV 构造期拒进回归：check_prv_release ② - float32 构造如期
+    NotImplementedError（含"float64"字样），float64 构造成功（守卫不误伤）。
+ d) wntr 阀设定 1ULP 往返：dgga/parse.py 阀设定块 docstring 说明（psi→m→psi
+    非恒等舍入；实测 BWSN_Network_1 8 阀中 3 阀差 1 ULP，Richmond_standard/
+    D-Town/ky10 为 0；SI 网恒等 0 ULP，主线 L-TOWN 不受影响；1 ULP ≪
+    htol=5e-4 ft，不改变 prvstatus 判定；修复方案留作论文口径）。
+
+【缺省逐位不变（铁律三）】
+ 影子包 aud_shadow：git archive b68c4d0 vs 工作树，13 网全通路（epanet
+ st0/st1、dense plain/sm/sm_csr、unrolled gd/gr、implicit gd/head 梯度张量
+ sha256）：**354 键 same=354 diff=0 PASS**（8 个 RAISE 键逐字同）。
+ dgga/ 本轮唯一改动 = parse.py 注释（d 项 docstring），零数值路径改动；
+ ImplicitGGASolve CPU 伴随缺省行为逐位不变（implicit/gd 键全同）。
+
+【regression_all 前台】**53/53 PASS rc=0**（4m59s；51 旧项 + ⑩ 调度对拍
+ +PRV转移子序列 + ⑪ DLL位级+f32拒；⑨ 正品 86/86 逐位 + 4/4 变异红不变）。
+
+【交付物】scripts/prv_port/check_prv_batch.py（判定收紧+--pkg）、
+ scripts/check_schedule.py（§C/§D）、scripts/check_prv_release.py（新）、
+ scripts/regression_all.py（⑩⑪）、scripts/regression_gpu.py（NETS_PRV）、
+ dgga/parse.py（注释）、本文件；集群 holesb/（hb.sh + rg_base.out/rg_mf.out）。
+【遗留（不动）】审计 ⑥ 欠账 b：ImplicitGGASolve 伴随批量化/上 GPU（f+b
+ 1.01~1.07x 根因）仍在下轮；BWSN 三态缺 AC 的 1 阀为该网配方既有现象（终态
+ 143/143 全同，不影响判定），如实报。
+################################################################################

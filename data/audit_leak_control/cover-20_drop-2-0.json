@@ -1,0 +1,101 @@
+{
+ "spec": "cover:20;drop:2:0",
+ "modifiers": [
+  {
+   "mod": "drop:2:0",
+   "removed": 1
+  }
+ ],
+ "n_sensors": 59,
+ "n_added": 19,
+ "n_in_s0": 40,
+ "proximity": {
+  "T1": {
+   "hop_to_nearest_sensor": 0,
+   "hop_to_nearest_added": 0,
+   "n_added_within_1hop": 1,
+   "n_added_within_2hops": 1,
+   "leak_node_is_sensor": true
+  },
+  "T2": {
+   "hop_to_nearest_sensor": 8,
+   "hop_to_nearest_added": 18,
+   "n_added_within_1hop": 0,
+   "n_added_within_2hops": 0,
+   "leak_node_is_sensor": false
+  },
+  "T3": {
+   "hop_to_nearest_sensor": 3,
+   "hop_to_nearest_added": 24,
+   "n_added_within_1hop": 0,
+   "n_added_within_2hops": 0,
+   "leak_node_is_sensor": false
+  }
+ },
+ "mse0": 0.01682135154530497,
+ "coherence": {
+  "n_pairs": 1176,
+  "n_orthogonal_pairs": 0,
+  "max_offdiag": 0.9999999938923969,
+  "median_all": 0.7958376657552167,
+  "median_within": 0.7958376657552167,
+  "n_pairs_gt_0999": 27,
+  "true_node_max_rival_coh": {
+   "T1": 0.3382070278249453,
+   "T2": 0.9999996988834682,
+   "T3": 0.999520444259737
+  }
+ },
+ "stage1": {
+  "mse": 0.010471916436198271,
+  "top3_hits": 1,
+  "top3_kinds": [
+   "T1",
+   "nontrue",
+   "nontrue"
+  ]
+ },
+ "support_size": 2,
+ "support": [
+  {
+   "kind": "nontrue",
+   "closest_true": "T3",
+   "coh": 0.9994198015826696,
+   "leak_lps": 2.268656344227108
+  },
+  {
+   "kind": "nontrue",
+   "closest_true": "T2",
+   "coh": 0.9999891359156439,
+   "leak_lps": 1.5187616171759408
+  }
+ ],
+ "top1_hit": false,
+ "top3_hits": 0,
+ "top3_exact": false,
+ "flow_err": {
+  "T1": {
+   "true_lps": 2.995752793382048,
+   "est_lps": 0.0,
+   "rel_err": 1.0
+  },
+  "T2": {
+   "true_lps": 1.4942353662262833,
+   "est_lps": 0.0,
+   "rel_err": 1.0
+  },
+  "T3": {
+   "true_lps": 2.1960677608816583,
+   "est_lps": 0.0,
+   "rel_err": 1.0
+  }
+ },
+ "final_mse_ft2": 0.01060955940209196,
+ "time_sec": 3092.538187265396,
+ "n_forward_solves": 581,
+ "host": "<v100-host>",
+ "threads": 3,
+ "noise_ft": 0.1,
+ "seed_noise": 909,
+ "lam": 0.0001
+}

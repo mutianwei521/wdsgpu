@@ -1,0 +1,105 @@
+{
+ "spec": "cohmax+20",
+ "n_sensors": 60,
+ "n_added": 20,
+ "n_in_s0": 40,
+ "proximity": {
+  "T1": {
+   "hop_to_nearest_sensor": 5,
+   "hop_to_nearest_added": 6,
+   "n_added_within_1hop": 0,
+   "n_added_within_2hops": 0,
+   "leak_node_is_sensor": false
+  },
+  "T2": {
+   "hop_to_nearest_sensor": 1,
+   "hop_to_nearest_added": 1,
+   "n_added_within_1hop": 1,
+   "n_added_within_2hops": 1,
+   "leak_node_is_sensor": false
+  },
+  "T3": {
+   "hop_to_nearest_sensor": 1,
+   "hop_to_nearest_added": 1,
+   "n_added_within_1hop": 2,
+   "n_added_within_2hops": 4,
+   "leak_node_is_sensor": false
+  }
+ },
+ "mse0": 0.02313069374256536,
+ "coherence": {
+  "n_pairs": 1176,
+  "n_orthogonal_pairs": 0,
+  "max_offdiag": 0.9999755348055188,
+  "median_all": 0.8727180553835076,
+  "q99_all": 0.9996610396986314,
+  "n_pairs_gt_0999": 21,
+  "n_pairs_gt_099": 96,
+  "logdet2": 2030.6385161872147,
+  "true_node_max_rival_coh": {
+   "T1": 0.9430571566951441,
+   "T2": 0.9999679345684499,
+   "T3": 0.9994926739511518
+  },
+  "true_node_n_rivals_gt_099": {
+   "T1": 0,
+   "T2": 1,
+   "T3": 2
+  },
+  "true_col_norm": {
+   "T1": 0.18214004565795067,
+   "T2": 9.533964866992656,
+   "T3": 4.836112995450731
+  }
+ },
+ "stage1": {
+  "mse": 0.010174778758550771,
+  "top3_hits": 2,
+  "top3_kinds": [
+   "nontrue",
+   "T3",
+   "T2"
+  ]
+ },
+ "support_size": 2,
+ "support": [
+  {
+   "kind": "T2",
+   "leak_lps": 1.527731137314271
+  },
+  {
+   "kind": "T3",
+   "leak_lps": 2.1910094834373735
+  }
+ ],
+ "top1_hit": true,
+ "top3_hits": 2,
+ "top3_exact": false,
+ "flow_err": {
+  "T1": {
+   "true_lps": 2.995752793382048,
+   "est_lps": 0.0,
+   "rel_err": 1.0
+  },
+  "T2": {
+   "true_lps": 1.4942353662262833,
+   "est_lps": 1.527731137314271,
+   "rel_err": 0.02241666329487427
+  },
+  "T3": {
+   "true_lps": 2.1960677608816583,
+   "est_lps": 2.1910094834373735,
+   "rel_err": 0.0023033339564413682
+  }
+ },
+ "final_mse_ft2": 0.010173921644215296,
+ "time_sec": 1925.7203211784363,
+ "n_forward_solves": 827,
+ "host": "<v100-host>",
+ "threads": 3,
+ "noise_ft": 0.1,
+ "seed_noise": 909,
+ "lam": 0.0001,
+ "inverter": "demo_leak_inversion（Adam+L1 阶段 1 → 非线性 OMP + 互换抛光）原样",
+ "noise_note": "噪声场按 [25, N] 全节点生成（seed 909）再按传感器取列，与 leak_augment_city_d.json / audit_leak_control 同一实现"
+}

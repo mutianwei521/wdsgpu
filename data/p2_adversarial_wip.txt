@@ -1,0 +1,169 @@
+################################################################################
+P2 对抗性验收（独立复核，不复用 scripts/p2_cudss/ 任何测试）
+日期 2026-08-22   审阅者立场：敌意
+被审对象：commit 541bb60「Solve the batched system with cuDSS」+ data/p2_cudss_wip.txt
+我自己的脚本：scripts/audit_p2_adversarial/{adv_gpu.py,adv_mem.py,adv2_timing.py,
+              adv3_repro.py,adv_local.py,dump_shadow.py,adv*.sh}
+我自己的 GPU 作业：1459241（adv_1459241.out）/ 1459269 / 1459277，均 gpu_5090
+本机：RTX 5060 Laptop，torch 2.13.0+cu132，**有 CUDA、无 nvmath**
+################################################################################
+
+【核对基准】上传集群的 dgga/solver.py md5 = f84357e36a672cc025b5fa50dacaeedd
+  与本地 HEAD 完全一致；集群上原有副本与 HEAD 只差注释（已用 diff 逐行确认）。
+
+================================================================================
+§1 加速数字：**真实，但有 1.5x 的节点方差**，"8.96x"不是一个可引用的常数
+ 1.1 第一轮（作业 1459241，节点 <node-13>）：我自己的场景发生器（lognormal）、
+   warm=3 / reps=9、中位与最好值同时报（两者差 <1%）、计时区内 plan 计数 0：
+  net       B   | dense中位  cudss中位 | 我的倍数 | 上游报的倍数
+  Modena    256 |  0.12881   0.24984   |  0.52x   |  0.71x
+  City_D    64  |  0.80155   0.38019   |  2.11x   |  2.82x
+  City_D    256 |  0.46120   0.24871   |  1.85x   |  2.64x
+  ky4       64  |  4.29517   0.79404   |  5.41x   |  7.44x
+  ky4       256 |  2.96987   0.47685   |  6.23x   |  **8.96x（对不上）**
+  **分歧全在 cudss 一侧**：dense 与上游对到 0.6~5.8%（ky4 B=256 2.970 vs 2.952），
+  cudss 一律慢 1.40~1.45x；plan 同比例慢（ky4 B=256 946.1 vs 663.79 = 1.43x）。
+
+ 1.2 第二轮（作业 1459269，节点 <node-10>）做同节点 A/B，结论翻转：
+  ky4 B=256 = **9.38x**（我的场景）/ 9.37x（逐字复刻上游 batchify 的场景）；
+  dense 先跑还是 cudss 先跑、warm=0/2/3/10、reps=5/9/25，结果都在 0.3179~0.3196
+  ms/场景内（漂移 <0.6%）。同作业里**原样复跑上游 p2.py**：ky4 B=256 得 9.18x、
+  City_D 2.72x、Modena 0.72x - 上游 §3 表在同类节点上可复现。
+  cuDSS 单次调用地板（ky4 B=256）：factorize 0.9987 / solve 2.5758 / stack 后
+  2.5597 / SpMV 0.0385 / vals.copy_ 0.0122 ms - 与上游 p2b §C（0.9977/2.6116）
+  一致。两节点同为 RTX 5090 + Xeon Gold 6530 + nproc 8，GPU 侧（dense）几乎不变，
+  差的全是主机侧派发。
+  ⇒ **结论：ky4 B=256 的整解加速是 6.2x~9.4x 的区间，不是 8.96x 这个点。**
+    因为 cuDSS 走的是"显式批量"（B 个独立矩阵，P0 已查明 1.0.0 无 uniform-batch），
+    每轮 3 次 solve 的成本主要花在主机侧逐矩阵派发上，跨节点/跨负载不可复现；
+    dense 侧是纯 GPU FP64，跨节点稳定。倍数必须连节点一起引用。
+
+================================================================================
+§2 计时公平性（逐条查，未发现方法学作弊）
+  · plan 未计入计时区（上游先 cudss_plan(B) 再计时） - 这是对的（每拓扑一次），
+    我加了 plan 哨兵，计时区内计数 0/40 格全为 0。
+  · warmup 足够：warm=0/2/3/10、reps=5/9/25 的敏感性另测（作业 1459269）。
+  · synchronize 齐全（两侧都是 sync→perf_counter→sync）。
+  · **没有少做精化、没有少迭代**：我在两条通路上打了线性代数调用计数器，
+    80 个配置（10 网×B∈{1,8,64,256}×有无 emitter）全部满足
+    dense: cholesky==itmax 且 cholesky_solve==3*itmax
+    cudss: factorize==itmax 且 DirectSolver.solve==3*itmax
+    且 **iters 逐项相等 80/80**。
+  · 稠密基线有没有被自缚？残差用 (A*H^T).sum(-1) 而非 bmm（为批不变性）。
+    实测（B=256，ms/轮）：ky4 chol 53.37 / cholesky_solve 5.49 / 残差 elem 3.61 /
+    残差 bmm 1.18 ⇒ 每轮 77.06(elem) vs 72.22(bmm)，只差 6.3%。
+    换 bmm 后 ky4 2.99958→2.79958 ms/场景，倍数 6.23x→5.87x。
+    ⇒ 基线自缚只值 6%，不是加速的来源。**主因是稠密装配**：
+      稠密 [B,Nj*Nj] 每轮 3.75 ms vs CSR 0.029 ms（方案 §3 的 2.7x 预期把装配
+      当成不变量算，而 §1a 恰恰把装配也换掉了 - 预期公式本身自相矛盾）。
+
+================================================================================
+§3 数值（10 网 × B∈{1,8,64,256} × 有无 emitter，det=True，作业 1459241 §A）
+  · iters 逐项相等 80/80 ✓
+  · max|ΔH| 按 κ 分层，与上游同结构：Net1/Anytown/Hanoi/Fossolo/Modena ≤1.4e-10；
+    Net2 ≤2.3e-8；ky4 ≤1.7e-6；Net3 ≤4.8e-6；Pescara ≤2.9e-5；City_D ≤2.0e-5。
+  · **方案 §4 验收 1 的字面门槛"~1e-7 ft 级"没达到**（最差 2.9e-5 ft，差 290x）。
+    上游把判据改写成"不比现有 GPU 稠密通路差"才算过 - 这是移门槛，须写进限制。
+  · 与 CPU f64 基准比（B=8）：cudss 8/10 网更准或同量级，只有 Fossolo
+    （1.19e-12 vs 5.68e-13）稍差，绝对量级无意义。Pescara 1.29e-5 vs 1.98e-5。
+  · emitter 通路我压到极端（喷射流量 0.13~382 倍需水），iters 仍逐项相等，
+    max|Δe| 最差 ky4 B=8 1.14e-6 cfs。
+
+================================================================================
+§4 显存（作业 1459241，**每配置一个全新进程**，只做这一件事）
+  torch 分配器峰值（整条 solve()）/ 设备级峰值（后台线程 2ms 采样 cudaMemGetInfo）
+  net     B    | dense torch  cudss torch  降幅 | dense 设备  cudss 设备（含 ~0.6GiB context）
+  Net3    256  |   106.28       13.00      8.2x |    906.2      672.2
+  Modena  256  |   614.39       28.61     21.5x |   1436.2      738.2
+  City_D  256  |  2361.50       54.98     43.0x |   3720.2      834.2
+  ky4     64   |  1852.63       32.50     57.0x |   2672.2      744.2
+  ky4     256  |  7302.43      135.36   **54.0x** |   9890.2      980.2
+  比上游报的 37.6x 还高，原因是上游在同一进程里连着测、cudss 侧含 ~60 MiB 进程基线。
+  **降的是整解峰值**（进程里只有这一次 solve），P1 的"只降了中间张量"这次不成立。
+  OOM 边界：ky4 dense B=1024/2048 均 torch.OutOfMemoryError；
+  cudss B=1024 torch 520 MiB、B=2048 torch 1031 MiB / 设备 3402 MiB，均正常出解。
+
+================================================================================
+§5 回退路径（本机 有 CUDA / 无 nvmath，adv_local.py）
+  14 个敌意用例**全部明确 raise，零静默降级**：拼错 linear_solver/assemble→ValueError；
+  cudss+assemble=dense→ValueError；cudss/csr+mode=epanet→NotImplementedError；
+  cudss+cpu→NotImplementedError；cudss+CUDA 无 nvmath→NotImplementedError（文本含
+  ModuleNotFoundError）；cudss+f32→NotImplementedError；cudss+requires_grad→
+  NotImplementedError；unrolled/polished/cudss_plan 三个入口同样命中。
+  失败后不留脏 state（_cudss_cache 长度 0）；连撞 42 次守卫后缺省通路结果不变。
+
+================================================================================
+§6 缺省未变（影子包逐位对拍）
+  影子包 = git archive f2a1811（P2 之前）的 dgga/，与 HEAD 各跑一遍同一套用例：
+  7 网（Net1/Net2/Net3/Hanoi/Anytown/Modena/city_d）× {dense, epanet} ×
+  {B=1, B=4, +emitter, epanet status_machine} + implicit_solve 梯度 +
+  solve_unrolled 梯度 + solve_polished ⇒ **364/364 数组逐字节相同**。
+  regression_all 前台 50/50 PASS（本机，报告与提交版逐行比对：只有用时列与
+  ⑦ city_d GPU vs CPU 那个已知不定项 2.757e-16→3.676e-16 变化，46 处 0.000e+00
+  断言逐字节不变）。报告已 git checkout 还原。
+  本机 GPU 控制实验：det=False 时 dense 自重跑 4.28e-6（Net3）、csr-vs-dense
+  4.22e-6 同量级；det=True 时两者全为 0.000e+00 - csr 装配在 GPU 上也逐位等价。
+
+================================================================================
+§7 梯度（作业 1459241 §E）
+  solve/solve_unrolled 在 requires_grad 下明确 raise（只有 res_head 需梯度也 raise）；
+  no_grad 下不 raise（纯前向合法）；输出 requires_grad=False。
+  solve_polished（no_grad 前向 + numpy 抛光）走 cudss 与 dense 差
+  max|ΔH|=2.842e-14 ft / max|Δq|=2.220e-16 cfs。
+  ImplicitGGASolve 不透传 assemble/linear_solver（forward 里写死 dense） - 好事：
+  梯度主通路完全没被本轮碰过。
+
+================================================================================
+§8 偏差归属的独立复核（作业 1459277，det=True，含上游没测的 B=256）
+  net       B   | dense自重跑 | cudss自重跑 | cudss换实例 | |cudss-dense| | 比值
+  Net1      64  |  0.000e+00  |  1.478e-12  |  1.137e-12  |   1.364e-12   | 0.92
+  Net1      256 |  0.000e+00  |  4.661e-12  |  6.139e-12  |   3.865e-12   | 0.83
+  Net2      64  |  0.000e+00  |  6.720e-10  |  9.153e-10  |   8.052e-10   | 1.20
+  Net2      256 |  0.000e+00  |  4.558e-10  |  5.394e-10  |   9.544e-10   | 2.09
+  Net3      64  |  0.000e+00  |  3.404e-06  |  3.846e-06  |   3.781e-06   | 1.11
+  Net3      256 |  0.000e+00  |  5.056e-06  |  4.224e-06  |   5.032e-06   | 1.00
+  Pescara   64  |  0.000e+00  |  1.639e-05  |  1.359e-05  |   1.354e-05   | 0.83
+  Pescara   256 |  0.000e+00  |  1.567e-05  |  1.501e-05  |   1.755e-05   | 1.12
+  Modena    64  |  0.000e+00  |  2.305e-11  |  5.255e-11  |   2.979e-11   | 1.29
+  Modena    256 |  0.000e+00  |  1.157e-10  |  9.535e-11  |   7.367e-11   | 0.64
+  City_D    64  |  0.000e+00  |  1.059e-05  |  2.006e-05  |   1.295e-05   | 1.22
+  City_D    256 |  0.000e+00  |  1.992e-05  |  1.581e-05  |   1.434e-05   | 0.72
+  ky4       64  |  0.000e+00  |  7.633e-07  |  6.634e-07  |   9.394e-07   | 1.23
+  ky4       256 |  0.000e+00  |  5.742e-06  |  5.571e-06  |   8.891e-06   | 1.55
+  14/14 满足「|cudss−dense| ≈ cuDSS 自重跑抖动」（比值 0.64~2.09），
+  而 dense 自重跑 14/14 恒 0。**上游 §2.1 的归因独立成立。**
+  与 CPU f64 基准比（B=64）：|cudss−cpu| 在 Net3/Pescara/City_D/ky4 上都小于
+  |gpu dense−cpu|（如 Pescara 1.063e-05 vs 1.493e-05），Modena 略大但都在 1e-10。
+  两条通路收敛后的 relerr（EPANET 口径）逐网相同到 4 位有效数字。
+
+================================================================================
+§9 修复清单（我提的）
+ F1 加速倍数必须带节点标注并写成区间（§1）。data/p2_cudss_wip.txt §3 现在把
+    8.96x 当定值，还写了"大幅超出预期" - 两处都要改。
+ F2 方案 §4 验收 1 的字面门槛（~1e-7 ft）**没达到**（最差 2.9e-5 ft）。归因正确，
+    但判据是被改写的，必须在方案/wip 里显式记成"验收 1 改判据：不劣于现有 GPU
+    稠密通路"，不能留在"通过"里默认。
+ F3 方案 §3 的 2.7x 预期公式自相矛盾：它把装配当不变量，而 §1a 恰恰换掉了装配
+    （ky4 B=256 稠密装配 3.75 ms/轮 vs CSR 0.029 ms/轮）。应改口径而不是庆祝超出。
+ F4 **_cudss_cache 无逐出、无释放 API**：nvmath DirectSolver 有 free()，代码从不
+    调用，也没暴露 solver.cudss_free()。每个 (B,dtype,device,matrix_type) 一份
+    state，ky4 B=256 约占 370 MiB 设备内存（不走 torch 分配器，empty_cache()
+    收不回；B=2048 约 2.8 GiB）。训练里批量一变（尾批/课程式变批量）就线性堆积。
+ F5 dense 基线的残差用 (A*H^T).sum(-1) 而非 bmm，只值 6%（ky4 6.23x→5.87x），
+    不构成不公平，但值得在 wip 里点名，免得后人以为倍数是这么来的。
+ F6 杂项：scripts/gradcheck_3way.py 的 [COORDCOUNT] 调试 print 仍在工作树
+    （regression 50/50 不受影响）；集群副本 dgga 与 HEAD 只差注释，已用 HEAD 覆盖。
+
+================================================================================
+§10 能否进 P3（autograd） - 我的独立判断：**可以，但带三个前置**
+  P1 三样东西 P3 需要的都已到位：位型缓存（indptr/indices/scatter/diag）、
+  一次性 plan、以及"同一次数值分解可多次 solve"（精化已在用，伴随可复用）。
+  前置一：P3 的梯度对拍**必须**用 dense 前向做有限差分。cuDSS 前向在 κ≥2e9 的网
+    上自身运行间就有 1e-5 ft 抖动（§8 独立坐实），FD 会被噪声吃掉。
+  前置二：先做 F4（state 释放/逐出），否则训练循环显存线性堆积。
+  前置三：收益预算要按 solve 地板重算，不能按线代加速比外推。伴随每轮多 1 次
+    solve ⇒ 每轮 fact+3solve → fact+4solve：cudss 每轮 8.69→11.27 ms
+    （0.318→0.396 ms/场景），dense 每轮 81.1→86.3 ms（2.99→3.03 ms/场景，
+    因为 cholesky_solve 只占 5.5/77），倍数由 9.4x 掉到约 **7.7x**（同节点口径）。
+    Nj≲300 的网本就是负收益，加了伴随只会更负。缺省保持 dense/dense 仍然正确。
+################################################################################

@@ -1,0 +1,144 @@
+================================================================================
+Task A: 阀门状态机 + 系数贡献 + 批量可行性  (只读精读, 无实现)
+EPANET 2.2.0 SRC_engines, 2026-08-21
+================================================================================
+
+[0] StatusType 枚举 (types.h:193-205) - 整数序关系是判定逻辑的一部分
+    0 XHEAD | 1 TEMPCLOSED | 2 CLOSED | 3 OPEN | 4 ACTIVE | 5 XFLOW
+    6 XFCV  | 7 XPRESSURE  | 8 FILLING | 9 EMPTYING | 10 OVERFLOWING
+    关键: 代码里大量用 `<= CLOSED`(=闭) 和 `> CLOSED`/`>= OPEN`(=通) 做判定,
+    见 valvecoeff:1118, pipecoeff:531, pumpcoeff:696, tankstatus:421,
+    newlinkflows:460。=> 批量化时状态必须存成整数码, 不能存 bool。
+
+[1] 状态在牛顿迭代中何时更新 (hydsolver.c hydsolve:114-189)
+    每轮: headlosscoeffs(121) -> matrixcoeffs(122) -> linsolve(123)
+          -> 取头(135-138) -> newflows(139)
+          -> valvestatus() @156 或 @161   (PRV/PSV, 每轮都跑; DampLimit>0 时
+             只在 relerr<=DampLimit 才跑, 且同时把 RelaxFactor 置 0.6 @155)
+          -> 收敛时 @173 linkstatus() (CV/PUMP/FCV/水池) + @174 pswitch()
+          -> 未收敛时 @183-187 每 CheckFreq 轮跑一次 linkstatus()
+    另有 badvalve(hydsolver.c:215-265): linsolve 报奇异时, 把肇事 ACTIVE 阀
+    改判 XFCV(FCV,:256) / XPRESSURE(PRV,PSV,:257) 后 `continue` 重来。
+
+[2] PRV 状态机 (hydstatus.c prvstatus:242-299), hset = Node[n2].El + Setting
+    hml = Km*Q^2 (:267)
+    from ACTIVE(:273): Q < -Qtol -> CLOSED ; h1-hml < hset-htol -> OPEN ; 否则 ACTIVE
+    from OPEN(:279):   Q < -Qtol -> CLOSED ; h2 >= hset+htol -> ACTIVE ; 否则 OPEN
+    from CLOSED(:285): h1>=hset+htol && h2<hset-htol -> ACTIVE
+                       h1<hset-htol && h1>h2+htol   -> OPEN ; 否则 CLOSED
+    from XPRESSURE(:291): Q < -Qtol -> CLOSED (否则粘住)
+    * 是「有记忆的状态机」: 新状态 = f(旧状态, h1, h2, Q)。不是纯函数 of (h,Q)。
+
+[3] PSV 状态机 (psvstatus:302-359), hset = Node[n1].El + Setting
+    from ACTIVE(:333): Q<-Qtol->CLOSED; h2+hml > hset+htol -> OPEN; 否则 ACTIVE
+    from OPEN(:339):   Q<-Qtol->CLOSED; h1 < hset-htol -> ACTIVE; 否则 OPEN
+    from CLOSED(:345): h2>hset+htol && h1>h2+htol -> OPEN
+                       h1>=hset+htol && h1>h2+htol -> ACTIVE; 否则 CLOSED
+    from XPRESSURE(:351): Q<-Qtol -> CLOSED
+
+[4] FCV 状态机 (fcvstatus:362-398), 只有 {ACTIVE, XFCV, OPEN/CLOSED(固定)}
+    h1-h2 < -Htol            -> XFCV      (:385)
+    Q < -Qtol                -> XFCV      (:389)
+    s==XFCV && Q >= Setting  -> ACTIVE    (:393)
+    否则保持。在 linkstatus:151-155 被调用(而非 valvestatus)。
+
+[5] CVPIPE (cvstatus:177-202) - 与普通 PIPE 的唯一差别就是这个状态覆盖
+    |dh|>Htol: dh < -Htol -> CLOSED ; 否则 q < -Qtol -> CLOSED ; 否则 OPEN
+    |dh|<=Htol: q < -Qtol -> CLOSED ; 否则保持 s
+    系数侧 CVPIPE 与 PIPE 走同一分支 (headlosscoeffs:138-141 -> pipecoeff),
+    pipecoeff:531-536 对 <=CLOSED 用 P=1/CBIG, Y=Q。
+    另: linkstatus:131-136 每轮先把 XHEAD/TEMPCLOSED 复位成 OPEN 再重判。
+    tankstatus(:401-476) 复用 cvstatus 判满池/空池, 置 TEMPCLOSED。
+
+[6] 系数贡献 - 两条路: 固定状态阀走 linkcoeffs, 非固定 PCV 走 valvecoeffs
+    headlosscoeffs:154-158
+        case FCV/PRV/PSV: if (Setting==MISSING) valvecoeff(); else P[k]=0.0;
+    linkcoeffs:218  `if (hyd->P[k] == 0.0) continue;`
+        => 所有 Setting!=MISSING 的 PRV/PSV/FCV 被 linkcoeffs 完全跳过。
+    matrixcoeffs 顺序(:184-194): linkcoeffs -> emittercoeffs -> demandcoeffs
+        -> nodecoeffs -> valvecoeffs。valvecoeffs 必须最后, 因为它要读已经
+        累加完的 Xflow (含 -DemandFlow, nodecoeffs:276)。
+
+    valvecoeff(k) (:1100-1151) 通用开/闭/节流:
+        S<=CLOSED : P=1/CBIG, Y=flow                      (:1118-1123)
+        Km>0      : hgrad=2*Km*|q| (下限 RQtol), P=1/hgrad, Y=hloss/hgrad
+        Km==0     : P=1/CSMALL(=1e6), Y=flow              (:1148-1149)
+    CSMALL=1e-6, CBIG=1e8 (hydcoeffs.c:34-35)
+
+    prvcoeff (:942-992):
+      ACTIVE 分支 (:965-981)  ★ 结构性
+        P[k] = 0.0;                                   :972
+        Y[k] = LinkFlow[k] + Xflow[n2];               :973
+        F[j] += hset * CBIG;                          :974   <-- 罚函数
+        Aii[j] += CBIG;                               :975   <-- 罚函数
+        if (Xflow[n2] < 0.0) F[i] += Xflow[n2];       :976-979
+        return;   <-- 注意: 完全不碰 Aij[Ndx[k]], 即该非对角保持 0
+      非 ACTIVE 分支 (:986-991): valvecoeff() 后手工加
+        Aij[Ndx[k]] -= P; Aii[i] += P; Aii[j] += P;
+        F[i] += (Y - Q); F[j] -= (Y - Q);
+
+    psvcoeff (:995-1044): 与 prv 对称, ACTIVE 时把 CBIG 打在 *上游* 行 i
+        Y[k]=Q - Xflow[n1] (:1025); F[i]+=hset*CBIG (:1026); Aii[i]+=CBIG (:1027)
+        if (Xflow[n1] > 0.0) F[j] += Xflow[n1];       :1028-1031
+
+    fcvcoeff (:1047-1097):
+      ACTIVE (:1073-1084): 把定流量 q 当成上游外部需水/下游外部供水
+        Xflow[n1] -= q; Xflow[n2] += q;               :1075-1076  ★ 跨阀副作用
+        Y[k] = Q - q;                                 :1077
+        F[i] -= q; F[j] += q;                         :1078-1079
+        P[k] = 1.0/CBIG; 然后照常 Aij -= P; Aii[i] += P; Aii[j] += P;
+      非 ACTIVE: 当普通开阀 (:1090-1095)
+
+    ★★ 结论(问题2): ACTIVE 的 PRV/PSV **不是**用消元/降维固定水头, 而是
+    **big-M 罚函数**: 对角 +1e8、右端 +hset*1e8。矩阵维数与稀疏位型都不变,
+    改的纯粹是数值。行号: prvcoeff:974-975, psvcoeff:1026-1027。
+
+[7] 稀疏位型是否随场景变化? - 不变。这是本轮最重要的结论。
+    smatrix.c createsparse(:77-127) 在 openhyd() 阶段调用一次, 输入只有
+    Adjlist(拓扑) 与 MMD 重排; Ndx[k] 在 paralink(:271-297) 里按并联关系
+    定死; 之后 factorize/storesparse/sortsparse 全部只依赖拓扑。
+    整个 hydsolve 循环里没有任何一处重建 Ndx/NZSUB/Row。
+    每轮 matrixcoeffs:179-182 只是 memset 清零, 再往同一批槽位累加。
+    => 状态切换 (OPEN/CLOSED/ACTIVE) 只改 Aii/Aij/F 的**数值**:
+       CLOSED: P=1/CBIG=1e-8 (非对角 ~0, 但槽位还在)
+       ACTIVE PRV/PSV: 非对角写 0 (prvcoeff 提前 return 不写 Aij), 对角 +1e8
+    => B 个场景可以共用同一个 [B, Nj, Nj] 稠密 A, 一次批量 Cholesky 解决。
+       无需按状态分组 (bucketing), 无需可变稀疏结构。
+
+[8] 批量移植的真实代价清单
+  (a) 可 torch.where 纯向量化, 便宜:
+      - CVPIPE 状态判定 (cvstatus 三分支, 全是逐链路比较)
+      - valvecoeff/tcvcoeff/pipecoeff 的 closed 分支 (dense 路已有, solver.py:1536)
+      - PRV/PSV/FCV 各自 4 个 case 的转移: 用 one-hot(旧状态) 加权四个候选,
+        即 S_new = Σ_c 1[S_old==c] * f_c(h1,h2,Q)。每个 f_c 都是纯比较, 可批。
+  (b) 需要按 batch 维散射的 big-M 注入, 中等:
+      - ACTIVE PRV: A[b, j, j] += CBIG * m[b,k];  F[b, j] += hset*CBIG*m[b,k]
+        其中 m[b,k] = 1[S[b,k]==ACTIVE]。非对角要写成 (1-m) 乘因子而非 +=,
+        因为 prvcoeff ACTIVE 分支是「跳过写入」不是「减去」。
+      - Xflow[n2] 的条件项 (:976) 是 max(Xflow,0) 形式, 可用 clamp 批量化。
+  (c) 真正的串行残留, 但代价小:
+      - valvecoeffs(:301-329) 对 Nvalves 的循环有跨阀依赖: fcvcoeff:1075-1076
+        修改 Xflow, 而后续 prvcoeff:973/psvcoeff:1025 会读 Xflow。
+        => 必须保留 Python 层对 Nvalves 的顺序循环 (Nvalves 通常 <50),
+           但循环体内对 B 维完全向量化。这是 O(Nvalves) 次 kernel launch,
+           不是 O(B) 次。可接受。
+  (d) 不可微点 (梯度侧的真问题):
+      - 状态是 argmax/阶跃, 处处梯度为 0 或不存在。B 个场景状态不同时,
+        每个场景各自落在不同的分片光滑区。
+      - 但: 只要在**收敛点**状态已冻结, 对固定状态的隐函数定理仍成立,
+        d(H,Q)/d(theta) 可由最后一次线性系统反解得到 (与现有 dense 路一致)。
+        状态本身贡献零测度集上的不连续 - 与 EPANET 语义一致, 不是缺陷。
+      - big-M=1e8 会把 A 的条件数从现有 κ~1e9 再推高。solver.py:1580-1600
+        已记录 f32 下 κ≈1e9 就已经 Cholesky 失败, 必须走均衡+部分主元。
+        加 PRV ACTIVE 后 f32 路基本不可用, f64 + 迭代精化仍可。
+  (e) 顺带必需但与阀无关:
+      - 水池: linkcoeffs:240,251 的 F += P*Head 已存在, 只需把水池头当作
+        每轮更新的边界; tankstatus(:401-476) 需要 Hmax/Hmin/CanOverflow。
+      - D-W: DWpipecoeff(:578-621) + frictionFactor(:623-671), 纯逐元素, 可批。
+      - PUMP: pumpcoeff(:673-792) 有 CUSTOM 曲线分段 (curvecoeff:794-832),
+        分段查表在批量下要用 searchsorted + gather。CONST_HP 分支在
+        newlinkflows:437-443 还有个 dq 截断, 是逐场景条件。
+
+[9] 一句话答复问题 4
+    稀疏位型不随场景变化 (createsparse 只依赖拓扑, hydsolve 全程不重建),
+    状态切换只改数值 - 因此一次 [B,Nj,Nj] 批量稠密分解就够, 这条路走得通。

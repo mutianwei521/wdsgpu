@@ -1,0 +1,494 @@
+{
+ "generated": "2026-09-04 09:26:07",
+ "rows": [
+  {
+   "stem": "pub_net3",
+   "units": "GPM",
+   "is_si": false,
+   "reservoirs": [
+    {
+     "mine": 219.99999999999997,
+     "raw_strtod": 220.0,
+     "dll_roundtrip": 220.0,
+     "ulp_vs_raw": 1,
+     "ulp_vs_dll": 1
+    },
+    {
+     "mine": 167.0,
+     "raw_strtod": 167.0,
+     "dll_roundtrip": 167.0,
+     "ulp_vs_raw": 0,
+     "ulp_vs_dll": 0
+    }
+   ],
+   "tanks": [
+    {
+     "mine": 131.9,
+     "raw_strtod": 131.9,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 116.5,
+     "raw_strtod": 116.5,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 129.0,
+     "raw_strtod": 129.0,
+     "ulp_vs_raw": 0
+    }
+   ],
+   "n_tanks": 3,
+   "n_res_ulp_diff": 1,
+   "n_tank_elev_ulp_diff": 0
+  },
+  {
+   "stem": "pub_bwsn_network_1",
+   "units": "GPM",
+   "is_si": false,
+   "reservoirs": [
+    {
+     "mine": 425.00000000000006,
+     "raw_strtod": 425.0,
+     "dll_roundtrip": 425.0,
+     "ulp_vs_raw": 1,
+     "ulp_vs_dll": 1
+    }
+   ],
+   "tanks": [
+    {
+     "mine": 843.9,
+     "raw_strtod": 843.9,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 1137.1,
+     "raw_strtod": 1137.1,
+     "ulp_vs_raw": 0
+    }
+   ],
+   "n_tanks": 2,
+   "n_res_ulp_diff": 1,
+   "n_tank_elev_ulp_diff": 0
+  },
+  {
+   "stem": "pub_bwsn_network_2",
+   "units": "GPM",
+   "is_si": false,
+   "reservoirs": [
+    {
+     "mine": 241.69999999999996,
+     "raw_strtod": 241.7,
+     "dll_roundtrip": 241.7,
+     "ulp_vs_raw": 1,
+     "ulp_vs_dll": 1
+    },
+    {
+     "mine": 241.69999999999996,
+     "raw_strtod": 241.7,
+     "dll_roundtrip": 241.7,
+     "ulp_vs_raw": 1,
+     "ulp_vs_dll": 1
+    }
+   ],
+   "tanks": [
+    {
+     "mine": 59.83,
+     "raw_strtod": 59.83,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 31.22,
+     "raw_strtod": 31.22,
+     "ulp_vs_raw": 0
+    }
+   ],
+   "n_tanks": 2,
+   "n_res_ulp_diff": 2,
+   "n_tank_elev_ulp_diff": 0
+  },
+  {
+   "stem": "pub_net6",
+   "units": "GPM",
+   "is_si": false,
+   "reservoirs": [
+    {
+     "mine": 27.450000000000003,
+     "raw_strtod": 27.45,
+     "dll_roundtrip": 27.45,
+     "ulp_vs_raw": 1,
+     "ulp_vs_dll": 1
+    }
+   ],
+   "tanks": [
+    {
+     "mine": 167.3,
+     "raw_strtod": 167.3,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 196.3,
+     "raw_strtod": 196.3,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 206.0,
+     "raw_strtod": 206.0,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 196.0,
+     "raw_strtod": 196.0,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 196.0,
+     "raw_strtod": 196.0,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 192.0,
+     "raw_strtod": 192.0,
+     "ulp_vs_raw": 0
+    }
+   ],
+   "n_tanks": 32,
+   "n_res_ulp_diff": 1,
+   "n_tank_elev_ulp_diff": 0
+  },
+  {
+   "stem": "pub_c_town_batadal",
+   "units": "LPS",
+   "is_si": true,
+   "reservoirs": [
+    {
+     "mine": 193.56955380577426,
+     "raw_strtod": 193.56955380577426,
+     "dll_roundtrip": 193.56955380577426,
+     "ulp_vs_raw": 0,
+     "ulp_vs_dll": 0
+    }
+   ],
+   "tanks": [
+    {
+     "mine": 370.40682414698165,
+     "raw_strtod": 370.40682414698165,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 234.5800524934383,
+     "raw_strtod": 234.5800524934383,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 334.64566929133855,
+     "raw_strtod": 334.64566929133855,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 333.005249343832,
+     "raw_strtod": 333.005249343832,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 347.1128608923884,
+     "raw_strtod": 347.1128608923884,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 213.25459317585302,
+     "raw_strtod": 213.25459317585302,
+     "ulp_vs_raw": 0
+    }
+   ],
+   "n_tanks": 7,
+   "n_res_ulp_diff": 0,
+   "n_tank_elev_ulp_diff": 0
+  },
+  {
+   "stem": "pub_d_town",
+   "units": "LPS",
+   "is_si": true,
+   "reservoirs": [
+    {
+     "mine": 193.56955380577426,
+     "raw_strtod": 193.56955380577426,
+     "dll_roundtrip": 193.56955380577426,
+     "ulp_vs_raw": 0,
+     "ulp_vs_dll": 0
+    }
+   ],
+   "tanks": [
+    {
+     "mine": 370.40682414698165,
+     "raw_strtod": 370.40682414698165,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 234.5800524934383,
+     "raw_strtod": 234.5800524934383,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 334.64566929133855,
+     "raw_strtod": 334.64566929133855,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 333.005249343832,
+     "raw_strtod": 333.005249343832,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 347.1128608923884,
+     "raw_strtod": 347.1128608923884,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 213.25459317585302,
+     "raw_strtod": 213.25459317585302,
+     "ulp_vs_raw": 0
+    }
+   ],
+   "n_tanks": 7,
+   "n_res_ulp_diff": 0,
+   "n_tank_elev_ulp_diff": 0
+  },
+  {
+   "stem": "ky5",
+   "units": "GPM",
+   "is_si": false,
+   "reservoirs": [
+    {
+     "mine": 623.9983,
+     "raw_strtod": 623.9983,
+     "dll_roundtrip": 623.9983,
+     "ulp_vs_raw": 0,
+     "ulp_vs_dll": 0
+    },
+    {
+     "mine": 611.8937,
+     "raw_strtod": 611.8937,
+     "dll_roundtrip": 611.8937,
+     "ulp_vs_raw": 0,
+     "ulp_vs_dll": 0
+    },
+    {
+     "mine": 609.03,
+     "raw_strtod": 609.03,
+     "dll_roundtrip": 609.03,
+     "ulp_vs_raw": 0,
+     "ulp_vs_dll": 0
+    },
+    {
+     "mine": 659.2836,
+     "raw_strtod": 659.2836,
+     "dll_roundtrip": 659.2836,
+     "ulp_vs_raw": 0,
+     "ulp_vs_dll": 0
+    }
+   ],
+   "tanks": [
+    {
+     "mine": 887.3956,
+     "raw_strtod": 887.3956,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 901.4387,
+     "raw_strtod": 901.4387,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 898.1403,
+     "raw_strtod": 898.1403,
+     "ulp_vs_raw": 0
+    }
+   ],
+   "n_tanks": 3,
+   "n_res_ulp_diff": 0,
+   "n_tank_elev_ulp_diff": 0
+  },
+  {
+   "stem": "pub_l_town",
+   "units": "CMH",
+   "is_si": true,
+   "reservoirs": [
+    {
+     "mine": 328.0839895013123,
+     "raw_strtod": 328.0839895013123,
+     "dll_roundtrip": 328.0839895013123,
+     "ulp_vs_raw": 0,
+     "ulp_vs_dll": 0
+    },
+    {
+     "mine": 328.0839895013123,
+     "raw_strtod": 328.0839895013123,
+     "dll_roundtrip": 328.0839895013123,
+     "ulp_vs_raw": 0,
+     "ulp_vs_dll": 0
+    }
+   ],
+   "tanks": [
+    {
+     "mine": 323.753280839895,
+     "raw_strtod": 323.753280839895,
+     "ulp_vs_raw": 0
+    }
+   ],
+   "n_tanks": 1,
+   "n_res_ulp_diff": 0,
+   "n_tank_elev_ulp_diff": 0
+  },
+  {
+   "stem": "pub_richmond_standard",
+   "units": "LPS",
+   "is_si": true,
+   "reservoirs": [
+    {
+     "mine": 3.280839895013123,
+     "raw_strtod": 3.280839895013123,
+     "dll_roundtrip": 3.280839895013123,
+     "ulp_vs_raw": 0,
+     "ulp_vs_dll": 0
+    }
+   ],
+   "tanks": [
+    {
+     "mine": 604.1010498687664,
+     "raw_strtod": 604.1010498687664,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 708.6614173228346,
+     "raw_strtod": 708.6614173228346,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 849.4094488188975,
+     "raw_strtod": 849.4094488188975,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 791.272965879265,
+     "raw_strtod": 791.272965879265,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 666.0433070866142,
+     "raw_strtod": 666.0433070866142,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 773.3267716535433,
+     "raw_strtod": 773.3267716535433,
+     "ulp_vs_raw": 0
+    }
+   ],
+   "n_tanks": 6,
+   "n_res_ulp_diff": 0,
+   "n_tank_elev_ulp_diff": 0
+  },
+  {
+   "stem": "pub_ky10",
+   "units": "GPM",
+   "is_si": false,
+   "reservoirs": [
+    {
+     "mine": 619.5659,
+     "raw_strtod": 619.5659,
+     "dll_roundtrip": 619.5659,
+     "ulp_vs_raw": 0,
+     "ulp_vs_dll": 0
+    },
+    {
+     "mine": 619.5659,
+     "raw_strtod": 619.5659,
+     "dll_roundtrip": 619.5659,
+     "ulp_vs_raw": 0,
+     "ulp_vs_dll": 0
+    }
+   ],
+   "tanks": [
+    {
+     "mine": 839.2236,
+     "raw_strtod": 839.2236,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 865.8419,
+     "raw_strtod": 865.8419,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 923.39,
+     "raw_strtod": 923.39,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 951.6379,
+     "raw_strtod": 951.6379,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 959.5179,
+     "raw_strtod": 959.5179,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 717.3331,
+     "raw_strtod": 717.3331,
+     "ulp_vs_raw": 0
+    }
+   ],
+   "n_tanks": 13,
+   "n_res_ulp_diff": 0,
+   "n_tank_elev_ulp_diff": 0
+  },
+  {
+   "stem": "pub_net2",
+   "units": "GPM",
+   "is_si": false,
+   "reservoirs": [],
+   "tanks": [
+    {
+     "mine": 235.0,
+     "raw_strtod": 235.0,
+     "ulp_vs_raw": 0
+    }
+   ],
+   "n_tanks": 1,
+   "n_res_ulp_diff": 0,
+   "n_tank_elev_ulp_diff": 0
+  },
+  {
+   "stem": "pub_anytown_wntr",
+   "units": "GPM",
+   "is_si": false,
+   "reservoirs": [
+    {
+     "mine": 10.0,
+     "raw_strtod": 10.0,
+     "dll_roundtrip": 10.0,
+     "ulp_vs_raw": 0,
+     "ulp_vs_dll": 0
+    }
+   ],
+   "tanks": [
+    {
+     "mine": 215.0,
+     "raw_strtod": 215.0,
+     "ulp_vs_raw": 0
+    },
+    {
+     "mine": 215.0,
+     "raw_strtod": 215.0,
+     "ulp_vs_raw": 0
+    }
+   ],
+   "n_tanks": 2,
+   "n_res_ulp_diff": 0,
+   "n_tank_elev_ulp_diff": 0
+  }
+ ]
+}

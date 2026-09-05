@@ -1,0 +1,30 @@
+NVIDIA GeForce RTX 5090
+cpus: 8
+/data/run01/<user>/wdsgpu/hydrograd/p0.py:48: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a = torch.sparse_csr_tensor(ip, ii, dv, size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/p0.py:48: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a = torch.sparse_csr_tensor(ip, ii, dv, size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+DirectSolverOptions 字段:
+   sparse_system_type           <class 'int'>
+   sparse_system_view           <class 'int'>
+   multithreading_lib           str | None
+   logger                       logging.Logger | None
+   blocking                     typing.Literal[True, 'auto']
+   handle                       int | None
+
+DirectSolver.__init__(self, a, b, *, options: nvmath.sparse.advanced._configuration.DirectSolverOptions | dict[str, typing.Any] | None = None, execution: nvmath.sparse.adv
+doc 中含 'batch' 的行（前 4）:
+   * In the simplest version with no batching, ``a`` is sparse (square) matrix of size ``n`` in Compressed Sparse
+   * An **explicitly-batched** LHS is provided as a Python sequence of sparse CSR matrices :math:`[a_0, a_1, ...,
+   Likewise an explicitly-batched RHS is provided as a sequence of vectors or matrices :math:`[b_0, b_1, ..., b_n
+   Each sample in explicit batching can be of a different size, with the only constraint being that a given
+
+plan 成本 vs B（三对角 Nj=959）:
+   B=1    plan    30.94 ms  (30.936 ms/矩阵)
+   B=16   plan    24.37 ms  (1.523 ms/矩阵)
+   B=64   plan    62.16 ms  (0.971 ms/矩阵)
+   B=256  plan   252.55 ms  (0.987 ms/矩阵)

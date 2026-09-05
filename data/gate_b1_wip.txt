@@ -1,0 +1,233 @@
+================================================================
+门 B1：dense 批量状态机不动点 + CVPIPE - 里程碑数值
+（dense_gap_plan.md §7 第 5 步；本轮不碰 PRV/PSV/FCV）
+日期 2026-08-22   全部数值为前台实测
+================================================================
+
+[0] 改了什么（新开关 + 新准入，三个缺省逐位不变）
+----------------------------------------------------------------
+· GGASolver(..., dense_status_machine=False)  新构造参数（缺省 False）
+    True 时：① dense 的 allowed 集合加入 CVPIPE；
+             ② 撤掉构造期的 _check_dense_tank_bounds 静态守卫（那条守卫是
+                "没有状态机"时的止损，现在 tankstatus 真的被执行了）；
+             ③ solve(..., status_machine=True) 对 mode="dense" 放行。
+· solve() 新增分支：批量状态机不动点（hydsolve hydsolver.c:150-189 的 [B,·] 复刻）
+· 新增 _build_dense_sm_data / _cvstatus_t / _linkstatus_batch（solver.py）
+· 缺省不变实测：mode="epanet" 逐位复刻、assemble="dense"、linear_solver="dense"
+  三个缺省一字未动；regression_all 前台 **51/51 PASS**（data/regression_report.txt）。
+  另做"开门但不开状态机 vs 旧缺省"的 8 网 B=8 对拍：
+    Net3/Net1/Anytown/Modena/Hanoi/Pescara/Fossolo_poly1/Net2
+    max|ΔH| = max|ΔQ| = 0.000e+00（**逐位**），iters 全等。
+  守卫双向实测：
+    · 未开门构造含 CVPIPE 的 dense → NotImplementedError（link_type=[0]）
+    · 开门但 solve(status_machine=False) 且网含 CVPIPE → NotImplementedError
+      （CV 与 PIPE 系数侧同分支，关状态机等于把止回阀当普通管）
+  assemble="csr" 通路同样支持状态机：Richmond_skeleton B=32，
+    csr vs dense 装配 状态相等、max|ΔH| = 0.000e+00（逐位）。
+
+[1] 实现要点（与 C 的对应）
+----------------------------------------------------------------
+· per-scenario 冻结掩码：S [B,L] int8、nextcheck [B] int64、active [B] bool。
+  "全批都无状态变化"才收工 = active 全 False 才 break。
+· **不按状态分桶**（§1(c)：D-Town B=128 已 16 桶）：三支全算 + torch.where。
+· 分支对应：
+    br_conv = active & (relerr<=hacc) & (it<=max_iter)      hydsolver.c:171-179
+    br_per  = active & ~conv & (it<=MaxCheck) & (nextcheck==it)      :183-187
+    run_ls  = br_conv | br_per  → 一次 _linkstatus_batch，按行掩码写回
+    done    = active & conv & ((it>max_iter) | ~stat_change)     :168 / :175
+    maxtrials = MaxIter + ExtraIter(>0)                          :111-112
+· _linkstatus_batch 覆盖 hydstatus.c:101-174 的四条：
+    重开 XHEAD/TEMPCLOSED→OPEN(:131-137)、cvstatus(:177-202)、
+    pumpstatus 的 XHEAD(:205-239)、tankstatus 的 TEMPCLOSED(:401-476)。
+    change 口径与 C 一致：与**函数入口**状态比（:126 取在重开之前），
+    所以"重开成 OPEN"本身算一次变化。
+· FCV(:151-155) / valvestatus(:33-98) / badvalve 本轮不做 - dense 不放行
+  PRV/PSV/FCV，恒不触发，不是缺口。
+· **pswitch(hydsolver.c:268-355) 走构造期守卫直接拒绝**：它会在收敛后改
+  LinkStatus/LinkSetting（含泵转速），批量化需要 [B,L] 的 setting 并随之
+  批量化 pumpcoeff。实测 21 个公开网**监测 junction 水头的简单控制数 = 0**
+  （其余控制的监测点都是 tank，属 EPS 时段间语义、不进 hydsolve），
+  故本轮不做而是明确 raise。
+
+[2] 验收①：与 epanet 串行状态机逐元素对拍（硬判据）
+----------------------------------------------------------------
+场景配方（§1(c) + 本轮补一条）：B=128，需水乘子对数均匀[0.05,4.0]、随机时刻、
+单点大漏损 2%~60%；**水池水位随机且 30% 贴边 Hmin/Hmax**（tankstatus 的
+:444/:461 只在贴边时动作，不贴边永远测不到 TEMPCLOSED 支）；
+另 1/4 场景走"泵截断角"（需水×0.01~0.10 + 全池满）。seed=20260822。
+
+网                 状态逐元素相等   |ΔH|(连通)max / p90 / 中位 [ft]      max|ΔQ|[cfs]  iters逐场景相等  收敛(ep/dn)
+Richmond_skeleton  是 0/6528        4.893e-05 / 2.567e-06 / 2.451e-07    3.612e-06     128/128        128/128 128/128
+Anytown_wntr       是 0/5888        1.820e+21 / 6.287e+19 / 4.085e+16    1.331e-05     128/128        128/128 128/128
+ky4                是 0/148224      6.346e+02 / 7.687e-01 / 2.072e-07    1.913e-04     112/128        120/128 120/128
+Net3               是 0/15232       1.238e-05 / 4.165e-06 / 1.925e-06    2.650e-06     128/128        128/128 128/128
+Net1               是 0/1664        1.626e-10 / 1.098e-11 / 1.023e-12    2.684e-11     128/128        128/128 128/128
+Net2               是 0/5120        8.665e-06 / 3.559e-07 / 1.421e-11    4.699e-01     117/128        127/128 119/128
+Anytown            是 0/5248        3.297e-12 / 7.162e-13 / 2.984e-13    2.080e-11     128/128        128/128 128/128
+Hanoi              是 0/4352        7.367e-11 / 1.091e-11 / 2.842e-12    1.056e-10     128/128        128/128 128/128
+Modena             是 0/40576       5.821e-10 / 5.185e-11 / 1.017e-11    1.513e-09     128/128        128/128 128/128
+Fossolo_poly1      是 0/7424        4.366e-11 / 1.097e-12 / 5.684e-13    4.239e-10     128/128        128/128 128/128
+Pescara            是 0/12672       1.282e-03 / 1.001e-05 / 1.902e-06    1.595e-06     128/128        128/128 128/128
+⇒ **11/11 网、共 25.3 万个 (场景,链路) 状态位，逐元素相等，零不等。**
+
+两个"看着吓人"的头差，都不是状态机问题，逐条坐实：
+ (a) Anytown_wntr 1.82e+21 ft - **相对差只有 1.913e-05**。该 INP 里有一根阻力
+     极端的管（收敛解 H ≈ -1.19e26 ft，EPANET 自己也是这个量级；实测场景 b=32
+     节点"7"：dense -1.18693e26 / epanet -1.18696e26，全链路 status 均为 OPEN，
+     不是孤岛）。绝对差在这里没有意义。
+ (b) ky4 634 ft / Net2 4.7e7 ft - 全部落在**未收敛**场景上。只取"两条路都收敛"
+     的子集：ky4 120/128 场景 max|ΔH|=1.054e+01 ft、max|ΔQ|=2.756e-05 cfs；
+     Net2 119/128 场景 max|ΔH|=8.665e-06 ft。
+     Net2 的收敛数差（ep 127 vs dn 119）**与状态机无关**，已逐条坐实：
+       · 场景 b=57 两条路最终状态向量相同（链路 29 TEMPCLOSED），
+         批量状态机的 linkstatus 调用轨迹也相同（第 1 次调用翻 3→1，其后 4 次无翻转）；
+       · 把该状态**冻结**后让两条路解同一个系统：
+         旧缺省 dense（无状态机）relerr=3.9988e-01 @40 iters（不收敛），
+         epanet   relerr=3.7333e-04 @19 iters（收敛）。
+       ⇒ 是既有稠密 Newton 通路在"水池贴边被 TEMPCLOSED 切成孤岛"这类病态系统上的
+         数值行为，本轮未引入、也未加剧。
+
+验收①b（额外做的）：批不变性 - per-scenario 冻结掩码必须让"整批一次算"
+== "逐场景 B=1 算"。前 16 场景实测：
+  状态：11/11 网**全部相等**。
+  水头：Richmond_skeleton / Anytown_wntr / Net2 / Anytown / Hanoi = 0.000e+00（逐位）；
+        Fossolo 2.842e-13、Net1 1.342e-11、Pescara 2.162e-07、Net3 3.014e-06、
+        ky4 1.034e+03（落在未收敛场景上）。
+  Net3 的 3e-6 **是既有行为**，与状态机无关：老缺省 dense（无状态机、温和场景）
+  B=16 vs B=1 实测 max|ΔH| = 1.098e-06 ft（同量级）。来源是 torch.linalg.cholesky
+  对 B=1 与 B>1 走不同 LAPACK 分支；solver.py:2640 附近那条"批不变性"注释只
+  管住了迭代精化的残差项（A*Hj^T).sum(-1)），没有也管不住分解本身。
+  → 建议下一轮单列一条：要么在 dense f64 下对 B=1 也走批量 API，要么把这条
+    写进论文的 lim（现在两处都没写）。
+
+[3] 验收②：批内异态（§1(c) 口径 = CVPIPE/PUMP/PRV/PSV/FCV）
+----------------------------------------------------------------
+网                 §1(c) 变态元件/可切换  桶   全链路 变态/L   全链路桶
+Richmond_skeleton      5/15              15      13/51           38
+Anytown_wntr           0/3                1       2/46            4
+ky4                    0/2                1       5/1158         10
+Net3                   0/2                1       3/119           8
+Net1                   0/1                1       1/13            2
+Net2                   0/0                1       1/40            2
+Anytown                0/1                1       0/41            1
+Hanoi / Modena / Fossolo_poly1 / Pescara  1        0/L             1（纯管道网，无可切换元件）
+
+Richmond_skeleton 逐元件（B=128）：
+  CVPIPE#14(1154): CLOSED:18 / OPEN:110
+  CVPIPE#19(1210): CLOSED:15 / OPEN:113
+  CVPIPE#25(1653): CLOSED:17 / OPEN:111
+  CVPIPE#30(1783): TEMPCLOSED:37 / CLOSED:21 / OPEN:70   ← 一根 CV 吃满三种状态
+  CVPIPE#31(1793): TEMPCLOSED:19 / OPEN:109
+⇒ 异态真实发生，且**同一元件在同一批里取三种状态**（与 §1(c) 里 D-Town 的
+  PRV#458 同现象），验证机制的载体是合格的。
+
+"桶=1"的网要分清两件事，本轮做了量化，不是"场景不够极端"就完了：
+ · **tankstatus 侧确有异态**：Anytown_wntr 4 桶 / Net3 8 桶 / ky4 10 桶 / Net1 2 桶
+   / Net2 2 桶（全链路口径）。§1(c) 口径看不见是因为被 TEMPCLOSED 的是普通 PIPE，
+   而该口径只数 CVPIPE/PUMP/PRV/PSV/FCV。
+ · **pumpstatus 的 XHEAD 在这些网上单帧稳态够不着**，不是场景不极端。给出
+   "逼近度" = max(扬程增益 / 截止扬程)（>1+Htol 才翻 XHEAD），已在角落工况
+   （需水×0.01~0.10 + 全池满）下取到极值：
+     Net1 0.999997 | Anytown_wntr 0.999590 | Net3 0.997275 | Anytown 0.904747
+     ky4 不适用（两台泵都是 CONST_HP，hmax=BIG，:223-227 恒不翻）
+     Richmond_skeleton 不适用（批内 7 台泵均为关停）
+   需水→0 时泵流量→0、扬程增益单调逼近截止扬程但**从下方**逼近；要真正越过
+   只能靠"下游被水池顶到比截止扬程更高"或控制改转速（pswitch，本轮已守卫）。
+   ⇒ 结论写清楚：pumpstatus 的批量实现已就位并逐字对拍了判据，但公开网在
+     单帧稳态下取不到 XHEAD；这条转移的端到端触发要等下一轮的控制/EPS。
+ · Anytown（全链路也 1 桶）：0 水池、0 CV、1 台泵且逼近度 0.905 - 该网在单帧
+   稳态下**根本不存在可达的状态转移**，与场景极端程度无关。
+
+[4] 验收③：解锁计数（`_cleaned` 口径，21 网，实测清单）
+----------------------------------------------------------------
+                     旧缺省  旧+关静态水池守卫  门B1
+Anytown              OK      OK                 OK
+Anytown_wntr         ×       OK                 OK      (H0==Hmin，靠关守卫才过)
+BWSN_Network_1       ×       ×                  ×       PRV
+BWSN_Network_2       ×       ×                  ×       CVPIPE+PSV+FCV
+Balerma              ×       ×                  ×       D-W
+C-Town_BATADAL       ×       ×                  ×       CVPIPE+PRV+FCV
+D-Town               ×       ×                  ×       CVPIPE+PRV
+Fossolo_poly1        OK      OK                 OK
+Hanoi                OK      OK                 OK
+L-TOWN               ×       ×                  ×       PRV
+L-TOWN_Real          ×       ×                  ×       PRV
+Modena               OK      OK                 OK
+Net1                 OK      OK                 OK
+Net2                 OK      OK                 OK
+Net3                 OK      OK                 OK
+Net6                 ×       ×                  ×       CVPIPE+PRV
+Pescara              OK      OK                 OK
+Richmond_skeleton    ×       ×                  **OK**  ← 本轮新解锁（CVPIPE）
+Richmond_standard    ×       ×                  ×       CVPIPE+PRV
+ky10                 ×       ×                  ×       CVPIPE+PRV
+ky4                  ×       OK                 OK      (H0==Hmax，靠关守卫才过)
+合计                 8/21    10/21              **11/21**
+
+订正一处计划表口径：dense_gap_plan.md §3 那张表写的"+水池+泵 = 10/21"，
+**用的是 dense_tank_bound_check=False 的口径**。项目缺省（守卫开着）实测只有
+8/21 - Anytown_wntr 与 ky4 的 H0 正好落在 Hmin/Hmax 上，被构造期守卫拒掉。
+门 B1 之后这两个网不再靠"关守卫"过关：tankstatus 真的被执行了，
+所以 11/21 这个数是**三档口径里最实的一档**。
+下一轮 PRV 落地后按同表推 18/21（BWSN_1、D-Town、L-TOWN、L-TOWN_Real、Net6、
+Richmond_standard、ky10 七个网同时需要 CVPIPE+PRV，本轮已把 CVPIPE 这半边做掉）。
+
+[5] 验收④：新特性网上的梯度（scripts/gate_b1_grad.py）
+----------------------------------------------------------------
+口径与论文 lim:frozen-status 一致：先用**批量状态机**把状态解出来并冻结，
+再在冻结状态上求梯度。基准点 = Richmond_skeleton B=128 批里"CVPIPE 关闭 3 条、
+无 TEMPCLOSED/XHEAD（避免孤岛）"的场景；该场景批量 vs 串行状态机状态相等。
+冻结后 accuracy=1e-12 收敛 iters=201（κ 舍入平台，与 city_d 同现象），
+整装 Newton 精抛光残差 ‖F‖∞ = 8.527e-14 ⇒ 基准点是真不动点。K = 206。
+
+  θ         坐标   gC(中心差分, Richardson 外推)   relBC       relAC
+  demand    16     2.27156871e-01                 8.00e-08    8.00e-08
+  ke        17    -4.45925595e-01                 6.59e-09    2.77e-06
+  rh        44    -1.06406798e-01                 1.99e-07    1.99e-07
+  r          7    -6.15776601e-02                 2.54e-07    1.30e-06
+门槛 B-C < 1e-6、A-C < 1e-4 ⇒ **PASS**。
+（A = solve_unrolled 展开 autograd，B = ImplicitGGASolve 隐函数伴随，
+  C = solve_polished 精抛光 + 中心差分 Richardson 外推。
+  solve_unrolled 的能力守卫本来就放行 CVPIPE，autodiff.py:783 的 _UNROLL_OK。）
+
+[6] 本轮新发现的、要带给下一轮（PRV/PSV/FCV）的东西
+----------------------------------------------------------------
+(a) **机制侧没有结构性障碍。** 本轮建的三样东西 PRV/PSV/FCV 可以直接复用：
+    · per-scenario 的 (S, nextcheck, active) 三元组与"全批无变化才收工"的判据；
+    · "依赖旧状态的分片函数"的批量写法 - _cvstatus_t 已经是 `torch.where(big,
+      new_big, torch.where(rev, CLOSED, s))` 这种保留 `return s` 支的形态，
+      prvstatus(:242-299) 四个 case / psvstatus(:302-359) / fcvstatus(:362-398)
+      按同一套 one-hot 加权即可；
+    · valvestatus(hydsolve :156/:161) 与 linkstatus 的**节律不同**（前者每轮跑、
+      后者只在收敛/周期检查跑），批量里就是多一个"每轮无条件跑 + 结果并入
+      stat_change"的分支，不需要动 run_ls/done 的逻辑。
+(b) **setting(K) 的 per-scenario 化是下一轮真正的新工作，但不是被 PRV 逼出来的。**
+    PRV/PSV 的 hset = elev + K、FCV 的 qk>=kc 用的都是静态 K（init_setting），
+    单帧稳态里 K 不随场景变。真正需要 [B,L] 的 K 只有 pswitch 与 EPS 控制/规则 -
+    本轮已用构造期守卫挡住并量化（21 网 junction 压力控制数 = 0），
+    可以继续挡到 EPS 那一轮。
+(c) **批 Cholesky 的"一个样本崩整批崩"在本轮实测到了，且与 badvalve 同源。**
+    ky4 在更极端的角落配方（需水×1e-4 + 全池满，B=128 的第 8 个场景）上
+    实测 `torch._C._LinAlgError: linalg.cholesky: (Batch element 8) ... leading
+    minor of order 958 is not positive-definite`。同场景 EPANET 自己也不收敛
+    （relerr=0.2147 @111 iters，TEMPCLOSED 5 条 / CLOSED 1 条，按开启链路度数算
+    孤立 junction 数为 0 - 是 P=1/CBIG 弱支撑而非严格孤立）。
+    该配方已从验收批里撤掉（改成需水×0.01~0.10），但这条失败面**在 PRV 落地后
+    只会更大**（§1 的 κ 从 1e5 抬到 2.5e11）。对策仍是 §5 的判断：不复刻
+    badvalve，改成"把失败样本剔出该批单独走 epanet 路径"。
+    建议下一轮把这条做成显式能力：solve() 捕获 LinAlgError → 定位样本 →
+    报 NotImplementedError 并给出样本号（现在是 torch 的原始报错，虽然不静默
+    算错，但对用户不友好）。
+(d) **tankstatus 的 TEMPCLOSED 会切出孤岛，这是"全 junction 水头差"失真的唯一来源。**
+    Richmond_skeleton 全 junction max|ΔH| = 6.432e+00 ft，而连通掩码内只有
+    4.893e-05 ft。PRV 的 CLOSED 支是同一机制（§1(b) 的 P=1/CBIG），
+    下一轮的验收脚本必须一开始就带连通掩码，否则会看到一堆假阳性。
+(e) dense 与 epanet 的**迭代数**在绝大多数网上逐场景相等（9/11 网 128/128），
+    只在 ky4(112/128)、Net2(117/128) 上因数值不收敛而分叉 - 这两处都已在 [2]
+    里坐实与状态机无关。
+
+[7] 复现命令
+----------------------------------------------------------------
+python -X utf8 scripts/gate_b1_batch_sm.py --B 128        （验收①①b②③，PASS）
+python -X utf8 scripts/gate_b1_grad.py                     （验收④，PASS）
+python -X utf8 scripts/regression_all.py                   （51/51 PASS）

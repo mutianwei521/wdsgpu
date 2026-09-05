@@ -1,0 +1,10 @@
+# Text files are stored with LF; the byte-exact artefacts below are never normalised.
+* text=auto eol=lf
+*.inp -text
+*.csv -text
+datasets/** -text
+*.png binary
+*.pdf binary
+*.npz binary
+*.npy binary
+*.pt binary

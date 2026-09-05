@@ -1,0 +1,240 @@
+================================================================================
+任务E：在 dense（torch 批量可微）路径实现 水池(tank) 与 泵(PUMP)
+日期 2026-08-22   解释器 <python>
+改动文件：dgga/solver.py（唯一）。autodiff.py 未改。mode="epanet" 路径零改动。
+================================================================================
+
+## 0. 改动清单（dgga/solver.py）
+
+ A. 构造期范围检查（原 104-118）
+    · dense 的 allowed 集合 {_PIPE,_TCV} → {_PIPE,_TCV,_PUMP}
+    · 错误信息补上链路类型名（原文"（PBV/GPV 留接口）"已过时且误导，见
+      data/dense_gap_plan.md §4 最后一条）
+    · 删掉 `if 2 in nt and mode!="epanet": raise 不支持水池`，改为方法
+      _check_dense_tank_bounds()（推迟到 _build_b2_data 之后，因为要用 self.htol）
+ B. 新增 GGASolver.__init__ 关键字 dense_tank_bound_check=True（见 §2 守卫二选一）
+ C. 新增 _check_dense_tank_bounds()   构造期静态守卫（H0 开区间）
+ D. 新增 _build_dense_tank_data()     tankstatus 事后复核的静态索引
+ E. 新增 _cvstatus_closed_t()         cvstatus(hydstatus.c:177-202) 张量版
+ F. 新增 _check_dense_tank_status()   收敛后逐字复核 tankstatus(hydstatus.c:401-476)
+ G. 新增 _build_dense_pump_data()     dense 泵静态张量 + CUSTOM 曲线 padded 矩阵
+ H. 新增 _pump_PY()                   pumpcoeff(hydcoeffs.c:673-791) 的 torch 批量复刻
+ I. 新增 _check_dense_pump_shutoff()  收敛后复核 pumpstatus(hydstatus.c:205-239) XHEAD
+ J. _init_flow() 补泵支 Kc*Q0（hydraul.c:366-369）；无泵网返回值逐位不变
+ K. dense 主循环：插入泵 P/Y、closed_dense（含 ω==0，hydcoeffs.c:697）、
+    恒功率泵半步防穿零（hydsolver.c:437-443）、收敛后两个事后守卫
+
+## 1. 水池：单帧内 ≡ 定水头节点
+
+ 依据（已精读，未重复考证）：矩阵只有 Njuncs 阶（hydsolver.c:123）；tank/reservoir
+ 编号排在 Njuncs 之后（types.h:816-818）；只经 linkcoeffs 的 F += P*NodeHead
+ （hydcoeffs.c:240,251）进右端；单帧内 NodeHead[tank]=tank->H0 由 inithyd 设死
+ （hydraul.c:110）；tanklevels 只在时段之间跑（hydraul.c:247,655-657）。
+ ⇒ dense 直接复用既有的 g1/g2 定水头接地装配（solver.py 装配索引段），零新分支。
+
+## 2. tankstatus 守卫：选了"静态必要条件 + 事后精确判据"双层，不是二选一
+
+ tankstatus（hydstatus.c:401-476）是水池与定水头节点的**唯一**差别：
+   满池 H>=Hmax-Htol && !CanOverflow（:444）/ 空池 H<=Hmin+Htol（:461）
+   ⇒ 泵按方向（:449/:466）或 cvstatus（:454/:471）把连接管置 TEMPCLOSED。
+ · 第一层（构造期，默认开）_check_dense_tank_bounds：按任务书要求，H0 落在
+   [Hmin+Htol, Hmax-Htol] 之外直接 raise NotImplementedError。Htol 取项目既有口径
+   self.htol（input1.c:27 HTOL=0.0005，INP [OPTIONS] 可覆盖），未自造常量。
+ · 第二层（solve 收敛后，恒开）_check_dense_tank_status：用**实际收敛解**逐字复核
+   完整判据（含选端逻辑 :423-438 的"n1 是定水头就不回退到 n2"、reservoir 跳过
+   :436-438、泵方向、cvstatus 三分支）。dense 的水池水头由调用方经 res_head_ft
+   批量给定、可与 INP 的 H0 无关，所以这一层是必须的，不是冗余。
+ · 第一层是必要条件、不是充分条件，故给了 dense_tank_bound_check=False 的显式出口；
+   关掉它也不会静默算错 - 第二层照样 raise。实测证据见 §4。
+
+## 3. 泵：移植 autodiff.solve_unrolled 的泵支（未重造）
+
+ 三条曲线分支 + 钳位齐备，与 _PY_np（epanet 逐位路径）同源：
+   幂函数 h0=SQR(w)*H0(:737)、r=R*pow(w,2-N)(:740)、hgrad=n*r*q^(n-1) 带 RQtol 钳位
+        (:770-778)、n==1 线性支(:781-785)
+   CONST_HP hgrad=-r/q/q 夹在 [RQtol, CBIG](:746-762)
+   CUSTOM  curvecoeff 分段线性(:794-831) → hgrad=R*w(:731), hloss=H0*w²+hgrad*Q(:732)
+   NOCURVE P=1/CSMALL(:709-714)；CLOSED 或 setting==0 → P=1/CBIG, Y=Q(:696-701)
+ **CUSTOM 分段查找已按任务书要求批量化**：autodiff 的 O(K·B·泵) python 双循环
+ （autodiff.py:853-866）→ torch.searchsorted(side='left') + gather。
+ 等价性论证：C 的 `while (k2<npts && x[k2]<q) k2++`（:819）就是"首个 x[k2]>=q 的
+ 下标"，与 searchsorted(side='left') 语义完全一致；夹取 :820-821 = clamp(idx,1,npts-1)。
+ 前提是曲线流量严格递增 - 构造期断言，不满足 raise（不静默近似）。
+ padding 用 +inf：q 高于末点时 searchsorted 返回 npts，被 clamp 到 npts-1，正好等于
+ :821 的末段外推。
+
+ CUSTOM 新旧选段数值差（Anytown_wntr, 3 台 CUSTOM 泵, B=64, q 随机 0.3~3x）
+   max|ΔP| = max|ΔY| = 0.000e+00   （逐位一致）
+ 耗时（Anytown_wntr，20 次平均；"旧"只算选段，"新"是整条泵支）
+   B=8    新 0.256 ms | 旧 0.034 ms
+   B=64   新 0.307 ms | 旧 0.162 ms
+   B=256  新 1.775 ms | 旧 1.179 ms
+   B=1024 新 2.218 ms | 旧 4.728 ms   ← 旧法**只做选段**已是新法整支的 2.1 倍
+ 旧法 O(B·泵) 线性增长、新法近乎常数，批越大差距越大；B 小时 python 循环反而更快
+ （张量算子固定开销），但 dense 路径存在的意义就是大 B。
+
+## 4. 泵关停（XHEAD）：选了"会被关停就报错"，不支持传入冻结状态
+
+ 理由：solve() 第 1430 行附近明确拒绝 link_status/link_setting/status_machine
+ 三个入参（"仅 epanet 模式"）。要支持冻结状态，就得同时把 link_setting 打通到
+ TCV 的 Km 重算（hydcoeffs.c:929-932）与阀的 MISSING 语义，属于另一件事；
+ 半支持会造出一条"只对泵生效、对阀静默忽略"的入参，比不支持更危险。
+ 所以选：_check_dense_pump_shutoff 在收敛后逐字复核 pumpstatus
+   linkstatus(:147-151) 对 status>=OPEN 且 LinkSetting>0 的泵调 pumpstatus(k,-dh)，
+   dh=H[n1]-H[n2] ⇒ 扬程增益 = H[n2]-H[n1]；
+   hmax = CONST_HP ? BIG(:223-227) : SQR(setting)*Pump.Hmax(:231)；
+   增益 > hmax+Htol ⇒ XHEAD(:235)。2.2 不查最大流量(:237 注释)。
+ 命中即 raise，**不默认泵永远开着**。21 网实测：无一命中（见 §5）。
+
+## 5. 验收①：新解锁网 dense vs mode="epanet" 复刻路径（t=0 稳态，B=1）
+
+ 网(取 _cleaned 优先)   泵 池 Nj   iters d/e  max|ΔH| ft   max|ΔQ| cfs   状态机改变链路数
+ --------------------------------------------------------------------------------------
+ Anytown  (新, CUSTOM)   1  0  19    6/6      1.705e-13    6.866e-13     0
+ Net1     (新, POWER)    1  1   9    4/4      6.821e-13    1.501e-12     0
+ Net2     (新, 纯池)     0  1  35    5/5      1.012e-11    5.231e-12     0
+ Net3     (新, POWER×2)  2  3  92    5/5      3.880e-07    5.684e-07     0
+ ky4      (新, CONST_HP) 2  4 959    9/9      8.416e-08    1.497e-08     0   ← 需关静态守卫
+ --------------------------------------------------------------------------------------
+ Fossolo_poly1 (旧有)    0  0  36    5/5      5.116e-13    9.076e-12     0
+ Hanoi         (旧有)    0  0  31    4/4      3.610e-12    1.393e-12     0
+ Modena        (旧有)    0  0 268    5/5      5.230e-12    5.287e-12     0
+ Pescara       (旧有)    0  0  68    5/5      3.973e-06    2.737e-07     0
+
+ 量级判读：新解锁的 5 个网全在 1e-13 ~ 4e-7 ft，**没有一个超过既有的 Pescara
+ （3.97e-6 ft，纯管道、代码路径逐位未动）**。dense 路径本身的量级（docstring 记
+ "与 EPANET 差 ~3e-6 ft"）就在这里，Net3 的 3.88e-7 属正常，无需追查。
+ "状态机改变链路数=0" = mode="epanet" 开 status_machine=True 后与初始状态比对，
+ 说明这 5 个网 t=0 的冻结状态解就是 EPANET 的真解，dense 的对拍对象没有取巧。
+
+ B=8（需水 ×0.6~1.35 随机）dense vs epanet：
+   Anytown H=7.105e-13 Q=9.785e-11 | Net1 H=2.046e-12 Q=5.319e-12
+   Net2    H=4.053e-11 Q=1.636e-11 | Net3 H=4.251e-06 Q=9.153e-07
+   ky4     H=2.285e-07 Q=3.615e-08 ；逐场景迭代数 d/e 全部逐项相等。
+
+ 节点质量守恒 max|净流入-需水|（cfs）：
+   Anytown 7.5e-13  Net1 8.4e-13  Net2 8.8e-12  Net3 2.0e-07  ky4 3.2e-06
+   （Net3/ky4 偏大是因为 EPANET 的 ACCURACY 收敛判据本身松：Net3 停在
+     relerr=7.1e-4、ky4 停在 5.2e-5，epanet 路径同样如此，非 dense 侧问题）
+
+ 批不变性（同一场景 B=1 vs B=8，max|ΔH| ft）：
+   Modena 0.000e+00 | Hanoi 1.990e-12 | Pescara 4.085e-06(纯管道对照，既有行为)
+   Anytown 0.000e+00 | Net1 1.137e-13 | Net2 0.000e+00 | Net3 1.362e-08 | ky4 1.327e-07
+   ⇒ 非逐位是 dense 路径**既有**性质（Pescara 这一行代码完全没动、仍是 4e-6），
+     批 Cholesky 在 B=1/B≥2 走不同 LAPACK 路径；新增的泵/池没有把它变坏。
+
+## 6. 验收②：dense 可跑的公开网数 - 4 → 8（默认）/ 9（关静态守卫）
+
+ 口径：networks/public 与 networks/public/_cleaned 按网名去重，同名优先取 _cleaned。
+   改前：4/21  （Hanoi 31 / Fossolo_poly1 36 / Pescara 68 / Modena 268）
+   改后：8/21  （+ Anytown 19、Net1 9、Net2 35、Net3 92）
+         9/21  （+ ky4 959，需 GGASolver(..., dense_tank_bound_check=False)）
+
+ **没到预期的 10**，差的两个都是水池 H0 压在边界上，逐个查清：
+ · Anytown_wntr：水池 41/42 的 H0=225.000000 == Hmin=225.000000（空池）。
+   **真的会触发**：mode="epanet" 开 status_machine 后 链路 142(21→41)、143(22→42)
+   OPEN→TEMPCLOSED；冻结状态解 vs 状态机解 max|ΔH| = **4.4756e+19 ft**。
+   ⇒ 这个网 dense 现在**必须**拒绝，不是守卫过严。关掉静态守卫后
+     _check_dense_tank_status 在 solve 里照样命中并 raise（点名水池 41、链路 142），
+     两层守卫互相印证。
+ · ky4：水池 T-2 的 H0=765.000010 == Hmin=765.000010（空池），但 t=0 的完整判据
+   **不触发**（status_machine 逐链路无任何改变）。静态守卫是必要条件、偏保守，
+   所以给了 dense_tank_bound_check=False 出口；关掉后 solve 正常，与 epanet 路径
+   max|ΔH|=8.416e-08 ft / max|ΔQ|=1.497e-08 cfs。
+ 剩余 12 网的阻塞原因（与 dense_gap_plan.md §2 一致，本次未做）：
+   PRV 7、CVPIPE 6（Richmond_skeleton 只差 CVPIPE）、FCV 2、PSV 1、D-W 1（Balerma）。
+
+## 7. 验收③：mode="epanet" 路径数值完全未变
+
+ regression_all.py 报告与改动前逐行 diff（忽略时间戳/用时列）：
+   全 50 行**只有 1 行变化**：附录B ⑦ city_d GPU vs CPU  worst 3.676e-16 → 9.021e-16
+   （门槛 1e-8，两者都是 1ulp 级）。单独重跑 audit_grad_adversarial.py 复现：
+     rand_main_0009  3.481e-16 → 3.352e-16
+     city_d          9.021e-16 → 3.676e-16（跑回原值）
+   ⇒ cuBLAS 归约的 run-to-run 非确定性，与本次改动无关。city_d/rand_main_* 全部
+     link_types∈{PIPE,TCV}、泵 0 台、池 0 个，_pump_PY 不会被调用、closed_dense
+     就是 self.closed、_init_flow 泵支掩码为空、tl_k 为空 ⇒ 代码路径逐位未变。
+ 46 个 "0.000e+00" 的逐位断言项**全部保持 0.000e+00**（改前改后计数同为 46）。
+
+## 8. 验收④：scripts/regression_all.py 前台跑完 = **PASS 50/50**
+
+ 总用时 271s。报告见 data/regression_report.txt。关键行不变：
+   ③ EPS pub_anytown（CUSTOM 多段泵曲线 EPS）H=6.082e-12 Q=4.750e-12 状态PASS
+   ⑤ 三方对拍 B-C最差=5.85e-08、A-C最差=7.46e-07（门槛 1e-6 / 1e-4）
+   ⑥ 对抗审计 22/22 PASS   ⑦ D-W/CMH/FCV 位级 PASS   ⑧ D-W 梯度 6.142e-07
+ 另：dgga/solver.py 与 dgga/autodiff.py 的 __main__ 冒烟测试均通过。
+
+## 9. 验收⑤：autodiff.solve_unrolled 入口守卫仍然正确
+
+ 对 21 个公开网逐个调用 solve_unrolled(K=2)，与"link_type ⊆ {CVPIPE,PIPE,PUMP,TCV}"
+ 的期望比对：**21/21 一致**。
+   放行 12：Anytown, Anytown_wntr, Balerma, Fossolo_poly1, Hanoi, Modena,
+            Net1, Net2, Net3, Pescara, Richmond_skeleton(CVPIPE+PUMP), ky4
+   拒绝  9：BWSN_1(PRV), BWSN_2(PSV/FCV), C-Town(PRV/FCV), D-Town(PRV),
+            L-TOWN(PRV), L-TOWN_Real(PRV), Net6(PRV), Richmond_standard(PRV), ky10(PRV)
+ ⚠ 遗留（**不在本任务范围，仅记录**）：该守卫只看 link_type，**没有看
+   headloss_form**。Balerma（D-W、无泵无阀）仍被放行，而 solve_unrolled 用的是
+   H-W 的指数配去掉摩阻因子 f 的 r - dense_gap_plan.md §6 实测该网 K=30 时
+   max|ΔH| = 1.82e+4 ft 且不抛异常。建议在同一处补一句 headloss_form != "H-W" 的
+   raise（0.1 人日）。
+
+## 10. 梯度侧（不在验收清单，但做了，防止交出坏东西）
+
+ A = 新的 dense 固定 K 展开（solve(accuracy=0.0, max_iter=K) 的反传）
+ B = ImplicitGGASolve（项目参考的隐式伴随）
+ U = autodiff.solve_unrolled（既有的、独立写的展开路径）
+ C = 中央差分（被求导函数用 mode="epanet" 逐位路径，accuracy=1e-14）
+
+  网        K    A-vs-B 需水最大相对差   A-vs-B 水库/水池水头
+  Anytown   25   4.512e-12              3.918e-12
+  Net1      25   6.848e-13              1.250e-14
+  Net2      40   8.295e-10              1.581e-14
+  Net3      25   1.299e-02              1.299e-02
+  ky4       40   3.089e-03              3.545e-08
+
+ Anytown（CUSTOM 泵）/ Net1（幂函数泵）/ Net2（水池）三个网 A 与 B 吻合到
+ 1e-10~1e-12，**泵支与"水池当定水头节点"的可微性（含对水池水头求导）成立**。
+ Net3 / ky4 的 1e-2 / 3e-3 定位如下，结论是"既有性质、非本次引入"：
+  · 差异只出现在泵相邻节点（Net3 节点"10"、ky4 "I-Pump-1"/"O-Pump-1"），其余
+    坐标 A-B 差 ~1e-8。
+  · 高精度中央差分裁决（h=1e-2/1e-3/1e-4）站在 **B** 一边：
+      Net3 节点10   FD=2.9294e+00(h=1e-3)  gB=2.93060e+00  gA=2.96867e+00
+      ky4 O-Pump-1  FD=4.08580e+01(h=1e-3) gB=4.08534e+01  gA=4.09516e+01
+  · 但 **A 与既有的 U 吻合**：max|gA-gU| = 3.4e-4（Net3）/ 8.0e-5（ky4），
+    而 |gA-gB| ≈ |gU-gB| = 3.8e-2 / 1.1e-1（max|gB| 分别 45.2 / 362.9）。
+    ⇒ 这是"展开路径含泵时在泵节点上的既有偏差"，autodiff.solve_unrolled 早就有，
+      我的移植如实复现了它，没有新增误差。regression_all ⑤ 的门槛本来就是
+      A-C<1e-4 / B-C<1e-6，把展开路径列为较松的一条，与此自洽。
+  · 附带发现：Net3 与 ky4 的 GGA 迭代在 relerr≈1e-9 处进入舍入极限环，**epanet
+    路径同样如此**（K=100 时 dense relerr=7.0e-9 / epanet 6.6e-9），所以拿
+    accuracy=1e-12 去要求收敛是做不到的；对这两个网做梯度时应走 B（隐式）。
+  · 另一处易踩的坑（记下来免得下次重查）：Net3 的定水头节点 93 "Lake" 只经一条
+    **初始 CLOSED 的泵**（link 117）连网，真实灵敏度 dL/dH93 ≈ -2.9e-8（P=1/CBIG
+    量级），而 h=1e-4 的中央差分噪声是 ±5e-3 - 该坐标 FD 无效，别当成梯度错。
+
+## 11. 泵 P/Y 单元对拍（_pump_PY 张量版 vs _PY_np numpy 逐位版）
+
+ q 扫掠 32 组（含 1e-9~20 倍初值 + 20 组随机），比较对象为"套完 closed_dense 覆盖
+ 之后"的 P/Y（与 dense 主循环同口径）：
+   Anytown(CUSTOM)        max|ΔP|=0.000e+00  max|ΔY|=0.000e+00
+   Anytown_wntr(CUSTOM×3) max|ΔP|=0.000e+00  max|ΔY|=0.000e+00
+   Net1(POWER n=2)        max|ΔP|=0.000e+00  max|ΔY|=0.000e+00
+   Net3(POWER n=1.77/1.09)max|ΔP|=5.551e-17  max|ΔY|=1.421e-14
+   ky4(CONST_HP×2)        max|ΔP|=3.469e-18  max|ΔY|=4.441e-16
+   合成 Net3 n==1（线性支）      ΔP=ΔY=0.000e+00
+   合成 Net3 NOCURVE             ΔP=ΔY=0.000e+00
+   合成 Net3 CONST_HP            ΔP=ΔY=0.000e+00
+   合成 Net3 ω=0.7（相似律）      ΔP=ΔY=0.000e+00
+   合成 Anytown ω=0.7            ΔP=ΔY=0.000e+00
+ 总最差 1.421e-14。非零项只出现在带 pow 的幂函数/恒功率支：numpy 路径走
+ msvcrt 的 pow（_pow_crt，为位级对拍 DLL 而设），torch 走自己的 pow，差 1ulp。
+ 这正是 §5 里 Net3 的 3.88e-7 ft 的来源（经 κ 放大），量级自洽。
+
+## 12. 已知点 / 留给后续
+
+ · dense 仍不支持：CVPIPE、PRV/PSV、FCV、PBV/GPV、D-W、PDA（构造期全部 raise）。
+ · dense 仍无状态机。泵 XHEAD 与水池 TEMPCLOSED 都是"事后复核 + raise"，
+   不是"能算"。要能算，得做 dense_gap_plan.md §2 的"批量状态机不动点"（3.5 人日）。
+ · dense 也没有 CV 反流、linkstatus 的 XHEAD 重开等语义；本任务允许的 PIPE/TCV/PUMP
+   三类里，只有 PUMP 会触发状态切换，已被 §4 的守卫兜住。
+ · solve_unrolled 的 D-W 缺守卫（§9 ⚠）。

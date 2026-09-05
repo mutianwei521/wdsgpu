@@ -1,0 +1,43 @@
+<node-06>
+NVIDIA GeForce RTX 5090, 32607 MiB
+================================================================================================
+隐式伴随 GPU 批量化 · 集群验收 + L-TOWN f+b 端到端全表
+node: <node-06> | torch 2.11.0+cu128 | NVIDIA GeForce RTX 5090
+nvmath 1.0.0 | B 列: [8, 64, 256, 1024] | ACC: 1e-06
+md5 dgga/solver.py 93775f11f35d03148147262819fde85a
+md5 dgga/autodiff.py 517eec16efa8960549c21fdc7cfa7d46
+sha256 INP 8e3009b8fd5e0b9d79e0c0d999cc6af9b2b4132d84d2cadc04e1bdf07086dc02
+
+### L-TOWN Nj=782 L=909 N=785 nnz=2592
+/data/run01/<user>/wdsgpu/hydrograd/adjgpu/dgga/solver.py:2460: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hydrograd/adjgpu/dgga/solver.py:2460: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+/data/run01/<user>/wdsgpu/hydrograd/adjgpu/dgga/solver.py:2826: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:213.)
+  return torch.as_tensor(np.asarray(x), dtype=dt, device=dev)
+§1 正确性（B=8，torch.use_deterministic_algorithms(True)）
+  cudss 计数：前向 factorize=23 solve=57 | backward 增量 factorize=0（须 0） bwd_solve=99 bwd_reuse=1 bwd_refactorize=0
+  伴随零新增 factorize：PASS
+  梯度对拍（demand，B=8，状态组=1）：cudss vs CPU=3.296e-15  dense vs CPU=3.159e-15  cudss vs dense=2.747e-16
+  门槛 <1e-6：PASS
+
+§2 时间全表（ms/场景）
+  B=8     fwd d  20.72367 c   7.95559 | implCPU  347.76258 (组1) | f+b(gpu) d  46.69417 c  15.48038 | |g| cpu=5.685936e+03 gpu_d=5.685936e+03 gpu_c=5.685936e+03
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=64    fwd d   5.86354 c   1.40414 | implCPU  331.28986 (组1) | f+b(gpu) d  11.99039 c   3.15486 | |g| cpu=1.377453e+04 gpu_d=1.377453e+04 gpu_c=1.377453e+04
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  B=256   fwd d   3.80644 c   0.69706 | implCPU  335.34388 (组1) | f+b(gpu) d   6.60921 c   1.86030 | |g| cpu=2.967041e+04 gpu_d=2.967041e+04 gpu_c=2.967041e+04
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  [err impl B=1024] torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 4.67 GiB. GPU 0 has a total capacity of 31.36 GiB of which 3.09 GiB is free. Including non-PyTorch
+  B=1024  fwd d       OOM c   0.52677 | implCPU        OOM (组-1) | f+b(gpu) d       OOM c   1.54212 | |g| cpu=nan gpu_d=- gpu_c=5.895319e+04
+
+================================================================================================
+§T 汇总（ms/场景）node=<node-06>
+B     | fwd_d     fwd_c    | implCPU     | 旧f+b_d   旧f+b_c  | 新f+b_d   新f+b_c  | 加速(旧d/新d) 加速(旧c/新c) 加速(旧c/新c最优)
+8     |  20.72367   7.95559 |   347.76258 | 368.48625 355.71817 |  46.69417  15.48038 |    7.89x   22.98x   22.98x
+64    |   5.86354   1.40414 |   331.28986 | 337.15340 332.69400 |  11.99039   3.15486 |   28.12x  105.45x  105.45x
+256   |   3.80644   0.69706 |   335.34388 | 339.15032 336.04094 |   6.60921   1.86030 |   51.31x  180.64x  180.64x
+1024  |       OOM   0.52677 |         OOM |       OOM       OOM |       OOM   1.54212 |        -        -        -
+ADJGPU DONE rc=0
+ADJGPU JOB DONE rc=0

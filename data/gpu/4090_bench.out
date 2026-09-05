@@ -1,0 +1,27 @@
+==============================================================
+partition : gpu_4090
+node      : <node-05>
+cpus      : 6
+NVIDIA GeForce RTX 4090, 24564 MiB, 0 %
+==============================================================
+========================================================================
+host <node-05> | torch 2.11.0+cu128 cu12.8 | 6 CPU threads
+GPU  NVIDIA GeForce RTX 4090 x1 (sm_8.9)
+net  city_d.inp  N=542 Nj=541 L=554
+========================================================================
+[CPU float64] B=1: 17.859 ms/scen  B=64: 43.489 ms/scen  B=256: 44.146 ms/scen   iters 4-5
+[GPU float64] B=1: 18.850 ms/scen  B=64: 0.917 ms/scen  B=256: 0.641 ms/scen   iters 4-5
+  GPU f64 vs CPU f64 (B=64): max|dH| = 9.421e-06 ft   <- reduction order
+[GPU float32] B=1: 49.736 ms/scen  B=64: 4.316 ms/scen  B=256: 2.181 ms/scen   iters 14-24
+  GPU f32 vs CPU f64 (B=64): max|dH| = 1.266e+02 ft
+  speedup GPU/CPU at B=1   : 0.95x
+  speedup GPU/CPU at B=64  : 47.42x
+  speedup GPU/CPU at B=256 : 68.85x
+-> gpu_bench.json
+
+library : libepanet22.so
+network : N=542  L=554
+EPANET solve_only          0.547 ms/scenario
+EPANET set_demands         0.810 ms/scenario
+EPANET read_heads          0.750 ms/scenario
+EPANET end_to_end          2.122 ms/scenario

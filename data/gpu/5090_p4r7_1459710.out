@@ -1,0 +1,240 @@
+NVIDIA GeForce RTX 5090, 32607 MiB
+node: <node-13> | cpus: 8
+/data/run01/<user>/wdsgpu/hgp4rm/dgga/solver.py:2016: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/hgp4rm/dgga/solver.py:2016: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+========================================================================================================
+P4 R7 · ragged + slots>1 逐出压测 | node: <node-13> | torch 2.11.0+cu128 | NVIDIA GeForce RTX 5090 | ctx 588.19 MiB
+nvmath 1.0.0 | steps/轮 = 4 | 桶: [32, 48, 64, 80, 96, 112, 128, 144, 160, 176, 192, 208, 224, 240, 256, 272]
+md5 dgga/solver.py 45b0b0eeb66ed4e15ef81c53809d229a
+md5 dgga/autodiff.py e4b8cfe49536f85b435e04e5ed5621d2
+
+### Modena  Nj=268  K=5  emitter 节点 60 个
+  S1 fixed      cap=8    slots=1   | 冷    1.444 s (plan   1) | 热    0.323 s | step 中位     80.88 p90     80.91 max     81.14 ms | plan 0    fact 36    bwd_reuse 4     bwd_refact 16    | states 1   | 设备增量    128.0 MiB
+  S1 fixed      cap=16   slots=1   | 冷    0.440 s (plan   1) | 热    0.324 s | step 中位     80.95 p90     80.99 max     81.43 ms | plan 0    fact 36    bwd_reuse 4     bwd_refact 16    | states 1   | 设备增量     96.0 MiB
+  S1 fixed      cap=None slots=1   | 冷    0.439 s (plan   1) | 热    0.329 s | step 中位     81.89 p90     81.95 max     83.81 ms | plan 0    fact 36    bwd_reuse 4     bwd_refact 16    | states 1   | 设备增量     96.0 MiB
+  S1 fixed      cap=8    slots=4   | 冷    0.762 s (plan   4) | 热    0.325 s | step 中位     81.29 p90     81.33 max     81.56 ms | plan 0    fact 24    bwd_reuse 16    bwd_refact 4     | states 4   | 设备增量    260.0 MiB
+  S1 fixed      cap=32   slots=8   | 冷    1.192 s (plan   8) | 热    0.326 s | step 中位     81.57 p90     81.70 max     81.83 ms | plan 0    fact 20    bwd_reuse 20    bwd_refact 0     | states 8   | 设备增量    394.0 MiB
+  S1 fixed      cap=64   slots=1   | 冷    0.436 s (plan   1) | 热    0.328 s | step 中位     82.02 p90     82.09 max     82.72 ms | plan 0    fact 36    bwd_reuse 4     bwd_refact 16    | states 1   | 设备增量     96.0 MiB
+  S2 bucket4    cap=8    slots=1   | 冷    0.424 s (plan   4) | 热    0.205 s | step 中位     51.48 p90     54.80 max     61.15 ms | plan 0    fact 36    bwd_reuse 4     bwd_refact 16    | states 4   | 设备增量    156.0 MiB
+  S2 bucket4    cap=16   slots=1   | 冷    0.425 s (plan   4) | 热    0.206 s | step 中位     51.50 p90     54.85 max     61.84 ms | plan 0    fact 36    bwd_reuse 4     bwd_refact 16    | states 4   | 设备增量    156.0 MiB
+  S2 bucket4    cap=None slots=1   | 冷    0.430 s (plan   4) | 热    0.205 s | step 中位     51.00 p90     54.35 max     61.87 ms | plan 0    fact 36    bwd_reuse 4     bwd_refact 16    | states 4   | 设备增量    156.0 MiB
+  S2 bucket4    cap=8    slots=4   | 冷    1.080 s (plan  16) | 热    1.087 s | step 中位    273.19 p90    301.90 max    354.49 ms | plan 16   fact 24    bwd_reuse 16    bwd_refact 4     | states 8   | 设备增量    288.0 MiB
+  S2 bucket4    cap=32   slots=8   | 冷    1.288 s (plan  20) | 热    0.865 s | step 中位    218.00 p90    239.53 max    279.96 ms | plan 12   fact 20    bwd_reuse 20    bwd_refact 0     | states 32  | 设备增量   1230.0 MiB
+  S2 bucket4    cap=64   slots=1   | 冷    0.427 s (plan   4) | 热    0.206 s | step 中位     51.50 p90     54.97 max     61.67 ms | plan 0    fact 36    bwd_reuse 4     bwd_refact 16    | states 4   | 设备增量    156.0 MiB
+  S3 bucket16   cap=8    slots=1   | 冷    3.732 s (plan  16) | 热    3.512 s | step 中位    218.85 p90    329.43 max    357.10 ms | plan 16   fact 144   bwd_reuse 16    bwd_refact 64    | states 8   | 设备增量    384.0 MiB
+  S3 bucket16   cap=16   slots=1   | 冷    3.668 s (plan  16) | 热    1.486 s | step 中位     92.43 p90    130.22 max    144.94 ms | plan 0    fact 144   bwd_reuse 16    bwd_refact 64    | states 16  | 设备增量    684.0 MiB
+  S3 bucket16   cap=None slots=1   | 冷    3.487 s (plan  16) | 热    1.489 s | step 中位     93.26 p90    129.94 max    145.43 ms | plan 0    fact 144   bwd_reuse 16    bwd_refact 64    | states 16  | 设备增量    652.0 MiB
+  S3 bucket16   cap=8    slots=4   | 冷    9.830 s (plan  64) | 热    9.740 s | step 中位    594.61 p90    983.96 max   1002.50 ms | plan 64   fact 96    bwd_reuse 64    bwd_refact 16    | states 8   | 设备增量    406.0 MiB
+  S3 bucket16   cap=32   slots=8   | 冷   11.845 s (plan  80) | 热   11.867 s | step 中位    721.09 p90   1117.26 max   1349.84 ms | plan 80   fact 80    bwd_reuse 80    bwd_refact 0     | states 32  | 设备增量   1828.0 MiB
+  S3 bucket16   cap=64   slots=1   | 冷    3.487 s (plan  16) | 热    1.490 s | step 中位     93.27 p90    130.22 max    144.98 ms | plan 0    fact 144   bwd_reuse 16    bwd_refact 64    | states 16  | 设备增量    652.0 MiB
+  S4 accum4     cap=8    slots=1   | 冷    1.037 s (plan   4) | 热    0.819 s | step 中位    203.95 p90    204.01 max    207.54 ms | plan 0    fact 144   bwd_reuse 16    bwd_refact 64    | states 4   | 设备增量    200.0 MiB
+  S4 accum4     cap=16   slots=1   | 冷    1.041 s (plan   4) | 热    0.816 s | step 中位    204.12 p90    204.19 max    204.22 ms | plan 0    fact 144   bwd_reuse 16    bwd_refact 64    | states 4   | 设备增量    200.0 MiB
+  S4 accum4     cap=None slots=1   | 冷    1.044 s (plan   4) | 热    0.816 s | step 中位    203.88 p90    203.92 max    204.08 ms | plan 0    fact 144   bwd_reuse 16    bwd_refact 64    | states 4   | 设备增量    200.0 MiB
+  S4 accum4     cap=8    slots=4   | 冷    4.687 s (plan  72) | 热    4.479 s | step 中位   1079.82 p90   1080.52 max   1240.23 ms | plan 64   fact 128   bwd_reuse 32    bwd_refact 48    | states 8   | 设备增量    332.0 MiB
+  S4 accum4     cap=32   slots=8   | 冷    2.552 s (plan  32) | 热    0.821 s | step 中位    205.28 p90    205.39 max    205.53 ms | plan 0    fact 80    bwd_reuse 80    bwd_refact 0     | states 32  | 设备增量   1110.0 MiB
+  S4 accum4     cap=64   slots=1   | 冷    1.036 s (plan   4) | 热    0.814 s | step 中位    203.55 p90    203.72 max    203.88 ms | plan 0    fact 144   bwd_reuse 16    bwd_refact 64    | states 4   | 设备增量    200.0 MiB
+  S5 accum12    cap=8    slots=1   | 冷    7.808 s (plan  40) | 热    7.038 s | step 中位   1759.60 p90   1761.08 max   1764.75 ms | plan 32   fact 448   bwd_reuse 32    bwd_refact 208   | states 8   | 设备增量    710.0 MiB
+  S5 accum12    cap=16   slots=1   | 冷    5.040 s (plan  12) | 热    3.961 s | step 中位    950.62 p90    951.71 max   1110.32 ms | plan 0    fact 432   bwd_reuse 48    bwd_refact 192   | states 12  | 设备增量    860.0 MiB
+  S5 accum12    cap=None slots=1   | 冷    5.032 s (plan  12) | 热    3.786 s | step 中位    946.54 p90    946.90 max    946.91 ms | plan 0    fact 432   bwd_reuse 48    bwd_refact 192   | states 12  | 设备增量    860.0 MiB
+  S5 accum12    cap=8    slots=4   | 冷   37.254 s (plan 328) | 热   37.017 s | step 中位   9250.62 p90   9305.31 max   9329.54 ms | plan 320  fact 448   bwd_reuse 32    bwd_refact 208   | states 8   | 设备增量    736.0 MiB
+  S5 accum12    cap=32   slots=8   | 冷   34.821 s (plan 328) | 热   34.422 s | step 中位   8577.57 p90   8586.09 max   8700.92 ms | plan 320  fact 352   bwd_reuse 128   bwd_refact 112   | states 32  | 设备增量   1544.0 MiB
+  S5 accum12    cap=64   slots=1   | 冷    5.031 s (plan  12) | 热    3.787 s | step 中位    946.63 p90    947.13 max    949.61 ms | plan 0    fact 432   bwd_reuse 48    bwd_refact 192   | states 12  | 设备增量    860.0 MiB
+  S6 val-interl cap=8    slots=1   | 冷    5.120 s (plan  40) | 热    5.091 s | step 中位   1265.50 p90   1267.05 max   1349.15 ms | plan 39   fact 220   bwd_reuse 0     bwd_refact 20    | states 8   | 设备增量    324.0 MiB
+  S6 val-interl cap=16   slots=1   | 冷    2.306 s (plan  10) | 热    1.418 s | step 中位    354.42 p90    356.57 max    360.37 ms | plan 0    fact 216   bwd_reuse 4     bwd_refact 16    | states 10  | 设备增量    386.0 MiB
+  S6 val-interl cap=None slots=1   | 冷    2.327 s (plan  10) | 热    1.421 s | step 中位    355.33 p90    357.57 max    361.45 ms | plan 0    fact 216   bwd_reuse 4     bwd_refact 16    | states 10  | 设备增量    386.0 MiB
+  S6 val-interl cap=8    slots=4   | 冷    6.635 s (plan  67) | 热    6.546 s | step 中位   1619.58 p90   1683.26 max   1880.50 ms | plan 66   fact 220   bwd_reuse 0     bwd_refact 20    | states 8   | 设备增量    322.0 MiB
+  S6 val-interl cap=32   slots=8   | 冷    3.246 s (plan  27) | 热    2.016 s | step 中位    490.02 p90    498.63 max    579.65 ms | plan 11   fact 200   bwd_reuse 20    bwd_refact 0     | states 32  | 设备增量   1104.0 MiB
+  S6 val-interl cap=64   slots=1   | 冷    2.304 s (plan  10) | 热    1.406 s | step 中位    350.91 p90    352.77 max    356.56 ms | plan 0    fact 216   bwd_reuse 4     bwd_refact 16    | states 10  | 设备增量    386.0 MiB
+
+### ky4     Nj=959  K=9  emitter 节点 60 个
+  S1 fixed      cap=8    slots=1   | 冷    1.114 s (plan   1) | 热    0.647 s | step 中位    161.62 p90    161.71 max    161.85 ms | plan 0    fact 68    bwd_reuse 4     bwd_refact 32    | states 1   | 设备增量    428.0 MiB
+  S1 fixed      cap=16   slots=1   | 冷    1.105 s (plan   1) | 热    0.644 s | step 中位    160.97 p90    161.00 max    161.27 ms | plan 0    fact 68    bwd_reuse 4     bwd_refact 32    | states 1   | 设备增量    428.0 MiB
+  S1 fixed      cap=None slots=1   | 冷    1.108 s (plan   1) | 热    0.645 s | step 中位    161.26 p90    161.41 max    161.62 ms | plan 0    fact 68    bwd_reuse 4     bwd_refact 32    | states 1   | 设备增量    428.0 MiB
+  S1 fixed      cap=8    slots=4   | 冷    2.470 s (plan   4) | 热    0.645 s | step 中位    161.13 p90    161.32 max    162.08 ms | plan 0    fact 56    bwd_reuse 16    bwd_refact 20    | states 4   | 设备增量    548.0 MiB
+  S1 fixed      cap=32   slots=8   | 冷    4.404 s (plan   8) | 热    0.641 s | step 中位    160.31 p90    160.32 max    160.33 ms | plan 0    fact 40    bwd_reuse 32    bwd_refact 4     | states 8   | 设备增量    698.0 MiB
+  S1 fixed      cap=64   slots=1   | 冷    1.103 s (plan   1) | 热    0.645 s | step 中位    161.41 p90    161.48 max    161.52 ms | plan 0    fact 68    bwd_reuse 4     bwd_refact 32    | states 1   | 设备增量    428.0 MiB
+  S2 bucket4    cap=8    slots=1   | 冷    1.218 s (plan   4) | 热    0.429 s | step 中位    107.05 p90    113.07 max    126.17 ms | plan 0    fact 68    bwd_reuse 4     bwd_refact 32    | states 4   | 设备增量    382.0 MiB
+  S2 bucket4    cap=16   slots=1   | 冷    1.200 s (plan   4) | 热    0.429 s | step 中位    106.91 p90    112.81 max    125.98 ms | plan 0    fact 68    bwd_reuse 4     bwd_refact 32    | states 4   | 设备增量    382.0 MiB
+  S2 bucket4    cap=None slots=1   | 冷    1.186 s (plan   4) | 热    0.430 s | step 中位    107.43 p90    113.48 max    126.53 ms | plan 0    fact 68    bwd_reuse 4     bwd_refact 32    | states 4   | 设备增量    382.0 MiB
+  S2 bucket4    cap=8    slots=4   | 冷    3.435 s (plan  16) | 热    3.419 s | step 中位    849.04 p90    957.40 max   1183.93 ms | plan 16   fact 56    bwd_reuse 16    bwd_refact 20    | states 8   | 设备增量    514.0 MiB
+  S2 bucket4    cap=32   slots=8   | 冷    6.422 s (plan  32) | 热    0.432 s | step 中位    108.01 p90    114.59 max    127.52 ms | plan 0    fact 40    bwd_reuse 32    bwd_refact 4     | states 32  | 设备增量   1364.0 MiB
+  S2 bucket4    cap=64   slots=1   | 冷    1.198 s (plan   4) | 热    0.428 s | step 中位    106.76 p90    112.67 max    125.42 ms | plan 0    fact 68    bwd_reuse 4     bwd_refact 32    | states 4   | 设备增量    382.0 MiB
+  S3 bucket16   cap=8    slots=1   | 冷   11.935 s (plan  16) | 热   11.724 s | step 中位    723.00 p90   1152.64 max   1294.10 ms | plan 16   fact 272   bwd_reuse 16    bwd_refact 128   | states 8   | 设备增量   1468.0 MiB
+  S3 bucket16   cap=16   slots=1   | 冷   11.902 s (plan  16) | 热    2.908 s | step 中位    181.09 p90    249.05 max    276.05 ms | plan 0    fact 272   bwd_reuse 16    bwd_refact 128   | states 16  | 设备增量   1744.0 MiB
+  S3 bucket16   cap=None slots=1   | 冷   11.794 s (plan  16) | 热    3.073 s | step 中位    181.09 p90    248.21 max    445.15 ms | plan 0    fact 272   bwd_reuse 16    bwd_refact 128   | states 16  | 设备增量   1744.0 MiB
+  S3 bucket16   cap=8    slots=4   | 冷   38.515 s (plan  64) | 热   38.721 s | step 中位   2456.55 p90   3871.39 max   4509.10 ms | plan 64   fact 224   bwd_reuse 64    bwd_refact 80    | states 8   | 设备增量   1470.0 MiB
+  S3 bucket16   cap=32   slots=8   | 冷   74.197 s (plan 128) | 热   73.733 s | step 中位   4401.69 p90   7677.97 max   8426.33 ms | plan 128  fact 160   bwd_reuse 128   bwd_refact 16    | states 32  | 设备增量   4182.0 MiB
+  S3 bucket16   cap=64   slots=1   | 冷   11.672 s (plan  16) | 热    2.913 s | step 中位    181.52 p90    249.35 max    276.74 ms | plan 0    fact 272   bwd_reuse 16    bwd_refact 128   | states 16  | 设备增量   1744.0 MiB
+  S4 accum4     cap=8    slots=1   | 冷    2.507 s (plan   4) | 热    1.718 s | step 中位    429.44 p90    429.45 max    430.23 ms | plan 0    fact 272   bwd_reuse 16    bwd_refact 128   | states 4   | 设备增量    800.0 MiB
+  S4 accum4     cap=16   slots=1   | 冷    2.497 s (plan   4) | 热    1.720 s | step 中位    429.93 p90    429.96 max    430.91 ms | plan 0    fact 272   bwd_reuse 16    bwd_refact 128   | states 4   | 设备增量    800.0 MiB
+  S4 accum4     cap=None slots=1   | 冷    2.495 s (plan   4) | 热    1.724 s | step 中位    430.43 p90    430.62 max    433.00 ms | plan 0    fact 272   bwd_reuse 16    bwd_refact 128   | states 4   | 设备增量    800.0 MiB
+  S4 accum4     cap=8    slots=4   | 冷   14.849 s (plan  72) | 热   13.881 s | step 中位   3431.45 p90   3434.22 max   3593.85 ms | plan 64   fact 256   bwd_reuse 32    bwd_refact 112   | states 8   | 设备增量    950.0 MiB
+  S4 accum4     cap=32   slots=8   | 冷    7.742 s (plan  32) | 热    1.723 s | step 中位    431.06 p90    431.19 max    431.23 ms | plan 0    fact 160   bwd_reuse 128   bwd_refact 16    | states 32  | 设备增量   1772.0 MiB
+  S4 accum4     cap=64   slots=1   | 冷    2.512 s (plan   4) | 热    1.719 s | step 中位    429.68 p90    429.91 max    430.50 ms | plan 0    fact 272   bwd_reuse 16    bwd_refact 128   | states 4   | 设备增量    800.0 MiB
+  S5 accum12    cap=8    slots=1   | 冷   23.612 s (plan  40) | 热   21.101 s | step 中位   5235.39 p90   5237.90 max   5399.75 ms | plan 32   fact 832   bwd_reuse 32    bwd_refact 400   | states 8   | 设备增量   4348.0 MiB
+  S5 accum12    cap=16   slots=1   | 冷   12.688 s (plan  12) | 热    7.599 s | step 中位   1899.57 p90   1901.04 max   1902.54 ms | plan 0    fact 816   bwd_reuse 48    bwd_refact 384   | states 12  | 设备增量   4478.0 MiB
+  S5 accum12    cap=None slots=1   | 冷   12.791 s (plan  12) | 热    7.603 s | step 中位   1901.90 p90   1902.88 max   1905.11 ms | plan 0    fact 816   bwd_reuse 48    bwd_refact 384   | states 12  | 设备增量   4478.0 MiB
+  S5 accum12    cap=8    slots=4   | 冷  144.351 s (plan 328) | 热  143.023 s | step 中位  35750.58 p90  35811.84 max  35835.89 ms | plan 320  fact 832   bwd_reuse 32    bwd_refact 400   | states 8   | 设备增量   4366.0 MiB
+  S5 accum12    cap=32   slots=8   | 冷  231.826 s (plan 544) | 热  225.527 s | step 中位  56367.17 p90  56379.22 max  56497.31 ms | plan 512  fact 736   bwd_reuse 128   bwd_refact 304   | states 32  | 设备增量   5308.0 MiB
+  S5 accum12    cap=64   slots=1   | 冷   12.659 s (plan  12) | 热    7.599 s | step 中位   1897.41 p90   1897.98 max   1909.33 ms | plan 0    fact 816   bwd_reuse 48    bwd_refact 384   | states 12  | 设备增量   4478.0 MiB
+  S6 val-interl cap=8    slots=1   | 冷   17.219 s (plan  40) | 热   16.938 s | step 中位   4205.40 p90   4312.39 max   4471.23 ms | plan 39   fact 396   bwd_reuse 0     bwd_refact 36    | states 8   | 设备增量    650.0 MiB
+  S6 val-interl cap=16   slots=1   | 冷    6.353 s (plan  10) | 热    2.786 s | step 中位    695.58 p90    699.32 max    708.99 ms | plan 0    fact 392   bwd_reuse 4     bwd_refact 32    | states 10  | 设备增量    716.0 MiB
+  S6 val-interl cap=None slots=1   | 冷    6.384 s (plan  10) | 热    2.784 s | step 中位    697.62 p90    699.36 max    702.04 ms | plan 0    fact 392   bwd_reuse 4     bwd_refact 32    | states 10  | 设备增量    716.0 MiB
+  S6 val-interl cap=8    slots=4   | 冷   22.335 s (plan  67) | 热   22.085 s | step 中位   5505.33 p90   5749.04 max   6291.11 ms | plan 66   fact 396   bwd_reuse 0     bwd_refact 36    | states 8   | 设备增量    650.0 MiB
+  S6 val-interl cap=32   slots=8   | 冷   11.615 s (plan  38) | 热    8.038 s | step 中位   2003.49 p90   2181.75 max   2560.63 ms | plan 28   fact 364   bwd_reuse 32    bwd_refact 4     | states 32  | 设备增量   1474.0 MiB
+  S6 val-interl cap=64   slots=1   | 冷    6.490 s (plan  10) | 热    2.785 s | step 中位    696.70 p90    699.40 max    702.79 ms | plan 0    fact 392   bwd_reuse 4     bwd_refact 32    | states 10  | 设备增量    716.0 MiB
+
+========================================================================================================
+§R7-1 全表  node=<node-13>
+net     形态           参数              | 冷(s)  plan冷 | 热(s)    中位ms    p90ms     maxms    | plan fact bwdreuse bwdref | states 设备增量MiB
+Modena  S1 fixed      cap=8    slots=1   |  1.444     1 |   0.323    80.88    80.91     81.14 |    0   36        4     16 |     1    128.0
+Modena  S1 fixed      cap=16   slots=1   |  0.440     1 |   0.324    80.95    80.99     81.43 |    0   36        4     16 |     1     96.0
+Modena  S1 fixed      cap=None slots=1   |  0.439     1 |   0.329    81.89    81.95     83.81 |    0   36        4     16 |     1     96.0
+Modena  S1 fixed      cap=8    slots=4   |  0.762     4 |   0.325    81.29    81.33     81.56 |    0   24       16      4 |     4    260.0
+Modena  S1 fixed      cap=32   slots=8   |  1.192     8 |   0.326    81.57    81.70     81.83 |    0   20       20      0 |     8    394.0
+Modena  S1 fixed      cap=64   slots=1   |  0.436     1 |   0.328    82.02    82.09     82.72 |    0   36        4     16 |     1     96.0
+Modena  S2 bucket4    cap=8    slots=1   |  0.424     4 |   0.205    51.48    54.80     61.15 |    0   36        4     16 |     4    156.0
+Modena  S2 bucket4    cap=16   slots=1   |  0.425     4 |   0.206    51.50    54.85     61.84 |    0   36        4     16 |     4    156.0
+Modena  S2 bucket4    cap=None slots=1   |  0.430     4 |   0.205    51.00    54.35     61.87 |    0   36        4     16 |     4    156.0
+Modena  S2 bucket4    cap=8    slots=4   |  1.080    16 |   1.087   273.19   301.90    354.49 |   16   24       16      4 |     8    288.0
+Modena  S2 bucket4    cap=32   slots=8   |  1.288    20 |   0.865   218.00   239.53    279.96 |   12   20       20      0 |    32   1230.0
+Modena  S2 bucket4    cap=64   slots=1   |  0.427     4 |   0.206    51.50    54.97     61.67 |    0   36        4     16 |     4    156.0
+Modena  S3 bucket16   cap=8    slots=1   |  3.732    16 |   3.512   218.85   329.43    357.10 |   16  144       16     64 |     8    384.0
+Modena  S3 bucket16   cap=16   slots=1   |  3.668    16 |   1.486    92.43   130.22    144.94 |    0  144       16     64 |    16    684.0
+Modena  S3 bucket16   cap=None slots=1   |  3.487    16 |   1.489    93.26   129.94    145.43 |    0  144       16     64 |    16    652.0
+Modena  S3 bucket16   cap=8    slots=4   |  9.830    64 |   9.740   594.61   983.96   1002.50 |   64   96       64     16 |     8    406.0
+Modena  S3 bucket16   cap=32   slots=8   | 11.845    80 |  11.867   721.09  1117.26   1349.84 |   80   80       80      0 |    32   1828.0
+Modena  S3 bucket16   cap=64   slots=1   |  3.487    16 |   1.490    93.27   130.22    144.98 |    0  144       16     64 |    16    652.0
+Modena  S4 accum4     cap=8    slots=1   |  1.037     4 |   0.819   203.95   204.01    207.54 |    0  144       16     64 |     4    200.0
+Modena  S4 accum4     cap=16   slots=1   |  1.041     4 |   0.816   204.12   204.19    204.22 |    0  144       16     64 |     4    200.0
+Modena  S4 accum4     cap=None slots=1   |  1.044     4 |   0.816   203.88   203.92    204.08 |    0  144       16     64 |     4    200.0
+Modena  S4 accum4     cap=8    slots=4   |  4.687    72 |   4.479  1079.82  1080.52   1240.23 |   64  128       32     48 |     8    332.0
+Modena  S4 accum4     cap=32   slots=8   |  2.552    32 |   0.821   205.28   205.39    205.53 |    0   80       80      0 |    32   1110.0
+Modena  S4 accum4     cap=64   slots=1   |  1.036     4 |   0.814   203.55   203.72    203.88 |    0  144       16     64 |     4    200.0
+Modena  S5 accum12    cap=8    slots=1   |  7.808    40 |   7.038  1759.60  1761.08   1764.75 |   32  448       32    208 |     8    710.0
+Modena  S5 accum12    cap=16   slots=1   |  5.040    12 |   3.961   950.62   951.71   1110.32 |    0  432       48    192 |    12    860.0
+Modena  S5 accum12    cap=None slots=1   |  5.032    12 |   3.786   946.54   946.90    946.91 |    0  432       48    192 |    12    860.0
+Modena  S5 accum12    cap=8    slots=4   | 37.254   328 |  37.017  9250.62  9305.31   9329.54 |  320  448       32    208 |     8    736.0
+Modena  S5 accum12    cap=32   slots=8   | 34.821   328 |  34.422  8577.57  8586.09   8700.92 |  320  352      128    112 |    32   1544.0
+Modena  S5 accum12    cap=64   slots=1   |  5.031    12 |   3.787   946.63   947.13    949.61 |    0  432       48    192 |    12    860.0
+Modena  S6 val-interl cap=8    slots=1   |  5.120    40 |   5.091  1265.50  1267.05   1349.15 |   39  220        0     20 |     8    324.0
+Modena  S6 val-interl cap=16   slots=1   |  2.306    10 |   1.418   354.42   356.57    360.37 |    0  216        4     16 |    10    386.0
+Modena  S6 val-interl cap=None slots=1   |  2.327    10 |   1.421   355.33   357.57    361.45 |    0  216        4     16 |    10    386.0
+Modena  S6 val-interl cap=8    slots=4   |  6.635    67 |   6.546  1619.58  1683.26   1880.50 |   66  220        0     20 |     8    322.0
+Modena  S6 val-interl cap=32   slots=8   |  3.246    27 |   2.016   490.02   498.63    579.65 |   11  200       20      0 |    32   1104.0
+Modena  S6 val-interl cap=64   slots=1   |  2.304    10 |   1.406   350.91   352.77    356.56 |    0  216        4     16 |    10    386.0
+ky4     S1 fixed      cap=8    slots=1   |  1.114     1 |   0.647   161.62   161.71    161.85 |    0   68        4     32 |     1    428.0
+ky4     S1 fixed      cap=16   slots=1   |  1.105     1 |   0.644   160.97   161.00    161.27 |    0   68        4     32 |     1    428.0
+ky4     S1 fixed      cap=None slots=1   |  1.108     1 |   0.645   161.26   161.41    161.62 |    0   68        4     32 |     1    428.0
+ky4     S1 fixed      cap=8    slots=4   |  2.470     4 |   0.645   161.13   161.32    162.08 |    0   56       16     20 |     4    548.0
+ky4     S1 fixed      cap=32   slots=8   |  4.404     8 |   0.641   160.31   160.32    160.33 |    0   40       32      4 |     8    698.0
+ky4     S1 fixed      cap=64   slots=1   |  1.103     1 |   0.645   161.41   161.48    161.52 |    0   68        4     32 |     1    428.0
+ky4     S2 bucket4    cap=8    slots=1   |  1.218     4 |   0.429   107.05   113.07    126.17 |    0   68        4     32 |     4    382.0
+ky4     S2 bucket4    cap=16   slots=1   |  1.200     4 |   0.429   106.91   112.81    125.98 |    0   68        4     32 |     4    382.0
+ky4     S2 bucket4    cap=None slots=1   |  1.186     4 |   0.430   107.43   113.48    126.53 |    0   68        4     32 |     4    382.0
+ky4     S2 bucket4    cap=8    slots=4   |  3.435    16 |   3.419   849.04   957.40   1183.93 |   16   56       16     20 |     8    514.0
+ky4     S2 bucket4    cap=32   slots=8   |  6.422    32 |   0.432   108.01   114.59    127.52 |    0   40       32      4 |    32   1364.0
+ky4     S2 bucket4    cap=64   slots=1   |  1.198     4 |   0.428   106.76   112.67    125.42 |    0   68        4     32 |     4    382.0
+ky4     S3 bucket16   cap=8    slots=1   | 11.935    16 |  11.724   723.00  1152.64   1294.10 |   16  272       16    128 |     8   1468.0
+ky4     S3 bucket16   cap=16   slots=1   | 11.902    16 |   2.908   181.09   249.05    276.05 |    0  272       16    128 |    16   1744.0
+ky4     S3 bucket16   cap=None slots=1   | 11.794    16 |   3.073   181.09   248.21    445.15 |    0  272       16    128 |    16   1744.0
+ky4     S3 bucket16   cap=8    slots=4   | 38.515    64 |  38.721  2456.55  3871.39   4509.10 |   64  224       64     80 |     8   1470.0
+ky4     S3 bucket16   cap=32   slots=8   | 74.197   128 |  73.733  4401.69  7677.97   8426.33 |  128  160      128     16 |    32   4182.0
+ky4     S3 bucket16   cap=64   slots=1   | 11.672    16 |   2.913   181.52   249.35    276.74 |    0  272       16    128 |    16   1744.0
+ky4     S4 accum4     cap=8    slots=1   |  2.507     4 |   1.718   429.44   429.45    430.23 |    0  272       16    128 |     4    800.0
+ky4     S4 accum4     cap=16   slots=1   |  2.497     4 |   1.720   429.93   429.96    430.91 |    0  272       16    128 |     4    800.0
+ky4     S4 accum4     cap=None slots=1   |  2.495     4 |   1.724   430.43   430.62    433.00 |    0  272       16    128 |     4    800.0
+ky4     S4 accum4     cap=8    slots=4   | 14.849    72 |  13.881  3431.45  3434.22   3593.85 |   64  256       32    112 |     8    950.0
+ky4     S4 accum4     cap=32   slots=8   |  7.742    32 |   1.723   431.06   431.19    431.23 |    0  160      128     16 |    32   1772.0
+ky4     S4 accum4     cap=64   slots=1   |  2.512     4 |   1.719   429.68   429.91    430.50 |    0  272       16    128 |     4    800.0
+ky4     S5 accum12    cap=8    slots=1   | 23.612    40 |  21.101  5235.39  5237.90   5399.75 |   32  832       32    400 |     8   4348.0
+ky4     S5 accum12    cap=16   slots=1   | 12.688    12 |   7.599  1899.57  1901.04   1902.54 |    0  816       48    384 |    12   4478.0
+ky4     S5 accum12    cap=None slots=1   | 12.791    12 |   7.603  1901.90  1902.88   1905.11 |    0  816       48    384 |    12   4478.0
+ky4     S5 accum12    cap=8    slots=4   | 144.351   328 | 143.023 35750.58 35811.84  35835.89 |  320  832       32    400 |     8   4366.0
+ky4     S5 accum12    cap=32   slots=8   | 231.826   544 | 225.527 56367.17 56379.22  56497.31 |  512  736      128    304 |    32   5308.0
+ky4     S5 accum12    cap=64   slots=1   | 12.659    12 |   7.599  1897.41  1897.98   1909.33 |    0  816       48    384 |    12   4478.0
+ky4     S6 val-interl cap=8    slots=1   | 17.219    40 |  16.938  4205.40  4312.39   4471.23 |   39  396        0     36 |     8    650.0
+ky4     S6 val-interl cap=16   slots=1   |  6.353    10 |   2.786   695.58   699.32    708.99 |    0  392        4     32 |    10    716.0
+ky4     S6 val-interl cap=None slots=1   |  6.384    10 |   2.784   697.62   699.36    702.04 |    0  392        4     32 |    10    716.0
+ky4     S6 val-interl cap=8    slots=4   | 22.335    67 |  22.085  5505.33  5749.04   6291.11 |   66  396        0     36 |     8    650.0
+ky4     S6 val-interl cap=32   slots=8   | 11.615    38 |   8.038  2003.49  2181.75   2560.63 |   28  364       32      4 |    32   1474.0
+ky4     S6 val-interl cap=64   slots=1   |  6.490    10 |   2.785   696.70   699.40    702.79 |    0  392        4     32 |    10    716.0
+
+§R7-2 相对缺省 (8,1) 的热轮倍数（同网同形态）  node=<node-13>
+net     形态           参数              | 热(s)    ÷缺省    设备MiB  ÷缺省
+Modena  S1 fixed      cap=8    slots=1   |   0.323   1.00x     128.0   1.00x
+Modena  S1 fixed      cap=16   slots=1   |   0.324   1.00x      96.0   0.75x
+Modena  S1 fixed      cap=None slots=1   |   0.329   1.02x      96.0   0.75x
+Modena  S1 fixed      cap=8    slots=4   |   0.325   1.01x     260.0   2.03x
+Modena  S1 fixed      cap=32   slots=8   |   0.326   1.01x     394.0   3.08x
+Modena  S1 fixed      cap=64   slots=1   |   0.328   1.02x      96.0   0.75x
+Modena  S2 bucket4    cap=8    slots=1   |   0.205   1.00x     156.0   1.00x
+Modena  S2 bucket4    cap=16   slots=1   |   0.206   1.01x     156.0   1.00x
+Modena  S2 bucket4    cap=None slots=1   |   0.205   1.00x     156.0   1.00x
+Modena  S2 bucket4    cap=8    slots=4   |   1.087   5.30x     288.0   1.85x
+Modena  S2 bucket4    cap=32   slots=8   |   0.865   4.22x    1230.0   7.88x
+Modena  S2 bucket4    cap=64   slots=1   |   0.206   1.00x     156.0   1.00x
+Modena  S3 bucket16   cap=8    slots=1   |   3.512   1.00x     384.0   1.00x
+Modena  S3 bucket16   cap=16   slots=1   |   1.486   0.42x     684.0   1.78x
+Modena  S3 bucket16   cap=None slots=1   |   1.489   0.42x     652.0   1.70x
+Modena  S3 bucket16   cap=8    slots=4   |   9.740   2.77x     406.0   1.06x
+Modena  S3 bucket16   cap=32   slots=8   |  11.867   3.38x    1828.0   4.76x
+Modena  S3 bucket16   cap=64   slots=1   |   1.490   0.42x     652.0   1.70x
+Modena  S4 accum4     cap=8    slots=1   |   0.819   1.00x     200.0   1.00x
+Modena  S4 accum4     cap=16   slots=1   |   0.816   1.00x     200.0   1.00x
+Modena  S4 accum4     cap=None slots=1   |   0.816   1.00x     200.0   1.00x
+Modena  S4 accum4     cap=8    slots=4   |   4.479   5.47x     332.0   1.66x
+Modena  S4 accum4     cap=32   slots=8   |   0.821   1.00x    1110.0   5.55x
+Modena  S4 accum4     cap=64   slots=1   |   0.814   0.99x     200.0   1.00x
+Modena  S5 accum12    cap=8    slots=1   |   7.038   1.00x     710.0   1.00x
+Modena  S5 accum12    cap=16   slots=1   |   3.961   0.56x     860.0   1.21x
+Modena  S5 accum12    cap=None slots=1   |   3.786   0.54x     860.0   1.21x
+Modena  S5 accum12    cap=8    slots=4   |  37.017   5.26x     736.0   1.04x
+Modena  S5 accum12    cap=32   slots=8   |  34.422   4.89x    1544.0   2.17x
+Modena  S5 accum12    cap=64   slots=1   |   3.787   0.54x     860.0   1.21x
+Modena  S6 val-interl cap=8    slots=1   |   5.091   1.00x     324.0   1.00x
+Modena  S6 val-interl cap=16   slots=1   |   1.418   0.28x     386.0   1.19x
+Modena  S6 val-interl cap=None slots=1   |   1.421   0.28x     386.0   1.19x
+Modena  S6 val-interl cap=8    slots=4   |   6.546   1.29x     322.0   0.99x
+Modena  S6 val-interl cap=32   slots=8   |   2.016   0.40x    1104.0   3.41x
+Modena  S6 val-interl cap=64   slots=1   |   1.406   0.28x     386.0   1.19x
+ky4     S1 fixed      cap=8    slots=1   |   0.647   1.00x     428.0   1.00x
+ky4     S1 fixed      cap=16   slots=1   |   0.644   1.00x     428.0   1.00x
+ky4     S1 fixed      cap=None slots=1   |   0.645   1.00x     428.0   1.00x
+ky4     S1 fixed      cap=8    slots=4   |   0.645   1.00x     548.0   1.28x
+ky4     S1 fixed      cap=32   slots=8   |   0.641   0.99x     698.0   1.63x
+ky4     S1 fixed      cap=64   slots=1   |   0.645   1.00x     428.0   1.00x
+ky4     S2 bucket4    cap=8    slots=1   |   0.429   1.00x     382.0   1.00x
+ky4     S2 bucket4    cap=16   slots=1   |   0.429   1.00x     382.0   1.00x
+ky4     S2 bucket4    cap=None slots=1   |   0.430   1.00x     382.0   1.00x
+ky4     S2 bucket4    cap=8    slots=4   |   3.419   7.97x     514.0   1.35x
+ky4     S2 bucket4    cap=32   slots=8   |   0.432   1.01x    1364.0   3.57x
+ky4     S2 bucket4    cap=64   slots=1   |   0.428   1.00x     382.0   1.00x
+ky4     S3 bucket16   cap=8    slots=1   |  11.724   1.00x    1468.0   1.00x
+ky4     S3 bucket16   cap=16   slots=1   |   2.908   0.25x    1744.0   1.19x
+ky4     S3 bucket16   cap=None slots=1   |   3.073   0.26x    1744.0   1.19x
+ky4     S3 bucket16   cap=8    slots=4   |  38.721   3.30x    1470.0   1.00x
+ky4     S3 bucket16   cap=32   slots=8   |  73.733   6.29x    4182.0   2.85x
+ky4     S3 bucket16   cap=64   slots=1   |   2.913   0.25x    1744.0   1.19x
+ky4     S4 accum4     cap=8    slots=1   |   1.718   1.00x     800.0   1.00x
+ky4     S4 accum4     cap=16   slots=1   |   1.720   1.00x     800.0   1.00x
+ky4     S4 accum4     cap=None slots=1   |   1.724   1.00x     800.0   1.00x
+ky4     S4 accum4     cap=8    slots=4   |  13.881   8.08x     950.0   1.19x
+ky4     S4 accum4     cap=32   slots=8   |   1.723   1.00x    1772.0   2.21x
+ky4     S4 accum4     cap=64   slots=1   |   1.719   1.00x     800.0   1.00x
+ky4     S5 accum12    cap=8    slots=1   |  21.101   1.00x    4348.0   1.00x
+ky4     S5 accum12    cap=16   slots=1   |   7.599   0.36x    4478.0   1.03x
+ky4     S5 accum12    cap=None slots=1   |   7.603   0.36x    4478.0   1.03x
+ky4     S5 accum12    cap=8    slots=4   | 143.023   6.78x    4366.0   1.00x
+ky4     S5 accum12    cap=32   slots=8   | 225.527  10.69x    5308.0   1.22x
+ky4     S5 accum12    cap=64   slots=1   |   7.599   0.36x    4478.0   1.03x
+ky4     S6 val-interl cap=8    slots=1   |  16.938   1.00x     650.0   1.00x
+ky4     S6 val-interl cap=16   slots=1   |   2.786   0.16x     716.0   1.10x
+ky4     S6 val-interl cap=None slots=1   |   2.784   0.16x     716.0   1.10x
+ky4     S6 val-interl cap=8    slots=4   |  22.085   1.30x     650.0   1.00x
+ky4     S6 val-interl cap=32   slots=8   |   8.038   0.47x    1474.0   2.27x
+ky4     S6 val-interl cap=64   slots=1   |   2.785   0.16x     716.0   1.10x
+P4R R7 DONE
+P4R JOB DONE
