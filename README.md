@@ -420,7 +420,7 @@ machine-readable form.
   title         = {Water-network decisions share one hydraulic gradient, and it can now
                    be computed exactly},
   year          = {2026},
-  eprint        = {arXiv:XXXX.XXXXX},
+  eprint        = {arXiv:2609.06323v1},
   archivePrefix = {arXiv},
   note          = {arXiv identifier to be added on upload. Code and data:
                    https://github.com/mutianwei521/wdsgpu}
