@@ -8,6 +8,7 @@ Distributed as the Python package `dgga`; repository `wdsgpu`.
 [![PyTorch 2.x](https://img.shields.io/badge/PyTorch-2.x-ee4c2c.svg)](https://pytorch.org)
 [![CUDA optional](https://img.shields.io/badge/CUDA-optional%2C%20cuDSS%20route-76b900.svg)](#installation)
 [![Datasets: CC BY 4.0](https://img.shields.io/badge/datasets-CC%20BY%204.0-lightgrey.svg)](datasets/README.md)
+[![arXiv](https://img.shields.io/badge/arXiv-2609.06323-b31b1b.svg)](https://arxiv.org/abs/2609.06323)
 [![DOI](https://img.shields.io/badge/DOI-to%20be%20minted-lightgrey.svg)](#citation)
 
 HydroGrad keeps the reference numerical scheme of water-network hydraulics
@@ -415,13 +416,13 @@ machine-readable form.
 ```bibtex
 @misc{mu2026hydrograd,
   author        = {Mu, Tianwei and Wang, Yue and Yuan, Mingzhe and Wang, Wenhong and
-             Luo, Qing and Xiao, Min and Li, Jun and Yang, Hui},
-  title         = {Water-network decisions share one hydraulic gradient, and it can now
-                   be computed exactly},
+                   Luo, Qing and Xiao, Min and Li, Jun and Yang, Hui},
+  title         = {Water-network decisions share one hydraulic gradient, and it can now be computed exactly},
   year          = {2026},
-  eprint        = {arXiv:2609.06323v1},
+  eprint        = {2609.06323},
   archivePrefix = {arXiv},
-  note          = {Code and data:https://github.com/mutianwei521/wdsgpu}
+  primaryClass  = {cs.LG},
+  url           = {https://arxiv.org/abs/2609.06323}
 }
 ```
 
