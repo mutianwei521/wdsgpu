@@ -8,7 +8,6 @@ Distributed as the Python package `dgga`; repository `wdsgpu`.
 [![PyTorch 2.x](https://img.shields.io/badge/PyTorch-2.x-ee4c2c.svg)](https://pytorch.org)
 [![CUDA optional](https://img.shields.io/badge/CUDA-optional%2C%20cuDSS%20route-76b900.svg)](#installation)
 [![Datasets: CC BY 4.0](https://img.shields.io/badge/datasets-CC%20BY%204.0-lightgrey.svg)](datasets/README.md)
-[![arXiv](https://img.shields.io/badge/arXiv-to%20be%20added-b31b1b.svg)](#citation)
 [![DOI](https://img.shields.io/badge/DOI-to%20be%20minted-lightgrey.svg)](#citation)
 
 HydroGrad keeps the reference numerical scheme of water-network hydraulics
@@ -422,8 +421,7 @@ machine-readable form.
   year          = {2026},
   eprint        = {arXiv:2609.06323v1},
   archivePrefix = {arXiv},
-  note          = {arXiv identifier to be added on upload. Code and data:
-                   https://github.com/mutianwei521/wdsgpu}
+  note          = {Code and data:https://github.com/mutianwei521/wdsgpu}
 }
 ```
 
