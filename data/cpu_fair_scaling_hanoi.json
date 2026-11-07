@@ -1,0 +1,889 @@
+{
+ "scale": {
+  "rows": [
+   {
+    "B": 1,
+    "ep_fwd_wall": 0.00010019994806498289,
+    "ep_fwd_c": 2.0866670335332554e-05,
+    "hg_fwd": 0.002870500029530376,
+    "hg_fwd_gga": 0.0021182666338669756,
+    "hg_fwd_adj": 0.0034155999892391264,
+    "obj_rel_diff": 4.849617123466047e-14,
+    "fd": {
+     "ctr_warm": {
+      "wall": 0.0023609999916516244,
+      "c_only": 0.0006862998707219958,
+      "solves": 69,
+      "rel_err": 2.1150632549129914e-09
+     },
+     "fwd_warm": {
+      "wall": 0.0011591999791562557,
+      "c_only": 0.0002884998684749007,
+      "solves": 35,
+      "rel_err": 3.7999634434780474e-05
+     },
+     "ctr_cold": {
+      "wall": 0.002575899998191744,
+      "c_only": 0.0009796997183002532,
+      "solves": 69,
+      "rel_err": 1.7019274578600662e-09
+     },
+     "fwd_cold": {
+      "wall": 0.0013304000021889806,
+      "c_only": 0.00047259993152692914,
+      "solves": 35,
+      "rel_err": 3.800031600611871e-05
+     }
+    }
+   },
+   {
+    "B": 4,
+    "ep_fwd_wall": 0.00025269994512200356,
+    "ep_fwd_c": 5.993328522890806e-05,
+    "hg_fwd": 0.0055939999874681234,
+    "hg_fwd_gga": 0.0026588999899104238,
+    "hg_fwd_adj": 0.0069083000416867435,
+    "obj_rel_diff": 4.4301250631703197e-14,
+    "fd": {
+     "ctr_warm": {
+      "wall": 0.009214599966071546,
+      "c_only": 0.0023508001468144357,
+      "solves": 276,
+      "rel_err": 1.6198386465900669e-09
+     },
+     "fwd_warm": {
+      "wall": 0.004785900004208088,
+      "c_only": 0.0011700999457389116,
+      "solves": 140,
+      "rel_err": 3.9735682105932655e-05
+     },
+     "ctr_cold": {
+      "wall": 0.010805499972775578,
+      "c_only": 0.004021099826786667,
+      "solves": 276,
+      "rel_err": 1.4869316378593476e-09
+     },
+     "fwd_cold": {
+      "wall": 0.0055837000254541636,
+      "c_only": 0.0020079007954336703,
+      "solves": 140,
+      "rel_err": 3.973601930919704e-05
+     }
+    }
+   },
+   {
+    "B": 16,
+    "ep_fwd_wall": 0.0009992000414058566,
+    "ep_fwd_c": 0.00022856673846642175,
+    "hg_fwd": 0.014167800021823496,
+    "hg_fwd_gga": 0.003620433349472781,
+    "hg_fwd_adj": 0.017199499998241663,
+    "obj_rel_diff": 3.964935340484838e-15,
+    "fd": {
+     "ctr_warm": {
+      "wall": 0.03518970002187416,
+      "c_only": 0.008731600304599851,
+      "solves": 1104,
+      "rel_err": 1.3726766969826214e-09
+     },
+     "fwd_warm": {
+      "wall": 0.018306299985852093,
+      "c_only": 0.004467400023713708,
+      "solves": 560,
+      "rel_err": 4.181589964211761e-05
+     },
+     "ctr_cold": {
+      "wall": 0.04065660003107041,
+      "c_only": 0.014945800765417516,
+      "solves": 1104,
+      "rel_err": 1.4525993948805818e-09
+     },
+     "fwd_cold": {
+      "wall": 0.021432299981825054,
+      "c_only": 0.007723500777501613,
+      "solves": 560,
+      "rel_err": 4.1816017896044524e-05
+     }
+    }
+   },
+   {
+    "B": 64,
+    "ep_fwd_wall": 0.003901099960785359,
+    "ep_fwd_c": 0.0009134332261358699,
+    "hg_fwd": 0.04591220000293106,
+    "hg_fwd_gga": 0.00619470002129674,
+    "hg_fwd_adj": 0.05572770000435412,
+    "obj_rel_diff": 1.7268598668476312e-14,
+    "fd": {
+     "ctr_warm": {
+      "wall": 0.13552040001377463,
+      "c_only": 0.03340700041735545,
+      "solves": 4416,
+      "rel_err": 1.406517423005365e-09
+     },
+     "fwd_warm": {
+      "wall": 0.07045699999434873,
+      "c_only": 0.01717239845311269,
+      "solves": 2240,
+      "rel_err": 4.191088420342393e-05
+     },
+     "ctr_cold": {
+      "wall": 0.16702049999730662,
+      "c_only": 0.06121720053488389,
+      "solves": 4416,
+      "rel_err": 1.4445775235876394e-09
+     },
+     "fwd_cold": {
+      "wall": 0.0872912000049837,
+      "c_only": 0.03131809941260144,
+      "solves": 2240,
+      "rel_err": 4.19108773231022e-05
+     }
+    }
+   },
+   {
+    "B": 256,
+    "ep_fwd_wall": 0.01479090005159378,
+    "ep_fwd_c": 0.0034316666424274445,
+    "hg_fwd": 0.17374499997822568,
+    "hg_fwd_gga": 0.01917480000217135,
+    "hg_fwd_adj": 0.21502910001436248,
+    "obj_rel_diff": 1.5970753211483117e-15,
+    "fd": {
+     "ctr_warm": {
+      "wall": 0.5545817000092939,
+      "c_only": 0.13480330014135689,
+      "solves": 17664,
+      "rel_err": 1.4215809057202398e-09
+     },
+     "fwd_warm": {
+      "wall": 0.283712700009346,
+      "c_only": 0.06809129874454811,
+      "solves": 8960,
+      "rel_err": 4.241170730100985e-05
+     },
+     "ctr_cold": {
+      "wall": 0.6793505999958143,
+      "c_only": 0.24681300233351067,
+      "solves": 17664,
+      "rel_err": 1.4237724205371045e-09
+     },
+     "fwd_cold": {
+      "wall": 0.3486607000231743,
+      "c_only": 0.1242180039989762,
+      "solves": 8960,
+      "rel_err": 4.241170247649177e-05
+     }
+    }
+   },
+   {
+    "B": 1024,
+    "ep_fwd_wall": 0.05836139997700229,
+    "ep_fwd_c": 0.013589800335466862,
+    "hg_fwd": 0.6798600000329316,
+    "hg_fwd_gga": 0.09024709998629987,
+    "hg_fwd_adj": 0.8607353999977931,
+    "obj_rel_diff": 1.858454536456728e-14,
+    "fd": {
+     "ctr_warm": {
+      "wall": 2.1861974999774247,
+      "c_only": 0.5300609000842087,
+      "solves": 70656,
+      "rel_err": 1.626611081893631e-09
+     },
+     "fwd_warm": {
+      "wall": 1.1395724000176415,
+      "c_only": 0.2736309951287694,
+      "solves": 35840,
+      "rel_err": 4.2176488390777084e-05
+     }
+    }
+   },
+   {
+    "B": 4096,
+    "ep_fwd_wall": 0.24570970004424453,
+    "ep_fwd_c": 0.05828459601616487,
+    "hg_fwd": 2.8269612999865785,
+    "hg_fwd_gga": 0.4514863000367768,
+    "hg_fwd_adj": 3.5597320000524633,
+    "obj_rel_diff": 5.7590193893293755e-15,
+    "fd": {
+     "ctr_warm": {
+      "wall": 8.704385499993805,
+      "c_only": 2.124634306470398,
+      "solves": 282624,
+      "rel_err": 1.4427056350110273e-09
+     },
+     "fwd_warm": {
+      "wall": 4.56308579997858,
+      "c_only": 1.0954881953657605,
+      "solves": 143360,
+      "rel_err": 4.232217672630859e-05
+     }
+    }
+   }
+  ],
+  "fits": {
+   "ep_fwd_wall": {
+    "latency_B1_ms": 0.10019994806498289,
+    "marginal_us_per_scen": 60.13774282336049,
+    "fixed_overhead_ms": -1.0965552313637865
+   },
+   "ep_fwd_c": {
+    "latency_B1_ms": 0.020866670335332554,
+    "marginal_us_per_scen": 14.282916029647856,
+    "fixed_overhead_ms": -0.3698917452723246
+   },
+   "hg_fwd": {
+    "latency_B1_ms": 2.870500029530376,
+    "marginal_us_per_scen": 691.1307876949176,
+    "fixed_overhead_ms": -8.318246264920992
+   },
+   "hg_fwd_gga": {
+    "latency_B1_ms": 2.1182666338669756,
+    "marginal_us_per_scen": 112.00757289639682,
+    "fixed_overhead_ms": -10.554574127463473
+   },
+   "hg_fwd_adj": {
+    "latency_B1_ms": 3.4155999892391264,
+    "marginal_us_per_scen": 870.7805595302806,
+    "fixed_overhead_ms": -11.455510943938169
+   },
+   "ep_ctrFD_warm": {
+    "latency_B1_ms": 2.3609999916516244,
+    "marginal_us_per_scen": 2123.72037377094,
+    "fixed_overhead_ms": 6.911566670097096
+   },
+   "ep_ctrFD_warm_c": {
+    "latency_B1_ms": 0.6862998707219958,
+    "marginal_us_per_scen": 518.5070248651203,
+    "fixed_overhead_ms": 0.5568229617661373
+   },
+   "ep_fwdFD_warm": {
+    "latency_B1_ms": 1.1591999791562557,
+    "marginal_us_per_scen": 1114.332531728276,
+    "fixed_overhead_ms": -1.2852681504760068
+   },
+   "crossover_hg_fwd_vs_ep_fwd_wall": null,
+   "crossover_hg_fwd_vs_ep_fwd_c": null
+  }
+ },
+ "protocol_v2": {
+  "date": "2026-10-23",
+  "epanet": "openH once; initH(10) cold base; initH(0) warm FD",
+  "h_fd": 1e-05,
+  "threads": 1,
+  "lbfgsb": {
+   "maxiter": 400,
+   "maxfun": 3000,
+   "ftol": 1e-13,
+   "gtol": 1e-08,
+   "maxcor": 30
+  },
+  "sigma": 0.1,
+  "lam": 0.0001
+ },
+ "env_scale": {
+  "throttle_off": true,
+  "high_prio": true,
+  "core": 8,
+  "bench_ms": {
+   "0": 11.4,
+   "2": 12.07,
+   "4": 11.32,
+   "6": 11.3,
+   "8": 11.1,
+   "10": 11.41,
+   "12": 11.48,
+   "14": 11.63,
+   "16": 20.06,
+   "18": 19.25,
+   "20": 19.27,
+   "22": 19.78,
+   "24": 19.1,
+   "26": 19.75,
+   "28": 18.99,
+   "30": 19.91
+  }
+ },
+ "env_calib": {
+  "throttle_off": true,
+  "high_prio": true,
+  "core": 10,
+  "bench_ms": {
+   "0": 11.46,
+   "2": 13.0,
+   "4": 11.46,
+   "6": 11.66,
+   "8": 11.93,
+   "10": 11.11,
+   "12": 11.34,
+   "14": 11.65,
+   "16": 18.52,
+   "18": 19.42,
+   "20": 19.79,
+   "22": 19.82,
+   "24": 19.54,
+   "26": 20.26,
+   "28": 20.6,
+   "30": 20.53
+  }
+ },
+ "calib": {
+  "paper20|HydroGrad-adjoint": {
+   "arm": "HydroGrad-adjoint",
+   "set": "paper20",
+   "B": 20,
+   "wall_s": 9.117357999959495,
+   "nit": 400,
+   "nfev": 450,
+   "final_loss": 0.009970007000727888,
+   "C_rmse": 5.3543210684783915,
+   "t_to_1p05sig2": 6.5040542999631725,
+   "t_to_sig2": 7.994481999950949,
+   "counters": {
+    "model_calls": 450,
+    "adjoint_solves": 450
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+   "val_frame_rmse_clean": 1.1488322577672572
+  },
+  "paper20|EPANET-ctrFD-warm": {
+   "arm": "EPANET-ctrFD-warm",
+   "set": "paper20",
+   "B": 20,
+   "wall_s": 19.573018499999307,
+   "nit": 400,
+   "nfev": 450,
+   "final_loss": 0.009965877931978001,
+   "C_rmse": 5.3487518851613505,
+   "t_to_1p05sig2": 13.123365100007504,
+   "t_to_sig2": 17.691995800007135,
+   "counters": {
+    "solves": 621000,
+    "c_only_s": 4.969081613002345
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+   "val_frame_rmse_clean": 1.144071017275462
+  },
+  "paper20|EPANET-ctrFD-cold": {
+   "arm": "EPANET-ctrFD-cold",
+   "set": "paper20",
+   "B": 20,
+   "wall_s": 23.755538199970033,
+   "nit": 400,
+   "nfev": 458,
+   "final_loss": 0.009967079367900542,
+   "C_rmse": 5.353304609816357,
+   "t_to_1p05sig2": 16.72314809996169,
+   "t_to_sig2": 21.73131939995801,
+   "counters": {
+    "solves": 632040,
+    "c_only_s": 8.76202713517705
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+   "val_frame_rmse_clean": 1.1482646931078242
+  },
+  "rand200|HydroGrad-adjoint": {
+   "arm": "HydroGrad-adjoint",
+   "set": "rand200",
+   "B": 200,
+   "wall_s": 76.77243000001181,
+   "nit": 400,
+   "nfev": 449,
+   "final_loss": 0.010314426738303559,
+   "C_rmse": 3.9569658171806665,
+   "t_to_1p05sig2": 57.515396200004034,
+   "t_to_sig2": null,
+   "counters": {
+    "model_calls": 449,
+    "adjoint_solves": 449
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+  },
+  "rand200|EPANET-ctrFD-warm": {
+   "arm": "EPANET-ctrFD-warm",
+   "set": "rand200",
+   "B": 200,
+   "wall_s": 192.9435260000173,
+   "nit": 400,
+   "nfev": 445,
+   "final_loss": 0.010350361703945677,
+   "C_rmse": 4.282762501854958,
+   "t_to_1p05sig2": 148.89002740004798,
+   "t_to_sig2": null,
+   "counters": {
+    "solves": 6141000,
+    "c_only_s": 45.81743488670327
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+  }
+ },
+ "calib_seeds": {
+  "paper20|HydroGrad-adjoint|s100": {
+   "arm": "HydroGrad-adjoint",
+   "set": "paper20",
+   "B": 20,
+   "wall_s": 9.009729199984577,
+   "nit": 400,
+   "nfev": 450,
+   "final_loss": 0.009970007000727888,
+   "C_rmse": 5.3543210684783915,
+   "t_to_1p05sig2": 6.419082399981562,
+   "t_to_sig2": 7.902925199945457,
+   "counters": {
+    "model_calls": 450,
+    "adjoint_solves": 450
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+   "val_frame_rmse_clean": 1.1488322577672572,
+   "seed": 100
+  },
+  "paper20|EPANET-ctrFD-warm|s100": {
+   "arm": "EPANET-ctrFD-warm",
+   "set": "paper20",
+   "B": 20,
+   "wall_s": 19.750334799988195,
+   "nit": 400,
+   "nfev": 450,
+   "final_loss": 0.009965877931978001,
+   "C_rmse": 5.3487518851613505,
+   "t_to_1p05sig2": 13.2439739999827,
+   "t_to_sig2": 17.859577399969567,
+   "counters": {
+    "solves": 621000,
+    "c_only_s": 4.69437700312119
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+   "val_frame_rmse_clean": 1.144071017275462,
+   "seed": 100
+  },
+  "paper20|EPANET-ctrFD-cold|s100": {
+   "arm": "EPANET-ctrFD-cold",
+   "set": "paper20",
+   "B": 20,
+   "wall_s": 23.5963783999905,
+   "nit": 400,
+   "nfev": 458,
+   "final_loss": 0.009967079367900542,
+   "C_rmse": 5.353304609816357,
+   "t_to_1p05sig2": 16.400156599993352,
+   "t_to_sig2": 21.56665430002613,
+   "counters": {
+    "solves": 632040,
+    "c_only_s": 8.054598503920715
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+   "val_frame_rmse_clean": 1.1482646931078242,
+   "seed": 100
+  },
+  "rand200|HydroGrad-adjoint|s100": {
+   "arm": "HydroGrad-adjoint",
+   "set": "rand200",
+   "B": 200,
+   "wall_s": 77.92243199999211,
+   "nit": 400,
+   "nfev": 449,
+   "final_loss": 0.010314426738303559,
+   "C_rmse": 3.9569658171806665,
+   "t_to_1p05sig2": 58.24493200000143,
+   "t_to_sig2": null,
+   "counters": {
+    "model_calls": 449,
+    "adjoint_solves": 449
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+   "seed": 100
+  },
+  "rand200|EPANET-ctrFD-warm|s100": {
+   "arm": "EPANET-ctrFD-warm",
+   "set": "rand200",
+   "B": 200,
+   "wall_s": 196.69300869997824,
+   "nit": 400,
+   "nfev": 445,
+   "final_loss": 0.010350361703945677,
+   "C_rmse": 4.282762501854958,
+   "t_to_1p05sig2": 151.9954692000174,
+   "t_to_sig2": null,
+   "counters": {
+    "solves": 6141000,
+    "c_only_s": 46.69043143384624
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+   "seed": 100
+  },
+  "paper20|HydroGrad-adjoint|s101": {
+   "arm": "HydroGrad-adjoint",
+   "set": "paper20",
+   "B": 20,
+   "wall_s": 9.285144199966453,
+   "nit": 400,
+   "nfev": 455,
+   "final_loss": 0.010671707363489378,
+   "C_rmse": 4.8442210408883195,
+   "t_to_1p05sig2": null,
+   "t_to_sig2": null,
+   "counters": {
+    "model_calls": 455,
+    "adjoint_solves": 455
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+   "val_frame_rmse_clean": 1.0807645842834903,
+   "seed": 101
+  },
+  "paper20|EPANET-ctrFD-warm|s101": {
+   "arm": "EPANET-ctrFD-warm",
+   "set": "paper20",
+   "B": 20,
+   "wall_s": 20.048176000011154,
+   "nit": 400,
+   "nfev": 452,
+   "final_loss": 0.010666369164899572,
+   "C_rmse": 4.81930850295883,
+   "t_to_1p05sig2": null,
+   "t_to_sig2": null,
+   "counters": {
+    "solves": 623760,
+    "c_only_s": 4.759151284524705
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+   "val_frame_rmse_clean": 1.075417723215588,
+   "seed": 101
+  },
+  "paper20|EPANET-ctrFD-cold|s101": {
+   "arm": "EPANET-ctrFD-cold",
+   "set": "paper20",
+   "B": 20,
+   "wall_s": 23.037840000004508,
+   "nit": 400,
+   "nfev": 447,
+   "final_loss": 0.010660742532564053,
+   "C_rmse": 4.816013318097285,
+   "t_to_1p05sig2": null,
+   "t_to_sig2": null,
+   "counters": {
+    "solves": 616860,
+    "c_only_s": 7.7918576873489656
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+   "val_frame_rmse_clean": 1.0732134944620149,
+   "seed": 101
+  },
+  "rand200|HydroGrad-adjoint|s101": {
+   "arm": "HydroGrad-adjoint",
+   "set": "rand200",
+   "B": 200,
+   "wall_s": 78.78493359999266,
+   "nit": 400,
+   "nfev": 455,
+   "final_loss": 0.01041498418216205,
+   "C_rmse": 2.785535135095134,
+   "t_to_1p05sig2": 74.97536919999402,
+   "t_to_sig2": null,
+   "counters": {
+    "model_calls": 455,
+    "adjoint_solves": 455
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+   "seed": 101
+  },
+  "rand200|EPANET-ctrFD-warm|s101": {
+   "arm": "EPANET-ctrFD-warm",
+   "set": "rand200",
+   "B": 200,
+   "wall_s": 193.71238400001312,
+   "nit": 400,
+   "nfev": 441,
+   "final_loss": 0.01052286832415913,
+   "C_rmse": 3.667314606004057,
+   "t_to_1p05sig2": null,
+   "t_to_sig2": null,
+   "counters": {
+    "solves": 6085800,
+    "c_only_s": 46.34692677546991
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+   "seed": 101
+  },
+  "paper20|HydroGrad-adjoint|s102": {
+   "arm": "HydroGrad-adjoint",
+   "set": "paper20",
+   "B": 20,
+   "wall_s": 9.112741300021298,
+   "nit": 400,
+   "nfev": 447,
+   "final_loss": 0.010234477002138177,
+   "C_rmse": 4.845750887144845,
+   "t_to_1p05sig2": 6.701900000043679,
+   "t_to_sig2": null,
+   "counters": {
+    "model_calls": 447,
+    "adjoint_solves": 447
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+   "val_frame_rmse_clean": 1.0434778233067235,
+   "seed": 102
+  },
+  "paper20|EPANET-ctrFD-warm|s102": {
+   "arm": "EPANET-ctrFD-warm",
+   "set": "paper20",
+   "B": 20,
+   "wall_s": 19.72206489997916,
+   "nit": 400,
+   "nfev": 449,
+   "final_loss": 0.010211961226774695,
+   "C_rmse": 4.816814893731055,
+   "t_to_1p05sig2": 14.182332800002769,
+   "t_to_sig2": null,
+   "counters": {
+    "solves": 619620,
+    "c_only_s": 4.708868800546043
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+   "val_frame_rmse_clean": 1.0492480177452286,
+   "seed": 102
+  },
+  "paper20|EPANET-ctrFD-cold|s102": {
+   "arm": "EPANET-ctrFD-cold",
+   "set": "paper20",
+   "B": 20,
+   "wall_s": 22.8340726000024,
+   "nit": 400,
+   "nfev": 450,
+   "final_loss": 0.010233709060538219,
+   "C_rmse": 4.832883476037778,
+   "t_to_1p05sig2": 17.09556769998744,
+   "t_to_sig2": null,
+   "counters": {
+    "solves": 621000,
+    "c_only_s": 7.7921122177504
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+   "val_frame_rmse_clean": 1.0436522135924924,
+   "seed": 102
+  },
+  "rand200|HydroGrad-adjoint|s102": {
+   "arm": "HydroGrad-adjoint",
+   "set": "rand200",
+   "B": 200,
+   "wall_s": 77.85622960003093,
+   "nit": 400,
+   "nfev": 444,
+   "final_loss": 0.010377376752061365,
+   "C_rmse": 4.089835714889871,
+   "t_to_1p05sig2": 55.42869410000276,
+   "t_to_sig2": null,
+   "counters": {
+    "model_calls": 444,
+    "adjoint_solves": 444
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+   "seed": 102
+  },
+  "rand200|EPANET-ctrFD-warm|s102": {
+   "arm": "EPANET-ctrFD-warm",
+   "set": "rand200",
+   "B": 200,
+   "wall_s": 196.17109299998265,
+   "nit": 400,
+   "nfev": 446,
+   "final_loss": 0.010195238297376622,
+   "C_rmse": 2.753916718511533,
+   "t_to_1p05sig2": 136.4970812999527,
+   "t_to_sig2": null,
+   "counters": {
+    "solves": 6154800,
+    "c_only_s": 47.023767265025526
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+   "seed": 102
+  },
+  "paper20|HydroGrad-adjoint|s103": {
+   "arm": "HydroGrad-adjoint",
+   "set": "paper20",
+   "B": 20,
+   "wall_s": 9.38882640004158,
+   "nit": 400,
+   "nfev": 458,
+   "final_loss": 0.009166911016235775,
+   "C_rmse": 5.394462274764391,
+   "t_to_1p05sig2": 4.783095500024501,
+   "t_to_sig2": 5.4560745999915525,
+   "counters": {
+    "model_calls": 458,
+    "adjoint_solves": 458
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+   "val_frame_rmse_clean": 1.1810741656877863,
+   "seed": 103
+  },
+  "paper20|EPANET-ctrFD-warm|s103": {
+   "arm": "EPANET-ctrFD-warm",
+   "set": "paper20",
+   "B": 20,
+   "wall_s": 19.887452700000722,
+   "nit": 400,
+   "nfev": 452,
+   "final_loss": 0.009147443117739979,
+   "C_rmse": 5.358021861307303,
+   "t_to_1p05sig2": 10.229921800026204,
+   "t_to_sig2": 11.638716000015847,
+   "counters": {
+    "solves": 623760,
+    "c_only_s": 4.727122406999115
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+   "val_frame_rmse_clean": 1.1720880806946885,
+   "seed": 103
+  },
+  "paper20|EPANET-ctrFD-cold|s103": {
+   "arm": "EPANET-ctrFD-cold",
+   "set": "paper20",
+   "B": 20,
+   "wall_s": 22.78512660000706,
+   "nit": 400,
+   "nfev": 447,
+   "final_loss": 0.00916363828650311,
+   "C_rmse": 5.396280043012634,
+   "t_to_1p05sig2": 12.041795400029514,
+   "t_to_sig2": 14.381174999987707,
+   "counters": {
+    "solves": 616860,
+    "c_only_s": 7.756820638140198
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+   "val_frame_rmse_clean": 1.1853899214512478,
+   "seed": 103
+  },
+  "rand200|HydroGrad-adjoint|s103": {
+   "arm": "HydroGrad-adjoint",
+   "set": "rand200",
+   "B": 200,
+   "wall_s": 77.16658539994387,
+   "nit": 400,
+   "nfev": 443,
+   "final_loss": 0.009624961594844689,
+   "C_rmse": 3.028727137043389,
+   "t_to_1p05sig2": 47.176655799965374,
+   "t_to_sig2": 53.28766189998714,
+   "counters": {
+    "model_calls": 443,
+    "adjoint_solves": 443
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+   "seed": 103
+  },
+  "rand200|EPANET-ctrFD-warm|s103": {
+   "arm": "EPANET-ctrFD-warm",
+   "set": "rand200",
+   "B": 200,
+   "wall_s": 194.86272789997747,
+   "nit": 400,
+   "nfev": 442,
+   "final_loss": 0.009728719875012287,
+   "C_rmse": 3.9381411751752093,
+   "t_to_1p05sig2": 114.62456089997431,
+   "t_to_sig2": 130.97972919995664,
+   "counters": {
+    "solves": 6099600,
+    "c_only_s": 46.64125124865677
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+   "seed": 103
+  },
+  "paper20|HydroGrad-adjoint|s104": {
+   "arm": "HydroGrad-adjoint",
+   "set": "paper20",
+   "B": 20,
+   "wall_s": 9.374823299993295,
+   "nit": 400,
+   "nfev": 455,
+   "final_loss": 0.010134055682826902,
+   "C_rmse": 4.840780954840409,
+   "t_to_1p05sig2": 7.236044299963396,
+   "t_to_sig2": null,
+   "counters": {
+    "model_calls": 455,
+    "adjoint_solves": 455
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+   "val_frame_rmse_clean": 1.0030285195604718,
+   "seed": 104
+  },
+  "paper20|EPANET-ctrFD-warm|s104": {
+   "arm": "EPANET-ctrFD-warm",
+   "set": "paper20",
+   "B": 20,
+   "wall_s": 19.92629339999985,
+   "nit": 400,
+   "nfev": 453,
+   "final_loss": 0.010100224747629437,
+   "C_rmse": 4.767709555184905,
+   "t_to_1p05sig2": 13.595070599985775,
+   "t_to_sig2": null,
+   "counters": {
+    "solves": 625140,
+    "c_only_s": 4.7395232921116985
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+   "val_frame_rmse_clean": 0.99730512082057,
+   "seed": 104
+  },
+  "paper20|EPANET-ctrFD-cold|s104": {
+   "arm": "EPANET-ctrFD-cold",
+   "set": "paper20",
+   "B": 20,
+   "wall_s": 23.045543700049166,
+   "nit": 400,
+   "nfev": 454,
+   "final_loss": 0.010113760799405215,
+   "C_rmse": 4.809004968877212,
+   "t_to_1p05sig2": 16.192125500005204,
+   "t_to_sig2": null,
+   "counters": {
+    "solves": 626520,
+    "c_only_s": 7.836661693523638
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+   "val_frame_rmse_clean": 1.0054005801222912,
+   "seed": 104
+  },
+  "rand200|HydroGrad-adjoint|s104": {
+   "arm": "HydroGrad-adjoint",
+   "set": "rand200",
+   "B": 200,
+   "wall_s": 78.86713069997495,
+   "nit": 400,
+   "nfev": 455,
+   "final_loss": 0.01043473756425258,
+   "C_rmse": 3.115193010054121,
+   "t_to_1p05sig2": 77.4894437000039,
+   "t_to_sig2": null,
+   "counters": {
+    "model_calls": 455,
+    "adjoint_solves": 455
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+   "seed": 104
+  },
+  "rand200|EPANET-ctrFD-warm|s104": {
+   "arm": "EPANET-ctrFD-warm",
+   "set": "rand200",
+   "B": 200,
+   "wall_s": 196.3702467000112,
+   "nit": 400,
+   "nfev": 446,
+   "final_loss": 0.010584420274012298,
+   "C_rmse": 4.098162462327898,
+   "t_to_1p05sig2": null,
+   "t_to_sig2": null,
+   "counters": {
+    "solves": 6154800,
+    "c_only_s": 46.75379297777545
+   },
+   "message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+   "seed": 104
+  }
+ }
+}

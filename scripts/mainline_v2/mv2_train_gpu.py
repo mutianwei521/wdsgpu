@@ -42,11 +42,18 @@ DT = torch.float64
 INP = os.path.join(ROOT, "networks_prv", "L-TOWN.inp")
 if not os.path.exists(INP):
     INP = os.path.join(ROOT, "networks", "public", "_cleaned", "L-TOWN.inp")
+if os.environ.get("MV2_INP"):          # 大修 10-23：可换网络（如 City D），缺省仍为 L-TOWN
+    INP = os.path.join(ROOT, os.environ["MV2_INP"])
+print("INP:", INP)
 SEED = 2026
 NODE = os.popen("hostname").read().strip()
 TBS = [int(x) for x in os.environ.get("MV2_TB", "256,1024").split(",")]
 STEPS = int(os.environ.get("MV2_STEPS", "60"))
 OLD_STEPS = int(os.environ.get("MV2_OLD_STEPS", "2"))
+# 大修 10-23：统一统计量。TIMING_STAT=median 时各格取中位数（缺省 min = 历史 best-of 口径，旧数字照旧可复现）；
+# TIMING_REPS_MIN 为最少重复次数（缺省 2，与历史相同）。
+STAT = os.environ.get("TIMING_STAT", "min")
+REPS_MIN = int(os.environ.get("TIMING_REPS_MIN", "2"))
 LR = float(os.environ.get("MV2_LR", "0.1"))
 ACC = float(os.environ.get("MV2_ACC", "1e-6"))
 HAS_CUDSS = DEV == "cuda"
@@ -285,6 +292,8 @@ for B in TBS:
                   % (OLD_STEPS,
                      " ".join("%.1f" % x for x in t_old),
                      min(t_old) / B, min(t_old) / steady))
+            print("  旧形态中位数 %.1f ms/step | 加速（旧中位/新稳态中位）= %.1fx | 统计量=%s"
+                  % (float(np.median(t_old)), float(np.median(t_old)) / steady, STAT))
         del D, R
         if DEV == "cuda":
             torch.cuda.empty_cache()

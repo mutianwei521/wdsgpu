@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dgga"
-version = "0.2.0"
-description = "HydroGrad: a bit-faithful, differentiable re-implementation of the EPANET 2.2 hydraulic engine (global gradient algorithm) in PyTorch"
+version = "1.2.0"
+description = "HydroGrad: a differentiable global gradient algorithm with implicit adjoint sensitivities for EPANET 2.2 models, in PyTorch"
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.10"

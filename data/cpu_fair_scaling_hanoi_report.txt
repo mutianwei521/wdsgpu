@@ -1,0 +1,95 @@
+==============================================================================================================
+cpu_fair_scaling  2026-10-23 10:12:11  stage=scale  threads=1
+B | EP 前向(墙钟, 纯C) | HG 前向 | HG 前向+伴随 | EP 中心差分-热 | EP 前向差分-热 | 梯度耗时比 中心/HG 前向/HG | 目标值相对差
+    1 |      1.07 ms,     0.13 ms |     32.64 ms |     39.95 ms |    0.022 s (err 2.1e-09) |    0.009 s (err 3.8e-05) |     0.5x     0.2x | 4.8e-14
+      冷启动差分：中心    0.024 s (err 1.7e-09, 69 次求解)，前向    0.014 s (err 3.8e-05)；热启动中心 69 次求解，纯C 0.004 s
+    4 |      2.44 ms,     0.35 ms |     61.28 ms |     69.36 ms |    0.089 s (err 1.6e-09) |    0.041 s (err 4.0e-05) |     1.3x     0.6x | 4.4e-14
+      冷启动差分：中心    0.096 s (err 1.5e-09, 276 次求解)，前向    0.065 s (err 4.0e-05)；热启动中心 276 次求解，纯C 0.016 s
+   16 |      8.95 ms,     1.25 ms |    134.23 ms |    157.61 ms |    0.304 s (err 1.4e-09) |    0.186 s (err 4.2e-05) |     1.9x     1.2x | 4.0e-15
+      冷启动差分：中心    0.358 s (err 1.5e-09, 1104 次求解)，前向    0.205 s (err 4.2e-05)；热启动中心 1104 次求解，纯C 0.054 s
+   64 |     32.72 ms,     5.11 ms |    442.31 ms |    553.47 ms |    1.258 s (err 1.4e-09) |    0.725 s (err 4.2e-05) |     2.3x     1.3x | 1.7e-14
+      冷启动差分：中心    1.292 s (err 1.4e-09, 4416 次求解)，前向    0.725 s (err 4.2e-05)；热启动中心 4416 次求解，纯C 0.213 s
+  256 |    135.95 ms,    20.56 ms |   1571.77 ms |   2282.00 ms |    5.443 s (err 1.4e-09) |    2.671 s (err 4.2e-05) |     2.4x     1.2x | 1.6e-15
+      冷启动差分：中心    5.719 s (err 1.4e-09, 17664 次求解)，前向    3.027 s (err 4.2e-05)；热启动中心 17664 次求解，纯C 0.917 s
+ 1024 |    570.98 ms,    85.19 ms |   6765.66 ms |   8689.47 ms |   14.347 s (err 1.6e-09) |    1.153 s (err 4.2e-05) |     1.7x     0.1x | 1.9e-14
+ 4096 |    234.05 ms,    53.27 ms |   3088.73 ms |   4080.63 ms |    9.595 s (err 1.4e-09) |    4.849 s (err 4.2e-05) |     2.4x     1.2x | 5.8e-15
+[fit] ep_fwd_wall      单工况延迟     1.073 ms | 边际成本   -109.68 us/工况 | 固定开销     1.183 ms
+[fit] ep_fwd_c         单工况延迟     0.129 ms | 边际成本    -10.39 us/工况 | 固定开销     0.139 ms
+[fit] hg_fwd           单工况延迟    32.638 ms | 边际成本  -1196.92 us/工况 | 固定开销    33.835 ms
+[fit] hg_fwd_adj       单工况延迟    39.955 ms | 边际成本  -1500.27 us/工况 | 固定开销    41.455 ms
+[fit] ep_ctrFD_warm    单工况延迟    21.776 ms | 边际成本  -1546.80 us/工况 | 固定开销    23.323 ms
+[fit] ep_ctrFD_warm_c  单工况延迟     4.258 ms | 边际成本    -53.53 us/工况 | 固定开销     4.312 ms
+[fit] ep_fwdFD_warm    单工况延迟     8.749 ms | 边际成本   1203.26 us/工况 | 固定开销     7.546 ms
+[cross] HG 前向 vs ep_fwd_wall: B* ≈ 30 个工况后 HG 每工况更省
+[cross] HG 前向 vs ep_fwd_c: B* ≈ 28 个工况后 HG 每工况更省
+saved -> <repo>\data\cpu_fair_scaling_hanoi.json
+==============================================================================================================
+cpu_fair_scaling  2026-10-23 10:16:39  stage=scale  threads=1
+[env] 关闭后台降频=True 高优先级=True 绑定逻辑核=8 微基准 最快 11.1 ms / 最慢 20.06 ms（偶数号逻辑核）
+B | EP 前向(墙钟, 纯C) | HG 前向(其中批量GGA) | HG 前向+伴随 | EP 中心差分-热 | EP 前向差分-热 | 梯度耗时比 中心/HG 前向/HG | 目标值相对差
+    1 |      0.10 ms,     0.02 ms |      2.87 ms (    2.12) |      3.42 ms |    0.002 s (err 2.1e-09) |    0.001 s (err 3.8e-05) |     0.7x     0.3x | 4.8e-14
+      冷启动差分：中心    0.003 s (err 1.7e-09, 69 次求解)，前向    0.001 s (err 3.8e-05)；热启动中心 69 次求解，纯C 0.001 s
+    4 |      0.25 ms,     0.06 ms |      5.59 ms (    2.66) |      6.91 ms |    0.009 s (err 1.6e-09) |    0.005 s (err 4.0e-05) |     1.3x     0.7x | 4.4e-14
+      冷启动差分：中心    0.011 s (err 1.5e-09, 276 次求解)，前向    0.006 s (err 4.0e-05)；热启动中心 276 次求解，纯C 0.002 s
+   16 |      1.00 ms,     0.23 ms |     14.17 ms (    3.62) |     17.20 ms |    0.035 s (err 1.4e-09) |    0.018 s (err 4.2e-05) |     2.0x     1.1x | 4.0e-15
+      冷启动差分：中心    0.041 s (err 1.5e-09, 1104 次求解)，前向    0.021 s (err 4.2e-05)；热启动中心 1104 次求解，纯C 0.009 s
+   64 |      3.90 ms,     0.91 ms |     45.91 ms (    6.19) |     55.73 ms |    0.136 s (err 1.4e-09) |    0.070 s (err 4.2e-05) |     2.4x     1.3x | 1.7e-14
+      冷启动差分：中心    0.167 s (err 1.4e-09, 4416 次求解)，前向    0.087 s (err 4.2e-05)；热启动中心 4416 次求解，纯C 0.033 s
+  256 |     14.79 ms,     3.43 ms |    173.74 ms (   19.17) |    215.03 ms |    0.555 s (err 1.4e-09) |    0.284 s (err 4.2e-05) |     2.6x     1.3x | 1.6e-15
+      冷启动差分：中心    0.679 s (err 1.4e-09, 17664 次求解)，前向    0.349 s (err 4.2e-05)；热启动中心 17664 次求解，纯C 0.135 s
+ 1024 |     58.36 ms,    13.59 ms |    679.86 ms (   90.25) |    860.74 ms |    2.186 s (err 1.6e-09) |    1.140 s (err 4.2e-05) |     2.5x     1.3x | 1.9e-14
+ 4096 |    245.71 ms,    58.28 ms |   2826.96 ms (  451.49) |   3559.73 ms |    8.704 s (err 1.4e-09) |    4.563 s (err 4.2e-05) |     2.4x     1.3x | 5.8e-15
+[fit] ep_fwd_wall      单工况延迟     0.100 ms | 边际成本     60.14 us/工况 | 截距(固定开销)    -1.097 ms
+[fit] ep_fwd_c         单工况延迟     0.021 ms | 边际成本     14.28 us/工况 | 截距(固定开销)    -0.370 ms
+[fit] hg_fwd           单工况延迟     2.871 ms | 边际成本    691.13 us/工况 | 截距(固定开销)    -8.318 ms
+[fit] hg_fwd_gga       单工况延迟     2.118 ms | 边际成本    112.01 us/工况 | 截距(固定开销)   -10.555 ms
+[fit] hg_fwd_adj       单工况延迟     3.416 ms | 边际成本    870.78 us/工况 | 截距(固定开销)   -11.456 ms
+[fit] ep_ctrFD_warm    单工况延迟     2.361 ms | 边际成本   2123.72 us/工况 | 截距(固定开销)     6.912 ms
+[fit] ep_ctrFD_warm_c  单工况延迟     0.686 ms | 边际成本    518.51 us/工况 | 截距(固定开销)     0.557 ms
+[fit] ep_fwdFD_warm    单工况延迟     1.159 ms | 边际成本   1114.33 us/工况 | 截距(固定开销)    -1.285 ms
+[cross] HG 前向 vs ep_fwd_wall: 边际成本 HG 不低于 EPANET，前向无交点
+[cross] HG 前向 vs ep_fwd_c: 边际成本 HG 不低于 EPANET，前向无交点
+saved -> <repo>\data\cpu_fair_scaling_hanoi.json
+==============================================================================================================
+cpu_fair_scaling  2026-10-23 10:18:22  stage=calib  threads=1
+[env] 关闭后台降频=True 高优先级=True 绑定逻辑核=8 微基准 最快 11.58 ms / 最慢 21.5 ms（偶数号逻辑核）
+[calib paper20] HydroGrad-adjoint    总     9.12s | 达 1.05σ²    6.50s | 达 σ²    7.99s | 迭代 400 调用 450 | loss 9.970007e-03 C_rmse 5.354 | {'model_calls': 450, 'adjoint_solves': 450}
+[calib paper20] EPANET-ctrFD-warm    总    19.57s | 达 1.05σ²   13.12s | 达 σ²   17.69s | 迭代 400 调用 450 | loss 9.965878e-03 C_rmse 5.349 | {'solves': 621000, 'c_only_s': 4.969081613002345}
+[calib paper20] EPANET-ctrFD-cold    总    23.76s | 达 1.05σ²   16.72s | 达 σ²   21.73s | 迭代 400 调用 458 | loss 9.967079e-03 C_rmse 5.353 | {'solves': 632040, 'c_only_s': 8.76202713517705}
+[calib rand200] HydroGrad-adjoint    总    76.77s | 达 1.05σ²   57.52s | 达 σ² 未达到 | 迭代 400 调用 449 | loss 1.031443e-02 C_rmse 3.957 | {'model_calls': 449, 'adjoint_solves': 449}
+[calib rand200] EPANET-ctrFD-warm    总   192.94s | 达 1.05σ²  148.89s | 达 σ² 未达到 | 迭代 400 调用 445 | loss 1.035036e-02 C_rmse 4.283 | {'solves': 6141000, 'c_only_s': 45.81743488670327}
+saved -> <repo>\data\cpu_fair_scaling_hanoi.json
+==============================================================================================================
+cpu_fair_scaling  2026-10-23 17:43:51  stage=calib  threads=1
+[env] 关闭后台降频=True 高优先级=True 绑定逻辑核=10 微基准 最快 11.11 ms / 最慢 20.6 ms（偶数号逻辑核）
+--- 噪声种子 100 ---
+[calib paper20] HydroGrad-adjoint    总     9.01s | 达 1.05σ²    6.42s | 达 σ²    7.90s | 迭代 400 调用 450 | loss 9.970007e-03 C_rmse 5.354 | {'model_calls': 450, 'adjoint_solves': 450}
+[calib paper20] EPANET-ctrFD-warm    总    19.75s | 达 1.05σ²   13.24s | 达 σ²   17.86s | 迭代 400 调用 450 | loss 9.965878e-03 C_rmse 5.349 | {'solves': 621000, 'c_only_s': 4.69437700312119}
+[calib paper20] EPANET-ctrFD-cold    总    23.60s | 达 1.05σ²   16.40s | 达 σ²   21.57s | 迭代 400 调用 458 | loss 9.967079e-03 C_rmse 5.353 | {'solves': 632040, 'c_only_s': 8.054598503920715}
+[calib rand200] HydroGrad-adjoint    总    77.92s | 达 1.05σ²   58.24s | 达 σ² 未达到 | 迭代 400 调用 449 | loss 1.031443e-02 C_rmse 3.957 | {'model_calls': 449, 'adjoint_solves': 449}
+[calib rand200] EPANET-ctrFD-warm    总   196.69s | 达 1.05σ²  152.00s | 达 σ² 未达到 | 迭代 400 调用 445 | loss 1.035036e-02 C_rmse 4.283 | {'solves': 6141000, 'c_only_s': 46.69043143384624}
+--- 噪声种子 101 ---
+[calib paper20] HydroGrad-adjoint    总     9.29s | 达 1.05σ² 未达到 | 达 σ² 未达到 | 迭代 400 调用 455 | loss 1.067171e-02 C_rmse 4.844 | {'model_calls': 455, 'adjoint_solves': 455}
+[calib paper20] EPANET-ctrFD-warm    总    20.05s | 达 1.05σ² 未达到 | 达 σ² 未达到 | 迭代 400 调用 452 | loss 1.066637e-02 C_rmse 4.819 | {'solves': 623760, 'c_only_s': 4.759151284524705}
+[calib paper20] EPANET-ctrFD-cold    总    23.04s | 达 1.05σ² 未达到 | 达 σ² 未达到 | 迭代 400 调用 447 | loss 1.066074e-02 C_rmse 4.816 | {'solves': 616860, 'c_only_s': 7.7918576873489656}
+[calib rand200] HydroGrad-adjoint    总    78.78s | 达 1.05σ²   74.98s | 达 σ² 未达到 | 迭代 400 调用 455 | loss 1.041498e-02 C_rmse 2.786 | {'model_calls': 455, 'adjoint_solves': 455}
+[calib rand200] EPANET-ctrFD-warm    总   193.71s | 达 1.05σ² 未达到 | 达 σ² 未达到 | 迭代 400 调用 441 | loss 1.052287e-02 C_rmse 3.667 | {'solves': 6085800, 'c_only_s': 46.34692677546991}
+--- 噪声种子 102 ---
+[calib paper20] HydroGrad-adjoint    总     9.11s | 达 1.05σ²    6.70s | 达 σ² 未达到 | 迭代 400 调用 447 | loss 1.023448e-02 C_rmse 4.846 | {'model_calls': 447, 'adjoint_solves': 447}
+[calib paper20] EPANET-ctrFD-warm    总    19.72s | 达 1.05σ²   14.18s | 达 σ² 未达到 | 迭代 400 调用 449 | loss 1.021196e-02 C_rmse 4.817 | {'solves': 619620, 'c_only_s': 4.708868800546043}
+[calib paper20] EPANET-ctrFD-cold    总    22.83s | 达 1.05σ²   17.10s | 达 σ² 未达到 | 迭代 400 调用 450 | loss 1.023371e-02 C_rmse 4.833 | {'solves': 621000, 'c_only_s': 7.7921122177504}
+[calib rand200] HydroGrad-adjoint    总    77.86s | 达 1.05σ²   55.43s | 达 σ² 未达到 | 迭代 400 调用 444 | loss 1.037738e-02 C_rmse 4.090 | {'model_calls': 444, 'adjoint_solves': 444}
+[calib rand200] EPANET-ctrFD-warm    总   196.17s | 达 1.05σ²  136.50s | 达 σ² 未达到 | 迭代 400 调用 446 | loss 1.019524e-02 C_rmse 2.754 | {'solves': 6154800, 'c_only_s': 47.023767265025526}
+--- 噪声种子 103 ---
+[calib paper20] HydroGrad-adjoint    总     9.39s | 达 1.05σ²    4.78s | 达 σ²    5.46s | 迭代 400 调用 458 | loss 9.166911e-03 C_rmse 5.394 | {'model_calls': 458, 'adjoint_solves': 458}
+[calib paper20] EPANET-ctrFD-warm    总    19.89s | 达 1.05σ²   10.23s | 达 σ²   11.64s | 迭代 400 调用 452 | loss 9.147443e-03 C_rmse 5.358 | {'solves': 623760, 'c_only_s': 4.727122406999115}
+[calib paper20] EPANET-ctrFD-cold    总    22.79s | 达 1.05σ²   12.04s | 达 σ²   14.38s | 迭代 400 调用 447 | loss 9.163638e-03 C_rmse 5.396 | {'solves': 616860, 'c_only_s': 7.756820638140198}
+[calib rand200] HydroGrad-adjoint    总    77.17s | 达 1.05σ²   47.18s | 达 σ²   53.29s | 迭代 400 调用 443 | loss 9.624962e-03 C_rmse 3.029 | {'model_calls': 443, 'adjoint_solves': 443}
+[calib rand200] EPANET-ctrFD-warm    总   194.86s | 达 1.05σ²  114.62s | 达 σ²  130.98s | 迭代 400 调用 442 | loss 9.728720e-03 C_rmse 3.938 | {'solves': 6099600, 'c_only_s': 46.64125124865677}
+--- 噪声种子 104 ---
+[calib paper20] HydroGrad-adjoint    总     9.37s | 达 1.05σ²    7.24s | 达 σ² 未达到 | 迭代 400 调用 455 | loss 1.013406e-02 C_rmse 4.841 | {'model_calls': 455, 'adjoint_solves': 455}
+[calib paper20] EPANET-ctrFD-warm    总    19.93s | 达 1.05σ²   13.60s | 达 σ² 未达到 | 迭代 400 调用 453 | loss 1.010022e-02 C_rmse 4.768 | {'solves': 625140, 'c_only_s': 4.7395232921116985}
+[calib paper20] EPANET-ctrFD-cold    总    23.05s | 达 1.05σ²   16.19s | 达 σ² 未达到 | 迭代 400 调用 454 | loss 1.011376e-02 C_rmse 4.809 | {'solves': 626520, 'c_only_s': 7.836661693523638}
+[calib rand200] HydroGrad-adjoint    总    78.87s | 达 1.05σ²   77.49s | 达 σ² 未达到 | 迭代 400 调用 455 | loss 1.043474e-02 C_rmse 3.115 | {'model_calls': 455, 'adjoint_solves': 455}
+[calib rand200] EPANET-ctrFD-warm    总   196.37s | 达 1.05σ² 未达到 | 达 σ² 未达到 | 迭代 400 调用 446 | loss 1.058442e-02 C_rmse 4.098 | {'solves': 6154800, 'c_only_s': 46.75379297777545}
+saved -> <repo>\data\cpu_fair_scaling_hanoi.json

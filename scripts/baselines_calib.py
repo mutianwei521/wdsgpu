@@ -318,7 +318,7 @@ def run_cma(obj, cfg, seed, budget=None):
 def run_hybrid(obj, cfg, seed, budget=None):
     """DE 粗搜（de_frac 预算）→ calibrate._lm_polish 精修（余下预算）。
     LM 计数口径与梯度法一致：每次批前向 nfe+=1（含 sensitivity 内部 solve
-    与试探步），每次伴随雅可比 nbwd+=1（成本≈前向 1%，另列）。分段调用
+    与试探步），每次伴随雅可比 nbwd+=1（成本另列；实测 Hanoi 约为前向的 21%、City D 约 1%，见 data/bwd_cost_ratio.json）。分段调用
     _lm_polish（每段 ≤5 次接受迭代）以记录轨迹；每段重置 LM 阻尼 mu=1e-6。"""
     budget = budget if budget is not None else obj.budget
     b_de = int(cfg.get("de_frac", 0.6) * budget)
@@ -602,7 +602,7 @@ def stage_meta(note, device):
             "预算网格快照 = 首次跨越预算点的批次末（基线可多用 ≤pop−1 次评估，宽松方向）",
             "调参：每基线 4 配置 × 3 专用种子（900..902）按中位训练损失选优，"
             "NFE 账单单独列；梯度法沿用 G-C1 固化配置，无新调参",
-            "混合法 LM 段 nbwd（伴随雅可比）另计，成本≈前向 1%（与梯度法口径一致）",
+            "混合法 LM 段 nbwd（伴随雅可比）另计，成本实测 Hanoi 约为前向的 21%、City D 约 1%（data/bwd_cost_ratio.json；与梯度法口径一致）",
             "梯度法补种子 = G-C1 固化配置原样重跑（无调参），保证 30/10 种子配对",
         ])
     save_out(data)

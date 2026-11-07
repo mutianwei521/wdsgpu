@@ -1,0 +1,282 @@
+{
+ "L-TOWN|1": {
+  "B": 1,
+  "up_s": 4.773586988449097e-05,
+  "up_pinned_s": 3.116205334663391e-05,
+  "fb_resident_s": 0.15126405283808708,
+  "down_s": 3.34419310092926e-05,
+  "e2e_s": 0.15060995146632195,
+  "transfer_fraction_of_e2e": 0.0005389936063549946,
+  "bytes_up": 18816,
+  "bytes_down": 12560,
+  "per_scenario_e2e_ms": 150.60995146632195,
+  "per_scenario_resident_ms": 151.26405283808708,
+  "internal_memcpy": {
+   "runtime:cudaMemcpyAsync": {
+    "count": 1965,
+    "device_ms": 0.0
+   },
+   "DtoD": {
+    "count": 1235,
+    "device_ms": 0.9785770000001185
+   },
+   "DtoH": {
+    "count": 259,
+    "device_ms": 0.08691299999993862
+   },
+   "HtoD": {
+    "count": 939,
+    "device_ms": 0.25706099999946036
+   },
+   "runtime:cudaMemcpy2DAsync": {
+    "count": 312,
+    "device_ms": 0.0
+   }
+  }
+ },
+ "L-TOWN|64": {
+  "B": 64,
+  "up_s": 0.0001461803913116455,
+  "up_pinned_s": 5.218014121055603e-05,
+  "fb_resident_s": 0.3507202938199043,
+  "down_s": 0.00012138485908508301,
+  "e2e_s": 0.3516034260392189,
+  "transfer_fraction_of_e2e": 0.000760985902244546,
+  "bytes_up": 1204224,
+  "bytes_down": 803840,
+  "per_scenario_e2e_ms": 5.493803531862795,
+  "per_scenario_resident_ms": 5.480004590936005,
+  "internal_memcpy": {
+   "runtime:cudaMemcpyAsync": {
+    "count": 1737,
+    "device_ms": 0.0
+   },
+   "DtoH": {
+    "count": 259,
+    "device_ms": 0.08652399999982799
+   },
+   "HtoD": {
+    "count": 939,
+    "device_ms": 0.28160100000005106
+   },
+   "DtoD": {
+    "count": 1006,
+    "device_ms": 0.8458460000000269
+   },
+   "runtime:cudaMemcpy2DAsync": {
+    "count": 312,
+    "device_ms": 0.0
+   }
+  }
+ },
+ "L-TOWN|256": {
+  "B": 256,
+  "up_s": 0.0004044733941555023,
+  "up_pinned_s": 0.00011249631643295288,
+  "fb_resident_s": 0.8499978259205818,
+  "down_s": 0.000310506671667099,
+  "e2e_s": 0.8583726324141026,
+  "transfer_fraction_of_e2e": 0.0008329483476328673,
+  "bytes_up": 4816896,
+  "bytes_down": 3215360,
+  "per_scenario_e2e_ms": 3.353018095367588,
+  "per_scenario_resident_ms": 3.3203040075022727,
+  "internal_memcpy": {
+   "runtime:cudaMemcpyAsync": {
+    "count": 1737,
+    "device_ms": 0.0
+   },
+   "DtoH": {
+    "count": 258,
+    "device_ms": 0.10019300000009095
+   },
+   "HtoD": {
+    "count": 939,
+    "device_ms": 0.4180800000030811
+   },
+   "DtoD": {
+    "count": 1006,
+    "device_ms": 1.3285600000010718
+   },
+   "runtime:cudaMemcpy2DAsync": {
+    "count": 312,
+    "device_ms": 0.0
+   }
+  }
+ },
+ "L-TOWN|1024": {
+  "B": 1024,
+  "up_s": 0.0013733096420764923,
+  "up_pinned_s": 0.0003684498369693756,
+  "fb_resident_s": 2.843416839838028,
+  "down_s": 0.0021812431514263153,
+  "e2e_s": 2.873787097632885,
+  "transfer_fraction_of_e2e": 0.0012368880062237958,
+  "bytes_up": 19267584,
+  "bytes_down": 12861440,
+  "per_scenario_e2e_ms": 2.8064327125321142,
+  "per_scenario_resident_ms": 2.776774257654324,
+  "internal_memcpy": {
+   "runtime:cudaMemcpyAsync": {
+    "count": 1737,
+    "device_ms": 0.0
+   },
+   "HtoD": {
+    "count": 939,
+    "device_ms": 0.5161159999989072
+   },
+   "DtoH": {
+    "count": 257,
+    "device_ms": 0.11405599999911147
+   },
+   "DtoD": {
+    "count": 1006,
+    "device_ms": 3.5380050000041203
+   },
+   "runtime:cudaMemcpy2DAsync": {
+    "count": 312,
+    "device_ms": 0.0
+   }
+  }
+ },
+ "City D|1": {
+  "B": 1,
+  "up_s": 5.588307976722717e-05,
+  "up_pinned_s": 3.9655715227127075e-05,
+  "fb_resident_s": 0.046578243374824524,
+  "down_s": 3.7591904401779175e-05,
+  "e2e_s": 0.04666592925786972,
+  "transfer_fraction_of_e2e": 0.002003067026748273,
+  "bytes_up": 13000,
+  "bytes_down": 8672,
+  "per_scenario_e2e_ms": 46.66592925786972,
+  "per_scenario_resident_ms": 46.578243374824524,
+  "internal_memcpy": {
+   "runtime:cudaMemcpyAsync": {
+    "count": 486,
+    "device_ms": 0.0
+   },
+   "DtoD": {
+    "count": 318,
+    "device_ms": 0.2517750000000606
+   },
+   "DtoH": {
+    "count": 38,
+    "device_ms": 0.012768999999983408
+   },
+   "HtoD": {
+    "count": 253,
+    "device_ms": 0.06743000000004667
+   },
+   "runtime:cudaMemcpy2DAsync": {
+    "count": 84,
+    "device_ms": 0.0
+   }
+  }
+ },
+ "City D|64": {
+  "B": 64,
+  "up_s": 0.00011752918362617493,
+  "up_pinned_s": 5.132704973220825e-05,
+  "fb_resident_s": 0.09123073145747185,
+  "down_s": 9.250268340110779e-05,
+  "e2e_s": 0.09238429367542267,
+  "transfer_fraction_of_e2e": 0.002273458600714055,
+  "bytes_up": 832000,
+  "bytes_down": 555008,
+  "per_scenario_e2e_ms": 1.4435045886784792,
+  "per_scenario_resident_ms": 1.4254801790229976,
+  "internal_memcpy": {
+   "runtime:cudaMemcpyAsync": {
+    "count": 437,
+    "device_ms": 0.0
+   },
+   "DtoH": {
+    "count": 42,
+    "device_ms": 0.014207999999975981
+   },
+   "HtoD": {
+    "count": 271,
+    "device_ms": 0.08042200000006824
+   },
+   "DtoD": {
+    "count": 256,
+    "device_ms": 0.21193100000002868
+   },
+   "runtime:cudaMemcpy2DAsync": {
+    "count": 90,
+    "device_ms": 0.0
+   }
+  }
+ },
+ "City D|256": {
+  "B": 256,
+  "up_s": 0.0003279857337474823,
+  "up_pinned_s": 8.492916822433472e-05,
+  "fb_resident_s": 0.21873333677649498,
+  "down_s": 0.00025412067770957947,
+  "e2e_s": 0.22315311804413795,
+  "transfer_fraction_of_e2e": 0.0026085515477400844,
+  "bytes_up": 3328000,
+  "bytes_down": 2220032,
+  "per_scenario_e2e_ms": 0.8716918673599139,
+  "per_scenario_resident_ms": 0.8544270967831835,
+  "internal_memcpy": {
+   "runtime:cudaMemcpyAsync": {
+    "count": 410,
+    "device_ms": 0.0
+   },
+   "DtoH": {
+    "count": 38,
+    "device_ms": 0.015487000000012813
+   },
+   "HtoD": {
+    "count": 253,
+    "device_ms": 0.10975499999995145
+   },
+   "DtoD": {
+    "count": 242,
+    "device_ms": 0.7566600000000917
+   },
+   "runtime:cudaMemcpy2DAsync": {
+    "count": 84,
+    "device_ms": 0.0
+   }
+  }
+ },
+ "City D|1024": {
+  "B": 1024,
+  "up_s": 0.0009442605078220367,
+  "up_pinned_s": 0.0002626590430736542,
+  "fb_resident_s": 0.7824052684009075,
+  "down_s": 0.000673927366733551,
+  "e2e_s": 0.7446550726890564,
+  "transfer_fraction_of_e2e": 0.002173070370301889,
+  "bytes_up": 13312000,
+  "bytes_down": 8880128,
+  "per_scenario_e2e_ms": 0.7272022194229066,
+  "per_scenario_resident_ms": 0.7640676449227612,
+  "internal_memcpy": {
+   "runtime:cudaMemcpyAsync": {
+    "count": 410,
+    "device_ms": 0.0
+   },
+   "DtoH": {
+    "count": 38,
+    "device_ms": 0.01619199999999296
+   },
+   "HtoD": {
+    "count": 253,
+    "device_ms": 0.13734599999936792
+   },
+   "DtoD": {
+    "count": 242,
+    "device_ms": 0.6267269999993519
+   },
+   "runtime:cudaMemcpy2DAsync": {
+    "count": 84,
+    "device_ms": 0.0
+   }
+  }
+ }
+}

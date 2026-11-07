@@ -159,9 +159,8 @@ this repository's MIT licence, and their SHA-256 values are recorded in
 
 ## 5. Datasets shipped here
 
-`datasets/city_d.inp`, `datasets/city_h.inp` and
 `datasets/city_d_leak_records.{csv,json}` are released under CC BY 4.0
 (`datasets/README.md`, with the anonymisation account and the field
-dictionary; `datasets/SHA256SUMS.txt`). `deploy/paracloud/city_d.inp` is a
-byte-identical copy of `datasets/city_d.inp` kept next to the self-contained
-cluster benchmark scripts.
+dictionary; `datasets/SHA256SUMS.txt`). The two operational network models,
+City D and City H, are not distributed; they are available from the
+corresponding author with the permission of the operating utility.

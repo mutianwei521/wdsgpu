@@ -1,0 +1,28 @@
+====================================================================================================
+cpu_compare_hanoi  2026-10-23 00:31:29  stage=grad seeds=100
+CPU=Intel64 Family 6 Model 183 Stepping 1, GenuineIntel  torch=2.13.0+cpu threads=1  numpy=2.3.5  L-BFGS-B opts={'maxiter': 400, 'maxfun': 3000, 'ftol': 1e-13, 'gtol': 1e-08, 'maxcor': 30}
+--- seed=100  EPANET ver=20200 flow_units=5 ucf_flow=28.317000 ucf_head=0.304800  free pipes=34 train sensors=25 train frames=20
+[fwd] EPANET vs HydroGrad 压力一致性（真值，20 训练帧×31 junction）：max|Δp|=1.563e-12 ft, mean=4.673e-13 ft; EPANET iters=5, relerr=4.08e-13
+[obj] L(C0): EPANET=5.613284422784e+02  HydroGrad-tight=5.613284422784e+02  (rel diff 5.06e-15)  HydroGrad-fast=5.613284422784e+02 (rel diff 5.06e-15)
+[cost] 一次 20 帧模型调用：EPANET 1.6 ms | HydroGrad-tight 前向 19.3 ms, 前向+伴随 24.3 ms | HydroGrad-fast 前向 23.5 ms, 前向+伴随 29.8 ms
+[grad] 伴随梯度 ‖g‖=6.0914e+01; tight vs fast 相对差 7.27e-17
+  FD-fwd h_rel=1e-02: rel-L2 err=4.12e-02 max-comp=4.22e-02 cos=0.99995018  time=0.06s  EN_solveH=700
+  FD-fwd h_rel=1e-03: rel-L2 err=4.25e-03 max-comp=4.35e-03 cos=0.99999944  time=0.06s  EN_solveH=700
+  FD-fwd h_rel=1e-04: rel-L2 err=4.26e-04 max-comp=4.37e-04 cos=0.99999999  time=0.06s  EN_solveH=700
+  FD-fwd h_rel=1e-05: rel-L2 err=4.26e-05 max-comp=4.37e-05 cos=1.00000000  time=0.06s  EN_solveH=700
+  FD-ctr h_rel=1e-02: rel-L2 err=1.43e-03 max-comp=1.47e-03 cos=0.99999995  time=0.12s  EN_solveH=1380
+  FD-ctr h_rel=1e-03: rel-L2 err=1.43e-05 max-comp=1.47e-05 cos=1.00000000  time=0.12s  EN_solveH=1380
+  FD-ctr h_rel=1e-04: rel-L2 err=1.43e-07 max-comp=1.47e-07 cos=1.00000000  time=0.12s  EN_solveH=1380
+  FD-ctr h_rel=1e-05: rel-L2 err=1.48e-09 max-comp=1.17e-07 cos=1.00000000  time=0.11s  EN_solveH=1380
+[ratio] 一次目标+梯度：EPANET-fwdFD/HydroGrad-tight = 2.55×, EPANET-ctrFD/HydroGrad-tight = 4.71×; vs fast: 2.08× / 3.85×
+saved -> <repo>\data\cpu_compare_hanoi.json
+====================================================================================================
+cpu_compare_hanoi  2026-10-23 00:32:08  stage=calib seeds=100
+CPU=Intel64 Family 6 Model 183 Stepping 1, GenuineIntel  torch=2.13.0+cpu threads=1  numpy=2.3.5  L-BFGS-B opts={'maxiter': 400, 'maxfun': 3000, 'ftol': 1e-13, 'gtol': 1e-08, 'maxcor': 30}
+--- seed=100  EPANET ver=20200 flow_units=5 ucf_flow=28.317000 ucf_head=0.304800  free pipes=34 train sensors=25 train frames=20
+[calib] HydroGrad-adjoint-tight wall=   11.66s nit= 400 nfev= 450 loss=9.970007e-03 C_rmse=5.3543 valF=1.1488 counters={'model_calls': 450, 'adjoint_solves': 450}  [STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT]
+[calib] HydroGrad-adjoint-fast wall=   21.34s nit= 400 nfev= 457 loss=9.969968e-03 C_rmse=5.3674 valF=1.1478 counters={'model_calls': 457, 'adjoint_solves': 457}  [STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT]
+[calib] EPANET-fwdFD(h=1e-05)  wall=   18.39s nit= 141 nfev= 189 loss=1.696090e-02 C_rmse=8.7087 valF=1.5297 counters={'en_solveH': 132300, 'model_calls': 6615}  [CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH]
+[calib] EPANET-ctrFD(h=1e-05)  wall=   87.75s nit= 400 nfev= 453 loss=9.969292e-03 C_rmse=5.3607 valF=1.1476 counters={'en_solveH': 625140, 'model_calls': 31257}  [STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT]
+[epanet] 校准期间最差收敛：iters=5 relerr=4.15e-10
+saved -> <repo>\data\cpu_compare_hanoi.json

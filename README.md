@@ -1,6 +1,6 @@
 # HydroGrad
 
-**A bit-faithful, differentiable re-implementation of the EPANET 2.2 hydraulic engine in PyTorch.**
+**A differentiable global gradient algorithm with implicit adjoint sensitivities for EPANET 2.2 models, in PyTorch.**
 Distributed as the Python package `dgga`; repository `wdsgpu`.
 
 [![Licence: MIT](https://img.shields.io/badge/licence-MIT-blue.svg)](LICENSE)
@@ -9,7 +9,7 @@ Distributed as the Python package `dgga`; repository `wdsgpu`.
 [![CUDA optional](https://img.shields.io/badge/CUDA-optional%2C%20cuDSS%20route-76b900.svg)](#installation)
 [![Datasets: CC BY 4.0](https://img.shields.io/badge/datasets-CC%20BY%204.0-lightgrey.svg)](datasets/README.md)
 [![arXiv](https://img.shields.io/badge/arXiv-2609.06323-b31b1b.svg)](https://arxiv.org/abs/2609.06323)
-[![DOI](https://img.shields.io/badge/DOI-to%20be%20minted-lightgrey.svg)](#citation)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22544319.svg)](https://doi.org/10.5281/zenodo.22544319)
 
 HydroGrad keeps the reference numerical scheme of water-network hydraulics
 exactly as it ships and makes it differentiable. The `epanet` path reproduces
@@ -226,7 +226,8 @@ python scripts/exempt_diag/verify_exact_fix.py     # the five networks that reac
 
 `benchmark_sweep.py` discovers its network list from `data/reference/*_meta.json`,
 so the two commands above cover 44 of the 52 rows on a fresh clone. City D and
-City H (3 rows) are reproducible from `datasets/`; the `EXA*` and `ky3`/`ky5`
+City H (3 rows) need the two operational models, which are available from the
+corresponding author with the utility's permission (see Datasets); the `EXA*` and `ky3`/`ky5`
 rows need models that are not distributed (`THIRD_PARTY.md`, section 3).
 
 **Regression suite** (`data/regression_report.txt`, 54 items, 285 s):
@@ -275,7 +276,7 @@ python scripts/ltown_mainline/lt_merge.py          # merge the two nodes' output
 (`p4c_agree_check.py`, `p4c_dense_reach.py`); reports `data/p4_remeasure_wip.txt`,
 `data/p4_closeout_wip.txt`.
 
-**Application studies on the released data** (City D, L-TOWN, Hanoi):
+**Application studies** (L-TOWN and Hanoi from public data; City D with the model available on request):
 
 ```bash
 python scripts/calibrate.py --stage ...            # roughness calibration and the sigma ladder (data/calib_gc1_*.json)
@@ -304,6 +305,26 @@ under `data/tables/`).
 **Datasets**: `python scripts/make_public_dataset.py --verify-only` re-runs the
 losslessness check of the anonymisation; it compares the released files with
 the unpublished originals, so it runs only where both are present.
+
+### Water Research revision (manuscript WR118808), release hydroGrad1.2
+
+The revised manuscript corresponds to this release. The analyses added in the revision
+(Supplementary Note 14 and Table S17 of the revised Supplementary Information) and their reports:
+
+| Result in the revised manuscript | Command | Report in `data/` |
+| --- | --- | --- |
+| Classical analytic baseline (Table 4) | `python scripts/baseline_analytic_sens.py` | `baseline_analytic_sens_report.txt`, `baseline_analytic_sens.json` |
+| Matched single-core CPU comparison with EPANET, Hanoi (Section 3.2) | `python scripts/cpu_compare_hanoi.py`; `python scripts/cpu_fair_scaling.py` | `cpu_compare_hanoi_report.txt`, `cpu_fair_scaling_hanoi_report.txt` |
+| Matched CPU comparison, City D (needs the City D model) | `python scripts/cpu_epanet_fd_cityd.py` | `cpu_epanet_fd_cityd_report.txt` |
+| Unified GPU re-timing on one node (Table 5, Table S6) | `bash scripts/wr_freeze_timing.sh` (Slurm, RTX 5090) | `gpu/5090_wrfreeze_1726458.out`, `gpu/5090_wrf512_1727024.out` |
+| Host-device transfer timing | `python scripts/gpu_transfer_timing.py` | `gpu/5090_transfer_timing_1725491.json`, `gpu/5090_transfer_timing_1726458.json` |
+| Backward-to-forward cost ratio (accounting B) | `python scripts/bwd_cost_ratio.py` | `bwd_cost_ratio.json` |
+| Statistics re-check (Section 3.3) | `python scripts/stats_recheck.py` | `stats_recheck_report.txt`, `stats_recheck.csv` |
+| Boundary-condition mismatch (Section 3.3) | `python scripts/bc_mismatch.py` | `bc_mismatch_*.json` |
+| Identifiability metrics (Section 3.6) | `python scripts/identifiability_metrics.py` | `identifiability_metrics.json` |
+
+Each script prints its options with `--help`. The GPU timings are single-machine measurements;
+host names in the logs are replaced by placeholders.
 
 ## Bit-exactness, and its limits
 
@@ -376,30 +397,15 @@ README that is more optimistic than the paper is a bug.
 
 ## Datasets
 
-`datasets/` holds two real municipal water distribution network models and one
-year of field leak repair records, released in anonymised form under
-**CC BY 4.0**: `city_d.inp` (541 junctions, 475 pipes, 79 throttle control
-valves, LPS, Hazen-Williams, 24 h EPS), `city_h.inp` (920 junctions, 1 032
-pipes, 6 pumps) and `city_d_leak_records.{csv,json}` (256 work orders, 230 of
-them joined to a model junction). The two utilities are referred to only as
-City D and City H.
-
-The anonymisation, in the words of [`datasets/README.md`](datasets/README.md):
-node coordinates and pipe vertices have had a fixed rigid-body transform
-applied (translate, rotate by an unpublished angle, translate, round), so
-they are metres under an unpublished rigid-body transform with no datum,
-origin or north direction and must not be used for geolocation; the title,
-provenance banner and map labels are replaced or removed; addresses and
-metering-district names are deleted from the work orders and absolute dates
-replaced by day offsets from an unpublished epoch; node, pipe, pump, valve,
-pattern and curve identifiers are unchanged. EPANET never reads coordinates
-during a hydraulic solve, and the transform is verified hydraulically
-lossless: the original and the released model give `max|delta| = 0.0` on
-every head and flow over the full extended-period simulation
-(`scripts/make_public_dataset.py --verify`). Every result on this page that
-uses City D is therefore reproducible from the released file. SHA-256 values
-are in `datasets/SHA256SUMS.txt`; the field dictionary and the citation for
-the data are in the datasets README.
+`datasets/` holds one year of field leak repair records of City D
+(`city_d_leak_records.{csv,json}`, 256 work orders, 230 of them joined to a model
+junction), released in anonymised form under **CC BY 4.0**. The two operational
+network models used in the paper, City D (541 junctions, 475 pipes) and City H
+(920 junctions, 1 032 pipes), are not distributed: they are available from the
+corresponding author (mzyuan@sia.cn) with the permission of the operating utility.
+Results that use them can be reproduced once the models are placed in `datasets/`.
+The field dictionary and the anonymisation procedure are described in
+[`datasets/README.md`](datasets/README.md); SHA-256 values are in `datasets/SHA256SUMS.txt`.
 
 The 23 synthetic networks under `networks/` are the authors' own, generated by
 `networks/synthetic/generate_random_networks.py` (which regenerates all 23
@@ -409,27 +415,28 @@ not redistributed; sources and licences are in [`THIRD_PARTY.md`](THIRD_PARTY.md
 
 ## Citation
 
-The accompanying paper is deposited on arXiv; the identifier placeholder
-below is filled on upload. `CITATION.cff` carries the same record in
-machine-readable form.
+Please cite the archived software version you used. The concept DOI
+[10.5281/zenodo.22544319](https://doi.org/10.5281/zenodo.22544319) always resolves to the latest
+version; `CITATION.cff` carries the same record in machine-readable form. The accompanying paper is
+under review at *Water Research* (manuscript WR118808); an earlier version is available as an arXiv
+preprint.
 
 ```bibtex
-@misc{mu2026hydrograd,
-  author        = {Mu, Tianwei and Wang, Yue and Yuan, Mingzhe and Wang, Wenhong and
-                   Luo, Qing and Xiao, Min and Li, Jun and Yang, Hui},
-  title         = {Water-network decisions share one hydraulic gradient, and it can now be computed exactly},
-  year          = {2026},
-  eprint        = {2609.06323},
-  archivePrefix = {arXiv},
-  primaryClass  = {cs.LG},
-  url           = {https://arxiv.org/abs/2609.06323}
+@software{mu2026hydrograd,
+  author    = {Mu, Tianwei and Wang, Yue and Yuan, Mingzhe and Wang, Wenhong and
+               Luo, Qing and Xiao, Min and Li, Jun and Yang, Hui},
+  title     = {HydroGrad: a differentiable global gradient algorithm with implicit adjoint sensitivities for EPANET 2.2 models},
+  year      = {2026},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.22544319},
+  url       = {https://doi.org/10.5281/zenodo.22544319}
 }
 ```
 
 ## Licence
 
 Code: MIT, see [`LICENSE`](LICENSE) (chosen for compatibility with EPANET
-2.2, which is also MIT). Datasets under `datasets/`: CC BY 4.0. Synthetic
+2.2, which is also MIT). Leak repair records under `datasets/`: CC BY 4.0. Synthetic
 networks under `networks/`: MIT with the code.
 
 ## Acknowledgements

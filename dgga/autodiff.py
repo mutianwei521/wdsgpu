@@ -63,6 +63,8 @@ _pump_coeffs_np 注释（钳位/关闭支导数为 0）。状态冻结帧经 sta
 StatusType 编码 int8[L]，非微分量）传入，closed = status<=CLOSED。
 """
 
+import warnings
+
 import numpy as np
 import scipy.sparse as sp
 from scipy.sparse.linalg import splu
@@ -77,6 +79,28 @@ except ImportError:  # pragma: no cover
 
 # EN_LinkType（epanet2_enums.h:183-191，与 solver 一致）
 _CVPIPE, _PIPE, _PUMP, _PRV, _PSV, _PBV, _FCV, _TCV, _GPV = range(9)
+
+
+def _warn_frozen_inp_status(s):
+    """未传入 status 时提醒一次（WR 大修 10-23 加，只提示、不改变任何数值）。
+
+    solve_polished / ImplicitGGASolve 缺省把设备状态冻结在 INP 初始值上求解和求导。
+    网络里只有普通管段、没有水池时，这样做是精确的，不提示；含止回阀管、泵、阀门或水池时，
+    实际工况的状态（如 ACTIVE 的 PRV、关闭的止回阀）可能与 INP 初始值不同，
+    导数是在调用者给定的冻结状态下定义的，所以应先用状态机解出状态再传入。
+    每个 solver 对象只提示一次。"""
+    if getattr(s, "_warned_frozen_status", False):
+        return
+    n_dev = int(np.count_nonzero(np.asarray(getattr(s, "lt_np", ())) != _PIPE))
+    n_tank = int(getattr(s, "n_tanks", 0) or 0)
+    if n_dev == 0 and n_tank == 0:
+        return
+    s._warned_frozen_status = True
+    warnings.warn(
+        f"未传入 status：设备状态沿用 INP 初始值冻结（本网含 {n_dev} 个止回阀管/泵/阀门、{n_tank} 个水池）。"
+        "实际工况的状态可能不同（例如 ACTIVE 的 PRV），导数是在这个冻结状态下定义的。"
+        "请先用状态机解出状态（例如 dgga.eps.EpsDriver 的 t=0 帧，或 run_gga(do_status=True)），"
+        "再通过 status=（以及 speed=）传入。", UserWarning, stacklevel=3)
 
 
 # ======================================================================
@@ -540,6 +564,8 @@ def solve_polished(s: GGASolver, d, rh, ke=None, r_hw=None,
     rt = None if r_hw is None else torch.as_tensor(r_np, dtype=s.dtype, device=s.device)
     sp_np = None if speed is None else np.asarray(speed, dtype=np.float64)
     st_np = None if status is None else np.asarray(status, dtype=np.int8)
+    if st_np is None:
+        _warn_frozen_inp_status(s)
     kw = {}
     if st_np is not None:
         kw["link_status"] = st_np

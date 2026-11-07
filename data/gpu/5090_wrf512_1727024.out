@@ -1,0 +1,32 @@
+commit: ae394c83e32060b770c875d069dda8cfe54e9cc5 (tag wr-rev1-freeze, branch wr-rev1)
+<node-20>
+INP: /data/run01/<user>/wdsgpu/wrfz_ae394c8/networks/public/_cleaned/L-TOWN.inp
+================================================================================================
+主线 v2 · L-TOWN f+b 三列全表（旧 dense+CPU 伴随 / 新 dense+GPU / 新 cudss+GPU）
+node: <node-20> | torch 2.11.0+cu128 | dev: cuda | NVIDIA GeForce RTX 5090
+cudss: True | B 列: [512] | ACC: 1e-06
+md5 dgga/solver.py 3db03aefaea3b996a9d1136b03ae79cf
+md5 dgga/autodiff.py bcd7415d0b95664ebecae628665e6e13
+sha256 INP 8e3009b8fd5e0b9d79e0c0d999cc6af9b2b4132d84d2cadc04e1bdf07086dc02
+
+### L-TOWN Nj=782 L=909 N=785 nnz=2592
+/data/run01/<user>/wdsgpu/wrfz_ae394c8/dgga/solver.py:2813: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:213.)
+  return torch.as_tensor(np.asarray(x), dtype=dt, device=dev)
+/data/run01/<user>/wdsgpu/wrfz_ae394c8/dgga/solver.py:2460: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/wrfz_ae394c8/dgga/solver.py:2460: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+§1 快速正确性（B=8）：三路 demand 梯度对拍
+  dense vs CPU=3.296e-15  cudss vs CPU=3.296e-15  cudss vs dense=1.373e-16（状态组=1）门槛 <1e-6：PASS
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+
+§2 时间全表（ms/场景）
+  B=512   fwd d   3.55635 c   0.85311 | implCPU  484.82772 (组1) | f+b(gpu) d   5.91366 c   2.42682 | |g| cpu=4.139653e+04 gpu_d=4.139653e+04 gpu_c=4.139653e+04
+
+================================================================================================
+§T 三列汇总（ms/场景）node=<node-20>
+B     | 旧=dense+CPU伴随 | 新d=dense+GPU伴随 | 新c=cudss+GPU伴随 | F1=旧/新d  F2=新d/新c  总=旧/新c | 旧c/新c(上轮口径)
+512   |        488.38407 |           5.91366 |           2.42682 |   82.59x    2.44x  201.24x |  200.13x
+MV2 TIME DONE rc=0
+JOB DONE

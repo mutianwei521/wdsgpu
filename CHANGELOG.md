@@ -3,6 +3,27 @@
 All notable changes to this project are documented here.
 This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-11-07
+
+Code release for the revised manuscript WR118808 (*Water Research*).
+
+### Added
+- Revision analyses and their reports: classical analytic baseline (`scripts/baseline_analytic_sens.py`),
+  matched single-core CPU comparison with EPANET (`scripts/cpu_compare_hanoi.py`,
+  `scripts/cpu_fair_scaling.py`, `scripts/cpu_epanet_fd_cityd.py`), unified GPU re-timing
+  (`scripts/wr_freeze_timing.sh`) with its logs, host-device transfer timing (`scripts/gpu_transfer_timing.py`),
+  backward-cost ratio (`scripts/bwd_cost_ratio.py`), statistics re-check (`scripts/stats_recheck.py`),
+  boundary-condition mismatch (`scripts/bc_mismatch.py`) and identifiability metrics
+  (`scripts/identifiability_metrics.py`).
+
+### Changed
+- `dgga/autodiff.py`: a one-time `UserWarning` when the implicit adjoint is called without device statuses
+  on a network that has check valves, pumps, valves or tanks. No numerical result changes.
+- Small option changes in `scripts/baselines_calib.py`, `scripts/compare_calib.py`, `scripts/optimizer_v2.py`,
+  `scripts/mainline_v2/` and `scripts/p4_remeasure/p4r_time_gpu.py` used by the re-measurements.
+- Documentation: the two operational network models are available on request and no longer distributed;
+  title and citation updated.
+
 ## [0.2.0] - 2026-09-05
 
 First release under the name **HydroGrad** (package `dgga`, repository

@@ -187,7 +187,7 @@ def main():
                   curves={}, endpoint_verdicts=[], runlength=[])
         print("=" * 100)
         print(f"### {net} {level}  （梯度法终点 NFE 中位={gd_nfe}"
-              f"（另 nbwd 中位={gd_nbwd}，成本≈前向1%），"
+              f"（另 nbwd 中位={gd_nbwd}，成本实测 Hanoi≈前向21%、City D≈1%），"
               f"损失中位={gd_med['loss']:.4g}，"
               f"sub_rmse 中位={gd_med['sub_rmse']:.4g}，"
               f"info_rmse 中位={gd_med['info_rmse']:.4g}，"

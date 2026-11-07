@@ -1,0 +1,32 @@
+/data/run01/<user>/wdsgpu/wr_rev_1023/dgga/solver.py:2460: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:760.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+/data/run01/<user>/wdsgpu/wr_rev_1023/dgga/solver.py:2460: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  a_list = [torch.sparse_csr_tensor(ip, ii, vals[i], size=(Nj, Nj))
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+/data/home/<user>/.local/lib/python3.10/site-packages/torch/profiler/profiler.py:224: UserWarning: Warning: Profiler clears events at the end of each cycle.Only events from the current cycle will be reported.To keep events across cycles, set acc_events=True.
+  _warn_once(
+GPU=NVIDIA GeForce RTX 5090 torch=2.11.0+cu128 cuda=12.8 node=<node-22> ACC=1e-06
+
+### L-TOWN  N=785 Nj=782 L=909
+    B |        上传     上传(锁页) |      前向+反向 |        取回 |        端到端 |    传输占比 |         每工况 端到端/驻留 | 一次前向+反向内部的拷贝（次数, 设备 ms）
+    1 |   0.048ms    0.031ms |   151.26ms |   0.033ms |   150.61ms |   0.05% |  150.610 / 151.264 ms | DtoD 1235次 0.979ms, DtoH 259次 0.087ms, HtoD 939次 0.257ms, runtime:cudaMemcpy2DAsync 312次 0.000ms, runtime:cudaMemcpyAsync 1965次 0.000ms
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+   64 |   0.146ms    0.052ms |   350.72ms |   0.121ms |   351.60ms |   0.08% |    5.494 /   5.480 ms | DtoD 1006次 0.846ms, DtoH 259次 0.087ms, HtoD 939次 0.282ms, runtime:cudaMemcpy2DAsync 312次 0.000ms, runtime:cudaMemcpyAsync 1737次 0.000ms
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  256 |   0.404ms    0.112ms |   850.00ms |   0.311ms |   858.37ms |   0.08% |    3.353 /   3.320 ms | DtoD 1006次 1.329ms, DtoH 258次 0.100ms, HtoD 939次 0.418ms, runtime:cudaMemcpy2DAsync 312次 0.000ms, runtime:cudaMemcpyAsync 1737次 0.000ms
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+ 1024 |   1.373ms    0.368ms |  2843.42ms |   2.181ms |  2873.79ms |   0.12% |    2.806 /   2.777 ms | DtoD 1006次 3.538ms, DtoH 257次 0.114ms, HtoD 939次 0.516ms, runtime:cudaMemcpy2DAsync 312次 0.000ms, runtime:cudaMemcpyAsync 1737次 0.000ms
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+
+### City D  N=542 Nj=541 L=554
+    B |        上传     上传(锁页) |      前向+反向 |        取回 |        端到端 |    传输占比 |         每工况 端到端/驻留 | 一次前向+反向内部的拷贝（次数, 设备 ms）
+    1 |   0.056ms    0.040ms |    46.58ms |   0.038ms |    46.67ms |   0.20% |   46.666 /  46.578 ms | DtoD 318次 0.252ms, DtoH 38次 0.013ms, HtoD 253次 0.067ms, runtime:cudaMemcpy2DAsync 84次 0.000ms, runtime:cudaMemcpyAsync 486次 0.000ms
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+   64 |   0.118ms    0.051ms |    91.23ms |   0.093ms |    92.38ms |   0.23% |    1.444 /   1.425 ms | DtoD 256次 0.212ms, DtoH 42次 0.014ms, HtoD 271次 0.080ms, runtime:cudaMemcpy2DAsync 90次 0.000ms, runtime:cudaMemcpyAsync 437次 0.000ms
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+  256 |   0.328ms    0.085ms |   218.73ms |   0.254ms |   223.15ms |   0.26% |    0.872 /   0.854 ms | DtoD 242次 0.757ms, DtoH 38次 0.015ms, HtoD 253次 0.110ms, runtime:cudaMemcpy2DAsync 84次 0.000ms, runtime:cudaMemcpyAsync 410次 0.000ms
+No multithreading interface library was specified using the DirectSolverOptions. The performance of CPU operations like planning will be significantly lower than if you provide a multithreading library.
+ 1024 |   0.944ms    0.263ms |   782.41ms |   0.674ms |   744.66ms |   0.22% |    0.727 /   0.764 ms | DtoD 242次 0.627ms, DtoH 38次 0.016ms, HtoD 253次 0.137ms, runtime:cudaMemcpy2DAsync 84次 0.000ms, runtime:cudaMemcpyAsync 410次 0.000ms
+
+saved -> /data/run01/<user>/wdsgpu/wr_rev_1023/transfer_timing.json
+TRANSFER DONE

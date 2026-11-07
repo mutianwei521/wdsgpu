@@ -1,5 +1,11 @@
 # City D / City H water distribution network datasets
 
+> **Availability (November 2026).** The two network models `city_d.inp` and `city_h.inp` are no longer
+> distributed with this repository. They are available from the corresponding author (mzyuan@sia.cn)
+> with the permission of the operating utility. The leak repair records described below remain released
+> under CC BY 4.0. The descriptions of the two models are kept so that their role in the paper can be
+> followed.
+
 Two real municipal water distribution network models and one year of field
 leak repair records, released in anonymised form.  The two utilities are
 referred to only as **City D** and **City H**; the underlying networks are
@@ -144,7 +150,7 @@ provided you give appropriate credit.
 ## 4. How to cite
 
 > Mu, T. (2026). *City D and City H water distribution network datasets*
-> [Data set]. <https://github.com/mutianwei521/dgga> (`datasets/`).
+> [Data set]. <https://github.com/mutianwei521/wdsgpu> (`datasets/`).
 > DOI: ADD ON ARCHIVAL RELEASE.
 
 BibTeX:
@@ -155,7 +161,7 @@ BibTeX:
   title        = {City D and City H water distribution network datasets},
   year         = {2026},
   note         = {DOI to be added on archival release},
-  url          = {https://github.com/mutianwei521/dgga},
+  url          = {https://github.com/mutianwei521/wdsgpu},
   howpublished = {Data set}
 }
 ```

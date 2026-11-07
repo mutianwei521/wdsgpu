@@ -35,6 +35,10 @@ from dgga.autodiff import solve_unrolled              # noqa: E402
 DEV = "cuda"
 DT = torch.float64
 NETDIR = os.path.join(ROOT, "p2nets")
+# 大修 10-23：统一统计量。TIMING_STAT=median 时各格取中位数（缺省 min = 历史 best-of 口径，旧数字照旧可复现）；
+# TIMING_REPS_MIN 为最少重复次数（缺省 2，与历史相同）。
+STAT = os.environ.get("TIMING_STAT", "min")
+REPS_MIN = int(os.environ.get("TIMING_REPS_MIN", "2"))
 SEED = 2026
 NODE = os.popen("hostname").read().strip()
 
@@ -86,16 +90,15 @@ def tg(fn, budget=3.0, reps_max=5, warm=1):
     t0 = time.perf_counter()
     fn()
     torch.cuda.synchronize()
-    one = time.perf_counter() - t0
-    reps = max(2, min(reps_max, int(budget / max(one, 1e-6))))
-    best = one
+    ts = [time.perf_counter() - t0]
+    reps = max(REPS_MIN, min(max(reps_max, REPS_MIN), int(budget / max(ts[0], 1e-6))))
     for _ in range(reps - 1):
         torch.cuda.synchronize()
         t0 = time.perf_counter()
         fn()
         torch.cuda.synchronize()
-        best = min(best, time.perf_counter() - t0)
-    return best
+        ts.append(time.perf_counter() - t0)
+    return float(np.median(ts)) if STAT == "median" else min(ts)
 
 
 def mk(fn):

@@ -41,10 +41,17 @@ DT = torch.float64
 INP = os.path.join(ROOT, "networks_prv", "L-TOWN.inp")
 if not os.path.exists(INP):
     INP = os.path.join(ROOT, "networks", "public", "_cleaned", "L-TOWN.inp")
+if os.environ.get("MV2_INP"):          # 大修 10-23：可换网络（如 City D），缺省仍为 L-TOWN
+    INP = os.path.join(ROOT, os.environ["MV2_INP"])
+print("INP:", INP)
 SEED = 2026
 NODE = os.popen("hostname").read().strip()
 BS = [int(x) for x in os.environ.get("MV2_BS", "1,8,64,256,512,1024").split(",")]
 ACC = float(os.environ.get("MV2_ACC", "1e-6"))
+# 大修 10-23：统一统计量。TIMING_STAT=median 时各格取中位数（缺省 min = 历史 best-of 口径，旧数字照旧可复现）；
+# TIMING_REPS_MIN 为最少重复次数（缺省 2，与历史相同）。
+STAT = os.environ.get("TIMING_STAT", "min")
+REPS_MIN = int(os.environ.get("TIMING_REPS_MIN", "2"))
 HAS_CUDSS = DEV == "cuda"
 try:
     import nvmath                                      # noqa: F401
@@ -69,16 +76,15 @@ def tg(fn, budget=6.0, reps_max=3, warm=1):
     t0 = time.perf_counter()
     fn()
     sync()
-    one = time.perf_counter() - t0
-    reps = max(2, min(reps_max, int(budget / max(one, 1e-6))))
-    best = one
+    ts = [time.perf_counter() - t0]
+    reps = max(REPS_MIN, min(max(reps_max, REPS_MIN), int(budget / max(ts[0], 1e-6))))
     for _ in range(reps - 1):
         sync()
         t0 = time.perf_counter()
         fn()
         sync()
-        best = min(best, time.perf_counter() - t0)
-    return best
+        ts.append(time.perf_counter() - t0)
+    return float(np.median(ts)) if STAT == "median" else min(ts)
 
 
 def boundary(net):
@@ -248,12 +254,13 @@ for B in BS:
         try:
             t0 = time.perf_counter()
             g1, ngroup = cpu_grad(D, R, W, S_all)
-            timp = time.perf_counter() - t0
+            tl = [time.perf_counter() - t0]
             g_cpu_norm = float(g1.norm())
-            if timp < 30.0:
+            for _ in range((2 if STAT == "median" else 1) if tl[0] < 30.0 else 0):
                 t0 = time.perf_counter()
                 cpu_grad(D, R, W, S_all)
-                timp = min(timp, time.perf_counter() - t0)
+                tl.append(time.perf_counter() - t0)
+            timp = float(np.median(tl)) if STAT == "median" else min(tl)
         except Exception:                              # noqa: BLE001
             print("  [err impl B=%d] %s" % (B, last()))
     timp_per = None if timp is None else timp * 1e3 / B
